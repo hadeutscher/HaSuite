@@ -157,11 +157,29 @@
     <Compile Include="CustomControls\ScrollablePictureBox.Designer.cs">
       <DependentUpon>ScrollablePictureBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\InstanceEditor\TooltipInstanceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\InstanceEditor\TooltipInstanceEditor.Designer.cs">
+      <DependentUpon>TooltipInstanceEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\InstanceEditor\InstanceEditorBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\InstanceEditor\InstanceEditorBase.Designer.cs">
+      <DependentUpon>InstanceEditorBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="ThirdParty\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ThirdParty\ColorPicker.xaml.cs">
       <DependentUpon>ColorPicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ThirdParty\ImageViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ThirdParty\ImageViewer.Designer.cs">
+      <DependentUpon>ImageViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="ThirdParty\TabPages\BaseTab.cs">
       <SubType>Component</SubType>
@@ -285,11 +303,8 @@
     <Compile Include="GUI\Initialization.designer.cs">
       <DependentUpon>Initialization.cs</DependentUpon>
     </Compile>
-    <Compile Include="ThirdParty\KoolkLVContainer.cs">
+    <Compile Include="ThirdParty\ThumbnailFlowLayoutPanel.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ThirdParty\KoolkLVItem.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GUI\Load.cs">
       <SubType>Form</SubType>
@@ -375,6 +390,12 @@
     <EmbeddedResource Include="GUI\InstanceEditor\BackgroundInstanceEditor.resx">
       <DependentUpon>BackgroundInstanceEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\InstanceEditor\TooltipInstanceEditor.resx">
+      <DependentUpon>TooltipInstanceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\InstanceEditor\InstanceEditorBase.resx">
+      <DependentUpon>InstanceEditorBase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\InstanceEditor\MapBrowser.resx">
       <DependentUpon>MapBrowser.cs</DependentUpon>
     </EmbeddedResource>
@@ -455,6 +476,9 @@
       <DependentUpon>TileSetBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="WzSettings.cs" />
+    <EmbeddedResource Include="ThirdParty\ImageViewer.resx">
+      <DependentUpon>ImageViewer.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HaRepackerLib\HaRepackerLib.csproj">
@@ -533,7 +557,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\HaLogo16.png" />
+    <Resource Include="Images\HaLogo32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

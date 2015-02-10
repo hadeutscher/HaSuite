@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.forceInt = new System.Windows.Forms.NumericUpDown();
             this.forceEnable = new System.Windows.Forms.CheckBox();
             this.pieceEnable = new System.Windows.Forms.CheckBox();
@@ -43,75 +42,73 @@
             // 
             // forceInt
             // 
-            // 
-            // 
-            // 
             this.forceInt.Location = new System.Drawing.Point(69, 12);
+            this.forceInt.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.forceInt.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.forceInt.Name = "forceInt";
-            this.forceInt.Minimum = -2147483648;
-            this.forceInt.Maximum = 2147483647;
             this.forceInt.Size = new System.Drawing.Size(123, 20);
             this.forceInt.TabIndex = 1;
             // 
             // forceEnable
             // 
             this.forceEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.forceEnable.Location = new System.Drawing.Point(12, 14);
             this.forceEnable.Name = "forceEnable";
-            this.forceEnable.Size = new System.Drawing.Size(51, 15);
-            this.forceEnable.TabIndex = 2;
+            this.forceEnable.Size = new System.Drawing.Size(53, 17);
+            this.forceEnable.TabIndex = 0;
             this.forceEnable.Text = "Force";
             this.forceEnable.CheckedChanged += new System.EventHandler(this.forceEnable_CheckedChanged);
             // 
             // pieceEnable
             // 
             this.pieceEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.pieceEnable.Location = new System.Drawing.Point(12, 40);
             this.pieceEnable.Name = "pieceEnable";
-            this.pieceEnable.Size = new System.Drawing.Size(50, 15);
-            this.pieceEnable.TabIndex = 4;
+            this.pieceEnable.Size = new System.Drawing.Size(53, 17);
+            this.pieceEnable.TabIndex = 2;
             this.pieceEnable.Text = "Piece";
             // 
             // pieceInt
             // 
-            // 
-            // 
-            // 
             this.pieceInt.Location = new System.Drawing.Point(69, 38);
+            this.pieceInt.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.pieceInt.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.pieceInt.Name = "pieceInt";
-            this.pieceInt.Minimum = -2147483648;
-            this.pieceInt.Maximum = 2147483647;
             this.pieceInt.Size = new System.Drawing.Size(123, 20);
             this.pieceInt.TabIndex = 3;
             // 
             // cantThroughBox
             // 
             this.cantThroughBox.AutoSize = true;
-            // 
-            // 
-            // 
             this.cantThroughBox.Location = new System.Drawing.Point(12, 64);
             this.cantThroughBox.Name = "cantThroughBox";
-            this.cantThroughBox.Size = new System.Drawing.Size(90, 15);
-            this.cantThroughBox.TabIndex = 5;
+            this.cantThroughBox.Size = new System.Drawing.Size(91, 17);
+            this.cantThroughBox.TabIndex = 4;
             this.cantThroughBox.Text = "Cant Through";
             // 
             // forbidFallDownBox
             // 
             this.forbidFallDownBox.AutoSize = true;
-            // 
-            // 
-            // 
             this.forbidFallDownBox.Location = new System.Drawing.Point(108, 64);
             this.forbidFallDownBox.Name = "forbidFallDownBox";
-            this.forbidFallDownBox.Size = new System.Drawing.Size(106, 15);
-            this.forbidFallDownBox.TabIndex = 6;
+            this.forbidFallDownBox.Size = new System.Drawing.Size(105, 17);
+            this.forbidFallDownBox.TabIndex = 5;
             this.forbidFallDownBox.Text = "Forbid Fall Down";
             // 
             // okButton
@@ -120,7 +117,7 @@
             this.okButton.Location = new System.Drawing.Point(33, 85);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(71, 26);
-            this.okButton.TabIndex = 7;
+            this.okButton.TabIndex = 6;
             this.okButton.Text = "OK";
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
@@ -130,7 +127,7 @@
             this.cancelButton.Location = new System.Drawing.Point(110, 85);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(71, 26);
-            this.cancelButton.TabIndex = 8;
+            this.cancelButton.TabIndex = 7;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
@@ -153,7 +150,7 @@
             this.MinimizeBox = false;
             this.Name = "FootholdEditor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Foothold Editor";
+            this.Text = "Foothold";
             ((System.ComponentModel.ISupportInitialize)(this.forceInt)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pieceInt)).EndInit();
             this.ResumeLayout(false);

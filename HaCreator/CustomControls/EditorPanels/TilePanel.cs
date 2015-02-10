@@ -72,7 +72,7 @@ namespace HaCreator.CustomControls.EditorPanels
                 {
                     WzCanvasProperty canvasProp = (WzCanvasProperty)tCat["0"];
                     if (canvasProp == null) continue;
-                    KoolkLVItem item = tileImagesContainer.createItem(canvasProp.PngProperty.GetPNG(false), tCat.Name, true);
+                    ImageViewer item = tileImagesContainer.Add(canvasProp.PngProperty.GetPNG(false), tCat.Name, true);
                     TileInfo[] randomInfos = new TileInfo[tCat.WzProperties.Count];
                     for (int i = 0; i < randomInfos.Length; i++)
                     {
@@ -83,7 +83,7 @@ namespace HaCreator.CustomControls.EditorPanels
                     }
                     item.Tag = randomInfos;
                     item.MouseDown += new MouseEventHandler(tileItem_Click);
-                    item.MouseUp += new MouseEventHandler(KoolkLVItem.item_MouseUp);
+                    item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
                 }
                 else
                 {
@@ -91,10 +91,10 @@ namespace HaCreator.CustomControls.EditorPanels
                     {
                         if (tile.HCTag == null)
                             tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name);
-                        KoolkLVItem item = tileImagesContainer.createItem(tile.PngProperty.GetPNG(false), tCat.Name + "/" + tile.Name, true);
+                        ImageViewer item = tileImagesContainer.Add(tile.PngProperty.GetPNG(false), tCat.Name + "/" + tile.Name, true);
                         item.Tag = tile.HCTag;
                         item.MouseDown += new MouseEventHandler(tileItem_Click);
-                        item.MouseUp += new MouseEventHandler(KoolkLVItem.item_MouseUp);
+                        item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
                     }
                 }
             }
@@ -112,9 +112,9 @@ namespace HaCreator.CustomControls.EditorPanels
             {
                 TileInfo infoToAdd = null;
                 if (ApplicationSettings.randomTiles)
-                    infoToAdd = ((TileInfo[])((KoolkLVItem)sender).Tag)[0];
+                    infoToAdd = ((TileInfo[])((ImageViewer)sender).Tag)[0];
                 else
-                    infoToAdd = (TileInfo)((KoolkLVItem)sender).Tag;
+                    infoToAdd = (TileInfo)((ImageViewer)sender).Tag;
                 if (infoToAdd.tS != layer.tS)
                 {
                     MessageBox.Show("Error: layer tS already set to a different tS.\r\nPlease choose a different layer.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -123,12 +123,12 @@ namespace HaCreator.CustomControls.EditorPanels
             }
             hcsm.EnterEditMode(ItemTypes.Tiles);
             if (ApplicationSettings.randomTiles)
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetRandomTilesMode((TileInfo[])((KoolkLVItem)sender).Tag);
+                hcsm.MultiBoard.SelectedBoard.Mouse.SetRandomTilesMode((TileInfo[])((ImageViewer)sender).Tag);
             else
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((TileInfo)((KoolkLVItem)sender).Tag);
+                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((TileInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();
             hcsm.MultiBoard.RenderFrame();
-            ((KoolkLVItem)sender).Selected = true;
+            ((ImageViewer)sender).IsActive = true;
         }
     }
 }

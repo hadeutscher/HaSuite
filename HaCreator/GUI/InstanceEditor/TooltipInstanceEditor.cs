@@ -16,19 +16,28 @@ using HaCreator.MapEditor;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class GeneralInstanceEditor : InstanceEditorBase
+    public partial class TooltipInstanceEditor : InstanceEditorBase
     {
-        public BoardItem item;
+        public HaCreator.MapEditor.ToolTip item;
 
-        public GeneralInstanceEditor(BoardItem item)
+        public TooltipInstanceEditor(HaCreator.MapEditor.ToolTip item)
         {
             InitializeComponent();
             this.item = item;
             xInput.Value = item.X;
             yInput.Value = item.Y;
-            if (item.Z == -1) zInput.Enabled = false;
-            else zInput.Value = item.Z;
             pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item, "\r\n");
+
+            if (item.Title != null)
+            {
+                useTitleBox.Checked = true;
+                titleBox.Text = item.Title;
+            }
+            if (item.Desc != null)
+            {
+                useDescBox.Checked = true;
+                descBox.Text = item.Desc;
+            }
         }
 
         protected override void cancelButton_Click(object sender, EventArgs e)
@@ -44,15 +53,23 @@ namespace HaCreator.GUI.InstanceEditor
                 actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
                 item.Move((int)xInput.Value, (int)yInput.Value);
             }
-            if (zInput.Enabled && item.Z != zInput.Value)
-            {
-                actions.Add(UndoRedoManager.ItemZChanged(item, item.Z, (int)zInput.Value));
-                item.Z = (int)zInput.Value;
-                item.Board.BoardItems.Sort();
-            }
             if (actions.Count > 0)
                 item.Board.UndoRedoMan.AddUndoBatch(actions);
+
+            item.Title = useTitleBox.Checked ? titleBox.Text : null;
+            item.Desc = useDescBox.Checked ? descBox.Text : null;
+
             Close();
+        }
+
+        private void useTitleBox_CheckedChanged(object sender, EventArgs e)
+        {
+            titleBox.Enabled = useTitleBox.Checked;
+        }
+
+        private void useDescBox_CheckedChanged(object sender, EventArgs e)
+        {
+            descBox.Enabled = useDescBox.Checked;
         }
     }
 }

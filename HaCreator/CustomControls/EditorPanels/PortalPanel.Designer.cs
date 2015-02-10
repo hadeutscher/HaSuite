@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.portalImageContainer = new HaCreator.ThirdParty.KoolkLVContainer();
+            this.portalImageContainer = new HaCreator.ThirdParty.ThumbnailFlowLayoutPanel();
             this.SuspendLayout();
             // 
             // portalImageContainer
@@ -57,6 +57,6 @@
 
         #endregion
 
-        private ThirdParty.KoolkLVContainer portalImageContainer;
+        private ThirdParty.ThumbnailFlowLayoutPanel portalImageContainer;
     }
 }

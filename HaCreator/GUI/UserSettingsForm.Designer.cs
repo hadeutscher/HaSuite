@@ -73,7 +73,6 @@
             this.xgaResolutionCheckbox = new System.Windows.Forms.CheckBox();
             this.showMousePosCheckbox = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.threeStateBox = new System.Windows.Forms.CheckBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label40 = new System.Windows.Forms.Label();
             this.fontSize = new System.Windows.Forms.NumericUpDown();
@@ -107,6 +106,7 @@
             this.dragFillColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.dragColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.tabColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
+            this.errorsCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
@@ -637,10 +637,10 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.errorsCheckBox);
             this.tabPage1.Controls.Add(this.xgaResolutionCheckbox);
             this.tabPage1.Controls.Add(this.showMousePosCheckbox);
             this.tabPage1.Controls.Add(this.label20);
-            this.tabPage1.Controls.Add(this.threeStateBox);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.linewBox);
             this.tabPage1.Controls.Add(this.label5);
@@ -678,15 +678,6 @@
             this.label20.Size = new System.Drawing.Size(353, 13);
             this.label20.TabIndex = 57;
             this.label20.Text = "Note: certain settings require restarting HaCreator 2 in order to be applied.";
-            // 
-            // threeStateBox
-            // 
-            this.threeStateBox.AutoSize = true;
-            this.threeStateBox.Location = new System.Drawing.Point(169, 185);
-            this.threeStateBox.Name = "threeStateBox";
-            this.threeStateBox.Size = new System.Drawing.Size(212, 17);
-            this.threeStateBox.TabIndex = 12;
-            this.threeStateBox.Text = "Use Three-States for View Checkboxes";
             // 
             // tabPage2
             // 
@@ -1119,6 +1110,15 @@
             this.tabColorPicker.Size = new System.Drawing.Size(16, 16);
             this.tabColorPicker.TabIndex = 42;
             // 
+            // errorsCheckBox
+            // 
+            this.errorsCheckBox.AutoSize = true;
+            this.errorsCheckBox.Location = new System.Drawing.Point(169, 183);
+            this.errorsCheckBox.Name = "errorsCheckBox";
+            this.errorsCheckBox.Size = new System.Drawing.Size(260, 17);
+            this.errorsCheckBox.TabIndex = 60;
+            this.errorsCheckBox.Text = "Show warning message about encountered errors";
+            // 
             // UserSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1208,7 +1208,6 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.Button okayButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.CheckBox threeStateBox;
         private CustomControls.AlphaColorPicker ttcColorPicker;
         private CustomControls.AlphaColorPicker ttSelectColorPicker;
         private CustomControls.AlphaColorPicker ttFillColorPicker;
@@ -1241,5 +1240,6 @@
         private System.Windows.Forms.Label label40;
         private System.Windows.Forms.NumericUpDown fontSize;
         private System.Windows.Forms.CheckBox xgaResolutionCheckbox;
+        private System.Windows.Forms.CheckBox errorsCheckBox;
     }
 }

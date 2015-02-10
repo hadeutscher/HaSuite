@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.koolkLVContainer = new HaCreator.ThirdParty.KoolkLVContainer();
+            this.koolkLVContainer = new HaCreator.ThirdParty.ThumbnailFlowLayoutPanel();
             this.SuspendLayout();
             // 
             // koolkLVContainer
@@ -58,6 +58,6 @@
 
         #endregion
 
-        private ThirdParty.KoolkLVContainer koolkLVContainer;
+        private ThirdParty.ThumbnailFlowLayoutPanel koolkLVContainer;
     }
 }

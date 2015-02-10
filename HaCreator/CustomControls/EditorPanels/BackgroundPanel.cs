@@ -48,10 +48,10 @@ namespace HaCreator.CustomControls.EditorPanels
                 {
                     if (aniBgProp.HCTag == null)
                         aniBgProp.HCTag = BackgroundInfo.Load(aniBgProp, (string)bgSetListBox.SelectedItem, true, aniBgProp.Name);
-                    KoolkLVItem aniItem = bgImageContainer.createItem(((BackgroundInfo)aniBgProp.HCTag).Image, aniBgProp.Name, true);
+                    ImageViewer aniItem = bgImageContainer.Add(((BackgroundInfo)aniBgProp.HCTag).Image, aniBgProp.Name, true);
                     aniItem.Tag = aniBgProp.HCTag;
                     aniItem.MouseDown += new MouseEventHandler(bgItem_Click);
-                    aniItem.MouseUp += new MouseEventHandler(KoolkLVItem.item_MouseUp);
+                    aniItem.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
                 }
             }
             else
@@ -61,10 +61,10 @@ namespace HaCreator.CustomControls.EditorPanels
                 {
                     if (backBg.HCTag == null)
                         backBg.HCTag = BackgroundInfo.Load(backBg, (string)bgSetListBox.SelectedItem, false, backBg.Name);
-                    KoolkLVItem aniItem = bgImageContainer.createItem(((BackgroundInfo)backBg.HCTag).Image, backBg.Name, true);
+                    ImageViewer aniItem = bgImageContainer.Add(((BackgroundInfo)backBg.HCTag).Image, backBg.Name, true);
                     aniItem.Tag = backBg.HCTag;
                     aniItem.MouseDown += new MouseEventHandler(bgItem_Click);
-                    aniItem.MouseUp += new MouseEventHandler(KoolkLVItem.item_MouseUp);
+                    aniItem.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
                 }
             }
         }
@@ -72,10 +72,10 @@ namespace HaCreator.CustomControls.EditorPanels
         void bgItem_Click(object sender, MouseEventArgs e)
         {
             hcsm.EnterEditMode(ItemTypes.Backgrounds);
-            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((BackgroundInfo)((KoolkLVItem)sender).Tag);
+            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((BackgroundInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();
             hcsm.MultiBoard.RenderFrame();
-            ((KoolkLVItem)sender).Selected = true;
+            ((ImageViewer)sender).IsActive = true;
         }
     }
 }

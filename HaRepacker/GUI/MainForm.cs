@@ -30,13 +30,13 @@ namespace HaRepacker.GUI
 {
     public partial class MainForm : Form
     {
-        private List<Object> settings = new List<object>();
+        FHMapper.FHMapper mapper;
 
         public MainForm(string wzToLoad, bool usingPipes, bool firstrun)
         {
             InitializeComponent();
-            if (firstrun)
-                new AboutForm().ShowDialog();
+            /*if (firstrun)
+                new AboutForm().ShowDialog();*/
 #if DEBUG
             debugToolStripMenuItem.Visible = true;
 #endif
@@ -79,6 +79,8 @@ namespace HaRepacker.GUI
                 encryptionBox.SelectedIndex = (int)encVersion;
                 LoadWzFileThreadSafe(wzToLoad, MainPanel, false);
             }
+
+            mapper = new FHMapper.FHMapper(MainPanel);
         }
 
         public void Interop_AddLoadedWzFileToManager(WzFile f)
@@ -168,333 +170,6 @@ namespace HaRepacker.GUI
             catch { }
         }
 
-        #region FH Mapper
-        /*IWzFile GetParentWzFile(WzNode SelectedNode)
-        {
-            WzNode parent = (WzNode)SelectedNode.Parent;
-            while (parent.Level > 0)
-            {
-                parent = (WzNode)parent.Parent;
-            }
-            return (IWzFile)parent.Tag;
-        }*/
-
-        void SaveMap(WzImage img)
-        {
-            WzFile wzFile = (WzFile)((IWzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
-            // Spawnpoint foothold and portal lists
-            List<SpawnPoint.Spawnpoint> MSPs = new List<SpawnPoint.Spawnpoint>();
-            List<FootHold.Foothold> FHs = new List<FootHold.Foothold>();
-            List<Portals.Portal> Ps = new List<Portals.Portal>();
-            Size bmpSize;
-            Point center;
-            try
-            {
-                bmpSize = new Size(((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["width"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["height"]).Value);
-                center = new Point(((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["centerX"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["centerY"]).Value);
-            }
-            catch (KeyNotFoundException)
-            {
-                try
-                {
-                    bmpSize = new Size(((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRRight"]).Value - ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRLeft"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRBottom"]).Value - ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRTop"]).Value);
-                    center = new Point(((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRRight"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRBottom"]).Value);
-                    //center = new Point(0, 0);
-                }
-                catch
-                {
-                    return;
-                }
-            }
-            catch
-            {
-                return;
-            }
-            Bitmap mapRender = new Bitmap(bmpSize.Width, bmpSize.Height + 10);
-            using (Graphics drawBuf = Graphics.FromImage(mapRender))
-            {
-                //drawBuf.FillRectangle(new SolidBrush(Color.CornflowerBlue), 0, 0, bmpSize.Width, bmpSize.Height);
-                drawBuf.DrawString("Map " + img.Name.Substring(0, img.Name.Length - 4), new Font("Pragmata", 20), new SolidBrush(Color.Black), new PointF(10, 10));
-                try
-                {
-                    drawBuf.DrawImage(((WzCanvasProperty)((WzSubProperty)img["miniMap"])["canvas"]).PngProperty.GetPNG(false), 10, 45);
-                }
-                catch (KeyNotFoundException)
-                {
-                    drawBuf.DrawString("Minimap not availible", new Font("Pragmata", 18), new SolidBrush(Color.Black), new PointF(10, 45));
-                }
-                WzSubProperty ps = (WzSubProperty)img["portal"];
-                foreach (WzSubProperty p in ps.WzProperties)
-                {
-                    //WzSubProperty p = (WzSubProperty)p10.ExtendedProperty;
-                    int x = ((WzCompressedIntProperty)p["x"]).Value + center.X;
-                    int y = ((WzCompressedIntProperty)p["y"]).Value + center.Y;
-                    int type = ((WzCompressedIntProperty)p["pt"]).Value;
-                    Color pColor = Color.Red;
-                    if (type == 0)
-                        pColor = Color.Orange;
-                    else if (type == 2 || type == 7)//Normal
-                        pColor = Color.Blue;
-                    else if (type == 3)//Auto-enter
-                        pColor = Color.Magenta;
-                    else if (type == 1 || type == 8)
-                        pColor = Color.BlueViolet;
-                    else
-                        pColor = Color.IndianRed;
-                    drawBuf.FillRectangle(new SolidBrush(Color.FromArgb(95, pColor.R, pColor.G, pColor.B)), x - 20, y - 20, 40, 40);
-                    drawBuf.DrawRectangle(new Pen(Color.Black, 1F), x - 20, y - 20, 40, 40);
-                    drawBuf.DrawString(p.Name, new Font("Pragmata", 8), new SolidBrush(Color.Red), x - 8, y - 7.7F);
-                    Portals.Portal portal = new Portals.Portal();
-                    portal.Shape = new Rectangle(x - 20, y - 20, 40, 40);
-                    portal.Data = p;
-                    Ps.Add(portal);
-                }
-                try
-                {
-                    WzSubProperty SPs = (WzSubProperty)img["life"];
-                    foreach (WzSubProperty sp in SPs.WzProperties)
-                    {
-                        Color MSPColor = Color.ForestGreen;
-                        if (((WzStringProperty)sp["type"]).Value == "m")// Only mobs (NPC = "n")
-                        {
-                            int x = ((WzCompressedIntProperty)sp["x"]).Value + center.X - 15;
-                            int y = ((WzCompressedIntProperty)sp["y"]).Value + center.Y - 15;
-                            drawBuf.FillRectangle(new SolidBrush(Color.FromArgb(95, MSPColor.R, MSPColor.G, MSPColor.B)), x, y, 30, 30);
-                            drawBuf.DrawRectangle(new Pen(Color.Black, 1F), x, y, 30, 30);
-                            drawBuf.DrawString(sp.Name, new Font("Pragmata", 8), new SolidBrush(Color.Red), x + 7, y + 7.3F);
-                            SpawnPoint.Spawnpoint MSP = new SpawnPoint.Spawnpoint();
-                            MSP.Shape = new Rectangle(x, y, 30, 30);
-                            MSP.Data = sp;
-                            MSPs.Add(MSP);
-                        }
-                    }
-                }
-                catch
-                {
-                }
-                WzSubProperty fhs = (WzSubProperty)img["foothold"];
-                foreach (IWzImageProperty fhspl0 in fhs.WzProperties)
-                    foreach (IWzImageProperty fhspl1 in fhspl0.WzProperties)
-                        foreach (WzSubProperty fh in fhspl1.WzProperties)
-                        {
-                            //WzSubProperty fh = (WzSubProperty)fhe.ExtendedProperty;
-                            int x = ((WzCompressedIntProperty)fh["x1"]).Value + center.X;
-                            int y = ((WzCompressedIntProperty)fh["y1"]).Value + center.Y;
-                            int width = ((((WzCompressedIntProperty)fh["x2"]).Value + center.X) - x);
-                            int height = ((((WzCompressedIntProperty)fh["y2"]).Value + center.Y) - y);
-                            if (width < 0)
-                            {
-                                x += width;// *2;
-                                width = -width;
-                            }
-                            if (height < 0)
-                            {
-                                y += height;// *2;
-                                height = -height;
-                            }
-                            if (width == 0 || width < 15)
-                                width = 15;
-                            height += 10;
-                            FootHold.Foothold nFH = new FootHold.Foothold();
-                            nFH.Shape = new Rectangle(x, y, width, height);
-                            nFH.Data = fh;
-                            FHs.Add(nFH);
-                            drawBuf.FillRectangle(new SolidBrush(Color.FromArgb(95, Color.Gray.R, Color.Gray.G, Color.Gray.B)), x, y, width, height);
-                            drawBuf.DrawRectangle(new Pen(Color.Black, 1F), x, y, width, height);
-                            drawBuf.DrawString(fh.Name, new Font("Pragmata", 8), new SolidBrush(Color.Red), new PointF(x + (width / 2) - 8, y + (height / 2) - 7.7F));
-                        }
-            }
-
-            mapRender.Save("Renders\\" + img.Name.Substring(0, img.Name.Length - 4) + "\\" + img.Name.Substring(0, img.Name.Length - 4) + "_footholdRender.bmp");
-
-            Bitmap tileRender = new Bitmap(bmpSize.Width, bmpSize.Height);
-
-            using (Graphics tileBuf = Graphics.FromImage(tileRender))
-            {
-
-                for (int i = 0; i < 7; i++)
-                {
-                    // The below code was commented out because it was creating problems when loading certain maps. When debugging it would throw an exception at line 469.
-                    // Objects first
-                    if (((WzSubProperty)((WzSubProperty)img[i.ToString()])["obj"]).WzProperties.Count > 0)
-                    {
-                        foreach (WzSubProperty obj in ((WzSubProperty)((WzSubProperty)img[i.ToString()])["obj"]).WzProperties)
-                        {
-                            //WzSubProperty obj = (WzSubProperty)oe.ExtendedProperty;
-                            string imgName = ((WzStringProperty)obj["oS"]).Value + ".img";
-                            string l0 = ((WzStringProperty)obj["l0"]).Value;
-                            string l1 = ((WzStringProperty)obj["l1"]).Value;
-                            string l2 = ((WzStringProperty)obj["l2"]).Value;
-                            int x = ((WzCompressedIntProperty)obj["x"]).Value + center.X;
-                            int y = ((WzCompressedIntProperty)obj["y"]).Value + center.Y;
-                            WzVectorProperty origin;
-                            WzPngProperty png;
-                            IWzImageProperty objData = (IWzImageProperty)wzFile.GetObjectFromPath(wzFile.WzDirectory.Name + "/Obj/" + imgName + "/" + l0 + "/" + l1 + "/" + l2 + "/0");
-                        tryagain:
-                            if (objData is WzCanvasProperty)
-                            {
-                                png = ((WzCanvasProperty)objData).PngProperty;
-                                origin = (WzVectorProperty)((WzCanvasProperty)objData)["origin"];
-                            }
-                            else if (objData is WzUOLProperty)
-                            {
-                                IWzObject currProp = objData.Parent;
-                                foreach (string directive in ((WzUOLProperty)objData).Value.Split("/".ToCharArray()))
-                                {
-                                    if (directive == "..") currProp = currProp.Parent;
-                                    else
-                                    {
-                                        switch (currProp.GetType().Name)
-                                        {
-                                            case "WzSubProperty":
-                                                currProp = ((WzSubProperty)currProp)[directive];
-                                                break;
-                                            case "WzCanvasProperty":
-                                                currProp = ((WzCanvasProperty)currProp)[directive];
-                                                break;
-                                            case "WzImage":
-                                                currProp = ((WzImage)currProp)[directive];
-                                                break;
-                                            case "WzConvexProperty":
-                                                currProp = ((WzConvexProperty)currProp)[directive];
-                                                break;
-                                            default:
-                                                throw new Exception("UOL error at map renderer");
-                                        }
-                                    }
-                                }
-                                objData = (IWzImageProperty)currProp;
-                                goto tryagain;
-                            }
-                            else throw new Exception("unknown type at map renderer");
-                            //WzVectorProperty origin = (WzVectorProperty)wzFile.GetObjectFromPath(wzFile.WzDirectory.Name + "/Obj/" + imgName + "/" + l0 + "/" + l1 + "/" + l2 + "/0");
-                            //WzPngProperty png = (WzPngProperty)wzFile.GetObjectFromPath(wzFile.WzDirectory.Name + "/Obj/" + imgName + "/" + l0 + "/" + l1 + "/" + l2 + "/0/PNG");
-                            tileBuf.DrawImage(png.GetPNG(false), x - origin.X.Value, y - origin.Y.Value);
-                        }
-                    }
-                    if (((WzSubProperty)((WzSubProperty)img[i.ToString()])["info"]).WzProperties.Count == 0)
-
-                        continue;
-
-                    if (((WzSubProperty)((WzSubProperty)img[i.ToString()])["tile"]).WzProperties.Count == 0)
-
-                        continue;
-
-                    // Ok, we have some tiles and a tileset
-
-                    string tileSetName = ((WzStringProperty)((WzSubProperty)((WzSubProperty)img[i.ToString()])["info"])["tS"]).Value;
-
-                    // Browse to the tileset
-
-                    WzImage tileSet = (WzImage)wzFile.GetObjectFromPath(wzFile.WzDirectory.Name + "/Tile/" + tileSetName + ".img");
-                    if (!tileSet.Parsed)
-                        tileSet.ParseImage();
-
-                    foreach (WzSubProperty tile in ((WzSubProperty)((WzSubProperty)img[i.ToString()])["tile"]).WzProperties)
-                    {
-
-                        //WzSubProperty tile = (WzSubProperty)te.ExtendedProperty;
-
-                        int x = ((WzCompressedIntProperty)tile["x"]).Value + center.X;
-
-                        int y = ((WzCompressedIntProperty)tile["y"]).Value + center.Y;
-
-                        string tilePackName = ((WzStringProperty)tile["u"]).Value;
-
-                        string tileID = ((WzCompressedIntProperty)tile["no"]).Value.ToString();
-
-                        Point origin = new Point(((WzVectorProperty)((WzCanvasProperty)((WzSubProperty)tileSet[tilePackName])[tileID])["origin"]).X.Value, ((WzVectorProperty)((WzCanvasProperty)((WzSubProperty)tileSet[tilePackName])[tileID])["origin"]).Y.Value);
-
-                        tileBuf.DrawImage(((WzCanvasProperty)((WzSubProperty)tileSet[tilePackName])[tileID]).PngProperty.GetPNG(false), x - origin.X, y - origin.Y);
-
-                    }
-
-                }
-
-            }
-
-            tileRender.Save("Renders\\" + img.Name.Substring(0, img.Name.Length - 4) + "\\" + img.Name.Substring(0, img.Name.Length - 4) + "_tileRender.bmp");
-
-            Bitmap fullBmp = new Bitmap(bmpSize.Width, bmpSize.Height + 10);
-
-            using (Graphics fullBuf = Graphics.FromImage(fullBmp))
-            {
-
-                fullBuf.FillRectangle(new SolidBrush(Color.CornflowerBlue), 0, 0, bmpSize.Width, bmpSize.Height + 10);
-
-                fullBuf.DrawImage(tileRender, 0, 0);
-
-                fullBuf.DrawImage(mapRender, 0, 0);
-
-            }
-            //pbx_Foothold_Render.Image = fullBmp;
-            fullBmp.Save("Renders\\" + img.Name.Substring(0, img.Name.Length - 4) + "\\" + img.Name.Substring(0, img.Name.Length - 4) + "_fullRender.bmp");
-
-            DisplayMap showMap = new DisplayMap();
-            showMap.map = fullBmp;
-            showMap.Footholds = FHs;
-            showMap.thePortals = Ps;
-            showMap.settings = settings;
-            showMap.MobSpawnPoints = MSPs;
-            showMap.FormClosed += new FormClosedEventHandler(DisplayMapClosed);
-            try
-            {
-
-                showMap.scale = double.Parse(zoomTextBox.TextBox.Text);
-                showMap.ShowDialog();
-            }
-            catch (FormatException)
-            {
-                MessageBox.Show("You must set the render scale to a valid number.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void DisplayMapClosed(object sender, FormClosedEventArgs e)
-        {
-            ((WzNode)MainPanel.DataTree.SelectedNode).Reparse();
-        }
-
-        internal void ParseSettings()
-        {
-            //Clear current settings
-            settings.Clear();
-            try
-            {
-                // Add the new ones
-                string theSettings;
-                if (!File.Exists(Application.StartupPath + @"\Settings.ini"))
-                    File.WriteAllText(Application.StartupPath + @"\Settings.ini", "!TAB1-!DPt:0!DPc:False!DNt:0!DNc:True!DFt:-230!DFc:False!\r\n!TAB2-!DXt:100!DXc:False!DYt:100!DYc:False!DTt:2!DTc:False!\r\n!TAB3-!DFPt:C:\\NEXON\\MapleStory\\Map.wz!DFPc:False!DSt:1!DSc:True!");
-                using (TextReader settingsFile = new StreamReader(Application.StartupPath + @"\Settings.ini"))
-                    theSettings = settingsFile.ReadToEnd();
-                settings.Add(Regex.Match(theSettings, @"(?<=!DPt:)-?\d*(?=!)").Value);
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DPc:)\w+(?=!)").Value));
-                settings.Add(Regex.Match(theSettings, @"(?<=!DNt:)-?\d*(?=!)").Value);
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DNc:)\w+(?=!)").Value));
-                settings.Add(Regex.Match(theSettings, @"(?<=!DFt:)-?\d*(?=!)").Value);
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DFc:)\w+(?=!)").Value));
-                settings.Add(Regex.Match(theSettings, @"(?<=!DXt:)-?\d*(?=!)").Value);
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DXc:)\w+(?=!)").Value));
-                settings.Add(Regex.Match(theSettings, @"(?<=!DYt:)-?\d*(?=!)").Value);
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DYc:)\w+(?=!)").Value));
-                settings.Add(Regex.Match(theSettings, @"(?<=!DTt:)\d*(?=!)").Value);
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DTc:)\w+(?=!)").Value));
-                settings.Add(Regex.Match(theSettings, @"(?<=!DFPt:)C:(%\w+)+.wz(?=!)").Value.Replace('%', '/'));
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DFPc:)\w+(?=!)").Value));
-                settings.Add(Regex.Match(theSettings, @"(?<=!DSt:)\d*,?\d*(?=!)").Value);
-                settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DSc:)\w+(?=!)").Value));
-            }
-            catch { MessageBox.Show("Failed to load settings.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); this.Close(); }
-            foreach (Form form in Application.OpenForms)
-            {
-                DisplayMap mapForm;
-                if (form.Name == "DisplayMap")// If the Map window is open, update its settings
-                {
-                    mapForm = (DisplayMap)form;
-                    mapForm.settings = settings;
-                }
-            }
-        }
-        #endregion
 
         public static Thread updater = null;
 
@@ -508,15 +183,15 @@ namespace HaRepacker.GUI
                 int version = int.Parse(
                     Encoding.ASCII.GetString(
                     client.DownloadData(
-                    "http://bugale.bplaced.net/forum/includes/scripts/hr/version.txt"
+                    ApplicationSettings.UpdateServer + "version.txt"
                     )));
                 string notice = Encoding.ASCII.GetString(
                     client.DownloadData(
-                    "http://bugale.bplaced.net/forum/includes/scripts/hr/notice.txt"
+                    ApplicationSettings.UpdateServer + "notice.txt"
                     ));
                 string url = Encoding.ASCII.GetString(
                     client.DownloadData(
-                    "http://bugale.bplaced.net/forum/includes/scripts/hr/url.txt"
+                    ApplicationSettings.UpdateServer + "url.txt"
                     ));
                 if (version <= Constants.Version)
                     return;
@@ -530,9 +205,12 @@ namespace HaRepacker.GUI
         private void MainForm_Load(object sender, EventArgs e)
         {
             encryptionBox.SelectedIndex = (int)ApplicationSettings.MapleVersion;
-            updater = new Thread(new ThreadStart(UpdaterThread));
-            updater.IsBackground = true;
-            updater.Start();
+            if (UserSettings.AutoUpdate && ApplicationSettings.UpdateServer != "")
+            {
+                updater = new Thread(new ThreadStart(UpdaterThread));
+                updater.IsBackground = true;
+                updater.Start();
+            }
         }
 
         private void RedockControls()
@@ -583,22 +261,22 @@ namespace HaRepacker.GUI
 
         private void renderMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ParseSettings();
+            mapper.ParseSettings();
             if (MainPanel.DataTree.SelectedNode.Tag is WzImage)
             {
                 WzImage img = (WzImage)MainPanel.DataTree.SelectedNode.Tag;
                 if (!Directory.Exists("Renders\\" + img.Name.Substring(0, img.Name.Length - 4)))
                     Directory.CreateDirectory("Renders\\" + img.Name.Substring(0, img.Name.Length - 4));
-                SaveMap(img);
+                new FHMapper.FHMapper(MainPanel).SaveMap(img, double.Parse(zoomTextBox.TextBox.Text));
             }
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ParseSettings();
+            mapper.ParseSettings();
             Settings settingsDialog = new Settings();
-            settingsDialog.settings = settings;
-            settingsDialog.main = this;
+            settingsDialog.settings = mapper.settings;
+            settingsDialog.main = mapper;
             settingsDialog.ShowDialog();
         }
 
@@ -1302,53 +980,6 @@ namespace HaRepacker.GUI
             else
                 Warning.Error("Help could not be shown because the help file (" + HelpFile + ") was not found");
         }
-
-/*        private void doSearchRec(WzDirectory wzdir)
-        {
-            foreach (WzDirectory dir in wzdir.WzDirectories)
-            {
-                doSearchRec(dir);
-            }
-            foreach (WzImage img in wzdir.WzImages)
-            {
-                if (!img.Name.Contains("Bgm")) continue;
-                img.ParseImage();
-                doSearchRec2(img);
-            }
-        }
-
-        private byte[] tHeader2 = WzSoundProperty.CreateHeader(22050);
-        private byte[] tHeader4 = WzSoundProperty.CreateHeader(44100);
-
-        private bool ArrEquals(byte[] a, byte[] b)
-        {
-            int c = 0;
-            if (a.Length != b.Length) return false;
-            for (int i = 0; i < a.Length; i++)
-            {
-                if (a[i] != b[i])
-                    c++;
-            }
-            return c == 0;
-        }
-
-        private void doSearchRec2(IPropertyContainer parent)
-        {
-            foreach (IWzImageProperty prop in parent.WzProperties)
-            {
-                if (prop is IPropertyContainer) doSearchRec2((IPropertyContainer)prop);
-                else if (prop is WzSoundProperty)
-                {
-                    int freq = ((WzSoundProperty)prop).Frequency;
-                    if (freq != 22050 && freq != 44100)
-                    {
-                    }
-                    if ((freq == 22050 && !ArrEquals(tHeader2, ((WzSoundProperty)prop).Header)) || (freq == 44100 && !ArrEquals(tHeader4, ((WzSoundProperty)prop).Header)))
-                    {
-                    }
-                }
-            }
-        }*/
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {

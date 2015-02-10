@@ -278,8 +278,9 @@ namespace HaCreator.MapEditor
         {
             if (mouseState == MouseState.Selection)
             {
-               ClearBoundItems(selectedBoard);
-//                    ClearSelectedItems(selectedBoard);
+                ClearBoundItems(selectedBoard);
+                if (!rightClickTarget.Selected)
+                    ClearSelectedItems(selectedBoard);
                 if (ClickOnMinimap(selectedBoard, realPosition)) return;
                 if (rightClickTarget == null)
                     return;

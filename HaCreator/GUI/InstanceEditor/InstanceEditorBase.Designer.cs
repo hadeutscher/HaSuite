@@ -1,6 +1,6 @@
-﻿namespace HaCreator.CustomControls.EditorPanels
+﻿namespace HaCreator.GUI.InstanceEditor
 {
-    partial class CommonPanel
+    partial class InstanceEditorBase
     {
         /// <summary>
         /// Required designer variable.
@@ -28,34 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.miscItemsContainer = new HaCreator.ThirdParty.ThumbnailFlowLayoutPanel();
             this.SuspendLayout();
             // 
-            // miscItemsContainer
-            // 
-            this.miscItemsContainer.BackColor = System.Drawing.Color.White;
-            this.miscItemsContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.miscItemsContainer.Location = new System.Drawing.Point(0, 0);
-            this.miscItemsContainer.Name = "miscItemsContainer";
-            this.miscItemsContainer.Size = new System.Drawing.Size(284, 435);
-            this.miscItemsContainer.TabIndex = 2;
-            // 
-            // CommonPanel
+            // InstanceEditorBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 435);
-            this.Controls.Add(this.miscItemsContainer);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.Name = "CommonPanel";
-            this.ShowIcon = false;
-            this.Text = "Common";
+            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.KeyPreview = true;
+            this.Name = "InstanceEditorBase";
+            this.Text = "InstanceEditorBase";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InstanceEditorBase_KeyDown);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private ThirdParty.ThumbnailFlowLayoutPanel miscItemsContainer;
     }
 }

@@ -33,7 +33,7 @@
             this.bgSetListBox = new System.Windows.Forms.ListBox();
             this.bgBack = new System.Windows.Forms.RadioButton();
             this.aniBg = new System.Windows.Forms.RadioButton();
-            this.bgImageContainer = new HaCreator.ThirdParty.KoolkLVContainer();
+            this.bgImageContainer = new HaCreator.ThirdParty.ThumbnailFlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).BeginInit();
             this.splitContainer6.Panel1.SuspendLayout();
             this.splitContainer6.Panel2.SuspendLayout();
@@ -151,6 +151,6 @@
         private System.Windows.Forms.ListBox bgSetListBox;
         private System.Windows.Forms.RadioButton bgBack;
         private System.Windows.Forms.RadioButton aniBg;
-        private ThirdParty.KoolkLVContainer bgImageContainer;
+        private ThirdParty.ThumbnailFlowLayoutPanel bgImageContainer;
     }
 }

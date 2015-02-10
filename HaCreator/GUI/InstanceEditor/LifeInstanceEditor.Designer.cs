@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.pathLabel = new System.Windows.Forms.Label();
             this.xInput = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -60,9 +59,6 @@
             // 
             // pathLabel
             // 
-            // 
-            // 
-            // 
             this.pathLabel.Location = new System.Drawing.Point(0, 12);
             this.pathLabel.Name = "pathLabel";
             this.pathLabel.Size = new System.Drawing.Size(309, 37);
@@ -72,46 +68,55 @@
             // 
             // xInput
             // 
-            this.xInput.Location = new System.Drawing.Point(39, 52);
+            this.xInput.Location = new System.Drawing.Point(50, 53);
+            this.xInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.xInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.xInput.Name = "xInput";
-            this.xInput.Minimum = -2147483648;
-            this.xInput.Maximum = 2147483647; 
             this.xInput.Size = new System.Drawing.Size(50, 20);
-            this.xInput.TabIndex = 1;
+            this.xInput.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            // 
-            // 
-            // 
             this.label1.Location = new System.Drawing.Point(23, 55);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(10, 15);
+            this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "X";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            // 
-            // 
-            // 
             this.label2.Location = new System.Drawing.Point(23, 81);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(10, 15);
+            this.label2.Size = new System.Drawing.Size(14, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Y";
             // 
             // yInput
             // 
-
-            this.yInput.Location = new System.Drawing.Point(39, 78);
+            this.yInput.Location = new System.Drawing.Point(50, 79);
+            this.yInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.yInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.yInput.Name = "yInput";
-            this.yInput.Minimum = -2147483648;
-            this.yInput.Maximum = 2147483647; 
             this.yInput.Size = new System.Drawing.Size(50, 20);
-            this.yInput.TabIndex = 3;
+            this.yInput.TabIndex = 1;
             // 
             // okButton
             // 
@@ -119,7 +124,7 @@
             this.okButton.Location = new System.Drawing.Point(103, 193);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(76, 28);
-            this.okButton.TabIndex = 7;
+            this.okButton.TabIndex = 9;
             this.okButton.Text = "OK";
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
@@ -136,64 +141,79 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            // 
-            // 
-            // 
             this.label3.Location = new System.Drawing.Point(14, 107);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(24, 15);
+            this.label3.Size = new System.Drawing.Size(28, 13);
             this.label3.TabIndex = 10;
             this.label3.Text = "RX0";
             // 
             // rx0Box
             // 
-            this.rx0Box.Location = new System.Drawing.Point(38, 104);
+            this.rx0Box.Location = new System.Drawing.Point(49, 105);
+            this.rx0Box.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.rx0Box.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.rx0Box.Name = "rx0Box";
-            this.rx0Box.Minimum = -2147483648;
-            this.rx0Box.Maximum = 2147483647; 
             this.rx0Box.Size = new System.Drawing.Size(50, 20);
-            this.rx0Box.TabIndex = 9;
+            this.rx0Box.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            // 
-            // 
-            // 
             this.label4.Location = new System.Drawing.Point(15, 133);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(24, 15);
+            this.label4.Size = new System.Drawing.Size(28, 13);
             this.label4.TabIndex = 12;
             this.label4.Text = "RX1";
             // 
             // rx1Box
             // 
-            this.rx1Box.Location = new System.Drawing.Point(38, 130);
+            this.rx1Box.Location = new System.Drawing.Point(49, 131);
+            this.rx1Box.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.rx1Box.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.rx1Box.Name = "rx1Box";
-            this.rx1Box.Minimum = -2147483648;
-            this.rx1Box.Maximum = 2147483647; 
             this.rx1Box.Size = new System.Drawing.Size(50, 20);
-            this.rx1Box.TabIndex = 11;
+            this.rx1Box.TabIndex = 3;
             // 
             // mobTimeBox
             // 
             this.mobTimeBox.Enabled = false;
             this.mobTimeBox.Location = new System.Drawing.Point(227, 50);
+            this.mobTimeBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.mobTimeBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.mobTimeBox.Name = "mobTimeBox";
-            this.mobTimeBox.Minimum = -2147483648;
-            this.mobTimeBox.Maximum = 2147483647; 
             this.mobTimeBox.Size = new System.Drawing.Size(50, 20);
-            this.mobTimeBox.TabIndex = 13;
+            this.mobTimeBox.TabIndex = 5;
             // 
             // mobTimeEnable
             // 
             this.mobTimeEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.mobTimeEnable.Location = new System.Drawing.Point(131, 52);
             this.mobTimeEnable.Name = "mobTimeEnable";
-            this.mobTimeEnable.Size = new System.Drawing.Size(71, 15);
+            this.mobTimeEnable.Size = new System.Drawing.Size(73, 17);
             this.mobTimeEnable.TabIndex = 15;
             this.mobTimeEnable.Text = "Mob Time";
             this.mobTimeEnable.CheckedChanged += new System.EventHandler(this.enablingCheckBoxCheckChanged);
@@ -201,12 +221,9 @@
             // limitedNameEnable
             // 
             this.limitedNameEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.limitedNameEnable.Location = new System.Drawing.Point(131, 130);
             this.limitedNameEnable.Name = "limitedNameEnable";
-            this.limitedNameEnable.Size = new System.Drawing.Size(90, 15);
+            this.limitedNameEnable.Size = new System.Drawing.Size(90, 17);
             this.limitedNameEnable.TabIndex = 16;
             this.limitedNameEnable.Text = "Limited Name";
             this.limitedNameEnable.CheckedChanged += new System.EventHandler(this.enablingCheckBoxCheckChanged);
@@ -214,12 +231,9 @@
             // infoEnable
             // 
             this.infoEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.infoEnable.Location = new System.Drawing.Point(131, 79);
             this.infoEnable.Name = "infoEnable";
-            this.infoEnable.Size = new System.Drawing.Size(41, 15);
+            this.infoEnable.Size = new System.Drawing.Size(44, 17);
             this.infoEnable.TabIndex = 18;
             this.infoEnable.Text = "Info";
             this.infoEnable.CheckedChanged += new System.EventHandler(this.enablingCheckBoxCheckChanged);
@@ -227,12 +241,9 @@
             // teamEnable
             // 
             this.teamEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.teamEnable.Location = new System.Drawing.Point(131, 105);
             this.teamEnable.Name = "teamEnable";
-            this.teamEnable.Size = new System.Drawing.Size(51, 15);
+            this.teamEnable.Size = new System.Drawing.Size(53, 17);
             this.teamEnable.TabIndex = 19;
             this.teamEnable.Text = "Team";
             this.teamEnable.CheckedChanged += new System.EventHandler(this.enablingCheckBoxCheckChanged);
@@ -240,45 +251,55 @@
             // hideBox
             // 
             this.hideBox.AutoSize = true;
-            // 
-            // 
-            // 
-            this.hideBox.Location = new System.Drawing.Point(38, 156);
+            this.hideBox.Location = new System.Drawing.Point(49, 157);
             this.hideBox.Name = "hideBox";
-            this.hideBox.Size = new System.Drawing.Size(45, 15);
-            this.hideBox.TabIndex = 20;
+            this.hideBox.Size = new System.Drawing.Size(48, 17);
+            this.hideBox.TabIndex = 4;
             this.hideBox.Text = "Hide";
             // 
             // infoBox
             // 
             this.infoBox.Enabled = false;
             this.infoBox.Location = new System.Drawing.Point(227, 76);
+            this.infoBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.infoBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.infoBox.Name = "infoBox";
-            this.infoBox.Minimum = -2147483648;
-            this.infoBox.Maximum = 2147483647; 
             this.infoBox.Size = new System.Drawing.Size(50, 20);
-            this.infoBox.TabIndex = 21;
+            this.infoBox.TabIndex = 6;
             // 
             // teamBox
             // 
             this.teamBox.Enabled = false;
             this.teamBox.Location = new System.Drawing.Point(227, 102);
+            this.teamBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.teamBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.teamBox.Name = "teamBox";
-            this.teamBox.Minimum = -2147483648;
-            this.teamBox.Maximum = 2147483647; 
             this.teamBox.Size = new System.Drawing.Size(50, 20);
-            this.teamBox.TabIndex = 22;
+            this.teamBox.TabIndex = 7;
             // 
             // limitedNameBox
-            // 
-            // 
-            // 
             // 
             this.limitedNameBox.Enabled = false;
             this.limitedNameBox.Location = new System.Drawing.Point(227, 128);
             this.limitedNameBox.Name = "limitedNameBox";
             this.limitedNameBox.Size = new System.Drawing.Size(63, 20);
-            this.limitedNameBox.TabIndex = 24;
+            this.limitedNameBox.TabIndex = 8;
             // 
             // LifeInstanceEditor
             // 
@@ -313,6 +334,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Life";
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.rx0Box)).EndInit();

@@ -24,6 +24,7 @@ namespace HaCreator
 {
     public static class UserSettings
     {
+        public static bool ShowErrorsMessage = true;
         public static bool ShowMousePos = true;
         public static bool XGAResolution = false;
         public static bool clipText = false;
@@ -69,7 +70,6 @@ namespace HaCreator
         public static bool useMiniMap = true;
         public static bool showVR = true;
         public static bool useSnapping = true;
-        public static bool useThreeState = true;
         public static bool emulateParallax = true;
         public static bool suppressWarnings = false;
     }
@@ -86,5 +86,8 @@ namespace HaCreator
         public static bool newTab = true;
         public static bool randomTiles = true;
         public static int lastDefaultLayer = 0;
+        public static string AuthorEmail = Encoding.ASCII.GetChars(new byte[] { 
+                                            0x68,0x61,0x68,0x61,0x30,0x31,0x68,0x61,0x68,0x61,0x30,0x31,0x40,0x67,0x6d,0x61,0x69,0x6c,0x2e,0x63,0x6f,0x6d 
+                                            }).ToString(); // The email address is obfuscated to prevent spambots from finding it on the git webpage
     }
 }

@@ -16,7 +16,7 @@ using HaCreator.MapEditor;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class RopeInstanceEditor : Form
+    public partial class RopeInstanceEditor : InstanceEditorBase
     {
         public RopeAnchor item;
 
@@ -40,12 +40,12 @@ namespace HaCreator.GUI.InstanceEditor
             pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item, "\r\n");
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
             List<UndoRedoAction> actions = new List<UndoRedoAction>();
             if (xInput.Value != item.X || yInput.Value != item.Y)

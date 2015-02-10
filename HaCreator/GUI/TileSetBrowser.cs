@@ -22,7 +22,7 @@ namespace HaCreator
     public partial class TileSetBrowser : Form
     {
         private ListBox targetListBox;
-        public KoolkLVItem selectedItem = null;
+        public ImageViewer selectedItem = null;
 
         public TileSetBrowser(ListBox target)
         {
@@ -41,7 +41,7 @@ namespace HaCreator
                 WzCanvasProperty image = (WzCanvasProperty)enh0["0"];
                 if (image == null) continue;
                 //image.PngProperty.GetPNG(true);
-                KoolkLVItem item = koolkLVContainer.createItem(image.PngProperty.GetPNG(true), tS, true);
+                ImageViewer item = koolkLVContainer.Add(image.PngProperty.GetPNG(true), tS, true);
                 item.MouseDown += new MouseEventHandler(item_Click);
                 item.MouseDoubleClick += new MouseEventHandler(item_DoubleClick);
             }
@@ -57,9 +57,9 @@ namespace HaCreator
         void item_Click(object sender, MouseEventArgs e)
         {
             if (selectedItem != null)
-                selectedItem.Selected = false;
-            selectedItem = (KoolkLVItem)sender;
-            selectedItem.Selected = true;
+                selectedItem.IsActive = false;
+            selectedItem = (ImageViewer)sender;
+            selectedItem.IsActive = true;
         }
     }
 }

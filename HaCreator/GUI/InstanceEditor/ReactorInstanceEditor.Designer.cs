@@ -47,9 +47,6 @@
             // 
             // pathLabel
             // 
-            // 
-            // 
-            // 
             this.pathLabel.Location = new System.Drawing.Point(0, 12);
             this.pathLabel.Name = "pathLabel";
             this.pathLabel.Size = new System.Drawing.Size(179, 37);
@@ -60,44 +57,54 @@
             // xInput
             // 
             this.xInput.Location = new System.Drawing.Point(79, 52);
+            this.xInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.xInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.xInput.Name = "xInput";
-            this.xInput.Minimum = -2147483648;
-            this.xInput.Maximum = 2147483647; 
             this.xInput.Size = new System.Drawing.Size(50, 20);
-            this.xInput.TabIndex = 1;
+            this.xInput.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            // 
-            // 
-            // 
             this.label1.Location = new System.Drawing.Point(63, 55);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(10, 15);
+            this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "X";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            // 
-            // 
-            // 
             this.label2.Location = new System.Drawing.Point(63, 81);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(10, 15);
+            this.label2.Size = new System.Drawing.Size(14, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Y";
             // 
             // yInput
             // 
             this.yInput.Location = new System.Drawing.Point(79, 78);
+            this.yInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.yInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.yInput.Name = "yInput";
-            this.yInput.Minimum = -2147483648;
-            this.yInput.Maximum = 2147483647; 
             this.yInput.Size = new System.Drawing.Size(50, 20);
-            this.yInput.TabIndex = 3;
+            this.yInput.TabIndex = 1;
             // 
             // okButton
             // 
@@ -121,59 +128,50 @@
             // 
             // nameBox
             // 
-            // 
-            // 
-            // 
             this.nameBox.Location = new System.Drawing.Point(50, 104);
             this.nameBox.Name = "nameBox";
             this.nameBox.Size = new System.Drawing.Size(93, 20);
-            this.nameBox.TabIndex = 9;
+            this.nameBox.TabIndex = 3;
             // 
             // useName
-            // 
-            // 
-            // 
             // 
             this.useName.Checked = true;
             this.useName.CheckState = System.Windows.Forms.CheckState.Checked;
             this.useName.Location = new System.Drawing.Point(149, 106);
             this.useName.Name = "useName";
             this.useName.Size = new System.Drawing.Size(18, 18);
-            this.useName.TabIndex = 10;
+            this.useName.TabIndex = 4;
             this.useName.CheckedChanged += new System.EventHandler(this.useName_CheckedChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            // 
-            // 
-            // 
             this.label4.Location = new System.Drawing.Point(12, 105);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 15);
-            this.label4.TabIndex = 11;
+            this.label4.Size = new System.Drawing.Size(35, 13);
+            this.label4.TabIndex = 2;
             this.label4.Text = "Name";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            // 
-            // 
-            // 
             this.label3.Location = new System.Drawing.Point(12, 133);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(27, 15);
-            this.label3.TabIndex = 13;
+            this.label3.Size = new System.Drawing.Size(30, 13);
+            this.label3.TabIndex = 5;
             this.label3.Text = "Time";
             // 
             // timeBox
             // 
             this.timeBox.Location = new System.Drawing.Point(50, 130);
-            this.timeBox.Minimum = 0;
-            this.timeBox.Maximum = 2147483647; 
+            this.timeBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
             this.timeBox.Name = "timeBox";
             this.timeBox.Size = new System.Drawing.Size(93, 20);
-            this.timeBox.TabIndex = 14;
+            this.timeBox.TabIndex = 6;
             // 
             // ReactorInstanceEditor
             // 
@@ -199,6 +197,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Reactor";
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.timeBox)).EndInit();

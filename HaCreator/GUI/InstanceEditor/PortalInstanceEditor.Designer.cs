@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.xInput = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -79,44 +78,54 @@
             // xInput
             // 
             this.xInput.Location = new System.Drawing.Point(89, 12);
+            this.xInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.xInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.xInput.Name = "xInput";
-            this.xInput.Minimum = -2147483648;
-            this.xInput.Maximum = 2147483647; 
             this.xInput.Size = new System.Drawing.Size(50, 20);
-            this.xInput.TabIndex = 1;
+            this.xInput.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            // 
-            // 
-            // 
             this.label1.Location = new System.Drawing.Point(73, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(10, 15);
+            this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "X";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            // 
-            // 
-            // 
             this.label2.Location = new System.Drawing.Point(162, 15);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(10, 15);
+            this.label2.Size = new System.Drawing.Size(14, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Y";
             // 
             // yInput
             // 
             this.yInput.Location = new System.Drawing.Point(178, 12);
+            this.yInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.yInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.yInput.Name = "yInput";
-            this.yInput.Minimum = -2147483648;
-            this.yInput.Maximum = 2147483647; 
             this.yInput.Size = new System.Drawing.Size(50, 20);
-            this.yInput.TabIndex = 3;
+            this.yInput.TabIndex = 1;
             // 
             // okButton
             // 
@@ -124,7 +133,7 @@
             this.okButton.Location = new System.Drawing.Point(110, 491);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(76, 28);
-            this.okButton.TabIndex = 7;
+            this.okButton.TabIndex = 22;
             this.okButton.Text = "OK";
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
@@ -134,74 +143,64 @@
             this.cancelButton.Location = new System.Drawing.Point(192, 491);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(73, 28);
-            this.cancelButton.TabIndex = 8;
+            this.cancelButton.TabIndex = 23;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // ptComboBox
             // 
             this.ptComboBox.DisplayMember = "Text";
-            this.ptComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.ptComboBox.FormattingEnabled = true;
-            this.ptComboBox.ItemHeight = 14;
+            this.ptComboBox.ItemHeight = 13;
             this.ptComboBox.Location = new System.Drawing.Point(89, 37);
             this.ptComboBox.Name = "ptComboBox";
-            this.ptComboBox.Size = new System.Drawing.Size(139, 20);
-            this.ptComboBox.TabIndex = 9;
+            this.ptComboBox.Size = new System.Drawing.Size(139, 21);
+            this.ptComboBox.TabIndex = 2;
             this.ptComboBox.SelectedIndexChanged += new System.EventHandler(this.ptComboBox_SelectedIndexChanged);
             // 
             // ptLabel
             // 
             this.ptLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.ptLabel.Location = new System.Drawing.Point(20, 39);
             this.ptLabel.Name = "ptLabel";
-            this.ptLabel.Size = new System.Drawing.Size(30, 15);
+            this.ptLabel.Size = new System.Drawing.Size(34, 13);
             this.ptLabel.TabIndex = 10;
             this.ptLabel.Text = "Type:";
             // 
             // pnLabel
             // 
             this.pnLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.pnLabel.Location = new System.Drawing.Point(20, 86);
             this.pnLabel.Name = "pnLabel";
-            this.pnLabel.Size = new System.Drawing.Size(67, 15);
+            this.pnLabel.Size = new System.Drawing.Size(68, 13);
             this.pnLabel.TabIndex = 11;
             this.pnLabel.Text = "Portal Name:";
             // 
             // pnBox
             // 
-            // 
-            // 
-            // 
             this.pnBox.Location = new System.Drawing.Point(89, 83);
             this.pnBox.Name = "pnBox";
             this.pnBox.Size = new System.Drawing.Size(139, 20);
-            this.pnBox.TabIndex = 12;
+            this.pnBox.TabIndex = 3;
             // 
             // tmBox
             // 
             this.tmBox.Location = new System.Drawing.Point(89, 109);
-            this.tmBox.Minimum = 0;
-            this.tmBox.Maximum = 2147483647; 
+            this.tmBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
             this.tmBox.Name = "tmBox";
             this.tmBox.Size = new System.Drawing.Size(139, 20);
-            this.tmBox.TabIndex = 13;
+            this.tmBox.TabIndex = 4;
             // 
             // tmLabel
             // 
             this.tmLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.tmLabel.Location = new System.Drawing.Point(20, 111);
             this.tmLabel.Name = "tmLabel";
-            this.tmLabel.Size = new System.Drawing.Size(41, 15);
+            this.tmLabel.Size = new System.Drawing.Size(45, 13);
             this.tmLabel.TabIndex = 14;
             this.tmLabel.Text = "Map ID:";
             // 
@@ -210,43 +209,34 @@
             this.btnBrowseMap.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
             this.btnBrowseMap.Location = new System.Drawing.Point(234, 109);
             this.btnBrowseMap.Name = "btnBrowseMap";
-            this.btnBrowseMap.Size = new System.Drawing.Size(48, 20);
-            this.btnBrowseMap.TabIndex = 15;
+            this.btnBrowseMap.Size = new System.Drawing.Size(56, 20);
+            this.btnBrowseMap.TabIndex = 5;
             this.btnBrowseMap.Text = "Browse";
             this.btnBrowseMap.Click += new System.EventHandler(this.btnBrowseMap_Click);
             // 
             // thisMap
             // 
             this.thisMap.AutoSize = true;
-            // 
-            // 
-            // 
-            this.thisMap.Location = new System.Drawing.Point(288, 111);
+            this.thisMap.Location = new System.Drawing.Point(296, 111);
             this.thisMap.Name = "thisMap";
-            this.thisMap.Size = new System.Drawing.Size(68, 15);
-            this.thisMap.TabIndex = 16;
+            this.thisMap.Size = new System.Drawing.Size(70, 17);
+            this.thisMap.TabIndex = 6;
             this.thisMap.Text = "This Map";
             this.thisMap.CheckedChanged += new System.EventHandler(this.thisMap_CheckedChanged);
             // 
             // tnBox
             // 
-            // 
-            // 
-            // 
             this.tnBox.Location = new System.Drawing.Point(89, 135);
             this.tnBox.Name = "tnBox";
             this.tnBox.Size = new System.Drawing.Size(139, 20);
-            this.tnBox.TabIndex = 18;
+            this.tnBox.TabIndex = 7;
             // 
             // tnLabel
             // 
             this.tnLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.tnLabel.Location = new System.Drawing.Point(20, 138);
             this.tnLabel.Name = "tnLabel";
-            this.tnLabel.Size = new System.Drawing.Size(70, 15);
+            this.tnLabel.Size = new System.Drawing.Size(72, 13);
             this.tnLabel.TabIndex = 17;
             this.tnLabel.Text = "Target Name:";
             // 
@@ -256,41 +246,43 @@
             this.btnBrowseTn.Enabled = false;
             this.btnBrowseTn.Location = new System.Drawing.Point(234, 135);
             this.btnBrowseTn.Name = "btnBrowseTn";
-            this.btnBrowseTn.Size = new System.Drawing.Size(48, 20);
-            this.btnBrowseTn.TabIndex = 19;
+            this.btnBrowseTn.Size = new System.Drawing.Size(56, 20);
+            this.btnBrowseTn.TabIndex = 8;
             this.btnBrowseTn.Text = "Browse";
             this.btnBrowseTn.Click += new System.EventHandler(this.btnBrowseTn_Click);
             // 
             // scriptBox
             // 
-            // 
-            // 
-            // 
             this.scriptBox.Location = new System.Drawing.Point(89, 161);
             this.scriptBox.Name = "scriptBox";
             this.scriptBox.Size = new System.Drawing.Size(139, 20);
-            this.scriptBox.TabIndex = 21;
+            this.scriptBox.TabIndex = 9;
             // 
             // delayBox
             // 
             this.delayBox.Enabled = false;
             this.delayBox.Location = new System.Drawing.Point(89, 187);
+            this.delayBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.delayBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.delayBox.Name = "delayBox";
-            this.delayBox.Minimum = -2147483648;
-            this.delayBox.Maximum = 2147483647; 
             this.delayBox.Size = new System.Drawing.Size(139, 20);
-            this.delayBox.TabIndex = 22;
+            this.delayBox.TabIndex = 11;
             // 
             // delayEnable
             // 
             this.delayEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.delayEnable.Location = new System.Drawing.Point(20, 189);
             this.delayEnable.Name = "delayEnable";
-            this.delayEnable.Size = new System.Drawing.Size(54, 15);
-            this.delayEnable.TabIndex = 23;
+            this.delayEnable.Size = new System.Drawing.Size(56, 17);
+            this.delayEnable.TabIndex = 10;
             this.delayEnable.Text = "Delay:";
             this.delayEnable.CheckedChanged += new System.EventHandler(this.EnablingCheckBoxCheckChanged);
             // 
@@ -298,34 +290,47 @@
             // 
             this.hRangeBox.Enabled = false;
             this.hRangeBox.Location = new System.Drawing.Point(110, 213);
+            this.hRangeBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.hRangeBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.hRangeBox.Name = "hRangeBox";
-            this.hRangeBox.Minimum = -2147483648;
-            this.hRangeBox.Maximum = 2147483647; 
             this.hRangeBox.Size = new System.Drawing.Size(62, 20);
-            this.hRangeBox.TabIndex = 24;
+            this.hRangeBox.TabIndex = 13;
             // 
             // vRangeBox
             // 
             this.vRangeBox.Enabled = false;
             this.vRangeBox.Location = new System.Drawing.Point(228, 213);
+            this.vRangeBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.vRangeBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.vRangeBox.Name = "vRangeBox";
-            this.vRangeBox.Minimum = -2147483648;
-            this.vRangeBox.Maximum = 2147483647; 
             this.vRangeBox.Size = new System.Drawing.Size(62, 20);
-            this.vRangeBox.TabIndex = 27;
+            this.vRangeBox.TabIndex = 14;
             // 
             // vImpactEnable
             // 
             this.vImpactEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.vImpactEnable.Checked = true;
             this.vImpactEnable.CheckState = System.Windows.Forms.CheckState.Checked;
             this.vImpactEnable.Enabled = false;
             this.vImpactEnable.Location = new System.Drawing.Point(192, 241);
             this.vImpactEnable.Name = "vImpactEnable";
-            this.vImpactEnable.Size = new System.Drawing.Size(30, 15);
+            this.vImpactEnable.Size = new System.Drawing.Size(33, 17);
             this.vImpactEnable.TabIndex = 33;
             this.vImpactEnable.Text = "Y";
             // 
@@ -333,33 +338,35 @@
             // 
             this.vImpactBox.Enabled = false;
             this.vImpactBox.Location = new System.Drawing.Point(228, 239);
+            this.vImpactBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.vImpactBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.vImpactBox.Name = "vImpactBox";
-            this.vImpactBox.Minimum = -2147483648;
-            this.vImpactBox.Maximum = 2147483647; 
             this.vImpactBox.Size = new System.Drawing.Size(62, 20);
-            this.vImpactBox.TabIndex = 32;
+            this.vImpactBox.TabIndex = 17;
             // 
             // impactLabel
             // 
             this.impactLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.impactLabel.Location = new System.Drawing.Point(20, 241);
             this.impactLabel.Name = "impactLabel";
-            this.impactLabel.Size = new System.Drawing.Size(39, 15);
-            this.impactLabel.TabIndex = 31;
+            this.impactLabel.Size = new System.Drawing.Size(42, 13);
+            this.impactLabel.TabIndex = 15;
             this.impactLabel.Text = "Impact:";
             // 
             // hImpactEnable
             // 
             this.hImpactEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.hImpactEnable.Location = new System.Drawing.Point(74, 241);
             this.hImpactEnable.Name = "hImpactEnable";
-            this.hImpactEnable.Size = new System.Drawing.Size(30, 15);
+            this.hImpactEnable.Size = new System.Drawing.Size(33, 17);
             this.hImpactEnable.TabIndex = 30;
             this.hImpactEnable.Text = "X";
             this.hImpactEnable.CheckedChanged += new System.EventHandler(this.EnablingCheckBoxCheckChanged);
@@ -368,45 +375,44 @@
             // 
             this.hImpactBox.Enabled = false;
             this.hImpactBox.Location = new System.Drawing.Point(110, 239);
+            this.hImpactBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.hImpactBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.hImpactBox.Name = "hImpactBox";
-            this.hImpactBox.Minimum = -2147483648;
-            this.hImpactBox.Maximum = 2147483647; 
             this.hImpactBox.Size = new System.Drawing.Size(62, 20);
-            this.hImpactBox.TabIndex = 29;
+            this.hImpactBox.TabIndex = 16;
             // 
             // hideTooltip
             // 
             this.hideTooltip.AutoSize = true;
-            // 
-            // 
-            // 
             this.hideTooltip.Location = new System.Drawing.Point(77, 265);
             this.hideTooltip.Name = "hideTooltip";
-            this.hideTooltip.Size = new System.Drawing.Size(81, 15);
-            this.hideTooltip.TabIndex = 34;
+            this.hideTooltip.Size = new System.Drawing.Size(83, 17);
+            this.hideTooltip.TabIndex = 18;
             this.hideTooltip.Text = "Hide Tooltip";
             // 
             // onlyOnce
             // 
             this.onlyOnce.AutoSize = true;
-            // 
-            // 
-            // 
             this.onlyOnce.Location = new System.Drawing.Point(183, 265);
             this.onlyOnce.Name = "onlyOnce";
-            this.onlyOnce.Size = new System.Drawing.Size(74, 15);
-            this.onlyOnce.TabIndex = 35;
+            this.onlyOnce.Size = new System.Drawing.Size(76, 17);
+            this.onlyOnce.TabIndex = 19;
             this.onlyOnce.Text = "Only Once";
             // 
             // imageLabel
             // 
             this.imageLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.imageLabel.Location = new System.Drawing.Point(20, 286);
             this.imageLabel.Name = "imageLabel";
-            this.imageLabel.Size = new System.Drawing.Size(36, 15);
+            this.imageLabel.Size = new System.Drawing.Size(39, 13);
             this.imageLabel.TabIndex = 36;
             this.imageLabel.Text = "Image:";
             // 
@@ -416,68 +422,53 @@
             this.portalImageList.Location = new System.Drawing.Point(77, 286);
             this.portalImageList.Name = "portalImageList";
             this.portalImageList.Size = new System.Drawing.Size(189, 69);
-            this.portalImageList.TabIndex = 38;
+            this.portalImageList.TabIndex = 20;
             this.portalImageList.SelectedIndexChanged += new System.EventHandler(this.portalImageList_SelectedIndexChanged);
             // 
             // scriptLabel
             // 
             this.scriptLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.scriptLabel.Location = new System.Drawing.Point(20, 163);
             this.scriptLabel.Name = "scriptLabel";
-            this.scriptLabel.Size = new System.Drawing.Size(34, 15);
+            this.scriptLabel.Size = new System.Drawing.Size(37, 13);
             this.scriptLabel.TabIndex = 40;
             this.scriptLabel.Text = "Script:";
             // 
             // rangeEnable
             // 
             this.rangeEnable.AutoSize = true;
-            // 
-            // 
-            // 
             this.rangeEnable.Location = new System.Drawing.Point(20, 214);
             this.rangeEnable.Name = "rangeEnable";
-            this.rangeEnable.Size = new System.Drawing.Size(58, 15);
-            this.rangeEnable.TabIndex = 41;
+            this.rangeEnable.Size = new System.Drawing.Size(61, 17);
+            this.rangeEnable.TabIndex = 12;
             this.rangeEnable.Text = "Range:";
             this.rangeEnable.CheckedChanged += new System.EventHandler(this.rangeEnable_CheckedChanged);
             // 
             // xRangeLabel
             // 
             this.xRangeLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.xRangeLabel.Location = new System.Drawing.Point(94, 215);
             this.xRangeLabel.Name = "xRangeLabel";
-            this.xRangeLabel.Size = new System.Drawing.Size(10, 15);
+            this.xRangeLabel.Size = new System.Drawing.Size(14, 13);
             this.xRangeLabel.TabIndex = 42;
             this.xRangeLabel.Text = "X";
             // 
             // yRangeLabel
             // 
             this.yRangeLabel.AutoSize = true;
-            // 
-            // 
-            // 
             this.yRangeLabel.Location = new System.Drawing.Point(212, 215);
             this.yRangeLabel.Name = "yRangeLabel";
-            this.yRangeLabel.Size = new System.Drawing.Size(10, 15);
+            this.yRangeLabel.Size = new System.Drawing.Size(14, 13);
             this.yRangeLabel.TabIndex = 43;
             this.yRangeLabel.Text = "Y";
             // 
             // leftBlankLabel
             // 
             this.leftBlankLabel.AutoSize = true;
-            // 
-            // 
-            // 
-            this.leftBlankLabel.Location = new System.Drawing.Point(288, 138);
+            this.leftBlankLabel.Location = new System.Drawing.Point(296, 138);
             this.leftBlankLabel.Name = "leftBlankLabel";
-            this.leftBlankLabel.Size = new System.Drawing.Size(85, 15);
-            this.leftBlankLabel.TabIndex = 44;
+            this.leftBlankLabel.Size = new System.Drawing.Size(87, 13);
+            this.leftBlankLabel.TabIndex = 9;
             this.leftBlankLabel.Text = "Can be left blank";
             // 
             // portalImageBox
@@ -487,13 +478,13 @@
             this.portalImageBox.Location = new System.Drawing.Point(77, 361);
             this.portalImageBox.Name = "portalImageBox";
             this.portalImageBox.Size = new System.Drawing.Size(189, 124);
-            this.portalImageBox.TabIndex = 39;
+            this.portalImageBox.TabIndex = 21;
             // 
             // PortalInstanceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 528);
+            this.ClientSize = new System.Drawing.Size(412, 528);
             this.Controls.Add(this.leftBlankLabel);
             this.Controls.Add(this.yRangeLabel);
             this.Controls.Add(this.xRangeLabel);
@@ -539,6 +530,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Portal";
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tmBox)).EndInit();

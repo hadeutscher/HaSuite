@@ -32,7 +32,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tileBrowse = new System.Windows.Forms.Button();
             this.tileSetList = new System.Windows.Forms.ListBox();
-            this.tileImagesContainer = new HaCreator.ThirdParty.KoolkLVContainer();
+            this.tileImagesContainer = new HaCreator.ThirdParty.ThumbnailFlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -138,7 +138,7 @@
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button tileBrowse;
         private System.Windows.Forms.ListBox tileSetList;
-        private ThirdParty.KoolkLVContainer tileImagesContainer;
+        private ThirdParty.ThumbnailFlowLayoutPanel tileImagesContainer;
 
 
 

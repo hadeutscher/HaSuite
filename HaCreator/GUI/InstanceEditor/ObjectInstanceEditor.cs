@@ -17,7 +17,7 @@ using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class ObjectInstanceEditor : Form
+    public partial class ObjectInstanceEditor : InstanceEditorBase
     {
         public ObjectInstance item;
 
@@ -64,12 +64,12 @@ namespace HaCreator.GUI.InstanceEditor
             if (num != null) { checkbox.Checked = true; intinput.Value = (int)num; }
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
             List<UndoRedoAction> actions = new List<UndoRedoAction>();
             if (xInput.Value != item.X || yInput.Value != item.Y)

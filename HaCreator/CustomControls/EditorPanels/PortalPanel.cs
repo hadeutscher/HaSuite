@@ -32,20 +32,20 @@ namespace HaCreator.CustomControls.EditorPanels
             for (int i = 0; i < Program.InfoManager.Portals.Length; i++)
             {
                 PortalInfo pInfo = PortalInfo.GetPortalInfoByType((PortalType)i);
-                KoolkLVItem item = portalImageContainer.createItem(pInfo.Image, Tables.PortalTypeNames[i], true);
+                ImageViewer item = portalImageContainer.Add(pInfo.Image, Tables.PortalTypeNames[i], true);
                 item.Tag = pInfo;
                 item.MouseDown += new MouseEventHandler(portal_MouseDown);
-                item.MouseUp += new MouseEventHandler(KoolkLVItem.item_MouseUp);
+                item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
             }
         }
 
         void portal_MouseDown(object sender, MouseEventArgs e)
         {
             hcsm.EnterEditMode(ItemTypes.Portals);
-            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((PortalInfo)((KoolkLVItem)sender).Tag);
+            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((PortalInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();
             hcsm.MultiBoard.RenderFrame();
-            ((KoolkLVItem)sender).Selected = true;
+            ((ImageViewer)sender).IsActive = true;
         }
     }
 }

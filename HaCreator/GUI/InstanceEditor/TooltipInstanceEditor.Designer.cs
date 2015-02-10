@@ -1,6 +1,6 @@
 ﻿namespace HaCreator.GUI.InstanceEditor
 {
-    partial class GeneralInstanceEditor
+    partial class TooltipInstanceEditor
     {
         /// <summary>
         /// Required designer variable.
@@ -33,27 +33,28 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.yInput = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
-            this.zInput = new System.Windows.Forms.NumericUpDown();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.titleBox = new System.Windows.Forms.TextBox();
+            this.useTitleBox = new System.Windows.Forms.CheckBox();
+            this.useDescBox = new System.Windows.Forms.CheckBox();
+            this.descBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zInput)).BeginInit();
             this.SuspendLayout();
             // 
             // pathLabel
             // 
             this.pathLabel.Location = new System.Drawing.Point(0, 12);
             this.pathLabel.Name = "pathLabel";
-            this.pathLabel.Size = new System.Drawing.Size(179, 37);
+            this.pathLabel.Size = new System.Drawing.Size(342, 37);
             this.pathLabel.TabIndex = 0;
             this.pathLabel.Text = "label1";
             this.pathLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // xInput
             // 
-            this.xInput.Location = new System.Drawing.Point(79, 52);
+            this.xInput.Location = new System.Drawing.Point(106, 52);
             this.xInput.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -71,7 +72,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(63, 55);
+            this.label1.Location = new System.Drawing.Point(90, 55);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 2;
@@ -80,7 +81,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(63, 81);
+            this.label2.Location = new System.Drawing.Point(162, 55);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(14, 13);
             this.label2.TabIndex = 4;
@@ -88,7 +89,7 @@
             // 
             // yInput
             // 
-            this.yInput.Location = new System.Drawing.Point(79, 78);
+            this.yInput.Location = new System.Drawing.Point(178, 52);
             this.yInput.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -103,31 +104,10 @@
             this.yInput.Size = new System.Drawing.Size(50, 20);
             this.yInput.TabIndex = 1;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(63, 107);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Z";
-            // 
-            // zInput
-            // 
-            this.zInput.Location = new System.Drawing.Point(79, 104);
-            this.zInput.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
-            this.zInput.Name = "zInput";
-            this.zInput.Size = new System.Drawing.Size(50, 20);
-            this.zInput.TabIndex = 2;
-            // 
             // okButton
             // 
             this.okButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.okButton.Location = new System.Drawing.Point(12, 130);
+            this.okButton.Location = new System.Drawing.Point(115, 280);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(76, 28);
             this.okButton.TabIndex = 3;
@@ -137,22 +117,64 @@
             // cancelButton
             // 
             this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.cancelButton.Location = new System.Drawing.Point(94, 130);
+            this.cancelButton.Location = new System.Drawing.Point(197, 280);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(73, 28);
             this.cancelButton.TabIndex = 4;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // GeneralInstanceEditor
+            // titleBox
+            // 
+            this.titleBox.Enabled = false;
+            this.titleBox.Location = new System.Drawing.Point(81, 78);
+            this.titleBox.Multiline = true;
+            this.titleBox.Name = "titleBox";
+            this.titleBox.Size = new System.Drawing.Size(261, 95);
+            this.titleBox.TabIndex = 7;
+            // 
+            // useTitleBox
+            // 
+            this.useTitleBox.AutoSize = true;
+            this.useTitleBox.Location = new System.Drawing.Point(21, 119);
+            this.useTitleBox.Name = "useTitleBox";
+            this.useTitleBox.Size = new System.Drawing.Size(46, 17);
+            this.useTitleBox.TabIndex = 8;
+            this.useTitleBox.Text = "Title";
+            this.useTitleBox.UseVisualStyleBackColor = true;
+            this.useTitleBox.CheckedChanged += new System.EventHandler(this.useTitleBox_CheckedChanged);
+            // 
+            // useDescBox
+            // 
+            this.useDescBox.AutoSize = true;
+            this.useDescBox.Location = new System.Drawing.Point(21, 220);
+            this.useDescBox.Name = "useDescBox";
+            this.useDescBox.Size = new System.Drawing.Size(51, 17);
+            this.useDescBox.TabIndex = 10;
+            this.useDescBox.Text = "Desc";
+            this.useDescBox.UseVisualStyleBackColor = true;
+            this.useDescBox.CheckedChanged += new System.EventHandler(this.useDescBox_CheckedChanged);
+            // 
+            // descBox
+            // 
+            this.descBox.Enabled = false;
+            this.descBox.Location = new System.Drawing.Point(81, 179);
+            this.descBox.Multiline = true;
+            this.descBox.Name = "descBox";
+            this.descBox.Size = new System.Drawing.Size(261, 95);
+            this.descBox.TabIndex = 9;
+            // 
+            // TooltipInstanceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(179, 166);
+            this.ClientSize = new System.Drawing.Size(354, 323);
+            this.Controls.Add(this.useDescBox);
+            this.Controls.Add(this.descBox);
+            this.Controls.Add(this.useTitleBox);
+            this.Controls.Add(this.titleBox);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.zInput);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.yInput);
             this.Controls.Add(this.label1);
@@ -161,14 +183,13 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "GeneralInstanceEditor";
+            this.Name = "TooltipInstanceEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "General";
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zInput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -181,9 +202,11 @@
         private System.Windows.Forms.NumericUpDown xInput;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown yInput;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.NumericUpDown zInput;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.TextBox titleBox;
+        private System.Windows.Forms.CheckBox useTitleBox;
+        private System.Windows.Forms.CheckBox useDescBox;
+        private System.Windows.Forms.TextBox descBox;
     }
 }

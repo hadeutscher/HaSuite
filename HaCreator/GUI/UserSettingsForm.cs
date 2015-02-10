@@ -20,10 +20,10 @@ namespace HaCreator.GUI
         public UserSettingsForm()
         {
             InitializeComponent();
+            errorsCheckBox.Checked = UserSettings.ShowErrorsMessage;
             linewBox.Value = UserSettings.LineWidth;
             dotwBox.Value = UserSettings.DotWidth;
             inactiveaBox.Value = UserSettings.NonActiveAlpha;
-            threeStateBox.Checked = UserSettings.useThreeState;
             showMousePosCheckbox.Checked = UserSettings.ShowMousePos;
             xgaResolutionCheckbox.Checked = UserSettings.XGAResolution;
 
@@ -77,10 +77,10 @@ namespace HaCreator.GUI
         private void okayButton_Click(object sender, EventArgs e)
         {
 
+            UserSettings.ShowErrorsMessage = errorsCheckBox.Checked;
             UserSettings.LineWidth = (int)linewBox.Value;
             UserSettings.DotWidth = (int)dotwBox.Value;
             UserSettings.NonActiveAlpha = (int)inactiveaBox.Value;
-            UserSettings.useThreeState = threeStateBox.Checked;
             UserSettings.ShowMousePos = showMousePosCheckbox.Checked;
             UserSettings.XGAResolution = xgaResolutionCheckbox.Checked;
 

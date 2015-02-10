@@ -155,7 +155,6 @@ namespace HaCreator
                     Warning.Error("Error while loading XML. Aborted.");
                     return;
                 }
-                //mapImage = WZXML.LoadMap(XMLBox.Text, ref mapName, ref streetName);
             }
             else if (WZSelect.Checked)
             {

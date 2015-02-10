@@ -80,6 +80,8 @@ namespace HaCreator.CustomControls
             new InputGestureCollection() { });
         public static readonly RoutedUICommand Random = new RoutedUICommand("Random", "Random", typeof(HaRibbon),
             new InputGestureCollection() { });
+        public static readonly RoutedUICommand HaRepacker = new RoutedUICommand("HaRepacker", "HaRepacker", typeof(HaRibbon),
+            new InputGestureCollection() { });
 
         private void AlwaysExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -189,6 +191,12 @@ namespace HaCreator.CustomControls
                 RandomTilesToggled.Invoke(((RibbonToggleButton)e.OriginalSource).IsChecked.Value);
         }
 
+        private void HaRepacker_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (HaRepackerClicked != null)
+                HaRepackerClicked.Invoke();
+        }
+
         private void layerBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (changingIndexCnt > 0)
@@ -226,6 +234,7 @@ namespace HaCreator.CustomControls
         public event EmptyEvent RegenerateMinimapClicked;
         public event ToggleEvent SnappingToggled;
         public event ToggleEvent RandomTilesToggled;
+        public event EmptyEvent HaRepackerClicked;
 
 
         public void SetSelectedLayer(int layer)

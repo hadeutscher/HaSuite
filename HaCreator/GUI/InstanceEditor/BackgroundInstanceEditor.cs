@@ -17,7 +17,7 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class BackgroundInstanceEditor : Form
+    public partial class BackgroundInstanceEditor : InstanceEditorBase
     {
         public BackgroundInstance item;
 
@@ -40,12 +40,12 @@ namespace HaCreator.GUI.InstanceEditor
             cyBox.Value = item.cy;
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
             List<UndoRedoAction> actions = new List<UndoRedoAction>();
             bool sort = false;
@@ -78,23 +78,6 @@ namespace HaCreator.GUI.InstanceEditor
             item.cx = (int)cxBox.Value;
             item.cy = (int)cyBox.Value;
             Close();
-        }
-
-        private void BackgroundInstanceEditor_KeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-            if (e.KeyCode == Keys.Escape)
-            {
-                cancelButton_Click(null, null);
-            }
-            else if (e.KeyCode == Keys.Enter)
-            {
-                okButton_Click(null, null);
-            }
-            else
-            {
-                e.Handled = false;
-            }
         }
     }
 }

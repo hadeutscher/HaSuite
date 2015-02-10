@@ -67,6 +67,7 @@ namespace HaCreator.GUI
             bgPanel.Enabled = true;
             commonPanel.Enabled = true;
             WindowState = FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HaEditor_FormClosing);
         }
 
         void hcsm_CloseRequested()
@@ -125,6 +126,14 @@ namespace HaCreator.GUI
         {
             if (MessageBox.Show("Are you sure you want to close this map?", "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 cancel = true;
+        }
+
+        private void HaEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

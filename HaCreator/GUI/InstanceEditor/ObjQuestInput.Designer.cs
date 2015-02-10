@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.stateInput = new System.Windows.Forms.ComboBox();
             this.idInput = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -56,33 +55,35 @@
             // idInput
             // 
             this.idInput.Location = new System.Drawing.Point(47, 12);
+            this.idInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.idInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.idInput.Name = "idInput";
-            this.idInput.Minimum = -2147483648;
-            this.idInput.Maximum = 2147483647; 
             this.idInput.Size = new System.Drawing.Size(118, 20);
-            this.idInput.TabIndex = 2;
+            this.idInput.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            // 
-            // 
-            // 
             this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(17, 15);
+            this.label1.Size = new System.Drawing.Size(21, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "ID:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            // 
-            // 
-            // 
             this.label2.Location = new System.Drawing.Point(12, 41);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(31, 15);
+            this.label2.Size = new System.Drawing.Size(35, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "State:";
             // 
@@ -92,7 +93,7 @@
             this.okButton.Location = new System.Drawing.Point(12, 64);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(83, 30);
-            this.okButton.TabIndex = 5;
+            this.okButton.TabIndex = 2;
             this.okButton.Text = "OK";
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
@@ -102,7 +103,7 @@
             this.cancelButton.Location = new System.Drawing.Point(101, 64);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(83, 30);
-            this.cancelButton.TabIndex = 6;
+            this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 

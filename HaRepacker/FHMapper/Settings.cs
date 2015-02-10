@@ -14,7 +14,7 @@ namespace HaRepacker
     public partial class Settings : Form
     {
         public List<Object> settings;
-        public MainForm main;
+        public FHMapper.FHMapper main;
         public Settings()
         {
             InitializeComponent();

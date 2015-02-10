@@ -18,7 +18,7 @@ using System.Collections;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class MapBrowser : Form
+    public partial class MapBrowser : InstanceEditorBase
     {
         public MapBrowser()
         {
@@ -36,13 +36,18 @@ namespace HaCreator.GUI.InstanceEditor
 
         private int? result = null;
 
+        protected override void okButton_Click(object sender, EventArgs e)
+        {
+            loadButton_Click(sender, e);
+        }
+
         private void loadButton_Click(object sender, EventArgs e)
         {
             result = int.Parse(mapBrowserCtrl.SelectedItem.Substring(0, 9));
             Close();
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }

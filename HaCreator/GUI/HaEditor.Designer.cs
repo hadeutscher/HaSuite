@@ -148,7 +148,6 @@
             this.Controls.Add(this.wpfHost);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HaEditor";
-            this.ShowIcon = false;
             this.Text = "HaCreator";
             this.Load += new System.EventHandler(this.HaEditor_Load);
             this.SizeChanged += new System.EventHandler(this.HaEditor_SizeChanged);

@@ -43,7 +43,7 @@ namespace HaCreator.GUI
         {
             ApplicationSettings.MapleVersionIndex = versionBox.SelectedIndex;
             ApplicationSettings.MapleFolderIndex = pathBox.SelectedIndex;
-            string wzPath = (string)pathBox.SelectedItem;
+            string wzPath = pathBox.Text;
             if (wzPath == "Select Maple Folder")
             {
                 MessageBox.Show("Please select the maple folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);

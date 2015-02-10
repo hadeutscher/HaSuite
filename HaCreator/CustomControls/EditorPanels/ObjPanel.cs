@@ -73,20 +73,20 @@ namespace HaCreator.CustomControls.EditorPanels
                     l2Prop.HCTag = ObjectInfo.Load(l2Prop, (string)objSetListBox.SelectedItem, (string)objL0ListBox.SelectedItem, (string)objL1ListBox.SelectedItem, l2Prop.Name);
                 ObjectInfo info = (ObjectInfo)l2Prop.HCTag;
                 WzCanvasProperty objCanvas = (WzCanvasProperty)l2Prop["0"];
-                KoolkLVItem item = objImagesContainer.createItem(objCanvas.PngProperty.GetPNG(false), l2Prop.Name, true);
+                ImageViewer item = objImagesContainer.Add(objCanvas.PngProperty.GetPNG(false), l2Prop.Name, true);
                 item.Tag = l2Prop.HCTag;
                 item.MouseDown += new MouseEventHandler(objItem_Click);
-                item.MouseUp += new MouseEventHandler(KoolkLVItem.item_MouseUp);
+                item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
             }
         }
 
         private void objItem_Click(object sender, MouseEventArgs e)
         {
             hcsm.EnterEditMode(ItemTypes.Objects);
-            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((ObjectInfo)((KoolkLVItem)sender).Tag);
+            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((ObjectInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();
             hcsm.MultiBoard.RenderFrame();
-            ((KoolkLVItem)sender).Selected = true;
+            ((ImageViewer)sender).IsActive = true;
         }
     }
 }

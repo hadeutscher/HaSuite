@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.loadButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.searchBox = new System.Windows.Forms.TextBox();
@@ -42,7 +41,7 @@
             this.loadButton.Location = new System.Drawing.Point(65, 259);
             this.loadButton.Name = "loadButton";
             this.loadButton.Size = new System.Drawing.Size(200, 30);
-            this.loadButton.TabIndex = 20;
+            this.loadButton.TabIndex = 2;
             this.loadButton.Text = "OK";
             this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
@@ -52,26 +51,23 @@
             this.cancelButton.Location = new System.Drawing.Point(285, 259);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(200, 30);
-            this.cancelButton.TabIndex = 21;
+            this.cancelButton.TabIndex = 3;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // searchBox
             // 
-            // 
-            // 
-            // 
             this.searchBox.Location = new System.Drawing.Point(12, 12);
             this.searchBox.Name = "searchBox";
             this.searchBox.Size = new System.Drawing.Size(253, 20);
-            this.searchBox.TabIndex = 23;
+            this.searchBox.TabIndex = 0;
             // 
             // mapBrowserCtrl
             // 
             this.mapBrowserCtrl.Location = new System.Drawing.Point(12, 38);
             this.mapBrowserCtrl.Name = "mapBrowserCtrl";
             this.mapBrowserCtrl.Size = new System.Drawing.Size(533, 208);
-            this.mapBrowserCtrl.TabIndex = 24;
+            this.mapBrowserCtrl.TabIndex = 1;
             this.mapBrowserCtrl.SelectionChanged += new HaCreator.CustomControls.MapBrowser.MapSelectChangedDelegate(this.mapBrowserCtrl_SelectionChanged);
             // 
             // MapBrowser
@@ -91,6 +87,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Map Browser";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

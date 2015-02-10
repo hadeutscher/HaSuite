@@ -29,16 +29,16 @@ namespace HaCreator.CustomControls.EditorPanels
             this.hcsm = hcsm;
             InitializeComponent();
 
-            KoolkLVItem[] commonItems = new KoolkLVItem[] { 
-                miscItemsContainer.createItem(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.FootholdColor)), "Foothold", true),
-                miscItemsContainer.createItem(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.RopeColor)), "Rope", true),
-                miscItemsContainer.createItem(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.ChairColor)), "Chair", true),
-                miscItemsContainer.createItem(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.ToolTipColor)), "Tooltip", true)
+            ImageViewer[] commonItems = new ImageViewer[] { 
+                miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.FootholdColor)), "Foothold", true),
+                miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.RopeColor)), "Rope", true),
+                miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.ChairColor)), "Chair", true),
+                miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.ToolTipColor)), "Tooltip", true)
             };
-            foreach (KoolkLVItem item in commonItems)
+            foreach (ImageViewer item in commonItems)
             {
                 item.MouseDown += new MouseEventHandler(commonItem_Click);
-                item.MouseUp += new MouseEventHandler(KoolkLVItem.item_MouseUp);
+                item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
             }
         }
 
@@ -54,7 +54,7 @@ namespace HaCreator.CustomControls.EditorPanels
 
         void commonItem_Click(object sender, MouseEventArgs e)
         {
-            KoolkLVItem item = (KoolkLVItem)sender;
+            ImageViewer item = (ImageViewer)sender;
             switch (item.Name)
             {
                 case "Foothold":
@@ -82,7 +82,7 @@ namespace HaCreator.CustomControls.EditorPanels
                     hcsm.MultiBoard.RenderFrame();
                     break;
             }
-            item.Selected = true;
+            item.IsActive = true;
         }
     }
 }

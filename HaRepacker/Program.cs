@@ -40,7 +40,7 @@ namespace HaRepacker
             Application.SetCompatibleTextRenderingDefault(false);
             bool firstRun = PrepareApplication();
             Application.Run(new MainForm(wzToLoad, true, firstRun));
-            EndApplication(true);
+            EndApplication(true, true);
         }
 
         public static bool PrepareApplication()
@@ -69,7 +69,7 @@ namespace HaRepacker
             bool firstRun = ApplicationSettings.FirstRun;
             if (ApplicationSettings.FirstRun)
             {
-                new FirstRunForm().ShowDialog();
+                //new FirstRunForm().ShowDialog();
                 ApplicationSettings.FirstRun = false;
                 SettingsManager.Save();
             }
@@ -85,13 +85,16 @@ namespace HaRepacker
             return firstRun;
         }
 
-        public static void EndApplication(bool usingPipes)
+        public static void EndApplication(bool usingPipes, bool disposeFiles)
         {
             if (pipe != null && usingPipes)
             {
                 pipe.Close();
             }
-            WzMan.Terminate();
+            if (disposeFiles)
+            {
+                WzMan.Terminate();
+            }
             SettingsManager.Save();
         }
     }

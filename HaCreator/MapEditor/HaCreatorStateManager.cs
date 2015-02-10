@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HaCreator.ThirdParty.TabPages;
+using MapleLib.WzLib;
 
 namespace HaCreator.MapEditor
 {
@@ -53,6 +54,7 @@ namespace HaCreator.MapEditor
             this.ribbon.RegenerateMinimapClicked += ribbon_RegenerateMinimapClicked;
             this.ribbon.SnappingToggled += ribbon_SnappingToggled;
             this.ribbon.RandomTilesToggled += ribbon_RandomTilesToggled;
+            this.ribbon.HaRepackerClicked += ribbon_HaRepackerClicked;
 
             this.tabs.CurrentPageChanged += tabs_CurrentPageChanged;
 
@@ -68,59 +70,20 @@ namespace HaCreator.MapEditor
             ribbon.SetEnabled(false);
         }
 
+        #region MultiBoard Events
         void multiBoard_SelectedItemChanged(BoardItem selectedItem)
         {
             if (SelectedItemChanged != null)
             {
                 string item = "";
-                if (selectedItem != null) {
+                if (selectedItem != null)
+                {
                     item = CreateItemDescription(selectedItem, " ");
                 }
                 SelectedItemChanged.Invoke(item);
             }
         }
 
-        public static string CreateItemDescription(BoardItem item, string lineBreak)
-        {
-            switch (item.GetType().Name)
-            {
-                case "TileInstance":
-                    return "Tile:" + lineBreak + ((TileInfo)item.BaseInfo).tS + @"\" + ((TileInfo)item.BaseInfo).u + @"\" + ((TileInfo)item.BaseInfo).no;
-                case "ObjectInstance":
-                    return "Object:" + lineBreak + ((ObjectInfo)item.BaseInfo).oS + @"\" + ((ObjectInfo)item.BaseInfo).l0 + @"\" + ((ObjectInfo)item.BaseInfo).l1 + @"\" + ((ObjectInfo)item.BaseInfo).l2;
-                case "BackgroundInstance":
-                    return "Background:" + lineBreak + ((BackgroundInfo)item.BaseInfo).bS + @"\" + (((BackgroundInfo)item.BaseInfo).ani ? "ani" : "back") + @"\" + ((BackgroundInfo)item.BaseInfo).no;
-                case "PortalInstance":
-                    return "Portal:" + lineBreak + "Name: " + ((PortalInstance)item).pn + lineBreak + "Type: " + Tables.PortalTypeNames[(int)((PortalInstance)item).pt];
-                case "LifeInstance":
-                    if (((LifeInstance)item).Type == ItemTypes.Mobs)
-                        return "Mob:" + lineBreak + "Name: " + ((MobInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((MobInfo)item.BaseInfo).ID;
-                    else
-                        return "Npc:" + lineBreak + "Name: " + ((NpcInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((NpcInfo)item.BaseInfo).ID;
-                case "ReactorInstance":
-                    return "Reactor:" + lineBreak + "ID: " + ((ReactorInfo)item.BaseInfo).ID;
-                case "FootholdAnchor":
-                    return "Foothold";
-                case "RopeAnchor":
-                    return ((RopeAnchor)item).ParentRope.ladder ? "Ladder" : "Rope";
-                case "Chair":
-                    return "Chair";
-                case "ToolTipDot":
-                case "ToolTip":
-                case "ToolTipChar":
-                    return "Tooltip";
-                default:
-                    return "";
-            }
-        }
-
-        private void mapEditInfo(object sender, EventArgs e)
-        {
-            Board selectedBoard = (Board)((ToolStripMenuItem)sender).Tag;
-            new InfoEditor(selectedBoard.MapInfo).ShowDialog();
-        }
-
-        #region MultiBoard Events
         void multiBoard_ReturnToSelectionState()
         {
             multiBoard.SelectedBoard.Mouse.SelectionMode();
@@ -179,7 +142,8 @@ namespace HaCreator.MapEditor
                     new RopeInstanceEditor((RopeAnchor)item).ShowDialog();
                     multiBoard.RenderFrame();
                     break;
-                case "LifeInstance":
+                case "NPCInstance":
+                case "MobInstance":
                     new LifeInstanceEditor((LifeInstance)item).ShowDialog();
                     multiBoard.RenderFrame();
                     break;
@@ -196,7 +160,8 @@ namespace HaCreator.MapEditor
                     multiBoard.RenderFrame();
                     break;
                 case "ToolTip":
-                    //TODO
+                    new TooltipInstanceEditor((ToolTip)item).ShowDialog();
+                    multiBoard.RenderFrame();
                     break;
                 default:
                     break;
@@ -240,6 +205,12 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Tab Events
+        private void mapEditInfo(object sender, EventArgs e)
+        {
+            Board selectedBoard = (Board)((ToolStripMenuItem)sender).Tag;
+            new InfoEditor(selectedBoard.MapInfo).ShowDialog();
+        }
+        
         void tabs_CurrentPageChanged(HaCreator.ThirdParty.TabPages.TabPage currentPage, HaCreator.ThirdParty.TabPages.TabPage previousPage)
         {
             if (previousPage != null)
@@ -253,6 +224,30 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Ribbon Handlers
+        void ribbon_HaRepackerClicked()
+        {
+#if !DEBUG
+            try
+            {
+#endif
+                HaRepacker.Program.WzMan = new HaRepackerLib.WzFileManager();
+                bool firstRun = HaRepacker.Program.PrepareApplication();
+                HaRepacker.GUI.MainForm mf = new HaRepacker.GUI.MainForm(null, false, firstRun);
+                mf.unloadAllToolStripMenuItem.Visible = false;
+                mf.reloadAllToolStripMenuItem.Visible = false;
+                foreach (DictionaryEntry entry in Program.WzManager.wzFiles)
+                    mf.Interop_AddLoadedWzFileToManager((WzFile)entry.Value);
+                mf.ShowDialog();
+                HaRepacker.Program.EndApplication(false, false);
+#if !DEBUG
+            }
+            catch (Exception ex)
+            {
+                HaRepackerLib.Warning.Error("Exception while running HaRepacker: " + ex.Message);
+            }
+#endif
+        }
+        
         bool? getTypes(ItemTypes visibleTypes, ItemTypes editedTypes, ItemTypes type)
         {
             if ((editedTypes & type) == type)
@@ -307,7 +302,7 @@ namespace HaCreator.MapEditor
                 MessageBox.Show("Minimap regenerated successfully", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             else
             {
-                MessageBox.Show("An error occured during minimap regeneration. The error has been logged. If possible, save the map and send it to haha01haha01@gmail.com", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("An error occured during minimap regeneration. The error has been logged. If possible, save the map and send it to" + ApplicationSettings.AuthorEmail, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ErrorLogger.Log(ErrorLevel.Critical, "error regenning minimap for map " + multiBoard.SelectedBoard.MapInfo.id.ToString());
             }
         }
@@ -522,6 +517,40 @@ namespace HaCreator.MapEditor
         public event ItemEventDelegate SelectedItemChanged;
         public event EmptyDelegate CloseRequested;
         public event EmptyDelegate FirstMapLoaded;
+
+        public static string CreateItemDescription(BoardItem item, string lineBreak)
+        {
+            switch (item.GetType().Name)
+            {
+                case "TileInstance":
+                    return "Tile:" + lineBreak + ((TileInfo)item.BaseInfo).tS + @"\" + ((TileInfo)item.BaseInfo).u + @"\" + ((TileInfo)item.BaseInfo).no;
+                case "ObjectInstance":
+                    return "Object:" + lineBreak + ((ObjectInfo)item.BaseInfo).oS + @"\" + ((ObjectInfo)item.BaseInfo).l0 + @"\" + ((ObjectInfo)item.BaseInfo).l1 + @"\" + ((ObjectInfo)item.BaseInfo).l2;
+                case "BackgroundInstance":
+                    return "Background:" + lineBreak + ((BackgroundInfo)item.BaseInfo).bS + @"\" + (((BackgroundInfo)item.BaseInfo).ani ? "ani" : "back") + @"\" + ((BackgroundInfo)item.BaseInfo).no;
+                case "PortalInstance":
+                    return "Portal:" + lineBreak + "Name: " + ((PortalInstance)item).pn + lineBreak + "Type: " + Tables.PortalTypeNames[(int)((PortalInstance)item).pt];
+                case "LifeInstance":
+                    if (((LifeInstance)item).Type == ItemTypes.Mobs)
+                        return "Mob:" + lineBreak + "Name: " + ((MobInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((MobInfo)item.BaseInfo).ID;
+                    else
+                        return "Npc:" + lineBreak + "Name: " + ((NpcInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((NpcInfo)item.BaseInfo).ID;
+                case "ReactorInstance":
+                    return "Reactor:" + lineBreak + "ID: " + ((ReactorInfo)item.BaseInfo).ID;
+                case "FootholdAnchor":
+                    return "Foothold";
+                case "RopeAnchor":
+                    return ((RopeAnchor)item).ParentRope.ladder ? "Ladder" : "Rope";
+                case "Chair":
+                    return "Chair";
+                case "ToolTipDot":
+                case "ToolTip":
+                case "ToolTipChar":
+                    return "Tooltip";
+                default:
+                    return "";
+            }
+        }
 
         public void SetTilePanel(TilePanel tp)
         {

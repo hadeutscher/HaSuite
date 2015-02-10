@@ -18,7 +18,7 @@ using System.Collections;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class PortalInstanceEditor : Form
+    public partial class PortalInstanceEditor : InstanceEditorBase
     {
         public PortalInstance item;
         private ControlRowManager rowMan;
@@ -81,12 +81,12 @@ namespace HaCreator.GUI.InstanceEditor
             return enabler.Checked ? (int?)input.Value : null;
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
             List<UndoRedoAction> actions = new List<UndoRedoAction>();
             if (xInput.Value != item.X || yInput.Value != item.Y)

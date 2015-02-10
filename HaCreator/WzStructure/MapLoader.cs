@@ -219,7 +219,6 @@ namespace HaCreator.WzStructure
                         if (mobImage.HCTag == null)
                             mobImage.HCTag = MobInfo.Load(mobImage);
                         MobInfo mobInfo = (MobInfo)mobImage.HCTag;
-                        //mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, mobTime, flip, hide, false));
                         mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team, false));
                         break;
                     case "n":
@@ -228,7 +227,6 @@ namespace HaCreator.WzStructure
                         if (npcImage.HCTag == null)
                             npcImage.HCTag = NpcInfo.Load(npcImage);
                         NpcInfo npcInfo = (NpcInfo)npcImage.HCTag;
-                        //mapBoard.BoardItems.NPCs.Add((NpcInstance)npcInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, mobTime, flip, hide, false));
                         mapBoard.BoardItems.NPCs.Add((NPCInstance)npcInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team, false));
                         break;
                     default:
@@ -246,7 +244,7 @@ namespace HaCreator.WzStructure
                 int x = InfoTool.GetInt(reactor["x"]);
                 int y = InfoTool.GetInt(reactor["y"]);
                 int reactorTime = InfoTool.GetInt(reactor["reactorTime"]);
-                string name = InfoTool.GetString(reactor["name"]);
+                string name = InfoTool.GetOptionalString(reactor["name"]);
                 string id = InfoTool.GetString(reactor["id"]);
                 bool flip = InfoTool.GetBool(reactor["f"]);
                 mapBoard.BoardItems.Reactors.Add((ReactorInstance)Program.InfoManager.Reactors[id].CreateInstance(mapBoard, x, y, reactorTime, name, flip, false));
@@ -573,6 +571,16 @@ namespace HaCreator.WzStructure
             LoadToolTips(mapImage, mapBoard);
             LoadBackgrounds(mapImage, mapBoard);
             mapBoard.BoardItems.Sort();
+
+            if (ErrorLogger.ErrorsPresent())
+            {
+                ErrorLogger.SaveToFile("errors.txt");
+                if (UserSettings.ShowErrorsMessage)
+                {
+                    MessageBox.Show("Errors were encountered during the loading process. These errors were saved to \"errors.txt\". Please send this file to the author, either via mail (" + ApplicationSettings.AuthorEmail + ") or from the site you got this software from.\n\n(In the case that this program was not updated in so long that this message is now thrown on every map load, you may cancel this message from the settings)", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                ErrorLogger.ClearErrors();
+            }
         }
 
         public static void CreateMap(string text, string tooltip, ContextMenuStrip menu, Point size, Point center, int layers, HaCreator.ThirdParty.TabPages.PageCollection Tabs, MultiBoard multiBoard)

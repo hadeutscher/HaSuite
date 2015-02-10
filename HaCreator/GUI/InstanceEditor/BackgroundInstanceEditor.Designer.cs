@@ -86,7 +86,7 @@
             -2147483648});
             this.xInput.Name = "xInput";
             this.xInput.Size = new System.Drawing.Size(50, 20);
-            this.xInput.TabIndex = 1;
+            this.xInput.TabIndex = 0;
             // 
             // label1
             // 
@@ -121,7 +121,7 @@
             -2147483648});
             this.yInput.Name = "yInput";
             this.yInput.Size = new System.Drawing.Size(50, 20);
-            this.yInput.TabIndex = 2;
+            this.yInput.TabIndex = 1;
             // 
             // label3
             // 
@@ -142,7 +142,7 @@
             0});
             this.zInput.Name = "zInput";
             this.zInput.Size = new System.Drawing.Size(50, 20);
-            this.zInput.TabIndex = 3;
+            this.zInput.TabIndex = 2;
             // 
             // okButton
             // 
@@ -150,7 +150,7 @@
             this.okButton.Location = new System.Drawing.Point(48, 183);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(76, 28);
-            this.okButton.TabIndex = 11;
+            this.okButton.TabIndex = 10;
             this.okButton.Text = "OK";
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
@@ -160,7 +160,7 @@
             this.cancelButton.Location = new System.Drawing.Point(130, 183);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(73, 28);
-            this.cancelButton.TabIndex = 12;
+            this.cancelButton.TabIndex = 11;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
@@ -180,7 +180,7 @@
             this.typeBox.Location = new System.Drawing.Point(48, 79);
             this.typeBox.Name = "typeBox";
             this.typeBox.Size = new System.Drawing.Size(186, 21);
-            this.typeBox.TabIndex = 4;
+            this.typeBox.TabIndex = 3;
             // 
             // label5
             // 
@@ -201,7 +201,7 @@
             0});
             this.alphaBox.Name = "alphaBox";
             this.alphaBox.Size = new System.Drawing.Size(50, 20);
-            this.alphaBox.TabIndex = 5;
+            this.alphaBox.TabIndex = 4;
             // 
             // front
             // 
@@ -209,7 +209,7 @@
             this.front.Location = new System.Drawing.Point(121, 108);
             this.front.Name = "front";
             this.front.Size = new System.Drawing.Size(111, 17);
-            this.front.TabIndex = 6;
+            this.front.TabIndex = 5;
             this.front.Text = "Front Background";
             // 
             // label6
@@ -236,7 +236,7 @@
             -2147483648});
             this.ryBox.Name = "ryBox";
             this.ryBox.Size = new System.Drawing.Size(50, 20);
-            this.ryBox.TabIndex = 8;
+            this.ryBox.TabIndex = 7;
             // 
             // label7
             // 
@@ -262,7 +262,7 @@
             -2147483648});
             this.rxBox.Name = "rxBox";
             this.rxBox.Size = new System.Drawing.Size(50, 20);
-            this.rxBox.TabIndex = 7;
+            this.rxBox.TabIndex = 6;
             // 
             // label8
             // 
@@ -306,7 +306,7 @@
             -2147483648});
             this.cyBox.Name = "cyBox";
             this.cyBox.Size = new System.Drawing.Size(50, 20);
-            this.cyBox.TabIndex = 10;
+            this.cyBox.TabIndex = 9;
             // 
             // cxLabel
             // 
@@ -332,7 +332,7 @@
             -2147483648});
             this.cxBox.Name = "cxBox";
             this.cxBox.Size = new System.Drawing.Size(50, 20);
-            this.cxBox.TabIndex = 9;
+            this.cxBox.TabIndex = 8;
             // 
             // BackgroundInstanceEditor
             // 
@@ -365,14 +365,13 @@
             this.Controls.Add(this.pathLabel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "BackgroundInstanceEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BackgroundInstanceEditor_KeyDown);
+            this.Text = "Background";
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.zInput)).EndInit();

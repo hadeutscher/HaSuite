@@ -16,7 +16,7 @@ using HaCreator.MapEditor;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class TnSelector : Form
+    public partial class TnSelector : InstanceEditorBase
     {
         public static string Show(Board board)
         {
@@ -38,12 +38,12 @@ namespace HaCreator.GUI.InstanceEditor
             }
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
             result = (string)pnList.SelectedItem;
             Close();

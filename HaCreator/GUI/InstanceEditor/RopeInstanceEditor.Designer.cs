@@ -44,9 +44,6 @@
             // 
             // pathLabel
             // 
-            // 
-            // 
-            // 
             this.pathLabel.Location = new System.Drawing.Point(0, 12);
             this.pathLabel.Name = "pathLabel";
             this.pathLabel.Size = new System.Drawing.Size(179, 16);
@@ -57,44 +54,54 @@
             // xInput
             // 
             this.xInput.Location = new System.Drawing.Point(79, 34);
+            this.xInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.xInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.xInput.Name = "xInput";
-            this.xInput.Minimum = -2147483648;
-            this.xInput.Maximum = 2147483647; 
             this.xInput.Size = new System.Drawing.Size(50, 20);
-            this.xInput.TabIndex = 1;
+            this.xInput.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            // 
-            // 
-            // 
             this.label1.Location = new System.Drawing.Point(63, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(10, 15);
+            this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "X";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            // 
-            // 
-            // 
             this.label2.Location = new System.Drawing.Point(63, 63);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(10, 15);
+            this.label2.Size = new System.Drawing.Size(14, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "Y";
             // 
             // yInput
             // 
             this.yInput.Location = new System.Drawing.Point(79, 60);
+            this.yInput.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.yInput.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
             this.yInput.Name = "yInput";
-            this.yInput.Minimum = -2147483648;
-            this.yInput.Maximum = 2147483647; 
             this.yInput.Size = new System.Drawing.Size(50, 20);
-            this.yInput.TabIndex = 3;
+            this.yInput.TabIndex = 1;
             // 
             // okButton
             // 
@@ -102,7 +109,7 @@
             this.okButton.Location = new System.Drawing.Point(12, 128);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(76, 28);
-            this.okButton.TabIndex = 7;
+            this.okButton.TabIndex = 5;
             this.okButton.Text = "OK";
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
@@ -112,44 +119,35 @@
             this.cancelButton.Location = new System.Drawing.Point(94, 128);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(73, 28);
-            this.cancelButton.TabIndex = 8;
+            this.cancelButton.TabIndex = 6;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // ropeBox
             // 
             this.ropeBox.AutoSize = true;
-            // 
-            // 
-            // 
             this.ropeBox.Location = new System.Drawing.Point(39, 86);
             this.ropeBox.Name = "ropeBox";
-            this.ropeBox.Size = new System.Drawing.Size(49, 15);
-            this.ropeBox.TabIndex = 9;
+            this.ropeBox.Size = new System.Drawing.Size(52, 17);
+            this.ropeBox.TabIndex = 2;
             this.ropeBox.Text = "Rope";
             // 
             // ladderBox
             // 
             this.ladderBox.AutoSize = true;
-            // 
-            // 
-            // 
             this.ladderBox.Location = new System.Drawing.Point(94, 86);
             this.ladderBox.Name = "ladderBox";
-            this.ladderBox.Size = new System.Drawing.Size(57, 15);
-            this.ladderBox.TabIndex = 10;
+            this.ladderBox.Size = new System.Drawing.Size(59, 17);
+            this.ladderBox.TabIndex = 3;
             this.ladderBox.Text = "Ladder";
             // 
             // ufBox
             // 
             this.ufBox.AutoSize = true;
-            // 
-            // 
-            // 
             this.ufBox.Location = new System.Drawing.Point(45, 107);
             this.ufBox.Name = "ufBox";
-            this.ufBox.Size = new System.Drawing.Size(98, 15);
-            this.ufBox.TabIndex = 11;
+            this.ufBox.Size = new System.Drawing.Size(99, 17);
+            this.ufBox.TabIndex = 4;
             this.ufBox.Text = "Upper Foothold";
             // 
             // RopeInstanceEditor
@@ -174,6 +172,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Rope";
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).EndInit();
             this.ResumeLayout(false);

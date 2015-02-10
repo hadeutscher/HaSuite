@@ -17,7 +17,7 @@ using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class FootholdEditor : Form
+    public partial class FootholdEditor : InstanceEditorBase
     {
         private FootholdLine[] footholds;
 
@@ -55,7 +55,7 @@ namespace HaCreator.GUI.InstanceEditor
             else forbidFallDownBox.Checked = forbidFallDown;
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -65,7 +65,7 @@ namespace HaCreator.GUI.InstanceEditor
             forceInt.Enabled = forceEnable.CheckState == CheckState.Checked;
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
             if (forceEnable.CheckState != CheckState.Indeterminate)
             {

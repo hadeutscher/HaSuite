@@ -450,25 +450,37 @@ namespace HaRepackerLib.Controls
             if (ctrl) filteredKeys = filteredKeys ^ Keys.Control;
             if (alt) filteredKeys = filteredKeys ^ Keys.Alt;
             if (shift) filteredKeys = filteredKeys ^ Keys.Shift;
+
             switch (filteredKeys)
             {
                 case Keys.Delete:
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
                     if (!Warning.Warn("Are you sure you want to remove this node?")) return;
                     RemoveSelectedNodes();
                     break;
             }
-            if (ctrl) switch (filteredKeys)
+            if (ctrl)
+            {
+                switch (filteredKeys)
                 {
                     case Keys.C:
                         DoCopy();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
                         break;
                     case Keys.V:
                         DoPaste();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
                         break;
                     case Keys.F:
                         findStrip.Visible = true;
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
                         break;
                 }
+            }
         }
 
         private int searchidx = 0;
@@ -780,7 +792,7 @@ namespace HaRepackerLib.Controls
                     for (int i = 0; i < splitPath.Length; i++)
                     {
                         node = GetNodeByName(collection, splitPath[i]);
-                        if (node.Tag is WzImage && !((WzImage)node.Tag).Parsed)
+                        if (node.Tag is WzImage && !((WzImage)node.Tag).Parsed && i != splitPath.Length - 1)
                         {
                             ((WzImage)node.Tag).ParseImage();
                             node.Reparse();

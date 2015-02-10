@@ -16,7 +16,7 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class ObjQuestInput : Form
+    public partial class ObjQuestInput : InstanceEditorBase
     {
         public MapEditor.ObjectInstanceQuest result;
 
@@ -27,12 +27,12 @@ namespace HaCreator.GUI.InstanceEditor
             stateInput.SelectedIndex = 0;
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
             result = new MapEditor.ObjectInstanceQuest((int)idInput.Value, (QuestState)stateInput.SelectedIndex);
             DialogResult = DialogResult.OK;
