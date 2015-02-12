@@ -18,7 +18,7 @@ using System.Collections;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class MapBrowser : InstanceEditorBase
+    public partial class MapBrowser : EditorBase
     {
         public MapBrowser()
         {

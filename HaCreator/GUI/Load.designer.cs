@@ -1,4 +1,4 @@
-﻿namespace HaCreator
+﻿namespace HaCreator.GUI
 {
     partial class Load
     {

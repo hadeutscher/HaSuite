@@ -14,7 +14,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace HaCreator
+namespace HaCreator.GUI
 {
     public partial class ExceptionHandler : Form
     {

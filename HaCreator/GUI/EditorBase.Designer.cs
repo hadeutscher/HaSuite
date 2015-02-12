@@ -1,6 +1,6 @@
-﻿namespace HaCreator.GUI.InstanceEditor
+﻿namespace HaCreator.GUI
 {
-    partial class InstanceEditorBase
+    partial class EditorBase
     {
         /// <summary>
         /// Required designer variable.
@@ -30,14 +30,14 @@
         {
             this.SuspendLayout();
             // 
-            // InstanceEditorBase
+            // EditorBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.KeyPreview = true;
-            this.Name = "InstanceEditorBase";
-            this.Text = "InstanceEditorBase";
+            this.Name = "EditorBase";
+            this.Text = "EditorBase";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InstanceEditorBase_KeyDown);
             this.ResumeLayout(false);
 

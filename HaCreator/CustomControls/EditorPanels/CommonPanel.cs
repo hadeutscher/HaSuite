@@ -61,25 +61,21 @@ namespace HaCreator.CustomControls.EditorPanels
                     hcsm.EnterEditMode(ItemTypes.Footholds);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetFootholdMode();
                     hcsm.MultiBoard.Focus();
-                    hcsm.MultiBoard.RenderFrame();
                     break;
                 case "Rope":
                     hcsm.EnterEditMode(ItemTypes.Ropes);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetRopeMode();
                     hcsm.MultiBoard.Focus();
-                    hcsm.MultiBoard.RenderFrame();
                     break;
                 case "Chair":
                     hcsm.EnterEditMode(ItemTypes.Chairs);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetChairMode();
                     hcsm.MultiBoard.Focus();
-                    hcsm.MultiBoard.RenderFrame();
                     break;
                 case "Tooltip":
                     hcsm.EnterEditMode(ItemTypes.Footholds);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetTooltipMode();
                     hcsm.MultiBoard.Focus();
-                    hcsm.MultiBoard.RenderFrame();
                     break;
             }
             item.IsActive = true;

@@ -74,7 +74,6 @@ namespace HaCreator.CustomControls.EditorPanels
             hcsm.EnterEditMode(ItemTypes.Backgrounds);
             hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((BackgroundInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();
-            hcsm.MultiBoard.RenderFrame();
             ((ImageViewer)sender).IsActive = true;
         }
     }

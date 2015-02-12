@@ -17,7 +17,7 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class BackgroundInstanceEditor : InstanceEditorBase
+    public partial class BackgroundInstanceEditor : EditorBase
     {
         public BackgroundInstance item;
 
@@ -47,36 +47,39 @@ namespace HaCreator.GUI.InstanceEditor
 
         protected override void okButton_Click(object sender, EventArgs e)
         {
-            List<UndoRedoAction> actions = new List<UndoRedoAction>();
-            bool sort = false;
-            if (xInput.Value != item.BaseX || yInput.Value != item.BaseY)
+            lock (item.Board.ParentControl)
             {
-                actions.Add(UndoRedoManager.BackgroundMoved(item, new Microsoft.Xna.Framework.Point(item.BaseX, item.BaseY), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
-                item.MoveBase((int)xInput.Value, (int)yInput.Value);
-            }
-            if (zInput.Enabled && item.Z != zInput.Value)
-            {
-                actions.Add(UndoRedoManager.ItemZChanged(item, item.Z, (int)zInput.Value));
-                item.Z = (int)zInput.Value;
-                sort = true;
-            }
-            if (front.Checked != item.front)
-            {
-                (item.front ? item.Board.BoardItems.FrontBackgrounds : item.Board.BoardItems.BackBackgrounds).Remove(item);
-                (item.front ? item.Board.BoardItems.BackBackgrounds : item.Board.BoardItems.FrontBackgrounds).Add(item);
-                item.front = front.Checked;
-                sort = true;
-            }
-            if (sort) item.Board.BoardItems.Sort();
-            if (actions.Count > 0)
-                item.Board.UndoRedoMan.AddUndoBatch(actions);
+                List<UndoRedoAction> actions = new List<UndoRedoAction>();
+                bool sort = false;
+                if (xInput.Value != item.BaseX || yInput.Value != item.BaseY)
+                {
+                    actions.Add(UndoRedoManager.BackgroundMoved(item, new Microsoft.Xna.Framework.Point(item.BaseX, item.BaseY), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
+                    item.MoveBase((int)xInput.Value, (int)yInput.Value);
+                }
+                if (zInput.Enabled && item.Z != zInput.Value)
+                {
+                    actions.Add(UndoRedoManager.ItemZChanged(item, item.Z, (int)zInput.Value));
+                    item.Z = (int)zInput.Value;
+                    sort = true;
+                }
+                if (front.Checked != item.front)
+                {
+                    (item.front ? item.Board.BoardItems.FrontBackgrounds : item.Board.BoardItems.BackBackgrounds).Remove(item);
+                    (item.front ? item.Board.BoardItems.BackBackgrounds : item.Board.BoardItems.FrontBackgrounds).Add(item);
+                    item.front = front.Checked;
+                    sort = true;
+                }
+                if (sort) item.Board.BoardItems.Sort();
+                if (actions.Count > 0)
+                    item.Board.UndoRedoMan.AddUndoBatch(actions);
 
-            item.type = (BackgroundType)typeBox.SelectedIndex;
-            item.a = (int)alphaBox.Value;
-            item.rx = (int)rxBox.Value;
-            item.ry = (int)ryBox.Value;
-            item.cx = (int)cxBox.Value;
-            item.cy = (int)cyBox.Value;
+                item.type = (BackgroundType)typeBox.SelectedIndex;
+                item.a = (int)alphaBox.Value;
+                item.rx = (int)rxBox.Value;
+                item.ry = (int)ryBox.Value;
+                item.cx = (int)cxBox.Value;
+                item.cy = (int)cyBox.Value;
+            }
             Close();
         }
     }

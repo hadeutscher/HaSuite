@@ -56,6 +56,16 @@ namespace HaCreator.MapEditor
             get { return bmp; }
         }
 
+        public override int Width
+        {
+            get { return UserSettings.DotWidth * 2; }
+        }
+        
+        public override int Height
+        {
+            get { return UserSettings.DotWidth * 2; }
+        }
+
         public override Color GetColor(ItemTypes EditedTypes, int selectedLayer, bool selected)
         {
             if (((EditedTypes & Type) == Type && (selectedLayer == -1 || CheckIfLayerSelected(selectedLayer))))

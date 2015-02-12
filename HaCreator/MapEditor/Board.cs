@@ -19,7 +19,7 @@ namespace HaCreator.MapEditor
     {
         private Point mapSize;
         private Point centerPoint;
-        private BoardItemsManager boardItems = new BoardItemsManager();
+        private BoardItemsManager boardItems;
         private List<Layer> layers = new List<Layer>();
         private List<BoardItem> selected = new List<BoardItem>();
         private MultiBoard parent;
@@ -45,6 +45,8 @@ namespace HaCreator.MapEditor
             this.parent = parent;
             this.visibleTypes = visibleTypes;
             this.editedTypes = editedTypes;
+            
+            boardItems = new BoardItemsManager(this);
             undoRedoMan = new UndoRedoManager(this);
             parent.Boards.Add(this);
             mouse = new Mouse(this);
@@ -74,15 +76,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-/*        public void RenderBackgroundList(SpriteBatch sprite, int xShift, int yShift, bool front)
-        {
-            if (!((ApplicationSettings.visibleTypes & ItemTypes.Backgrounds) == ItemTypes.Backgrounds)) return;
-            foreach (BackgroundInstance bg in boardItems.Backgrounds)
-                if (bg.front == front && parent.IsItemInRange(bg.X, bg.Y, bg.Width, bg.Height,xShift - bg.Origin.X,yShift - bg.Origin.Y))
-                    bg.Draw(sprite, bg.GetColor(ApplicationSettings.editedTypes, selectedLayerIndex, bg.Selected), xShift, yShift);
-        }*/
-
-        public System.Drawing.Bitmap ResizeImage(System.Drawing.Bitmap FullsizeImage, int NewWidth, int MaxHeight, bool OnlyResizeIfWider)
+        public static System.Drawing.Bitmap ResizeImage(System.Drawing.Bitmap FullsizeImage, int NewWidth, int MaxHeight, bool OnlyResizeIfWider)
         {
             FullsizeImage.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipNone);
             FullsizeImage.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipNone);
@@ -110,13 +104,16 @@ namespace HaCreator.MapEditor
         {
             try
             {
-                System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
-                System.Drawing.Graphics processor = System.Drawing.Graphics.FromImage(bmp);
-                foreach (BoardItem item in BoardItems.TileObjs)
-                    processor.DrawImage(item.Image, new System.Drawing.Point(item.X + centerPoint.X - item.Origin.X, item.Y + centerPoint.Y - item.Origin.Y));
-                System.Drawing.Bitmap minimap = null;
-                minimap = ResizeImage(bmp, bmp.Width / 16, bmp.Height, false);
-                MiniMap = minimap;
+                lock (parent)
+                {
+                    System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
+                    System.Drawing.Graphics processor = System.Drawing.Graphics.FromImage(bmp);
+                    foreach (BoardItem item in BoardItems.TileObjs)
+                        processor.DrawImage(item.Image, new System.Drawing.Point(item.X + centerPoint.X - item.Origin.X, item.Y + centerPoint.Y - item.Origin.Y));
+                    System.Drawing.Bitmap minimap = null;
+                    minimap = ResizeImage(bmp, bmp.Width / 16, bmp.Height, false);
+                    MiniMap = minimap;
+                }
                 return true;
             }
             catch
@@ -134,24 +131,6 @@ namespace HaCreator.MapEditor
             for (int i = 0; i < boardItems.AllItemLists.Length; i++)
                 RenderList(boardItems.AllItemLists[i], sprite, xShift, yShift);
 
-            /*RenderBackgroundList(sprite, xShift, yShift, false);
-            RenderList(boardItems.TileObjs, sprite, xShift, yShift);
-            RenderList(boardItems.Mobs, sprite, xShift, yShift);
-            RenderList(boardItems.NPCs, sprite, xShift, yShift);
-            //RenderList(boardItems.Lives, sprite, xShift, yShift);
-            RenderList(boardItems.Reactors, sprite, xShift, yShift);
-            RenderList(boardItems.Portals, sprite, xShift, yShift);
-            RenderBackgroundList(sprite, xShift, yShift, true);*/
-            /*if ((ApplicationSettings.visibleTypes & ItemTypes.Footholds) == ItemTypes.Footholds) 
-                foreach (FootholdLine fh in footholdLines) fh.Draw(sprite, fh.GetColor(ApplicationSettings.editedTypes, selectedLayerIndex), xShift, yShift);
-            if ((ApplicationSettings.visibleTypes & ItemTypes.Ropes) == ItemTypes.Ropes) 
-                foreach (RopeLine rope in ropeLines) rope.Draw(sprite, rope.GetColor(ApplicationSettings.editedTypes, selectedLayerIndex), xShift, yShift);*/
-            /*RenderList(boardItems.FHAnchors, sprite, xShift, yShift);
-            RenderList(boardItems.RopeAnchors, sprite, xShift, yShift);
-            RenderList(boardItems.Chairs, sprite, xShift, yShift);
-            RenderList(boardItems.CharacterToolTips, sprite, xShift, yShift);
-            RenderList(boardItems.ToolTips, sprite, xShift, yShift);
-            RenderList(boardItems.ToolTipDots, sprite, xShift, yShift);*/
             if (mouse.MultiSelectOngoing)
             {
                 Rectangle selectionRect = InputHandler.CreateRectangle(
@@ -169,7 +148,7 @@ namespace HaCreator.MapEditor
                     MultiBoard.VirtualToPhysical(mapInfo.VR.Value.X, centerPoint.X, hScroll, 0),
                     MultiBoard.VirtualToPhysical(mapInfo.VR.Value.Y, centerPoint.Y, vScroll, 0),
                     mapInfo.VR.Value.Width, mapInfo.VR.Value.Height), UserSettings.VRColor);
-            if (miniMap != null && UserSettings.useMiniMap)//here comes the cool part ^_^
+            if (miniMap != null && UserSettings.useMiniMap) //here comes the cool part ^_^
             {
                 parent.FillRectangle(sprite, new Rectangle(0, 0, miniMap.Width, miniMap.Height), Color.Gray);
                 if (miniMapTexture == null) miniMapTexture = BoardItem.TextureFromBitmap(parent.Device, miniMap);
@@ -177,7 +156,6 @@ namespace HaCreator.MapEditor
                 int x = hScroll / 16;
                 int y = vScroll / 16;
                 parent.DrawRectangle(sprite, new Rectangle(x, y, parent.Width / _mag, parent.Height / _mag), Color.Blue);
-                //parent.DrawRectangle(sprite, new Rectangle(0, 0, miniMap.Width, miniMap.Height), Color.Black);
                 parent.DrawLine(sprite, new Vector2(miniMap.Width + 1, 0), new Vector2(miniMap.Width + 1, miniMap.Height), Color.Black);
                 parent.DrawLine(sprite, new Vector2(0, miniMap.Height), new Vector2(miniMap.Width + 1, miniMap.Height), Color.Black);
             }
@@ -200,25 +178,6 @@ namespace HaCreator.MapEditor
         }
 
         #region Properties
-/*        public List<Rope> Ropes
-        {
-            get { return ropes; }
-        }
-
-        public List<FootholdLine> FootholdLines
-        {
-            get { return footholdLines; }
-        }
-
-        public List<RopeLine> RopeLines
-        {
-            get { return ropeLines; }
-        }*/
-
-        /*public List<ToolTip> ToolTips
-        {
-            get { return tooltips; }
-        }*/
 
         public UndoRedoManager UndoRedoMan
         {
@@ -228,19 +187,19 @@ namespace HaCreator.MapEditor
         public int mag
         {
             get { return _mag; }
-            set { _mag = value; }
+            set { lock (parent) { _mag = value; } }
         }
 
         public MapInfo MapInfo
         {
             get { return mapInfo; }
-            set { mapInfo = value; }
+            set { lock (parent) { mapInfo = value; } }
         }
 
         public System.Drawing.Bitmap MiniMap
         {
             get { return miniMap; }
-            set { miniMap = value; miniMapTexture = null; }
+            set { lock (parent) { miniMap = value; miniMapTexture = null; } }
         }
 
         public int hScroll
@@ -251,8 +210,11 @@ namespace HaCreator.MapEditor
             }
             set
             {
-                _hScroll = value;
-                parent.SetHScrollbarValue(_hScroll);
+                lock (parent)
+                {
+                    _hScroll = value;
+                    parent.SetHScrollbarValue(_hScroll);
+                }
             }
         }
 
@@ -269,8 +231,11 @@ namespace HaCreator.MapEditor
             }
             set
             {
-                _vScroll = value;
-                parent.SetVScrollbarValue(_vScroll);
+                lock (parent)
+                {
+                    _vScroll = value;
+                    parent.SetVScrollbarValue(_vScroll);
+                }
             }
         }
 
@@ -319,30 +284,6 @@ namespace HaCreator.MapEditor
             }
         }
 
-/*        public ItemTypes ApplicationSettings.editedTypes
-        {
-            get
-            {
-                return ApplicationSettings.editedTypes;
-            }
-            set
-            {
-                ApplicationSettings.editedTypes = value;
-            }
-        }
-
-        public ItemTypes ApplicationSettings.visibleTypes
-        {
-            get
-            {
-                return ApplicationSettings.visibleTypes;
-            }
-            set
-            {
-                ApplicationSettings.visibleTypes = value;
-            }
-        }*/
-
         public int SelectedLayerIndex
         {
             get
@@ -351,7 +292,10 @@ namespace HaCreator.MapEditor
             }
             set
             {
-                selectedLayerIndex = value;
+                lock (parent)
+                {
+                    selectedLayerIndex = value;
+                }
             }
         }
 
@@ -368,7 +312,7 @@ namespace HaCreator.MapEditor
         private Hashtable boundItems = new Hashtable();//key = point (distance); value = BoardItem
         private BoardItem parent = null;
         private bool selected = false;
-        private Board board;
+        protected Board board;
         private bool beforeAdding;
 
         /*temporary fields used by other functions*/
@@ -385,24 +329,30 @@ namespace HaCreator.MapEditor
         #region Methods
         public virtual void InsertItem()
         {
-            Board.BoardItems.Add(this, true);
+            lock (Board.ParentControl)
+            {
+                Board.BoardItems.Add(this, true);
+            }
         }
 
         public virtual void RemoveItem(ref List<UndoRedoAction> undoPipe)
         {
-            object[] keys = new object[boundItems.Keys.Count];
-            boundItems.Keys.CopyTo(keys, 0);
-            foreach (object key in keys) ((BoardItem)key).RemoveItem(ref undoPipe);
-
-            undoPipe.Add(UndoRedoManager.ItemDeleted(this));
-            if (parent != null)
+            lock (Board.ParentControl)
             {
-                if (!(parent is Mouse))
-                    undoPipe.Add(UndoRedoManager.ItemsUnlinked(parent, this, (Microsoft.Xna.Framework.Point)parent.boundItems[this]));
-                parent.ReleaseItem(this);
+                object[] keys = new object[boundItems.Keys.Count];
+                boundItems.Keys.CopyTo(keys, 0);
+                foreach (object key in keys) ((BoardItem)key).RemoveItem(ref undoPipe);
+
+                undoPipe.Add(UndoRedoManager.ItemDeleted(this));
+                if (parent != null)
+                {
+                    if (!(parent is Mouse))
+                        undoPipe.Add(UndoRedoManager.ItemsUnlinked(parent, this, (Microsoft.Xna.Framework.Point)parent.boundItems[this]));
+                    parent.ReleaseItem(this);
+                }
+                Selected = false;
+                board.BoardItems.Remove(this);
             }
-            Selected = false;
-            board.BoardItems.Remove(this);
         }
 
         public static Texture2D TextureFromBitmap(GraphicsDevice device, System.Drawing.Bitmap bitmap)
@@ -420,55 +370,67 @@ namespace HaCreator.MapEditor
 
         public virtual void BindItem(BoardItem item, Point distance)
         {
-            if (boundItems.Contains(item)) return;
-            boundItems[item] = distance;
-            item.parent = this;
+            lock (Board.ParentControl)
+            {
+                if (boundItems.Contains(item)) return;
+                boundItems[item] = distance;
+                item.parent = this;
+            }
         }
 
         public virtual void ReleaseItem(BoardItem item)
         {
-            if (boundItems.Contains(item))
+            lock (Board.ParentControl)
             {
-                boundItems.Remove(item);
-                item.parent = null;
+                if (boundItems.Contains(item))
+                {
+                    boundItems.Remove(item);
+                    item.parent = null;
+                }
             }
         }
 
         public virtual void Move(int x, int y)
         {
-            position.X = x;
-            position.Y = y;
-            object[] keys = new object[boundItems.Keys.Count];
-            boundItems.Keys.CopyTo(keys, 0);
-            foreach (object key in keys)
+            lock (Board.ParentControl)
             {
-                object value = boundItems[key];
-                ((BoardItem)key).Move(((Point)value).X + x, ((Point)value).Y + y);
-            }
-            if (this.parent != null && !(parent is Mouse))
-            {
-                parent.boundItems[this] = new Point(this.X - parent.X, this.Y - parent.Y);
-            }
-            if (this.tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
-            {
-                tempParent.boundItems[this] = new Point(this.X - tempParent.X, this.Y - tempParent.Y);
+                position.X = x;
+                position.Y = y;
+                object[] keys = new object[boundItems.Keys.Count];
+                boundItems.Keys.CopyTo(keys, 0);
+                foreach (object key in keys)
+                {
+                    object value = boundItems[key];
+                    ((BoardItem)key).Move(((Point)value).X + x, ((Point)value).Y + y);
+                }
+                if (this.parent != null && !(parent is Mouse))
+                {
+                    parent.boundItems[this] = new Point(this.X - parent.X, this.Y - parent.Y);
+                }
+                if (this.tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
+                {
+                    tempParent.boundItems[this] = new Point(this.X - tempParent.X, this.Y - tempParent.Y);
+                }
             }
         }
 
         public void SnapMove(int x, int y)
         {
-            position.X = x;
-            position.Y = y;
-            object[] keys = new object[boundItems.Keys.Count];
-            boundItems.Keys.CopyTo(keys, 0);
-            foreach (object key in keys)
+            lock (Board.ParentControl)
             {
-                object value = boundItems[key];
-                ((BoardItem)key).Move(((Point)value).X + x, ((Point)value).Y + y);
-            }
-            if (this.tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
-            {
-                tempParent.boundItems[this] = new Point(this.X - tempParent.X, this.Y - tempParent.Y);
+                position.X = x;
+                position.Y = y;
+                object[] keys = new object[boundItems.Keys.Count];
+                boundItems.Keys.CopyTo(keys, 0);
+                foreach (object key in keys)
+                {
+                    object value = boundItems[key];
+                    ((BoardItem)key).Move(((Point)value).X + x, ((Point)value).Y + y);
+                }
+                if (this.tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
+                {
+                    tempParent.boundItems[this] = new Point(this.X - tempParent.X, this.Y - tempParent.Y);
+                }
             }
         }
 
@@ -483,37 +445,25 @@ namespace HaCreator.MapEditor
 
         public virtual bool IsPixelTransparent(int x, int y)
         {
-            System.Drawing.Bitmap image = this.Image;
-            if (this is IFlippable && ((IFlippable)this).Flip)
-                x = image.Width - x;
-            return image.GetPixel(x, y).A == 0;
+            lock (Board.ParentControl)
+            {
+                System.Drawing.Bitmap image = this.Image;
+                if (this is IFlippable && ((IFlippable)this).Flip)
+                    x = image.Width - x;
+                return image.GetPixel(x, y).A == 0;
+            }
         }
-
-/*        public virtual bool IsRectrangleTransparent(int x1, int y1, int x2, int y2)
-        {
-            if (x2 == x1 || y2 == y1) return true;
-            this.Image.Save(@"D:\rofl.png", System.Drawing.Imaging.ImageFormat.Png);
-            System.Drawing.Imaging.BitmapData data = this.Image.LockBits(new System.Drawing.Rectangle(x1, y1, x2 - x1, y2 - y1), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            byte[] dataBytes = new byte[data.Height * data.Stride];
-            Marshal.Copy(data.Scan0,dataBytes,0,dataBytes.Length);
-            for (int iy = 0; iy < data.Height; iy++)
-                for (int ix = 0; ix < data.Width; ix++)
-                    if (dataBytes[iy * data.Stride + ix * 4 + 3] != 0)
-                    {
-                        this.Image.UnlockBits(data);
-                        return true;
-                    }
-            this.Image.UnlockBits(data);
-            return false;
-        }*/
 
         public bool BoundToSelectedItem(Board board)
         {
-            BoardItem currItem = Parent;
-            while (currItem != null)
+            lock (Board.ParentControl)
             {
-                if (board.SelectedItems.Contains(currItem)) return true;
-                else currItem = currItem.Parent;
+                BoardItem currItem = Parent;
+                while (currItem != null)
+                {
+                    if (board.SelectedItems.Contains(currItem)) return true;
+                    else currItem = currItem.Parent;
+                }
             }
             return false;
         }
@@ -525,8 +475,8 @@ namespace HaCreator.MapEditor
         public abstract ItemTypes Type { get; }
         public abstract MapleDrawableInfo BaseInfo { get; }
 
-        public virtual int Width { get { return Image.Width; } }
-        public virtual int Height { get { return Image.Height; } }
+        public abstract int Width { get; }
+        public abstract int Height { get; }
         public virtual int X
         {
             get
@@ -593,16 +543,19 @@ namespace HaCreator.MapEditor
             }
             set
             {
-                if (selected == value) return;
-                selected = value;
-                if (value && !board.SelectedItems.Contains(this))
-                    board.SelectedItems.Add(this);
-                else if (!value && board.SelectedItems.Contains(this))
-                    board.SelectedItems.Remove(this);
-                if (board.SelectedItems.Count == 1)
-                    board.ParentControl.OnSelectedItemChanged(board.SelectedItems[0]);
-                else if (board.SelectedItems.Count == 0)
-                    board.ParentControl.OnSelectedItemChanged(null);
+                lock (Board.ParentControl)
+                {
+                    if (selected == value) return;
+                    selected = value;
+                    if (value && !board.SelectedItems.Contains(this))
+                        board.SelectedItems.Add(this);
+                    else if (!value && board.SelectedItems.Contains(this))
+                        board.SelectedItems.Remove(this);
+                    if (board.SelectedItems.Count == 1)
+                        board.ParentControl.OnSelectedItemChanged(board.SelectedItems[0]);
+                    else if (board.SelectedItems.Count == 0)
+                        board.ParentControl.OnSelectedItemChanged(null);
+                }
             }
         }
 

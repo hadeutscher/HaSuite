@@ -163,11 +163,11 @@
     <Compile Include="GUI\InstanceEditor\TooltipInstanceEditor.Designer.cs">
       <DependentUpon>TooltipInstanceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\InstanceEditor\InstanceEditorBase.cs">
+    <Compile Include="GUI\EditorBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\InstanceEditor\InstanceEditorBase.Designer.cs">
-      <DependentUpon>InstanceEditorBase.cs</DependentUpon>
+    <Compile Include="GUI\EditorBase.Designer.cs">
+      <DependentUpon>EditorBase.cs</DependentUpon>
     </Compile>
     <Compile Include="ThirdParty\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
@@ -344,6 +344,9 @@
     <EmbeddedResource Include="CustomControls\AlphaColorPicker.resx">
       <DependentUpon>AlphaColorPicker.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\DirectXHolder.resx">
+      <DependentUpon>DirectXHolder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\EditorPanels\BackgroundPanel.resx">
       <DependentUpon>BackgroundPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -393,8 +396,8 @@
     <EmbeddedResource Include="GUI\InstanceEditor\TooltipInstanceEditor.resx">
       <DependentUpon>TooltipInstanceEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\InstanceEditor\InstanceEditorBase.resx">
-      <DependentUpon>InstanceEditorBase.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\EditorBase.resx">
+      <DependentUpon>EditorBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\InstanceEditor\MapBrowser.resx">
       <DependentUpon>MapBrowser.cs</DependentUpon>

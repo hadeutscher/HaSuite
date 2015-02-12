@@ -25,6 +25,10 @@ namespace HaCreator.MapEditor
 
         public void AddUndoBatch(List<UndoRedoAction> actions)
         {
+            if (actions.Count == 0)
+            {
+                return;
+            }
             UndoRedoBatch batch = new UndoRedoBatch() { Actions = actions };
             UndoList.Add(batch);
             RedoList.Clear();
@@ -121,24 +125,30 @@ namespace HaCreator.MapEditor
 
         public void Undo()
         {
-            UndoRedoBatch action = UndoList[UndoList.Count - 1];
-            action.UndoRedo();
-            action.SwitchActions();
-            UndoList.RemoveAt(UndoList.Count - 1);
-            RedoList.Add(action);
-            parentBoard.ParentControl.UndoListChanged();
-            parentBoard.ParentControl.RedoListChanged();
+            lock (parentBoard.ParentControl)
+            {
+                UndoRedoBatch action = UndoList[UndoList.Count - 1];
+                action.UndoRedo();
+                action.SwitchActions();
+                UndoList.RemoveAt(UndoList.Count - 1);
+                RedoList.Add(action);
+                parentBoard.ParentControl.UndoListChanged();
+                parentBoard.ParentControl.RedoListChanged();
+            }
         }
 
         public void Redo()
         {
-            UndoRedoBatch action = RedoList[RedoList.Count - 1];
-            action.UndoRedo();
-            action.SwitchActions();
-            RedoList.RemoveAt(RedoList.Count - 1);
-            UndoList.Add(action);
-            parentBoard.ParentControl.UndoListChanged();
-            parentBoard.ParentControl.RedoListChanged();
+            lock (parentBoard.ParentControl)
+            {
+                UndoRedoBatch action = RedoList[RedoList.Count - 1];
+                action.UndoRedo();
+                action.SwitchActions();
+                RedoList.RemoveAt(RedoList.Count - 1);
+                UndoList.Add(action);
+                parentBoard.ParentControl.UndoListChanged();
+                parentBoard.ParentControl.RedoListChanged();
+            }
         }
     }
 
@@ -248,7 +258,6 @@ namespace HaCreator.MapEditor
                         layerInfoItem.LayerNumber = (int)ParamA;
                     ((BoardItem)((List<IContainsLayerInfo>)ParamC)[0]).Board.Layers[(int)ParamA].RecheckTileSet();
                     ((BoardItem)((List<IContainsLayerInfo>)ParamC)[0]).Board.Layers[(int)ParamB].RecheckTileSet();
-                    ((BoardItem)((List<IContainsLayerInfo>)ParamC)[0]).Board.ParentControl.RenderFrame();
                     break;
                 case UndoRedoType.RopeAdded:
                     foo = new List<UndoRedoAction>();
@@ -266,6 +275,12 @@ namespace HaCreator.MapEditor
                     break;
                 case UndoRedoType.MapCenterChanged:
                     //TODO
+                    break;
+                case UndoRedoType.LayerTSChanged:
+                    string ts_old = (string)ParamA;
+                    string ts_new = (string)ParamB;
+                    Layer l = (Layer)ParamC;
+                    l.ReplaceTS(ts_old);
                     break;
             }
         }
@@ -311,6 +326,7 @@ namespace HaCreator.MapEditor
                 case UndoRedoType.MapCenterChanged:
                 case UndoRedoType.ItemZChanged:
                 case UndoRedoType.VRChanged:
+                case UndoRedoType.LayerTSChanged:
                     object ParamBTemp = ParamB;
                     object ParamATemp = ParamA;
                     ParamA = ParamBTemp;
@@ -340,6 +356,7 @@ namespace HaCreator.MapEditor
         RopeAdded,
         ItemZChanged,
         VRChanged,
-        MapCenterChanged
+        MapCenterChanged,
+        LayerTSChanged
     }
 }

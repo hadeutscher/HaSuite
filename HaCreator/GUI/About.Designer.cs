@@ -82,8 +82,10 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Name = "About";
             this.Text = "About";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.About_KeyDown);
             this.ResumeLayout(false);
 
         }

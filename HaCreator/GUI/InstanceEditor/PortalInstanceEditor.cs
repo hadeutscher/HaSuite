@@ -18,7 +18,7 @@ using System.Collections;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class PortalInstanceEditor : InstanceEditorBase
+    public partial class PortalInstanceEditor : EditorBase
     {
         public PortalInstance item;
         private ControlRowManager rowMan;
@@ -33,17 +33,17 @@ namespace HaCreator.GUI.InstanceEditor
             this.item = item;
 
             rowMan = new ControlRowManager(new ControlRow[] { 
-                new ControlRow(new Control[] { pnLabel, pnBox }, 26, "pn"),
-                new ControlRow(new Control[] { tmLabel, tmBox, btnBrowseMap, thisMap }, 26, "tm"),
-                new ControlRow(new Control[] { tnLabel, tnBox, btnBrowseTn, leftBlankLabel }, 26, "tn"),
-                new ControlRow(new Control[] { scriptLabel, scriptBox }, 26, "script"),
-                new ControlRow(new Control[] { delayEnable, delayBox }, 26, "delay"),
-                new ControlRow(new Control[] { rangeEnable, xRangeLabel, hRangeBox, yRangeLabel, vRangeBox }, 26, "range"),
-                new ControlRow(new Control[] { impactLabel, hImpactEnable, hImpactBox, vImpactEnable, vImpactBox }, 26, "impact"),
-                new ControlRow(new Control[] { hideTooltip, onlyOnce }, 26, "bool"),
-                new ControlRow(new Control[] { imageLabel, portalImageList, portalImageBox }, okButton.Top - portalImageList.Top, "image"),
-                new ControlRow(new Control[] { okButton, cancelButton }, 26, "buttons")
-            }, this);
+            new ControlRow(new Control[] { pnLabel, pnBox }, 26, "pn"),
+            new ControlRow(new Control[] { tmLabel, tmBox, btnBrowseMap, thisMap }, 26, "tm"),
+            new ControlRow(new Control[] { tnLabel, tnBox, btnBrowseTn, leftBlankLabel }, 26, "tn"),
+            new ControlRow(new Control[] { scriptLabel, scriptBox }, 26, "script"),
+            new ControlRow(new Control[] { delayEnable, delayBox }, 26, "delay"),
+            new ControlRow(new Control[] { rangeEnable, xRangeLabel, hRangeBox, yRangeLabel, vRangeBox }, 26, "range"),
+            new ControlRow(new Control[] { impactLabel, hImpactEnable, hImpactBox, vImpactEnable, vImpactBox }, 26, "impact"),
+            new ControlRow(new Control[] { hideTooltip, onlyOnce }, 26, "bool"),
+            new ControlRow(new Control[] { imageLabel, portalImageList, portalImageBox }, okButton.Top - portalImageList.Top, "image"),
+            new ControlRow(new Control[] { okButton, cancelButton }, 26, "buttons")
+        }, this);
 
             delayEnable.Tag = delayBox;
             hImpactEnable.Tag = hImpactBox;
@@ -88,218 +88,221 @@ namespace HaCreator.GUI.InstanceEditor
 
         protected override void okButton_Click(object sender, EventArgs e)
         {
-            List<UndoRedoAction> actions = new List<UndoRedoAction>();
-            if (xInput.Value != item.X || yInput.Value != item.Y)
+            lock (item.Board.ParentControl)
             {
-                actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
-                item.Move((int)xInput.Value, (int)yInput.Value);
-            }
-            if (actions.Count > 0)
-                item.Board.UndoRedoMan.AddUndoBatch(actions);
-            
-            item.pt = (PortalType)ptComboBox.SelectedIndex;
-            switch (item.pt)
-            {
-                case PortalType.PORTALTYPE_STARTPOINT:
-                    item.pn = "sp";
-                    item.tm = 999999999;
-                    item.tn = "";
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = null;
-                    item.script = null;
-                    item.onlyOnce = null;
-                    item.hideTooltip = null;
-                    break;
-                case PortalType.PORTALTYPE_INVISIBLE:
-                    item.pn = pnBox.Text;
-                    item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
-                    item.tn = tnBox.Text;
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_VISIBLE:
-                    item.pn = pnBox.Text;
-                    item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
-                    item.tn = tnBox.Text;
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_COLLISION:
-                    item.pn = pnBox.Text;
-                    item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
-                    item.tn = tnBox.Text;
-                    item.hRange = GetOptionalInt(rangeEnable, hRangeBox);
-                    item.vRange = GetOptionalInt(rangeEnable, vRangeBox);
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_CHANGABLE:
-                    item.pn = pnBox.Text;
-                    item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
-                    item.tn = tnBox.Text;
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_CHANGABLE_INVISIBLE:
-                    item.pn = pnBox.Text;
-                    item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
-                    item.tn = tnBox.Text;
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_TOWNPORTAL_POINT:
-                    item.pn = "tp";
-                    item.tm = 999999999;
-                    item.tn = "";
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = null;
-                    item.script = null;
-                    item.onlyOnce = null;
-                    item.hideTooltip = null;
-                    break;
-                case PortalType.PORTALTYPE_SCRIPT:
-                    item.pn = pnBox.Text;
-                    item.tm = 999999999;
-                    item.tn = "";
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = null;
-                    item.script = scriptBox.Text;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_SCRIPT_INVISIBLE:
-                    item.pn = pnBox.Text;
-                    item.tm = 999999999;
-                    item.tn = "";
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = null;
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_COLLISION_SCRIPT:
-                    item.pn = pnBox.Text;
-                    item.tm = 999999999;
-                    item.tn = "";
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = scriptBox.Text;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_HIDDEN:
-                    item.pn = pnBox.Text;
-                    item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
-                    item.tn = tnBox.Text;
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_SCRIPT_HIDDEN:
-                    item.pn = pnBox.Text;
-                    item.tm = 999999999;
-                    item.tn = "";
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP:
-                    item.pn = pnBox.Text;
-                    item.tm = 999999999;
-                    item.tn = tnBox.Text;
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = null;
-                    item.verticalImpact = null;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_COLLISION_CUSTOM_IMPACT:
-                    item.pn = pnBox.Text;
-                    item.tm = 999999999;
-                    item.tn = "";
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = GetOptionalInt(hImpactEnable, hImpactBox);
-                    item.verticalImpact = (int)vImpactBox.Value;
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-                case PortalType.PORTALTYPE_COLLISION_UNKNOWN_PCIG:
-                    item.pn = pnBox.Text;
-                    item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
-                    item.tn = tnBox.Text;
-                    item.hRange = null;
-                    item.vRange = null;
-                    item.horizontalImpact = GetOptionalInt(hImpactEnable, hImpactBox);
-                    item.verticalImpact = GetOptionalInt(vImpactEnable, vImpactBox);
-                    item.delay = GetOptionalInt(delayEnable, delayBox);
-                    item.script = null;
-                    item.onlyOnce = onlyOnce.Checked;
-                    item.hideTooltip = hideTooltip.Checked;
-                    break;
-            }
+                List<UndoRedoAction> actions = new List<UndoRedoAction>();
+                if (xInput.Value != item.X || yInput.Value != item.Y)
+                {
+                    actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
+                    item.Move((int)xInput.Value, (int)yInput.Value);
+                }
+                if (actions.Count > 0)
+                    item.Board.UndoRedoMan.AddUndoBatch(actions);
 
-            if (portalImageList.SelectedItem != null && Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex] != null)
-            {
-               item.image = (string)portalImageList.SelectedItem;
+                item.pt = (PortalType)ptComboBox.SelectedIndex;
+                switch (item.pt)
+                {
+                    case PortalType.PORTALTYPE_STARTPOINT:
+                        item.pn = "sp";
+                        item.tm = 999999999;
+                        item.tn = "";
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = null;
+                        item.script = null;
+                        item.onlyOnce = null;
+                        item.hideTooltip = null;
+                        break;
+                    case PortalType.PORTALTYPE_INVISIBLE:
+                        item.pn = pnBox.Text;
+                        item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
+                        item.tn = tnBox.Text;
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_VISIBLE:
+                        item.pn = pnBox.Text;
+                        item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
+                        item.tn = tnBox.Text;
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_COLLISION:
+                        item.pn = pnBox.Text;
+                        item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
+                        item.tn = tnBox.Text;
+                        item.hRange = GetOptionalInt(rangeEnable, hRangeBox);
+                        item.vRange = GetOptionalInt(rangeEnable, vRangeBox);
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_CHANGABLE:
+                        item.pn = pnBox.Text;
+                        item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
+                        item.tn = tnBox.Text;
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_CHANGABLE_INVISIBLE:
+                        item.pn = pnBox.Text;
+                        item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
+                        item.tn = tnBox.Text;
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_TOWNPORTAL_POINT:
+                        item.pn = "tp";
+                        item.tm = 999999999;
+                        item.tn = "";
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = null;
+                        item.script = null;
+                        item.onlyOnce = null;
+                        item.hideTooltip = null;
+                        break;
+                    case PortalType.PORTALTYPE_SCRIPT:
+                        item.pn = pnBox.Text;
+                        item.tm = 999999999;
+                        item.tn = "";
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = null;
+                        item.script = scriptBox.Text;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_SCRIPT_INVISIBLE:
+                        item.pn = pnBox.Text;
+                        item.tm = 999999999;
+                        item.tn = "";
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = null;
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_COLLISION_SCRIPT:
+                        item.pn = pnBox.Text;
+                        item.tm = 999999999;
+                        item.tn = "";
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = scriptBox.Text;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_HIDDEN:
+                        item.pn = pnBox.Text;
+                        item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
+                        item.tn = tnBox.Text;
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_SCRIPT_HIDDEN:
+                        item.pn = pnBox.Text;
+                        item.tm = 999999999;
+                        item.tn = "";
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP:
+                        item.pn = pnBox.Text;
+                        item.tm = 999999999;
+                        item.tn = tnBox.Text;
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = null;
+                        item.verticalImpact = null;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_COLLISION_CUSTOM_IMPACT:
+                        item.pn = pnBox.Text;
+                        item.tm = 999999999;
+                        item.tn = "";
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = GetOptionalInt(hImpactEnable, hImpactBox);
+                        item.verticalImpact = (int)vImpactBox.Value;
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                    case PortalType.PORTALTYPE_COLLISION_UNKNOWN_PCIG:
+                        item.pn = pnBox.Text;
+                        item.tm = thisMap.Checked ? item.Board.MapInfo.id : (int)tmBox.Value;
+                        item.tn = tnBox.Text;
+                        item.hRange = null;
+                        item.vRange = null;
+                        item.horizontalImpact = GetOptionalInt(hImpactEnable, hImpactBox);
+                        item.verticalImpact = GetOptionalInt(vImpactEnable, vImpactBox);
+                        item.delay = GetOptionalInt(delayEnable, delayBox);
+                        item.script = null;
+                        item.onlyOnce = onlyOnce.Checked;
+                        item.hideTooltip = hideTooltip.Checked;
+                        break;
+                }
+
+                if (portalImageList.SelectedItem != null && Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex] != null)
+                {
+                    item.image = (string)portalImageList.SelectedItem;
+                }
             }
             Close();
         }
@@ -491,9 +494,15 @@ namespace HaCreator.GUI.InstanceEditor
 
         private void portalImageList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (portalImageList.SelectedItem == null) return;
-            else if ((string)portalImageList.SelectedItem == "default") portalImageBox.Image = Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex].DefaultImage;
-            else portalImageBox.Image = Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex][(string)portalImageList.SelectedItem];
+            lock (item.Board.ParentControl)
+            {
+                if (portalImageList.SelectedItem == null) 
+                    return;
+                else if ((string)portalImageList.SelectedItem == "default") 
+                    portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex].DefaultImage);
+                else 
+                    portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex][(string)portalImageList.SelectedItem]);
+            }
         }
 
         private void rangeEnable_CheckedChanged(object sender, EventArgs e)

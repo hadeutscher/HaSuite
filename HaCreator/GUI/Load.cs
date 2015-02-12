@@ -30,7 +30,7 @@ using HaCreator.WzStructure;
 using MapleLib.WzLib.Serialization;
 using HaRepackerLib;
 
-namespace HaCreator
+namespace HaCreator.GUI
 {
     public partial class Load : System.Windows.Forms.Form
     {

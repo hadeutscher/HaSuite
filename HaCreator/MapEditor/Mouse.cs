@@ -55,116 +55,131 @@ namespace HaCreator.MapEditor
 
         public void PlaceObject()
         {
-            if (state == MouseState.StaticObjectAdding || state == MouseState.RandomTiles)
+            lock (Board.ParentControl)
             {
-                Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction>() { UndoRedoManager.ItemAdded(currAddedObj) });
-                //Board.BoardItems.Add(currAddedObj.CreateInstance(Board.Layers[Board.SelectedLayerIndex], Board, x, y, 50, false, false));
-                currAddedObj.BeforeAdding = false;
-                ReleaseItem(currAddedObj);
-                if (currAddedObj is LayeredItem)
+                if (state == MouseState.StaticObjectAdding || state == MouseState.RandomTiles)
                 {
-                    int highestZ = 0;
-                    foreach (LayeredItem item in Board.BoardItems.TileObjs)
-                        if (item.Z > highestZ) highestZ = item.Z;
-                    currAddedObj.Z = highestZ;
-                    Board.BoardItems.Sort();
+                    Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(currAddedObj) });
+                    //Board.BoardItems.Add(currAddedObj.CreateInstance(Board.Layers[Board.SelectedLayerIndex], Board, x, y, 50, false, false));
+                    currAddedObj.BeforeAdding = false;
+                    ReleaseItem(currAddedObj);
+                    if (currAddedObj is LayeredItem)
+                    {
+                        int highestZ = 0;
+                        foreach (LayeredItem item in Board.BoardItems.TileObjs)
+                            if (item.Z > highestZ) highestZ = item.Z;
+                        currAddedObj.Z = highestZ;
+                        Board.BoardItems.Sort();
+                    }
+                    if (state == MouseState.StaticObjectAdding)
+                        currAddedObj = currAddedInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false, true);
+                    else
+                        currAddedObj = tileRandomList[NextInt32(tileRandomList.Length)].CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false, true);
+                    Board.BoardItems.Add(currAddedObj, false);
+                    BindItem(currAddedObj, new Microsoft.Xna.Framework.Point(currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2));
                 }
-                if (state == MouseState.StaticObjectAdding)
-                    currAddedObj = currAddedInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false, true);
-                else
-                    currAddedObj = tileRandomList[NextInt32(tileRandomList.Length)].CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false, true);
-                Board.BoardItems.Add(currAddedObj, false);
-                BindItem(currAddedObj, new Microsoft.Xna.Framework.Point(currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2));
-            }
-            else if (state == MouseState.Chairs)
-            {
-                Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(currAddedObj) });
-                ReleaseItem(currAddedObj);
-                currAddedObj = new Chair(Board, X, Y, true);
-                Board.BoardItems.Add(currAddedObj, false);
-                BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
-            }
-            else if (state == MouseState.Ropes)
-            {
-                int count = BoundItems.Count;
-                object[] keys = new object[count];
-                BoundItems.Keys.CopyTo(keys, 0);
-                RopeAnchor anchor = (RopeAnchor)keys[0];
-                ReleaseItem(anchor);
-                if (count == 1)
+                else if (state == MouseState.Chairs)
                 {
-                    Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.RopeAdded(anchor.ParentRope) });
-                    CreateRope();
+                    Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(currAddedObj) });
+                    ReleaseItem(currAddedObj);
+                    currAddedObj = new Chair(Board, X, Y, true);
+                    Board.BoardItems.Add(currAddedObj, false);
+                    BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
                 }
-            }
-            else if (state == MouseState.Tooltip)
-            {
-                int count = BoundItems.Count;
-                object[] keys = new object[count];
-                BoundItems.Keys.CopyTo(keys, 0);
-                ToolTipDot dot = (ToolTipDot)keys[0];
-                ReleaseItem(dot);
-                if (count == 1)
+                else if (state == MouseState.Ropes)
                 {
-                    Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(dot.ParentTooltip) });
-                    CreateTooltip();
+                    int count = BoundItems.Count;
+                    object[] keys = new object[count];
+                    BoundItems.Keys.CopyTo(keys, 0);
+                    RopeAnchor anchor = (RopeAnchor)keys[0];
+                    ReleaseItem(anchor);
+                    if (count == 1)
+                    {
+                        Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.RopeAdded(anchor.ParentRope) });
+                        CreateRope();
+                    }
+                }
+                else if (state == MouseState.Tooltip)
+                {
+                    int count = BoundItems.Count;
+                    object[] keys = new object[count];
+                    BoundItems.Keys.CopyTo(keys, 0);
+                    ToolTipDot dot = (ToolTipDot)keys[0];
+                    ReleaseItem(dot);
+                    if (count == 1)
+                    {
+                        Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(dot.ParentTooltip) });
+                        CreateTooltip();
+                    }
                 }
             }
         }
 
         private void CreateRope()
         {
-            Rope rope = new Rope(Board, X, Y, Y, false, Board.SelectedLayerIndex, true);
-            Board.BoardItems.Ropes.Add(rope);
-            BindItem(rope.FirstAnchor, new Xna.Point());
-            BindItem(rope.SecondAnchor, new Xna.Point());
+            lock (Board.ParentControl)
+            {
+                Rope rope = new Rope(Board, X, Y, Y, false, Board.SelectedLayerIndex, true);
+                Board.BoardItems.Ropes.Add(rope);
+                BindItem(rope.FirstAnchor, new Xna.Point());
+                BindItem(rope.SecondAnchor, new Xna.Point());
+            }
         }
 
         private void CreateTooltip()
         {
-            ToolTip tt = new ToolTip(Board, new Xna.Rectangle(X, Y, 0, 0), "Title", "Description");
-            Board.BoardItems.ToolTips.Add(tt);
-            BindItem(tt.PointA, new Xna.Point());
-            BindItem(tt.PointC, new Xna.Point());
+            lock (Board.ParentControl)
+            {
+                ToolTip tt = new ToolTip(Board, new Xna.Rectangle(X, Y, 0, 0), "Title", "Description");
+                Board.BoardItems.ToolTips.Add(tt);
+                BindItem(tt.PointA, new Xna.Point());
+                BindItem(tt.PointC, new Xna.Point());
+            }
         }
 
 
         public void CreateFhAnchor()
         {
-            FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex, false);
-            Board.BoardItems.FHAnchors.Add(fhAnchor);
-            Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(fhAnchor) });
-            if (connectedLines.Count == 0)
+            lock (Board.ParentControl)
             {
-                Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
-            }
-            else
-            {
-                connectedLines[0].ConnectSecondDot(fhAnchor);
-                Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
+                FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex, false);
+                Board.BoardItems.FHAnchors.Add(fhAnchor);
+                Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(fhAnchor) });
+                if (connectedLines.Count == 0)
+                {
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
+                }
+                else
+                {
+                    connectedLines[0].ConnectSecondDot(fhAnchor);
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
+                }
             }
         }
 
         public void TryConnectFoothold()
         {
-            Xna.Point pos = new Xna.Point(X,Y);
-            foreach (FootholdAnchor anchor in Board.BoardItems.FHAnchors)
+            lock (Board.ParentControl)
             {
-                if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom))
+                Xna.Point pos = new Xna.Point(X, Y);
+                foreach (FootholdAnchor anchor in Board.BoardItems.FHAnchors)
                 {
-                    if (connectedLines.Count > 0)
+                    if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom))
                     {
-                        if (connectedLines[0].FirstDot != anchor && !FootholdLine.Exists(anchor.X, anchor.Y, connectedLines[0].FirstDot.X, connectedLines[0].FirstDot.Y, Board))
+                        if (connectedLines.Count > 0)
                         {
-                            Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.LineAdded(connectedLines[0], connectedLines[0].FirstDot, anchor) });
-                            connectedLines[0].ConnectSecondDot(anchor);
-                            FootholdLine fh = new FootholdLine(Board, anchor);
-                            Board.BoardItems.FootholdLines.Add(fh);
+                            if (connectedLines[0].FirstDot != anchor && !FootholdLine.Exists(anchor.X, anchor.Y, connectedLines[0].FirstDot.X, connectedLines[0].FirstDot.Y, Board))
+                            {
+                                Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.LineAdded(connectedLines[0], connectedLines[0].FirstDot, anchor) });
+                                connectedLines[0].ConnectSecondDot(anchor);
+                                FootholdLine fh = new FootholdLine(Board, anchor);
+                                Board.BoardItems.FootholdLines.Add(fh);
+                            }
                         }
-                    }
-                    else
-                    {
-                        Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor));
+                        else
+                        {
+                            Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor));
+                        }
                     }
                 }
             }
@@ -172,86 +187,110 @@ namespace HaCreator.MapEditor
 
         public void Clear()
         {
-            List<UndoRedoAction> foo = new List<UndoRedoAction>(); //the undoPipe here has no meaning, we don't need any undo info anyway
-            if (currAddedObj != null)
+            lock (Board.ParentControl)
             {
-                currAddedObj.RemoveItem(ref foo);
-                currAddedObj = null;
+                List<UndoRedoAction> foo = new List<UndoRedoAction>(); //the undoPipe here has no meaning, we don't need any undo info anyway
+                if (currAddedObj != null)
+                {
+                    currAddedObj.RemoveItem(ref foo);
+                    currAddedObj = null;
+                }
+                if (state == MouseState.Ropes || state == MouseState.Tooltip)
+                {
+                    object[] keys = new object[BoundItems.Keys.Count];
+                    BoundItems.Keys.CopyTo(keys, 0);
+                    if (state == MouseState.Ropes)
+                        ((RopeAnchor)keys[0]).RemoveItem(ref foo);
+                    else
+                        ((ToolTipDot)keys[0]).ParentTooltip.RemoveItem(ref foo);
+                }
+                else if (state == MouseState.Footholds && connectedLines.Count > 0)
+                {
+                    FootholdLine fh = (FootholdLine)connectedLines[0];
+                    fh.Remove(false, ref foo);
+                    Board.BoardItems.FootholdLines.Remove(fh);
+                }
+                InputHandler.ClearBoundItems(Board);
+                InputHandler.ClearSelectedItems(Board);
+                IsDown = false;
             }
-            if (state == MouseState.Ropes || state == MouseState.Tooltip)
-            {
-                object[] keys = new object[BoundItems.Keys.Count];
-                BoundItems.Keys.CopyTo(keys, 0);
-                if (state == MouseState.Ropes)
-                    ((RopeAnchor)keys[0]).RemoveItem(ref foo);
-                else
-                    ((ToolTipDot)keys[0]).ParentTooltip.RemoveItem(ref foo);
-            }
-            else if (state == MouseState.Footholds && connectedLines.Count > 0)
-            {
-                FootholdLine fh = (FootholdLine)connectedLines[0];
-                fh.Remove(false, ref foo);
-                Board.BoardItems.FootholdLines.Remove(fh);
-            }
-            InputHandler.ClearBoundItems(Board);
-            InputHandler.ClearSelectedItems(Board);
-            IsDown = false;
         }
 
         public void SelectionMode()
         {
-            Clear();
-            currAddedInfo = null;
-            tileRandomList = null;
-            state = MouseState.Selection;
+            lock (Board.ParentControl)
+            {
+                Clear();
+                currAddedInfo = null;
+                tileRandomList = null;
+                state = MouseState.Selection;
+            }
         }
 
         public void SetHeldInfo(MapleDrawableInfo newInfo)
         {
-            Clear();
-            if (newInfo.Image == null) ((MapleExtractableInfo)newInfo).ParseImage();
-            currAddedInfo = newInfo;
-            currAddedObj = newInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - newInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - newInfo.Image.Height / 2, 50, false, true);
-            Board.BoardItems.Add(currAddedObj, false);
-            BindItem(currAddedObj, new Microsoft.Xna.Framework.Point(newInfo.Origin.X - newInfo.Image.Width / 2, newInfo.Origin.Y - newInfo.Image.Height / 2));
-            state = MouseState.StaticObjectAdding;
+            lock (Board.ParentControl)
+            {
+                Clear();
+                if (newInfo.Image == null) ((MapleExtractableInfo)newInfo).ParseImage();
+                currAddedInfo = newInfo;
+                currAddedObj = newInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - newInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - newInfo.Image.Height / 2, 50, false, true);
+                Board.BoardItems.Add(currAddedObj, false);
+                BindItem(currAddedObj, new Microsoft.Xna.Framework.Point(newInfo.Origin.X - newInfo.Image.Width / 2, newInfo.Origin.Y - newInfo.Image.Height / 2));
+                state = MouseState.StaticObjectAdding;
+            }
         }
 
         public void SetRandomTilesMode(TileInfo[] tileList)
         {
-            Clear();
-            tileRandomList = tileList;
-            SetHeldInfo(tileRandomList[NextInt32(tileRandomList.Length)]);
-            state = MouseState.RandomTiles;
+            lock (Board.ParentControl)
+            {
+                Clear();
+                tileRandomList = tileList;
+                SetHeldInfo(tileRandomList[NextInt32(tileRandomList.Length)]);
+                state = MouseState.RandomTiles;
+            }
         }
 
         public void SetFootholdMode()
         {
-            Clear();
-            state = MouseState.Footholds;
+            lock (Board.ParentControl)
+            {
+                Clear();
+                state = MouseState.Footholds;
+            }
         }
 
         public void SetRopeMode()
         {
-            Clear();
-            state = MouseState.Ropes;
-            CreateRope();
+            lock (Board.ParentControl)
+            {
+                Clear();
+                state = MouseState.Ropes;
+                CreateRope();
+            }
         }
 
         public void SetChairMode()
         {
-            Clear();
-            currAddedObj = new Chair(Board, X, Y, true);
-            Board.BoardItems.Add(currAddedObj, false);
-            BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
-            state = MouseState.Chairs;
+            lock (Board.ParentControl)
+            {
+                Clear();
+                currAddedObj = new Chair(Board, X, Y, true);
+                Board.BoardItems.Add(currAddedObj, false);
+                BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
+                state = MouseState.Chairs;
+            }
         }
 
         public void SetTooltipMode()
         {
-            Clear();
-            state = MouseState.Tooltip;
-            CreateTooltip();
+            lock (Board.ParentControl)
+            {
+                Clear();
+                state = MouseState.Tooltip;
+                CreateTooltip();
+            }
         }
 
         #region Properties
@@ -336,19 +375,25 @@ namespace HaCreator.MapEditor
 
         public override void BindItem(BoardItem item, Microsoft.Xna.Framework.Point distance)
         {
-            if (BoundItems.Contains(item)) return;
-            BoundItems[item] = distance;
-            item.tempParent = item.Parent;
-            item.Parent = this;
+            lock (Board.ParentControl)
+            {
+                if (BoundItems.Contains(item)) return;
+                BoundItems[item] = distance;
+                item.tempParent = item.Parent;
+                item.Parent = this;
+            }
         }
 
         public override void ReleaseItem(BoardItem item)
         {
-            if (BoundItems.Contains(item))
+            lock (Board.ParentControl)
             {
-                BoundItems.Remove(item);
-                item.Parent = item.tempParent;
-                item.tempParent = null;
+                if (BoundItems.Contains(item))
+                {
+                    BoundItems.Remove(item);
+                    item.Parent = item.tempParent;
+                    item.tempParent = null;
+                }
             }
         }
 

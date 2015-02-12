@@ -44,7 +44,6 @@ namespace HaCreator.CustomControls.EditorPanels
             hcsm.EnterEditMode(ItemTypes.Portals);
             hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((PortalInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();
-            hcsm.MultiBoard.RenderFrame();
             ((ImageViewer)sender).IsActive = true;
         }
     }

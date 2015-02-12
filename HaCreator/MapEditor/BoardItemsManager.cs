@@ -112,28 +112,19 @@ namespace HaCreator.MapEditor
         public MapleList<ToolTipDot> ToolTipDots = new MapleList<ToolTipDot>(ItemTypes.ToolTips, true);
 
         public List<Rope> Ropes = new List<Rope>();
-
-
-
         public IMapleList[] AllItemLists;
-//        public ItemTypes[] ListFilters;
+
+        private Board board;
 
         public IEnumerator GetEnumerator()
         {
             return new BoardItemsEnumerator(this);
         }
 
-        public BoardItemsManager()
+        public BoardItemsManager(Board board)
         {
-            /*Type t = this.GetType();
-            System.Reflection.FieldInfo[] fields = t.GetFields();
-            List<IList> lists = new List<IList>();
-            for (int i = 0; i < fields.Length; i++)
-                if (fields[i].Name != "AllItemLists" && fields[i].Name != "ListFilters") //making sure it's not AllItemLists inheriting from System.Array
-                    lists.Add((IList)fields[i].GetValue(this));
-            AllItemLists = lists.ToArray();*/
             AllItemLists = new IMapleList[] { BackBackgrounds, TileObjs, Mobs, NPCs, Reactors, Portals, FrontBackgrounds, FootholdLines, RopeLines, FHAnchors, RopeAnchors, Chairs, CharacterToolTips, ToolTips, ToolTipDots };
-            //ListFilters = new ItemTypes[] { ItemTypes.Backgrounds, ItemTypes.None, ItemTypes.Mobs, ItemTypes.NPCs, ItemTypes.Reactors, ItemTypes.Portals, ItemTypes.Backgrounds, ItemTypes.Footholds, ItemTypes.Ropes, ItemTypes.Footholds, ItemTypes.Ropes, ItemTypes.Chairs, ItemTypes.ToolTips, ItemTypes.ToolTips, ItemTypes.ToolTips };
+            this.board = board;
         }
 
         public void Clear()
@@ -143,66 +134,73 @@ namespace HaCreator.MapEditor
 
         public void Remove(BoardItem item)
         {
-            if (item is TileInstance || item is ObjectInstance)
-                TileObjs.Remove((LayeredItem)item);
-            else if (item is BackgroundInstance)
+            lock (board.ParentControl)
             {
-                if (((BackgroundInstance)item).front)
+                if (item is TileInstance || item is ObjectInstance)
+                    TileObjs.Remove((LayeredItem)item);
+                else if (item is BackgroundInstance)
                 {
-                    FrontBackgrounds.Remove((BackgroundInstance)item);
-                } else 
-                {
-                    BackBackgrounds.Remove((BackgroundInstance)item);
-                }
-            }
-            else
-            {
-                Type itemType = item.GetType();
-                foreach (IMapleList itemList in AllItemLists)
-                {
-                    Type listType = itemList.GetType().GetGenericArguments()[0];
-                    if (listType.FullName == itemType.FullName)
+                    if (((BackgroundInstance)item).front)
                     {
-                        itemList.Remove(item);
-                        return;
+                        FrontBackgrounds.Remove((BackgroundInstance)item);
+                    }
+                    else
+                    {
+                        BackBackgrounds.Remove((BackgroundInstance)item);
                     }
                 }
-                throw new Exception("unknown type at boarditems.remove");
+                else
+                {
+                    Type itemType = item.GetType();
+                    foreach (IMapleList itemList in AllItemLists)
+                    {
+                        Type listType = itemList.GetType().GetGenericArguments()[0];
+                        if (listType.FullName == itemType.FullName)
+                        {
+                            itemList.Remove(item);
+                            return;
+                        }
+                    }
+                    throw new Exception("unknown type at boarditems.remove");
+                }
             }
         }
 
         public void Add(BoardItem item, bool sort)
         {
-            if (item is TileInstance || item is ObjectInstance)
+            lock (board.ParentControl)
             {
-                TileObjs.Add((LayeredItem)item);
-                if (sort) Sort();
-            }
-            else if (item is BackgroundInstance)
-            {
-                if (((BackgroundInstance)item).front)
+                if (item is TileInstance || item is ObjectInstance)
                 {
-                    FrontBackgrounds.Add((BackgroundInstance)item);
+                    TileObjs.Add((LayeredItem)item);
+                    if (sort) Sort();
+                }
+                else if (item is BackgroundInstance)
+                {
+                    if (((BackgroundInstance)item).front)
+                    {
+                        FrontBackgrounds.Add((BackgroundInstance)item);
+                    }
+                    else
+                    {
+                        BackBackgrounds.Add((BackgroundInstance)item);
+                    }
+                    if (sort) Sort();
                 }
                 else
                 {
-                    BackBackgrounds.Add((BackgroundInstance)item);
-                }
-                if (sort) Sort();
-            }
-            else
-            {
-                Type itemType = item.GetType();
-                foreach (IMapleList itemList in AllItemLists)
-                {
-                    Type listType = itemList.GetType().GetGenericArguments()[0];
-                    if (listType.FullName == itemType.FullName)
+                    Type itemType = item.GetType();
+                    foreach (IMapleList itemList in AllItemLists)
                     {
-                        itemList.Add(item);
-                        return;
+                        Type listType = itemList.GetType().GetGenericArguments()[0];
+                        if (listType.FullName == itemType.FullName)
+                        {
+                            itemList.Add(item);
+                            return;
+                        }
                     }
+                    throw new Exception("unknown type at boarditems.add");
                 }
-                throw new Exception("unknown type at boarditems.add");
             }
         }
 
@@ -215,31 +213,35 @@ namespace HaCreator.MapEditor
 
         private void SortLayers()
         {
-            for (int i = 0; i < 2; i++)
-                TileObjs.Sort(
-                    delegate(LayeredItem a, LayeredItem b)
-                    {
-                        if (a.Layer.LayerNumber > b.Layer.LayerNumber)
-                            return 1;
-                        else if (a.Layer.LayerNumber < b.Layer.LayerNumber)
-                            return -1;
-                        else
+            lock (board.ParentControl)
+            {
+
+                for (int i = 0; i < 2; i++)
+                    TileObjs.Sort(
+                        delegate(LayeredItem a, LayeredItem b)
                         {
-                            if ((a is TileInstance && b is TileInstance) || (a is ObjectInstance && b is ObjectInstance))
-                            {
-                                if (a.Z > b.Z)
-                                    return 1;
-                                else if (a.Z < b.Z)
-                                    return -1;
-                                else return 0;
-                            }
-                            else if (a is TileInstance && b is ObjectInstance)
+                            if (a.Layer.LayerNumber > b.Layer.LayerNumber)
                                 return 1;
-                            else
+                            else if (a.Layer.LayerNumber < b.Layer.LayerNumber)
                                 return -1;
+                            else
+                            {
+                                if ((a is TileInstance && b is TileInstance) || (a is ObjectInstance && b is ObjectInstance))
+                                {
+                                    if (a.Z > b.Z)
+                                        return 1;
+                                    else if (a.Z < b.Z)
+                                        return -1;
+                                    else return 0;
+                                }
+                                else if (a is TileInstance && b is ObjectInstance)
+                                    return 1;
+                                else
+                                    return -1;
+                            }
                         }
-                    }
-                );
+                    );
+            }
         }
 
         public int Count
@@ -268,28 +270,34 @@ namespace HaCreator.MapEditor
 
         private void SortBackBackgrounds()
         {
-            BackBackgrounds.Sort(
-                delegate(BackgroundInstance a, BackgroundInstance b)
-                {
+            lock (board.ParentControl)
+            {
+                BackBackgrounds.Sort(
+                    delegate(BackgroundInstance a, BackgroundInstance b)
+                    {
 
-                    if (a.Z > b.Z) return 1;
-                    else if (a.Z < b.Z) return -1;
-                    else return 0;
-                }
-            );
+                        if (a.Z > b.Z) return 1;
+                        else if (a.Z < b.Z) return -1;
+                        else return 0;
+                    }
+                );
+            }
         }
 
         private void SortFrontBackgrounds()
         {
-            FrontBackgrounds.Sort(
-                delegate(BackgroundInstance a, BackgroundInstance b)
-                {
+            lock (board.ParentControl)
+            {
+                FrontBackgrounds.Sort(
+                    delegate(BackgroundInstance a, BackgroundInstance b)
+                    {
 
-                    if (a.Z > b.Z) return 1;
-                    else if (a.Z < b.Z) return -1;
-                    else return 0;
-                }
-            );
+                        if (a.Z > b.Z) return 1;
+                        else if (a.Z < b.Z) return -1;
+                        else return 0;
+                    }
+                );
+            }
         }
     }
 }

@@ -28,11 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.vScrollBar = new System.Windows.Forms.VScrollBar();
             this.hScrollBar = new System.Windows.Forms.HScrollBar();
-            this.FPSReset = new System.Windows.Forms.Timer(this.components);
-            this.Renderer = new System.Windows.Forms.Timer(this.components);
             this.DxContainer = new HaCreator.DirectXHolder();
             this.SuspendLayout();
             // 
@@ -54,16 +51,6 @@
             this.hScrollBar.TabIndex = 2;
             this.hScrollBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar_Scroll);
             // 
-            // FPSReset
-            // 
-            this.FPSReset.Interval = 1000;
-            this.FPSReset.Tick += new System.EventHandler(this.ResetFps);
-            // 
-            // Renderer
-            // 
-            this.Renderer.Interval = 30;
-            this.Renderer.Tick += new System.EventHandler(this.Renderer_Tick);
-            // 
             // DxContainer
             // 
             this.DxContainer.Location = new System.Drawing.Point(3, 3);
@@ -74,6 +61,7 @@
             this.DxContainer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.DxContainer_MouseClick);
             this.DxContainer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.DxContainer_MouseDoubleClick);
             this.DxContainer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DxContainer_MouseDown);
+            this.DxContainer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DxContainer_MouseMove);
             this.DxContainer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DxContainer_MouseUp);
             // 
             // MultiBoard
@@ -94,7 +82,5 @@
         private DirectXHolder DxContainer;
         private System.Windows.Forms.VScrollBar vScrollBar;
         private System.Windows.Forms.HScrollBar hScrollBar;
-        private System.Windows.Forms.Timer FPSReset;
-        public System.Windows.Forms.Timer Renderer;
     }
 }

@@ -15,109 +15,71 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MapleLib.WzLib.WzStructure.Data;
+using System.Threading;
 
 namespace HaCreator.MapEditor
 {
     public partial class MultiBoard : UserControl, IServiceProvider
     {
-        #region Settings
-        private const int ScrollbarWidth = 16;
-
-        public static float FirstSnapVerification = UserSettings.SnapDistance * 20;
-        public static Color InactiveColor = CreateTransparency(Color.White, UserSettings.NonActiveAlpha);
-        public static Color RopeInactiveColor = CreateTransparency(UserSettings.RopeColor, UserSettings.NonActiveAlpha);
-        public static Color FootholdInactiveColor = CreateTransparency(UserSettings.FootholdColor, UserSettings.NonActiveAlpha);
-        public static Color ChairInactiveColor = CreateTransparency(UserSettings.ChairColor, UserSettings.NonActiveAlpha);
-        public static Color ToolTipInactiveColor = CreateTransparency(UserSettings.ToolTipColor, UserSettings.NonActiveAlpha);
-        public static Color MiscInactiveColor = CreateTransparency(UserSettings.MiscColor, UserSettings.NonActiveAlpha);
-        public static Color BackgroundCopyColor = CreateTransparency(Color.White, UserSettings.NonActiveAlpha / 2);
-
-        public static Color CreateTransparency(Color orgColor, int alpha)
-        {
-            return new Color(orgColor.R, orgColor.B, orgColor.G, alpha);
-        }
-
-        public static void RecalculateSettings()
-        {
-            /*float*/ int alpha = UserSettings.NonActiveAlpha/* / 255f*/;
-            FirstSnapVerification = UserSettings.SnapDistance * 20;
-            InactiveColor = CreateTransparency(Color.White, alpha);
-            RopeInactiveColor = CreateTransparency(UserSettings.RopeColor, alpha);
-            FootholdInactiveColor = CreateTransparency(UserSettings.FootholdColor, alpha);
-            ChairInactiveColor = CreateTransparency(UserSettings.ChairColor, alpha);
-            ToolTipInactiveColor = CreateTransparency(UserSettings.ToolTipColor, alpha);
-        }
-        #endregion
-
-        #region Fields
         private bool deviceReady = false;
         private GraphicsDevice DxDevice;
         private SpriteBatch sprite;
-        private int frameCount = 0;
-        private int lastFps = 0;
         private PresentationParameters pParams = new PresentationParameters();
         private Texture2D pixel;
         private List<Board> boards = new List<Board>();
         private Board selectedBoard = null;
         private IGraphicsDeviceService graphicsDeviceService;
-        private ContentManager contentMan;
-        //private SpriteFont defaultFont;
         private FontEngine fontEngine;
         private Form form;
-        #endregion
+        private Thread renderer;
+        private bool needsReset = false;
+        private IntPtr dxHandle;
 
-        public MultiBoard()
+        private void RenderLoop()
         {
-            InitializeComponent();
-            ResetDock();
+            PrepareDevice();
+            pixel = CreatePixel();
+            deviceReady = true;
+
+            while (true)
+            {
+                if (deviceReady && form.WindowState != FormWindowState.Minimized)
+                {
+                    RenderFrame();
+                }
+                else
+                {
+                    Thread.Sleep(100);
+                }
+            }
         }
 
         #region Initialization
+        public MultiBoard()
+        {
+            InitializeComponent();
+            this.dxHandle = DxContainer.Handle;
+            ResetDock();
+        }
+
         public void Start()
         {
             if (deviceReady) return;
             if (selectedBoard == null) throw new Exception("Cannot start without a selected board");
             Visible = true;
-            FPSReset.Enabled = true;
-            Renderer.Enabled = true;
             ResetDock();
             AdjustScrollBars();
-            PrepareDevice();
-            pixel = CreatePixel();
             form = FindForm();
-            deviceReady = true;
+            renderer = new Thread(new ThreadStart(RenderLoop));
+            renderer.Start();
         }
 
-        private void AdjustScrollBars()
+        public void Stop()
         {
-            hScrollBar.LargeChange = 0;
-            vScrollBar.LargeChange = 0;
-            if (MapSize.X > DxContainer.Width)
+            if (renderer != null)
             {
-                hScrollBar.Enabled = true;
-                hScrollBar.Maximum = MapSize.X - DxContainer.Width;
-                hScrollBar.Minimum = 0;
-                if (hScrollBar.Maximum < selectedBoard.hScroll)
-                {
-                    hScrollBar.Value = hScrollBar.Maximum - 1;
-                    selectedBoard.hScroll = hScrollBar.Value;
-                }
-                else { hScrollBar.Value = selectedBoard.hScroll; }
+                renderer.Abort();
             }
-            else { hScrollBar.Enabled = false; hScrollBar.Value = 0; hScrollBar.Maximum = 0; }
-            if (MapSize.Y > DxContainer.Height)
-            {
-                vScrollBar.Enabled = true;
-                vScrollBar.Maximum = MapSize.Y - DxContainer.Height;
-                vScrollBar.Minimum = 0;
-                if (vScrollBar.Maximum < selectedBoard.vScroll)
-                {
-                    vScrollBar.Value = vScrollBar.Maximum - 1;
-                    selectedBoard.vScroll = vScrollBar.Value;
-                }
-                else { vScrollBar.Value = selectedBoard.vScroll; }
-            }
-            else { vScrollBar.Enabled = false; vScrollBar.Value = 0; vScrollBar.Maximum = 0; }
         }
 
         private void PrepareDevice()
@@ -125,19 +87,10 @@ namespace HaCreator.MapEditor
             pParams.BackBufferWidth = Math.Max(DxContainer.Width, 1);
             pParams.BackBufferHeight = Math.Max(DxContainer.Height, 1);
             pParams.BackBufferFormat = SurfaceFormat.Color;
-            //pParams.EnableAutoDepthStencil = true;
             pParams.DepthStencilFormat = DepthFormat.Depth24;
-            pParams.DeviceWindowHandle = DxContainer.Handle;
+            pParams.DeviceWindowHandle = dxHandle;
             pParams.IsFullScreen = false;
-            //pParams.AutoDepthStencilFormat = DepthFormat.Depth24;
-            /*try
-            {
-                DxDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, DeviceType.Hardware, DxContainer.Handle, pParams);
-            }
-            catch
-            {
-                DxDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, DeviceType.NullReference, DxContainer.Handle, pParams);
-            }*/
+            //pParams.PresentationInterval = PresentInterval.Immediate;
             try
             {
                 GraphicsProfile profile = GraphicsProfile.Reach;
@@ -153,92 +106,28 @@ namespace HaCreator.MapEditor
                 Environment.Exit(1);
             }
             graphicsDeviceService = new GraphicsDeviceService(DxDevice);
-            contentMan = new ContentManager(this);
-            //defaultFont = contentMan.Load<SpriteFont>("Arial");
             fontEngine = new FontEngine(UserSettings.FontName, UserSettings.FontStyle, UserSettings.FontSize, DxDevice);
             sprite = new SpriteBatch(DxDevice);
         }
 
-        private void ResetDock()
-        {
-            vScrollBar.Location = new System.Drawing.Point(Width - ScrollbarWidth, 0);
-            hScrollBar.Location = new System.Drawing.Point(0, Height - ScrollbarWidth);
-            vScrollBar.Size = new System.Drawing.Size(ScrollbarWidth, Height - ScrollbarWidth);
-            hScrollBar.Size = new System.Drawing.Size(Width - ScrollbarWidth, ScrollbarWidth);
-            DxContainer.Location = new System.Drawing.Point(0, 0);
-            DxContainer.Size = new System.Drawing.Size(Width - ScrollbarWidth, Height - ScrollbarWidth);
-        }
+        #endregion
 
-        private bool needsReset = false;
-
-        private void ResetDevice()
-        {
-            if (form.WindowState == FormWindowState.Minimized) return;
-            pParams.BackBufferHeight = DxContainer.Height;
-            pParams.BackBufferWidth = DxContainer.Width;
-            pParams.BackBufferFormat = SurfaceFormat.Color;
-            //pParams.EnableAutoDepthStencil = true;
-            pParams.DepthStencilFormat = DepthFormat.Depth24;
-            pParams.DeviceWindowHandle = DxContainer.Handle;
-            //pParams.AutoDepthStencilFormat = DepthFormat.Depth24;
-            DxDevice.Reset(pParams);
-        }
-
+        #region Methods
         private Texture2D CreatePixel()
         {
             System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(1, 1);
             bmp.SetPixel(0, 0, System.Drawing.Color.White);
             return BoardItem.TextureFromBitmap(DxDevice, bmp);
         }
-        #endregion
 
-        #region Overrides
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            int oldvalue = vScrollBar.Value;
-            int scrollValue = e.Delta / 10;
-            if (vScrollBar.Value - scrollValue < vScrollBar.Minimum)
-                vScrollBar.Value = vScrollBar.Minimum;
-            else if (vScrollBar.Value - scrollValue > vScrollBar.Maximum)
-                vScrollBar.Value = vScrollBar.Maximum;
-            else
-                vScrollBar.Value -= scrollValue;
-            vScrollBar_Scroll(null, null);
-            base.OnMouseWheel(e);
-        }
-
-        protected override void OnSizeChanged(EventArgs e)
-        {
-            base.OnSizeChanged(e);
-            if (Width == 0 && Height == 0) return;
-            ResetDock();
-            if (deviceReady)
-            {
-                //ResetDevice();
-                needsReset = true;
-            }
-            if (selectedBoard != null) AdjustScrollBars();
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            if (!deviceReady)
-            {
-                base.OnPaint(e);
-                return;
-            }
-            RenderFrame();
-        }
-
-        #endregion
-
-        #region Methods
         public Board CreateBoard(Point mapSize, Point centerPoint, int layers)
         {
-            Board newBoard = new Board(mapSize, centerPoint, this, ApplicationSettings.theoreticalVisibleTypes, ApplicationSettings.theoreticalEditedTypes);
-            newBoard.CreateLayers(layers);
-            return newBoard;
+            lock (this)
+            {
+                Board newBoard = new Board(mapSize, centerPoint, this, ApplicationSettings.theoreticalVisibleTypes, ApplicationSettings.theoreticalEditedTypes);
+                newBoard.CreateLayers(layers);
+                return newBoard;
+            }
         }
 
         public void DrawLine(SpriteBatch sprite, Vector2 start, Vector2 end, Color color)
@@ -268,47 +157,40 @@ namespace HaCreator.MapEditor
 
         public void RenderFrame()
         {
-            if (!deviceReady || form.WindowState == FormWindowState.Minimized) return;
-            frameCount++;
-            if (needsReset)
+            lock (this)
             {
-                ResetDevice();
-            }
-            DxDevice.Clear(ClearOptions.Target, Color.White, 1.0f, 0); // Clear the window to black
+                if (needsReset)
+                {
+                    ResetDevice();
+                }
+                DxDevice.Clear(ClearOptions.Target, Color.White, 1.0f, 0); // Clear the window to black
 #if UseXNAZorder
             sprite.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
 #else
-            //sprite.Begin(/*SpriteBlendMode.AlphaBlend*/);
-            sprite.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+                sprite.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
 #endif
-            selectedBoard.RenderBoard(sprite);
-            if (selectedBoard.MapSize.X < DxContainer.Width)
-            {
-                DrawLine(sprite, new Vector2(MapSize.X, 0), new Vector2(MapSize.X, DxContainer.Height), Color.Black);
-            }
-            if (selectedBoard.MapSize.Y < DxContainer.Height)
-            {
-                DrawLine(sprite, new Vector2(0, MapSize.Y), new Vector2(DxContainer.Width, MapSize.Y), Color.Black);
-            }
-            sprite.End();
-            try
-            {
-                DxDevice.Present();
-            }
-            catch (DeviceLostException)
-            {
-            }
-            catch (DeviceNotResetException)
-            {
+                selectedBoard.RenderBoard(sprite);
+                if (selectedBoard.MapSize.X < DxContainer.Width)
+                {
+                    DrawLine(sprite, new Vector2(MapSize.X, 0), new Vector2(MapSize.X, DxContainer.Height), Color.Black);
+                }
+                if (selectedBoard.MapSize.Y < DxContainer.Height)
+                {
+                    DrawLine(sprite, new Vector2(0, MapSize.Y), new Vector2(DxContainer.Width, MapSize.Y), Color.Black);
+                }
+                sprite.End();
                 try
                 {
-                    ResetDevice();
+                    DxDevice.Present();
                 }
                 catch (DeviceLostException)
                 {
                 }
+                catch (DeviceNotResetException)
+                {
+                    needsReset = true;
+                }
             }
-            
         }
 
         public bool IsItemInRange(int x, int y, int w, int h, int xshift, int yshift)
@@ -325,70 +207,11 @@ namespace HaCreator.MapEditor
         }
         #endregion
 
-        #region Handlers
-        private void ResetFps(object sender, EventArgs e)
-        {
-            lastFps = frameCount;
-            frameCount = 0;
-            
-            //unrelated to resetting fps, just using this already made 1-second timer
-            //GC.Collect();
-            //GC.WaitForPendingFinalizers();
-        }
-
-        private void Renderer_Tick(object sender, EventArgs e)
-        {
-            System.Drawing.Point mouse = PointToClient(Cursor.Position);
-            if (VirtualToPhysical(selectedBoard.Mouse.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0) != mouse.X || VirtualToPhysical(selectedBoard.Mouse.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0) != mouse.Y)
-            {
-                Point oldPos = new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y);
-                Point newPos = new Point(PhysicalToVirtual(mouse.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(mouse.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0));
-                selectedBoard.Mouse.Move(newPos.X, newPos.Y);
-                if (MouseMoved != null)
-                    MouseMoved(selectedBoard, oldPos, newPos, new Point(mouse.X, mouse.Y));
-                if (deviceReady)
-                    RenderFrame();
-            }
-            //if (deviceReady)
-                //RenderFrame();
-        }
-
-        public void SetHScrollbarValue(int value)
-        {
-            hScrollBar.Value = value;
-        }
-
-        public void SetVScrollbarValue(int value)
-        {
-            vScrollBar.Value = value;
-        }
-
-        private void vScrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            selectedBoard.vScroll = vScrollBar.Value;
-        }
-
-        private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            selectedBoard.hScroll = hScrollBar.Value;
-        }
-        #endregion
-
         #region Properties
         public bool DeviceReady
         {
             get { return deviceReady; }
             set { deviceReady = value; }
-        }
-
-        /*public SpriteFont ArialFont
-        {
-            get { return defaultFont; }
-        }*/
-
-        public ContentManager ContentMan
-        {
-            get { return contentMan; }
         }
 
         public FontEngine FontEngine
@@ -419,22 +242,6 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public int FPS
-        {
-            get
-            {
-                return lastFps;
-            }
-        }
-
-        public Texture2D LinePixel
-        {
-            get
-            {
-                return pixel;
-            }
-        }
-
         public Board SelectedBoard
         {
             get
@@ -443,8 +250,12 @@ namespace HaCreator.MapEditor
             }
             set
             {
-                selectedBoard = value;
-                if (value != null) AdjustScrollBars();
+                lock (this)
+                {
+                    selectedBoard = value;
+                    if (value != null)
+                        AdjustScrollBars();
+                }
             }
         }
 
@@ -542,61 +353,11 @@ namespace HaCreator.MapEditor
             }
         }
 
-        /*private void GetObjsUnderPointFromBackgroundList(Point locationVirtualPos, ref BoardItem itemUnderPoint, ref BoardItem selectedUnderPoint, ref bool selectedItemHigher, bool front)
-        {
-            IList list = selectedBoard.BoardItems.Backgrounds;
-            for (int i = 0; i < list.Count; i++)
-            {
-                BackgroundInstance item = (BackgroundInstance)list[i];
-                if (item.front == front && IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && (selectedBoard.SelectedLayerIndex == -1 || item.CheckIfLayerSelected(selectedBoard.SelectedLayerIndex)) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
-                {
-                    if (item.Selected)
-                    {
-                        selectedUnderPoint = item;
-                        selectedItemHigher = true;
-                    }
-                    else
-                    {
-                        itemUnderPoint = item;
-                        selectedItemHigher = false;
-                    }
-                }
-            }
-        }*/
-
         private BoardItemPair GetObjectsUnderPoint(Point location, out bool selectedItemHigher)
         {
             selectedItemHigher = false; //to stop VS from bitching
             BoardItem itemUnderPoint = null, selectedUnderPoint = null;
             Point locationVirtualPos = new Point(PhysicalToVirtual(location.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, /*item.Origin.X*/0), PhysicalToVirtual(location.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, /*item.Origin.Y*/0));
-            /*if ((ApplicationSettings.editedTypes & ItemTypes.Backgrounds) == ItemTypes.Backgrounds)
-                GetObjsUnderPointFromBackgroundList(locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if (((ApplicationSettings.editedTypes & ItemTypes.Tiles) == ItemTypes.Tiles) && ((ApplicationSettings.editedTypes & ItemTypes.Objects) == ItemTypes.Objects))
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.TileObjs, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            else if (((ApplicationSettings.editedTypes & ItemTypes.Tiles) == ItemTypes.Tiles) || ((ApplicationSettings.editedTypes & ItemTypes.Objects) == ItemTypes.Objects))
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.TileObjs, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, true);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Mobs) == ItemTypes.Mobs)
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.Mobs, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.NPCs) == ItemTypes.NPCs)
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.NPCs, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Reactors) == ItemTypes.Reactors)
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.Reactors, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Portals) == ItemTypes.Portals)
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.Portals, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Backgrounds) == ItemTypes.Backgrounds)
-                GetObjsUnderPointFromBackgroundList(locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, true);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Footholds) == ItemTypes.Footholds)
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.FHAnchors, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Ropes) == ItemTypes.Ropes)
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.RopeAnchors, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Chairs) == ItemTypes.Chairs)
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.Chairs, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.ToolTips) == ItemTypes.ToolTips)
-            {
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.CharacterToolTips, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.ToolTips, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-                GetObjsUnderPointFromList(selectedBoard.BoardItems.ToolTipDots, locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher, false);
-            }*/
             for (int i = 0; i < selectedBoard.BoardItems.AllItemLists.Length; i++)
                 GetObjsUnderPointFromList(selectedBoard.BoardItems.AllItemLists[i], locationVirtualPos, ref itemUnderPoint, ref selectedUnderPoint, ref selectedItemHigher);
             return new BoardItemPair(itemUnderPoint, selectedUnderPoint);
@@ -616,81 +377,7 @@ namespace HaCreator.MapEditor
             else if (objsUnderPoint.SelectedItem == null) return objsUnderPoint.NonSelectedItem;
             else if (objsUnderPoint.NonSelectedItem == null) return objsUnderPoint.SelectedItem;
             else return selectedItemHigher ? objsUnderPoint.SelectedItem : objsUnderPoint.NonSelectedItem;
-            //BoardItem itemUnderPoint = null;
-            //Point locationVirtualPos = new Point(PhysicalToVirtual(location.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, /*item.Origin.X*/0), PhysicalToVirtual(location.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, /*item.Origin.Y*/0));
-            /*if ((ApplicationSettings.editedTypes & ItemTypes.Backgrounds) == ItemTypes.Backgrounds)
-                GetObjUnderPointFromBackgroundList(locationVirtualPos, ref itemUnderPoint, false);
-            if (((ApplicationSettings.editedTypes & ItemTypes.Tiles) == ItemTypes.Tiles) && ((ApplicationSettings.editedTypes & ItemTypes.Objects) == ItemTypes.Objects))
-                GetObjUnderPointFromList(selectedBoard.BoardItems.TileObjs, locationVirtualPos, ref itemUnderPoint, false);
-            else if (((ApplicationSettings.editedTypes & ItemTypes.Tiles) == ItemTypes.Tiles) || ((ApplicationSettings.editedTypes & ItemTypes.Objects) == ItemTypes.Objects))
-                GetObjUnderPointFromList(selectedBoard.BoardItems.TileObjs, locationVirtualPos, ref itemUnderPoint, true);
-            if((ApplicationSettings.editedTypes & ItemTypes.Mobs) == ItemTypes.Mobs)
-                GetObjUnderPointFromList(selectedBoard.BoardItems.Mobs, locationVirtualPos, ref itemUnderPoint, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.NPCs) == ItemTypes.NPCs)
-                GetObjUnderPointFromList(selectedBoard.BoardItems.NPCs, locationVirtualPos, ref itemUnderPoint, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Reactors) == ItemTypes.Reactors)
-                GetObjUnderPointFromList(selectedBoard.BoardItems.Reactors, locationVirtualPos, ref itemUnderPoint, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Portals) == ItemTypes.Portals)
-                GetObjUnderPointFromList(selectedBoard.BoardItems.Portals, locationVirtualPos, ref itemUnderPoint, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Backgrounds) == ItemTypes.Backgrounds)
-                GetObjUnderPointFromBackgroundList(locationVirtualPos, ref itemUnderPoint, true);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Footholds) == ItemTypes.Footholds)
-                GetObjUnderPointFromList(selectedBoard.BoardItems.FHAnchors, locationVirtualPos, ref itemUnderPoint, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Ropes) == ItemTypes.Ropes)
-                GetObjUnderPointFromList(selectedBoard.BoardItems.RopeAnchors, locationVirtualPos, ref itemUnderPoint, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.Chairs) == ItemTypes.Chairs)
-                GetObjUnderPointFromList(selectedBoard.BoardItems.Chairs, locationVirtualPos, ref itemUnderPoint, false);
-            if ((ApplicationSettings.editedTypes & ItemTypes.ToolTips) == ItemTypes.ToolTips)
-            {
-                GetObjUnderPointFromList(selectedBoard.BoardItems.CharacterToolTips, locationVirtualPos, ref itemUnderPoint, false);
-                GetObjUnderPointFromList(selectedBoard.BoardItems.ToolTips, locationVirtualPos, ref itemUnderPoint, false);
-                GetObjUnderPointFromList(selectedBoard.BoardItems.ToolTipDots, locationVirtualPos, ref itemUnderPoint, false);
-            }
-            return itemUnderPoint;*/
         }
-
-        /*private void GetObjUnderPointFromList(IList list, Point locationVirtualPos, ref BoardItem itemUnderPoint, bool recheckTypes)
-        {
-            if (recheckTypes)
-            {
-                for (int i = list.Count - 1; i >= 0; i--)
-                {
-                    BoardItem item = (BoardItem)list[i];
-                    if ((ApplicationSettings.editedTypes & item.Type) != item.Type) continue;
-                    if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && !(item is Mouse) && !(item is Mouse) && (selectedBoard.SelectedLayerIndex == -1 || item.CheckIfLayerSelected(selectedBoard.SelectedLayerIndex)) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
-                    {
-                        itemUnderPoint = item;
-                        return;
-                    }
-                }
-            }
-            else //recheckTypes is outside the loop for performance purposes
-            {
-                for (int i = list.Count - 1; i >= 0; i--)
-                {
-                    BoardItem item = (BoardItem)list[i];
-                    if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && !(item is Mouse) && (selectedBoard.SelectedLayerIndex == -1 || item.CheckIfLayerSelected(selectedBoard.SelectedLayerIndex)) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
-                    {
-                        itemUnderPoint = item;
-                        return;
-                    }
-                }
-            }
-        }
-
-        private void GetObjUnderPointFromBackgroundList(Point locationVirtualPos, ref BoardItem itemUnderPoint, bool front)
-        {
-            IList list = selectedBoard.BoardItems.Backgrounds;
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                BackgroundInstance item = (BackgroundInstance)list[i];
-                if (item.front == front && IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
-                {
-                    itemUnderPoint = item;
-                    return;
-                }
-            }
-        }*/
 
         public static bool IsPointInsideRectangle(Point point, int left, int top, int right, int bottom)
         {
@@ -698,9 +385,6 @@ namespace HaCreator.MapEditor
                 return true;
             return false;
         }
-
-        /*[DllImport("user32.dll")]
-        static extern bool GetAsyncKeyState(Keys vKey);*/
 
         public delegate void LeftMouseDownDelegate(Board selectedBoard, BoardItem item, BoardItem selectedItem, Point realPosition, Point virtualPosition, bool selectedItemHigher);
         public event LeftMouseDownDelegate LeftMouseDown;
@@ -725,10 +409,11 @@ namespace HaCreator.MapEditor
             if (e.Button == MouseButtons.Right && RightMouseClick != null)
             {
                 Point realPosition = new Point(e.X, e.Y);
-                RightMouseClick(selectedBoard, GetObjectUnderPoint(realPosition), realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)), selectedBoard.Mouse.State);
+                lock (this)
+                {
+                    RightMouseClick(selectedBoard, GetObjectUnderPoint(realPosition), realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)), selectedBoard.Mouse.State);
+                }
             }
-            if (deviceReady)
-                RenderFrame();
         }
 
         private void DxContainer_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -736,10 +421,11 @@ namespace HaCreator.MapEditor
             if (e.Button == MouseButtons.Left && MouseDoubleClick != null)
             {
                 Point realPosition = new Point(e.X, e.Y);
-                MouseDoubleClick(selectedBoard, GetObjectUnderPoint(realPosition), realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
+                lock (this)
+                {
+                    MouseDoubleClick(selectedBoard, GetObjectUnderPoint(realPosition), realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
+                }
             }
-            if (deviceReady)
-                RenderFrame();
         }
 
         private void DxContainer_MouseDown(object sender, MouseEventArgs e)
@@ -750,10 +436,11 @@ namespace HaCreator.MapEditor
                 bool selectedItemHigher;
                 Point realPosition = new Point(e.X, e.Y);
                 BoardItemPair objsUnderMouse = GetObjectsUnderPoint(realPosition, out selectedItemHigher);
-                LeftMouseDown(selectedBoard, objsUnderMouse.NonSelectedItem, objsUnderMouse.SelectedItem, realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)), selectedItemHigher);
+                lock (this)
+                {
+                    LeftMouseDown(selectedBoard, objsUnderMouse.NonSelectedItem, objsUnderMouse.SelectedItem, realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)), selectedItemHigher);
+                }
             }
-            if (deviceReady)
-                RenderFrame();
         }
 
         private void DxContainer_MouseUp(object sender, MouseEventArgs e)
@@ -763,28 +450,181 @@ namespace HaCreator.MapEditor
             {
                 Point realPosition = new Point(e.X, e.Y);
                 bool selectedItemHigher;
-                BoardItemPair objsUnderMouse = GetObjectsUnderPoint(realPosition, out selectedItemHigher);
-                LeftMouseUp(selectedBoard, objsUnderMouse.NonSelectedItem, objsUnderMouse.SelectedItem, realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)), selectedItemHigher);
+                lock (this)
+                {
+                    BoardItemPair objsUnderMouse = GetObjectsUnderPoint(realPosition, out selectedItemHigher);
+                    LeftMouseUp(selectedBoard, objsUnderMouse.NonSelectedItem, objsUnderMouse.SelectedItem, realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)), selectedItemHigher);
+                }
             }
-            if (deviceReady)
-                RenderFrame();
         }
 
         private void DxContainer_KeyDown(object sender, KeyEventArgs e)
         {
-            if (ShortcutKeyPressed != null)
+            lock (this)
             {
-                bool ctrl = (Control.ModifierKeys & Keys.Control) == Keys.Control;
-                bool alt = (Control.ModifierKeys & Keys.Alt) == Keys.Alt;
-                bool shift = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
-                Keys filteredKeys = e.KeyData;
-                if (ctrl) filteredKeys = filteredKeys ^ Keys.Control;
-                if (alt) filteredKeys = filteredKeys ^ Keys.Alt;
-                if (shift) filteredKeys = filteredKeys ^ Keys.Shift;
-                ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, filteredKeys);
+                if (ShortcutKeyPressed != null)
+                {
+                    bool ctrl = (Control.ModifierKeys & Keys.Control) == Keys.Control;
+                    bool alt = (Control.ModifierKeys & Keys.Alt) == Keys.Alt;
+                    bool shift = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
+                    Keys filteredKeys = e.KeyData;
+                    if (ctrl) filteredKeys = filteredKeys ^ Keys.Control;
+                    if (alt) filteredKeys = filteredKeys ^ Keys.Alt;
+                    if (shift) filteredKeys = filteredKeys ^ Keys.Shift;
+                    lock (this)
+                    {
+                        ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, filteredKeys);
+                    }
+                }
             }
-            if (deviceReady)
-                RenderFrame();
+        }
+
+        private void DxContainer_MouseMove(object sender, MouseEventArgs e)
+        {
+            lock (this)
+            {
+                System.Drawing.Point mouse = PointToClient(Cursor.Position);
+                if (VirtualToPhysical(selectedBoard.Mouse.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0) != mouse.X || VirtualToPhysical(selectedBoard.Mouse.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0) != mouse.Y)
+                {
+                    Point oldPos = new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y);
+                    Point newPos = new Point(PhysicalToVirtual(mouse.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(mouse.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0));
+                    selectedBoard.Mouse.Move(newPos.X, newPos.Y);
+                    if (MouseMoved != null)
+                        MouseMoved.Invoke(selectedBoard, oldPos, newPos, new Point(mouse.X, mouse.Y));
+                }
+            }
+        }
+        #endregion
+
+        #region Event Handlers
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            lock (this)
+            {
+                int oldvalue = vScrollBar.Value;
+                int scrollValue = (e.Delta / 10) * vScrollBar.LargeChange;
+                if (vScrollBar.Value - scrollValue < vScrollBar.Minimum)
+                    vScrollBar.Value = vScrollBar.Minimum;
+                else if (vScrollBar.Value - scrollValue > vScrollBar.Maximum)
+                    vScrollBar.Value = vScrollBar.Maximum;
+                else
+                    vScrollBar.Value -= scrollValue;
+                vScrollBar_Scroll(null, null);
+                base.OnMouseWheel(e);
+            }
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            if (Width == 0 && Height == 0) return;
+
+            ResetDock();
+            needsReset = true;
+            if (selectedBoard != null)
+                AdjustScrollBars();
+        }
+
+        private void AdjustScrollBars()
+        {
+            lock (this)
+            {
+                if (MapSize.X > DxContainer.Width)
+                {
+                    hScrollBar.Enabled = true;
+                    hScrollBar.Maximum = MapSize.X - DxContainer.Width;
+                    hScrollBar.Minimum = 0;
+                    if (hScrollBar.Maximum < selectedBoard.hScroll)
+                    {
+                        hScrollBar.Value = hScrollBar.Maximum - 1;
+                        selectedBoard.hScroll = hScrollBar.Value;
+                    }
+                    else 
+                    { 
+                        hScrollBar.Value = selectedBoard.hScroll; 
+                    }
+                }
+                else 
+                { 
+                    hScrollBar.Enabled = false; 
+                    hScrollBar.Value = 0; 
+                    hScrollBar.Maximum = 0; 
+                }
+
+                if (MapSize.Y > DxContainer.Height)
+                {
+                    vScrollBar.Enabled = true;
+                    vScrollBar.Maximum = MapSize.Y - DxContainer.Height;
+                    vScrollBar.Minimum = 0;
+                    if (vScrollBar.Maximum < selectedBoard.vScroll)
+                    {
+                        vScrollBar.Value = vScrollBar.Maximum - 1;
+                        selectedBoard.vScroll = vScrollBar.Value;
+                    }
+                    else
+                    {
+                        vScrollBar.Value = selectedBoard.vScroll;
+                    }
+                }
+                else
+                {
+                    vScrollBar.Enabled = false; 
+                    vScrollBar.Value = 0; 
+                    vScrollBar.Maximum = 0;
+                }
+            }
+        }
+
+        private void ResetDock()
+        {
+            vScrollBar.Location = new System.Drawing.Point(Width - ScrollbarWidth, 0);
+            hScrollBar.Location = new System.Drawing.Point(0, Height - ScrollbarWidth);
+            vScrollBar.Size = new System.Drawing.Size(ScrollbarWidth, Height - ScrollbarWidth);
+            hScrollBar.Size = new System.Drawing.Size(Width - ScrollbarWidth, ScrollbarWidth);
+            DxContainer.Location = new System.Drawing.Point(0, 0);
+            DxContainer.Size = new System.Drawing.Size(Width - ScrollbarWidth, Height - ScrollbarWidth);
+        }
+
+        private void ResetDevice()
+        {
+            // Note that this function has to be thread safe - it is called from the renderer thread
+            if (form.WindowState == FormWindowState.Minimized) 
+                return;
+            pParams.BackBufferWidth = DxContainer.Width;
+            pParams.BackBufferHeight = DxContainer.Height;
+            DxDevice.Reset(pParams);
+        }
+
+        public void SetHScrollbarValue(int value)
+        {
+            lock (this)
+            {
+                hScrollBar.Value = value;
+            }
+        }
+
+        public void SetVScrollbarValue(int value)
+        {
+            lock (this)
+            {
+                vScrollBar.Value = value;
+            }
+        }
+
+        private void vScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            lock (this)
+            {
+                selectedBoard.vScroll = vScrollBar.Value;
+            }
+        }
+
+        private void hScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            lock (this)
+            {
+                selectedBoard.hScroll = hScrollBar.Value;
+            }
         }
         #endregion
 
@@ -851,6 +691,42 @@ namespace HaCreator.MapEditor
         public void RedoListChanged()
         {
             if (OnRedoListChanged != null) OnRedoListChanged.Invoke();
+        }
+        #endregion
+
+        #region Static Settings
+        private const int ScrollbarWidth = 16;
+
+        public static float FirstSnapVerification;
+        public static Color InactiveColor;
+        public static Color RopeInactiveColor;
+        public static Color FootholdInactiveColor;
+        public static Color ChairInactiveColor;
+        public static Color ToolTipInactiveColor;
+        public static Color MiscInactiveColor;
+        public static Color BackgroundCopyColor;
+
+        static MultiBoard()
+        {
+            RecalculateSettings();
+        }
+
+        public static Color CreateTransparency(Color orgColor, int alpha)
+        {
+            return new Color(orgColor.R, orgColor.B, orgColor.G, alpha);
+        }
+
+        public static void RecalculateSettings()
+        {
+            int alpha = UserSettings.NonActiveAlpha;
+            FirstSnapVerification = UserSettings.SnapDistance * 20;
+            InactiveColor = CreateTransparency(Color.White, alpha);
+            RopeInactiveColor = CreateTransparency(UserSettings.RopeColor, alpha);
+            FootholdInactiveColor = CreateTransparency(UserSettings.FootholdColor, alpha);
+            ChairInactiveColor = CreateTransparency(UserSettings.ChairColor, alpha);
+            ToolTipInactiveColor = CreateTransparency(UserSettings.ToolTipColor, alpha);
+            MiscInactiveColor = CreateTransparency(UserSettings.MiscColor, alpha);
+            BackgroundCopyColor = CreateTransparency(Color.White, alpha / 2);
         }
         #endregion
     }

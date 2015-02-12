@@ -26,10 +26,12 @@ namespace HaCreator.MapEditor
         private Texture2D texture;
         private System.Drawing.Point origin;
         private IWzObject parentObject;
+        int width;
+        int height;
 
         public MapleDrawableInfo(Bitmap image, System.Drawing.Point origin, IWzObject parentObject)
         {
-            this.image = image;
+            this.Image = image;
             this.origin = origin;
             this.parentObject = parentObject;
         }
@@ -69,6 +71,28 @@ namespace HaCreator.MapEditor
             {
                 image = value;
                 texture = null;
+
+                if (image != null)
+                {
+                    width = image.Width;
+                    height = image.Height;
+                }
+            }
+        }
+
+        public virtual int Width
+        {
+            get
+            {
+                return width;
+            }
+        }
+
+        public virtual int Height
+        {
+            get
+            {
+                return height;
             }
         }
 

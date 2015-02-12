@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace HaCreator.GUI
 {
-    public partial class UserSettingsForm : Form
+    public partial class UserSettingsForm : EditorBase
     {
         public UserSettingsForm()
         {
@@ -69,12 +69,12 @@ namespace HaCreator.GUI
             return new Microsoft.Xna.Framework.Color(color.R, color.G, color.B, color.A);
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void okayButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
 
             UserSettings.ShowErrorsMessage = errorsCheckBox.Checked;

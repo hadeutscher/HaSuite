@@ -39,7 +39,7 @@ namespace HaCreator.ThirdParty
         {
             ImageViewer imageViewer = new ImageViewer();
             imageViewer.Dock = DockStyle.Bottom;
-            imageViewer.Image = bitmap;
+            imageViewer.Image = new Bitmap(bitmap); // Copying the bitmap for thread safety
             imageViewer.IsText = Text;
             imageViewer.Width = bitmap.Width + 8;
             imageViewer.Height = bitmap.Height + 8 + ((Text) ? 12 : 0);

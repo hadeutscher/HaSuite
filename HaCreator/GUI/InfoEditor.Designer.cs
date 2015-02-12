@@ -1,4 +1,4 @@
-﻿namespace HaCreator
+﻿namespace HaCreator.GUI
 {
     partial class InfoEditor
     {
@@ -131,11 +131,12 @@
             this.label121 = new System.Windows.Forms.Label();
             this.timedMobEnable = new System.Windows.Forms.CheckBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.optionsList = new HaCreator.ThirdParty.BetterCheckedListBox();
+            this.fieldLimitList = new HaCreator.ThirdParty.BetterCheckedListBox();
             this.label123 = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.optionsList = new ThirdParty.BetterCheckedListBox();
-            this.fieldLimitList = new ThirdParty.BetterCheckedListBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mobRate)).BeginInit();
@@ -353,6 +354,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.returnHereCBX);
             this.tabPage1.Controls.Add(this.cannotReturnCBX);
             this.tabPage1.Controls.Add(this.mobRate);
@@ -1362,33 +1364,6 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Other Settings";
             // 
-            // label123
-            // 
-            this.label123.Location = new System.Drawing.Point(0, 0);
-            this.label123.Name = "label123";
-            this.label123.Size = new System.Drawing.Size(100, 23);
-            this.label123.TabIndex = 0;
-            // 
-            // okButton
-            // 
-            this.okButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.okButton.Location = new System.Drawing.Point(359, 533);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(82, 28);
-            this.okButton.TabIndex = 72;
-            this.okButton.Text = "OK";
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.cancelButton.Location = new System.Drawing.Point(447, 533);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(82, 28);
-            this.cancelButton.TabIndex = 73;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
             // optionsList
             // 
             this.optionsList.AutoCheck = true;
@@ -1457,6 +1432,42 @@
             this.fieldLimitList.Name = "fieldLimitList";
             this.fieldLimitList.Size = new System.Drawing.Size(220, 349);
             this.fieldLimitList.TabIndex = 35;
+            // 
+            // label123
+            // 
+            this.label123.Location = new System.Drawing.Point(0, 0);
+            this.label123.Name = "label123";
+            this.label123.Size = new System.Drawing.Size(100, 23);
+            this.label123.TabIndex = 0;
+            // 
+            // okButton
+            // 
+            this.okButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.okButton.Location = new System.Drawing.Point(359, 533);
+            this.okButton.Name = "okButton";
+            this.okButton.Size = new System.Drawing.Size(82, 28);
+            this.okButton.TabIndex = 72;
+            this.okButton.Text = "OK";
+            this.okButton.Click += new System.EventHandler(this.okButton_Click);
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.cancelButton.Location = new System.Drawing.Point(447, 533);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(82, 28);
+            this.cancelButton.TabIndex = 73;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(28, 117);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(53, 13);
+            this.label7.TabIndex = 152;
+            this.label7.Text = "mobRate:";
             // 
             // InfoEditor
             // 
@@ -1620,5 +1631,6 @@
         private System.Windows.Forms.CheckBox summonMobEnable;
         private System.Windows.Forms.CheckBox returnHereCBX;
         private System.Windows.Forms.CheckBox cannotReturnCBX;
+        private System.Windows.Forms.Label label7;
     }
 }

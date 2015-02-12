@@ -149,9 +149,9 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HaEditor";
             this.Text = "HaCreator";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.HaEditor_FormClosed);
             this.Load += new System.EventHandler(this.HaEditor_Load);
             this.SizeChanged += new System.EventHandler(this.HaEditor_SizeChanged);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.HaEditor_Paint);
             this.ResumeLayout(false);
 
         }

@@ -4,6 +4,8 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +59,43 @@ namespace HaCreator.MapEditor
         public string tS
         {
             get { return _tS; }
-            set { _tS = value; board.ParentControl.LayerTSChanged(this); }
+            set 
+            {
+                lock (board.ParentControl)
+                {
+                    if (_tS != value)
+                    {
+                        _tS = value;
+                        board.ParentControl.LayerTSChanged(this);
+                    }
+                }
+            }
+        }
+
+        public void ReplaceTS(string newTS)
+        {
+            lock (board.ParentControl)
+            {
+                foreach (LayeredItem item in items)
+                {
+                    if (item is TileInstance)
+                    {
+                        TileInstance tile = (TileInstance)item;
+                        TileInfo tileBase = (TileInfo)tile.BaseInfo;
+                        IWzImageProperty tCat = Program.InfoManager.TileSets[newTS][tileBase.u];
+                        IWzImageProperty tProp = tCat[tileBase.no];
+                        if (tProp == null)
+                        {
+                            tProp = tCat["0"];
+                        }
+                        if (tProp.HCTag == null)
+                            tProp.HCTag = TileInfo.Load((WzCanvasProperty)tProp, newTS, tileBase.u, tileBase.no);
+                        TileInfo tileInfo = (TileInfo)tProp.HCTag;
+                        tile.SetBaseInfo(tileInfo);
+                    }
+                }
+            }
+            this.tS = newTS;
         }
 
         public static Layer GetLayerByNum(Board board, int num)
@@ -90,14 +128,20 @@ namespace HaCreator.MapEditor
 
         public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
         {
-            layer.Items.Remove(this);
-            base.RemoveItem(ref undoPipe);
+            lock (board.ParentControl)
+            {
+                layer.Items.Remove(this);
+                base.RemoveItem(ref undoPipe);
+            }
         }
 
         public override void InsertItem()
         {
-            layer.Items.Add(this);
-            base.InsertItem();
+            lock (board.ParentControl)
+            {
+                layer.Items.Add(this);
+                base.InsertItem();
+            }
         }
 
         public Layer Layer
@@ -108,17 +152,26 @@ namespace HaCreator.MapEditor
             }
             set
             {
-                layer.Items.Remove(this);
-                layer = value;
-                layer.Items.Add(this);
-                Board.BoardItems.Sort();
+                lock (board.ParentControl)
+                {
+                    layer.Items.Remove(this);
+                    layer = value;
+                    layer.Items.Add(this);
+                    Board.BoardItems.Sort();
+                }
             }
         }
 
         public int LayerNumber
         {
             get { return Layer.LayerNumber; }
-            set { Layer = Board.Layers[value]; }
+            set
+            {
+                lock (board.ParentControl)
+                {
+                    Layer = Board.Layers[value];
+                }
+            }
         }
     }
 }

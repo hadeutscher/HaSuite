@@ -16,7 +16,7 @@ using HaCreator.MapEditor;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class TnSelector : InstanceEditorBase
+    public partial class TnSelector : EditorBase
     {
         public static string Show(Board board)
         {

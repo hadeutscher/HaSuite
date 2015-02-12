@@ -89,22 +89,23 @@ namespace HaCreator.MapEditor
             multiBoard.SelectedBoard.Mouse.SelectionMode();
             ExitEditMode();
             multiBoard.Focus();
-            multiBoard.RenderFrame();
         }
 
         void multiBoard_OnSendToBackClicked(BoardItem boardRefItem)
         {
-            foreach (BoardItem item in boardRefItem.Board.SelectedItems)
+            lock (multiBoard)
             {
-                if (item.Z > 0)
+                foreach (BoardItem item in boardRefItem.Board.SelectedItems)
                 {
-                    item.Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemZChanged(item, item.Z, 0) });
-                    item.Z = 0;
+                    if (item.Z > 0)
+                    {
+                        item.Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemZChanged(item, item.Z, 0) });
+                        item.Z = 0;
+                    }
                 }
+                boardRefItem.Board.BoardItems.Sort();
             }
-            boardRefItem.Board.BoardItems.Sort();
             multiBoard.Focus();
-            multiBoard.RenderFrame();
         }
 
         void multiBoard_OnLayerTSChanged(Layer layer)
@@ -119,12 +120,10 @@ namespace HaCreator.MapEditor
             {
                 case "ObjectInstance":
                     new ObjectInstanceEditor((ObjectInstance)item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 case "TileInstance":
                 case "Chair":
                     new GeneralInstanceEditor(item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 case "FootholdAnchor":
                     FootholdLine[] selectedFootholds = FootholdLine.GetSelectedFootholds(item.Board);
@@ -136,39 +135,30 @@ namespace HaCreator.MapEditor
                     {
                         new GeneralInstanceEditor(item).ShowDialog();
                     }
-                    multiBoard.RenderFrame();
                     break;
                 case "RopeAnchor":
                     new RopeInstanceEditor((RopeAnchor)item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 case "NPCInstance":
                 case "MobInstance":
                     new LifeInstanceEditor((LifeInstance)item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 case "ReactorInstance":
                     new ReactorInstanceEditor((ReactorInstance)item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 case "BackgroundInstance":
                     new BackgroundInstanceEditor((BackgroundInstance)item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 case "PortalInstance":
                     new PortalInstanceEditor((PortalInstance)item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 case "ToolTip":
                     new TooltipInstanceEditor((ToolTip)item).ShowDialog();
-                    multiBoard.RenderFrame();
                     break;
                 default:
                     break;
             }
         }
-
-
 
         void multiBoard_OnEditBaseClicked(BoardItem item)
         {
@@ -177,30 +167,32 @@ namespace HaCreator.MapEditor
 
         void multiBoard_OnBringToFrontClicked(BoardItem boardRefItem)
         {
-            foreach (BoardItem item in boardRefItem.Board.SelectedItems)
+            lock (multiBoard)
             {
-                int oldZ = item.Z;
-                if (item is BackgroundInstance)
+                foreach (BoardItem item in boardRefItem.Board.SelectedItems)
                 {
-                    IList list = ((BackgroundInstance)item).front ? multiBoard.SelectedBoard.BoardItems.FrontBackgrounds : multiBoard.SelectedBoard.BoardItems.BackBackgrounds;
-                    int highestZ = 0;
-                    foreach (BackgroundInstance bg in list)
-                        if (bg.Z > highestZ)
-                            highestZ = bg.Z;
-                    item.Z = highestZ + 1;
+                    int oldZ = item.Z;
+                    if (item is BackgroundInstance)
+                    {
+                        IList list = ((BackgroundInstance)item).front ? multiBoard.SelectedBoard.BoardItems.FrontBackgrounds : multiBoard.SelectedBoard.BoardItems.BackBackgrounds;
+                        int highestZ = 0;
+                        foreach (BackgroundInstance bg in list)
+                            if (bg.Z > highestZ)
+                                highestZ = bg.Z;
+                        item.Z = highestZ + 1;
+                    }
+                    else
+                    {
+                        int highestZ = 0;
+                        foreach (LayeredItem layeredItem in multiBoard.SelectedBoard.BoardItems.TileObjs)
+                            if (layeredItem.Z > highestZ) highestZ = layeredItem.Z;
+                        item.Z = highestZ + 1;
+                    }
+                    if (item.Z != oldZ)
+                        item.Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemZChanged(item, oldZ, item.Z) });
                 }
-                else
-                {
-                    int highestZ = 0;
-                    foreach (LayeredItem layeredItem in multiBoard.SelectedBoard.BoardItems.TileObjs)
-                        if (layeredItem.Z > highestZ) highestZ = layeredItem.Z;
-                    item.Z = highestZ + 1;
-                }
-                if (item.Z != oldZ)
-                    item.Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemZChanged(item, oldZ, item.Z) });
             }
             boardRefItem.Board.BoardItems.Sort();
-            multiBoard.RenderFrame();
         }
         #endregion
 
@@ -208,7 +200,7 @@ namespace HaCreator.MapEditor
         private void mapEditInfo(object sender, EventArgs e)
         {
             Board selectedBoard = (Board)((ToolStripMenuItem)sender).Tag;
-            new InfoEditor(selectedBoard.MapInfo).ShowDialog();
+            new InfoEditor(selectedBoard.MapInfo, multiBoard).ShowDialog();
         }
         
         void tabs_CurrentPageChanged(HaCreator.ThirdParty.TabPages.TabPage currentPage, HaCreator.ThirdParty.TabPages.TabPage previousPage)
@@ -219,7 +211,6 @@ namespace HaCreator.MapEditor
             multiBoard.SelectedBoard = (Board)currentPage.Tag;
             SetLayerTSInComboBox();
             multiBoard.Focus();
-            multiBoard.RenderFrame();
         }
         #endregion
 
@@ -293,7 +284,6 @@ namespace HaCreator.MapEditor
         void ribbon_SnappingToggled(bool pressed)
         {
             UserSettings.useSnapping = pressed;
-            multiBoard.RenderFrame();
         }
 
         void ribbon_RegenerateMinimapClicked()
@@ -312,25 +302,21 @@ namespace HaCreator.MapEditor
             multiBoard.DeviceReady = false;
             MapSimulator.MapSimulator.CreateMapSimulator(multiBoard.SelectedBoard).ShowDialog();
             multiBoard.DeviceReady = true;
-            multiBoard.RenderFrame();
         }
 
         void ribbon_ParallaxToggled(bool pressed)
         {
             UserSettings.emulateParallax = pressed;
-            multiBoard.RenderFrame();
         }
 
         void ribbon_ShowMinimapToggled(bool pressed)
         {
             UserSettings.useMiniMap = pressed;
-            multiBoard.RenderFrame();
         }
 
         void ribbon_ShowVRToggled(bool pressed)
         {
             UserSettings.showVR = pressed;
-            multiBoard.RenderFrame();
         }
 
         void setTypes(ref ItemTypes newVisibleTypes, ref ItemTypes newEditedTypes, bool? x, ItemTypes type)
@@ -372,7 +358,6 @@ namespace HaCreator.MapEditor
                 multiBoard.SelectedBoard.VisibleTypes = newVisibleTypes;
                 multiBoard.SelectedBoard.EditedTypes = newEditedTypes;
             }
-            multiBoard.RenderFrame();
         }
 
         void ribbon_ExitClicked()
@@ -386,7 +371,6 @@ namespace HaCreator.MapEditor
         void ribbon_SettingsClicked()
         {
             new UserSettingsForm().ShowDialog();
-            multiBoard.RenderFrame();
         }
 
         void ribbon_HelpClicked()
@@ -422,16 +406,15 @@ namespace HaCreator.MapEditor
             {
                 if (!multiBoard.DeviceReady)
                 {
-                    multiBoard.Start();
                     ribbon.SetEnabled(true);
                     ribbon.SetOptions(UserSettings.showVR, UserSettings.useMiniMap, UserSettings.emulateParallax, UserSettings.useSnapping, ApplicationSettings.randomTiles);
                     if (FirstMapLoaded != null)
                         FirstMapLoaded.Invoke();
+                    multiBoard.Start();
                 }
                 ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
                 ParseVisibleEditedTypes();
                 multiBoard.Focus();
-                multiBoard.RenderFrame();
             }
         }
         #endregion
@@ -453,7 +436,6 @@ namespace HaCreator.MapEditor
                 return;
             SetLayer(layer);
             InputHandler.ClearSelectedItems(multiBoard.SelectedBoard);
-            multiBoard.RenderFrame();
         }
 
         private bool LayeredItemsSelected(out int layer)
@@ -495,11 +477,14 @@ namespace HaCreator.MapEditor
                     return;
                 }
                 List<IContainsLayerInfo> items = new List<IContainsLayerInfo>();
-                foreach (BoardItem item in multiBoard.SelectedBoard.SelectedItems)
+                lock (multiBoard)
                 {
-                    if (!(item is IContainsLayerInfo)) continue;
-                    ((IContainsLayerInfo)item).LayerNumber = targetLayer.LayerNumber;
-                    items.Add((IContainsLayerInfo)item);
+                    foreach (BoardItem item in multiBoard.SelectedBoard.SelectedItems)
+                    {
+                        if (!(item is IContainsLayerInfo)) continue;
+                        ((IContainsLayerInfo)item).LayerNumber = targetLayer.LayerNumber;
+                        items.Add((IContainsLayerInfo)item);
+                    }
                 }
                 if (items.Count > 0)
                     multiBoard.SelectedBoard.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction>() { UndoRedoManager.ItemsLayerChanged(items, oldLayer, targetLayer.LayerNumber) });
@@ -507,7 +492,6 @@ namespace HaCreator.MapEditor
                 targetLayer.RecheckTileSet();
             }
             SetLayer(layer);
-            multiBoard.RenderFrame();
         }
         #endregion
 
@@ -568,7 +552,6 @@ namespace HaCreator.MapEditor
             multiBoard.SelectedBoard = (Board)currentPage.Tag;
             multiBoard.Focus();
             SetLayerTSInComboBox();
-            multiBoard.RenderFrame();
         }
 
         public void EnterEditMode(ItemTypes type)

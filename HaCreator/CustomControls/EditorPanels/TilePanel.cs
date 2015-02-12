@@ -19,6 +19,7 @@ using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using System.Collections;
 using HaCreator.ThirdParty;
+using HaCreator.GUI;
 
 namespace HaCreator.CustomControls.EditorPanels
 {
@@ -50,13 +51,11 @@ namespace HaCreator.CustomControls.EditorPanels
         private void tileBrowse_Click(object sender, EventArgs e)
         {
             new TileSetBrowser(tileSetList).ShowDialog();
-            hcsm.MultiBoard.RenderFrame();
         }
 
         private void tileSetList_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadTileSetList();
-            hcsm.MultiBoard.RenderFrame();
         }
 
         public void LoadTileSetList()
@@ -117,8 +116,12 @@ namespace HaCreator.CustomControls.EditorPanels
                     infoToAdd = (TileInfo)((ImageViewer)sender).Tag;
                 if (infoToAdd.tS != layer.tS)
                 {
-                    MessageBox.Show("Error: layer tS already set to a different tS.\r\nPlease choose a different layer.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    if (MessageBox.Show("This action will change the layer's tS. Proceed?", "Layer tS Change", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
+                        return;
+                    List<UndoRedoAction> actions = new List<UndoRedoAction>();
+                    actions.Add(new UndoRedoAction(null, UndoRedoType.LayerTSChanged, layer.tS, infoToAdd.tS, layer));
+                    layer.ReplaceTS(infoToAdd.tS);
+                    hcsm.MultiBoard.SelectedBoard.UndoRedoMan.AddUndoBatch(actions);
                 }
             }
             hcsm.EnterEditMode(ItemTypes.Tiles);
@@ -127,7 +130,6 @@ namespace HaCreator.CustomControls.EditorPanels
             else
                 hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((TileInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();
-            hcsm.MultiBoard.RenderFrame();
             ((ImageViewer)sender).IsActive = true;
         }
     }

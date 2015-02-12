@@ -359,7 +359,7 @@ namespace HaCreator.MapEditor
                 WzSubProperty mapNameDirectory = (WzSubProperty)mapNameCategory[id];
                 if (mapNameDirectory != null)
                 {
-                    WzStringProperty streetName = (WzStringProperty)mapNameCategory["streetName"];
+                    WzStringProperty streetName = (WzStringProperty)mapNameDirectory["streetName"];
                     if (streetName != null) return streetName.Value;
                 }
             }

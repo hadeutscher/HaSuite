@@ -1,4 +1,4 @@
-﻿namespace HaCreator
+﻿namespace HaCreator.GUI
 {
     partial class TileSetBrowser
     {
@@ -48,10 +48,12 @@
             this.ClientSize = new System.Drawing.Size(600, 267);
             this.Controls.Add(this.koolkLVContainer);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.KeyPreview = true;
             this.Name = "TileSetBrowser";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TileSetBrowser";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TileSetBrowser_KeyDown);
             this.ResumeLayout(false);
 
         }

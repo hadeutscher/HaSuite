@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using HaCreator.MapEditor;
 using System.Runtime.InteropServices;
 using MapleLib.WzLib;
+using HaCreator.GUI;
 
 namespace HaCreator
 {

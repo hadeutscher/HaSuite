@@ -329,6 +329,16 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
+        }
+
         public override System.Drawing.Point Origin
         {
             get

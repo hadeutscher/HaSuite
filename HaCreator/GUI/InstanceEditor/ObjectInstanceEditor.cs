@@ -17,7 +17,7 @@ using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class ObjectInstanceEditor : InstanceEditorBase
+    public partial class ObjectInstanceEditor : EditorBase
     {
         public ObjectInstance item;
 
@@ -71,37 +71,40 @@ namespace HaCreator.GUI.InstanceEditor
 
         protected override void okButton_Click(object sender, EventArgs e)
         {
-            List<UndoRedoAction> actions = new List<UndoRedoAction>();
-            if (xInput.Value != item.X || yInput.Value != item.Y)
+            lock (item.Board.ParentControl)
             {
-                actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
-                item.Move((int)xInput.Value, (int)yInput.Value);
+                List<UndoRedoAction> actions = new List<UndoRedoAction>();
+                if (xInput.Value != item.X || yInput.Value != item.Y)
+                {
+                    actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
+                    item.Move((int)xInput.Value, (int)yInput.Value);
+                }
+                if (zInput.Enabled && item.Z != zInput.Value)
+                {
+                    actions.Add(UndoRedoManager.ItemZChanged(item, item.Z, (int)zInput.Value));
+                    item.Z = (int)zInput.Value;
+                    item.Board.BoardItems.Sort();
+                }
+                if (actions.Count > 0)
+                    item.Board.UndoRedoMan.AddUndoBatch(actions);
+                item.Name = nameEnable.Checked ? nameBox.Text : null;
+                item.flow = flowBox.Checked;
+                item.reactor = reactorBox.Checked;
+                item.r = rBox.Checked;
+                item.hide = hideBox.Checked;
+                item.rx = GetOptionalInt(rxInt, rxBox);
+                item.ry = GetOptionalInt(ryInt, ryBox);
+                item.cx = GetOptionalInt(cxInt, cxBox);
+                item.cy = GetOptionalInt(cyInt, cyBox);
+                item.tags = tagsEnable.Checked ? tagsBox.Text : null;
+                if (questEnable.Checked)
+                {
+                    List<ObjectInstanceQuest> questInfo = new List<ObjectInstanceQuest>();
+                    foreach (ObjectInstanceQuest info in questList.Items) questInfo.Add(info);
+                    item.QuestInfo = questInfo;
+                }
+                else item.QuestInfo = null;
             }
-            if (zInput.Enabled && item.Z != zInput.Value)
-            {
-                actions.Add(UndoRedoManager.ItemZChanged(item, item.Z, (int)zInput.Value));
-                item.Z = (int)zInput.Value;
-                item.Board.BoardItems.Sort();
-            }
-            if (actions.Count > 0)
-                item.Board.UndoRedoMan.AddUndoBatch(actions);
-            item.Name = nameEnable.Checked ? nameBox.Text : null;
-            item.flow = flowBox.Checked;
-            item.reactor = reactorBox.Checked;
-            item.r = rBox.Checked;
-            item.hide = hideBox.Checked;
-            item.rx = GetOptionalInt(rxInt, rxBox);
-            item.ry = GetOptionalInt(ryInt, ryBox);
-            item.cx = GetOptionalInt(cxInt, cxBox);
-            item.cy = GetOptionalInt(cyInt, cyBox);
-            item.tags = tagsEnable.Checked ? tagsBox.Text : null;
-            if (questEnable.Checked)
-            {
-                List<ObjectInstanceQuest> questInfo = new List<ObjectInstanceQuest>();
-                foreach (ObjectInstanceQuest info in questList.Items) questInfo.Add(info);
-                item.QuestInfo = questInfo;
-            }
-            else item.QuestInfo = null;
             Close();
         }
 

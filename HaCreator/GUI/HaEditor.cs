@@ -117,11 +117,6 @@ namespace HaCreator.GUI
             RedockControls();
         }
 
-        private void HaEditor_Paint(object sender, PaintEventArgs e)
-        {
-            hcsm.MultiBoard.RenderFrame();
-        }
-
         private void tabs_PageClosing(HaCreator.ThirdParty.TabPages.TabPage page, ref bool cancel)
         {
             if (MessageBox.Show("Are you sure you want to close this map?", "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
@@ -134,6 +129,11 @@ namespace HaCreator.GUI
             {
                 e.Cancel = true;
             }
+        }
+
+        private void HaEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            multiBoard.Stop();
         }
     }
 }

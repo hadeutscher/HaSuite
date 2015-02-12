@@ -17,7 +17,7 @@ using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using HaCreator.ThirdParty;
 
-namespace HaCreator
+namespace HaCreator.GUI
 {
     public partial class TileSetBrowser : Form
     {
@@ -60,6 +60,15 @@ namespace HaCreator
                 selectedItem.IsActive = false;
             selectedItem = (ImageViewer)sender;
             selectedItem.IsActive = true;
+        }
+
+        private void TileSetBrowser_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.Handled = true;
+                Close();
+            }
         }
     }
 }

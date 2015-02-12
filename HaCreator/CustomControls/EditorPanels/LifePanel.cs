@@ -87,7 +87,6 @@ namespace HaCreator.CustomControls.EditorPanels
                 hcsm.EnterEditMode(ItemTypes.Reactors);
                 hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
                 hcsm.MultiBoard.Focus();
-                hcsm.MultiBoard.RenderFrame();
             }
             else if (npcRButton.Checked)
             {
@@ -97,7 +96,6 @@ namespace HaCreator.CustomControls.EditorPanels
                 hcsm.EnterEditMode(ItemTypes.NPCs);
                 hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
                 hcsm.MultiBoard.Focus();
-                hcsm.MultiBoard.RenderFrame();
             }
             else if (mobRButton.Checked)
             {
@@ -107,7 +105,6 @@ namespace HaCreator.CustomControls.EditorPanels
                 hcsm.EnterEditMode(ItemTypes.Mobs);
                 hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
                 hcsm.MultiBoard.Focus();
-                hcsm.MultiBoard.RenderFrame();
             }
         }
     }

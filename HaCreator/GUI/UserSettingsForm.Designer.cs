@@ -958,7 +958,7 @@
             this.okayButton.Size = new System.Drawing.Size(66, 28);
             this.okayButton.TabIndex = 78;
             this.okayButton.Text = "OK";
-            this.okayButton.Click += new System.EventHandler(this.okayButton_Click);
+            this.okayButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 

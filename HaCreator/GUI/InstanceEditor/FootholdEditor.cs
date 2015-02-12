@@ -17,7 +17,7 @@ using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class FootholdEditor : InstanceEditorBase
+    public partial class FootholdEditor : EditorBase
     {
         private FootholdLine[] footholds;
 
@@ -67,20 +67,27 @@ namespace HaCreator.GUI.InstanceEditor
 
         protected override void okButton_Click(object sender, EventArgs e)
         {
-            if (forceEnable.CheckState != CheckState.Indeterminate)
+            if (footholds.Length == 0)
             {
-                int? force = forceEnable.Checked ? (int?)forceInt.Value : (int?)null;
-                foreach (FootholdLine line in footholds) line.Force = force;
+                return;
             }
-            if (pieceEnable.CheckState != CheckState.Indeterminate)
+            lock (footholds[0].Board.ParentControl)
             {
-                int? piece = pieceEnable.Checked ? (int?)pieceInt.Value : (int?)null;
-                foreach (FootholdLine line in footholds) line.Piece = piece;
+                if (forceEnable.CheckState != CheckState.Indeterminate)
+                {
+                    int? force = forceEnable.Checked ? (int?)forceInt.Value : (int?)null;
+                    foreach (FootholdLine line in footholds) line.Force = force;
+                }
+                if (pieceEnable.CheckState != CheckState.Indeterminate)
+                {
+                    int? piece = pieceEnable.Checked ? (int?)pieceInt.Value : (int?)null;
+                    foreach (FootholdLine line in footholds) line.Piece = piece;
+                }
+                if (cantThroughBox.CheckState != CheckState.Indeterminate)
+                    foreach (FootholdLine line in footholds) line.CantThrough = cantThroughBox.Checked;
+                if (forbidFallDownBox.CheckState != CheckState.Indeterminate)
+                    foreach (FootholdLine line in footholds) line.ForbidFallDown = forbidFallDownBox.Checked;
             }
-            if (cantThroughBox.CheckState != CheckState.Indeterminate)
-                foreach (FootholdLine line in footholds) line.CantThrough = cantThroughBox.Checked;
-            if (forbidFallDownBox.CheckState != CheckState.Indeterminate)
-                foreach (FootholdLine line in footholds) line.ForbidFallDown = forbidFallDownBox.Checked;
             Close();
         }
     }

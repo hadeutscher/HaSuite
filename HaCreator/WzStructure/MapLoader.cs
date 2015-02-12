@@ -555,6 +555,10 @@ namespace HaCreator.WzStructure
                 IWzImageProperty miniMap = mapImage["miniMap"];
                 size = new Point(InfoTool.GetInt(miniMap["width"]), InfoTool.GetInt(miniMap["height"]));
                 center = new Point(InfoTool.GetInt(miniMap["centerX"]), InfoTool.GetInt(miniMap["centerY"]));
+                if (info.VR == null)
+                {
+                    info.VR = new System.Drawing.Rectangle(69 - center.X, 86 - center.Y, size.X - 69 - 69, size.Y - 86 - 86);
+                }
             }
             CreateMap(mapName, WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)), CreateStandardMapMenu(rightClickHandler), size, center, 8, Tabs, multiBoard);
             Board mapBoard = multiBoard.SelectedBoard;
@@ -585,15 +589,18 @@ namespace HaCreator.WzStructure
 
         public static void CreateMap(string text, string tooltip, ContextMenuStrip menu, Point size, Point center, int layers, HaCreator.ThirdParty.TabPages.PageCollection Tabs, MultiBoard multiBoard)
         {
-            Board newBoard = multiBoard.CreateBoard(size, center, layers);
-            HaCreator.ThirdParty.TabPages.TabPage page = new HaCreator.ThirdParty.TabPages.TabPage(text, multiBoard, tooltip, menu);
-            page.Tag = newBoard;
-            Tabs.Add(page);
-            Tabs.CurrentPage = page;
-            multiBoard.SelectedBoard = newBoard;
-            menu.Tag = newBoard;
-            foreach (ToolStripItem item in menu.Items)
-                item.Tag = newBoard;
+            lock (multiBoard)
+            {
+                Board newBoard = multiBoard.CreateBoard(size, center, layers);
+                HaCreator.ThirdParty.TabPages.TabPage page = new HaCreator.ThirdParty.TabPages.TabPage(text, multiBoard, tooltip, menu);
+                page.Tag = newBoard;
+                Tabs.Add(page);
+                Tabs.CurrentPage = page;
+                multiBoard.SelectedBoard = newBoard;
+                menu.Tag = newBoard;
+                foreach (ToolStripItem item in menu.Items)
+                    item.Tag = newBoard;
+            }
         }
     }
 }

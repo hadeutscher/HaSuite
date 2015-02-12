@@ -16,7 +16,7 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class ObjQuestInput : InstanceEditorBase
+    public partial class ObjQuestInput : EditorBase
     {
         public MapEditor.ObjectInstanceQuest result;
 

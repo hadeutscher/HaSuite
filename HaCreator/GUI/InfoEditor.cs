@@ -19,15 +19,19 @@ using HaCreator.MapEditor;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 
-namespace HaCreator
+namespace HaCreator.GUI
 {
-    public partial class InfoEditor : Form
+    public partial class InfoEditor : EditorBase
     {
         public MapInfo info;
+        private MultiBoard multiBoard;
 
-        public InfoEditor(MapInfo info)
+        public InfoEditor(MapInfo info, MultiBoard multiBoard)
         {
             InitializeComponent();
+
+            this.multiBoard = multiBoard;
+
             timeLimitEnable.Tag = timeLimit;
             lvLimitEnable.Tag = lvLimit;
             lvForceMoveUse.Tag = lvForceMove;
@@ -296,7 +300,7 @@ namespace HaCreator
             markImage.Image = Program.InfoManager.MapMarks[(string)markBox.SelectedItem];
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        protected override void cancelButton_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -333,131 +337,137 @@ namespace HaCreator
         }*/
 
 
-        private void okButton_Click(object sender, EventArgs e)
+        protected override void okButton_Click(object sender, EventArgs e)
         {
-            if (info.mapType != MapType.CashShopPreview)
+            lock (multiBoard)
             {
-                info.bgm = (string)bgmBox.SelectedItem;
-                info.mapMark = (string)markBox.SelectedItem;
-            }
-            if (info.mapType == MapType.RegularMap)
-            {
-                /*if (WzInfoTools.RemoveLeadingZeros(info.id.ToString()) != WzInfoTools.RemoveLeadingZeros(idBox.Text))
+                if (info.mapType != MapType.CashShopPreview)
                 {
-                    ChangeID(info.id.ToString(), idBox.Text);
-                    info.id = int.Parse(idBox.Text);
-                }*/
-                /*if (nameBox.Text != info.strMapName || nameBox.Text != info.strStreetName)
-                    changeStringwz(info.id, nameBox.Text, streetBox.Text);*/
-                info.strMapName = nameBox.Text;
-                info.strStreetName = streetBox.Text;
-            }
-            info.returnMap = cannotReturnCBX.Checked ? info.id : (int)returnBox.Value;
-            info.forcedReturn = returnHereCBX.Checked ? 999999999 : (int)forcedRet.Value;
-            info.mobRate = (float)mobRate.Value;
-            info.timeLimit = GetOptionalInt(timeLimit, timeLimitEnable);
-            info.lvLimit = GetOptionalInt(lvLimit, lvLimitEnable);
-            info.lvForceMove = GetOptionalInt(lvForceMove, lvForceMoveUse);
-            info.onFirstUserEnter =GetOptionalString(firstUserEnter, firstUserEnable);
-            info.onUserEnter=GetOptionalString(userEnter, userEnterEnable);
-            info.mapName=GetOptionalString( mapName, mapNameEnable);
-            info.mapDesc=GetOptionalString( mapDesc, mapDescEnable);
-            info.streetName=GetOptionalString( streetNameBox, streetNameEnable);
-            info.effect=GetOptionalString( effectBox, effectEnable);
-            info.moveLimit=GetOptionalInt( moveLimit, moveLimitEnable);
-            info.dropExpire=GetOptionalInt( dropExpire, dropExpireEnable);
-            info.dropRate=GetOptionalFloat( dropRate, dropRateEnable);
-            info.recovery=GetOptionalFloat( recovery, recoveryEnable);
-            info.reactorShuffle = reactorShuffle.Checked;
-            info.reactorShuffleName=GetOptionalString( reactorNameBox, reactorNameShuffle);
-            info.fs=GetOptionalFloat( fsBox, fsEnable);
-            info.createMobInterval= GetOptionalInt( createMobInterval, massEnable);
-            info.fixedMobCapacity=GetOptionalInt( fixedMobCapacity, massEnable);
-            info.decHP=GetOptionalInt( decHP, hpDecEnable);
-            info.decInterval=GetOptionalInt( decInterval, decIntervalEnable);
-            info.protectItem=GetOptionalInt( protectItem, protectEnable);
-
-            if (helpEnable.Checked) info.help = helpBox.Text.Replace("\r\n", @"\n");
-            if (summonMobEnable.Checked)
-                info.timeMob = new MapInfo.TimeMob(
-                    GetOptionalInt(timedMobStart, timedMobEnable), 
-                    GetOptionalInt(timedMobEnd, timedMobEnable), 
-                    (int)timedMobId.Value, 
-                    timedMobMessage.Text.Replace("\r\n", @"\n"));
-            if (autoLieDetectorEnable.Checked)
-                info.autoLieDetector = new MapInfo.AutoLieDetector(
-                    (int)autoLieStart.Value, 
-                    (int)autoLieEnd.Value, 
-                    (int)autoLieInterval.Value, 
-                    (int)autoLieProp.Value);
-            if (allowedItemsEnable.Checked)
-            {
-                info.allowedItems = new List<int>();
-                foreach (string id in allowedItems.Items)
-                    info.allowedItems.Add(int.Parse(id));
-            }
-            info.cloud = optionsList.Checked(0);
-            info.snow = optionsList.Checked(1);
-            info.rain = optionsList.Checked(2);
-            info.swim = optionsList.Checked(3);
-            info.fly = optionsList.Checked(4);
-            info.town = optionsList.Checked(5);
-            info.partyOnly = optionsList.Checked(6);
-            info.expeditionOnly = optionsList.Checked(7);
-            info.noMapCmd = optionsList.Checked(8);
-            info.hideMinimap = optionsList.Checked(9);
-            info.miniMapOnOff = optionsList.Checked(10);
-            info.personalShop = optionsList.Checked(11);
-            info.entrustedShop = optionsList.Checked(12);
-            info.noRegenMap = optionsList.Checked(13);
-            info.blockPBossChange = optionsList.Checked(14);
-            info.everlast = optionsList.Checked(15);
-            info.damageCheckFree = optionsList.Checked(16);
-            info.scrollDisable = optionsList.Checked(17);
-            info.needSkillForFly = optionsList.Checked(18);
-            info.zakum2Hack = optionsList.Checked(19);
-            info.allMoveCheck = optionsList.Checked(20);
-            info.VRLimit = optionsList.Checked(21);
-            int fieldLimitInt = 0;
-            for (int i = 0; i < fieldLimitList.Items.Count; i++)
-            {
-                int value = (int)Math.Pow(2, i);
-                if (fieldLimitList.Checked(i))
-                    fieldLimitInt += value;
-            }
-            info.fieldLimit = (FieldLimit)fieldLimitInt;
-            if (fieldType.SelectedIndex <= 0x22)
-                info.fieldType = (FieldType)fieldType.SelectedIndex;
-            else switch (fieldType.SelectedIndex)
-                {
-                    case 0x23:
-                        info.fieldType = FieldType.FIELDTYPE_WEDDING;
-                        break;
-                    case 0x24:
-                        info.fieldType = FieldType.FIELDTYPE_WEDDINGPHOTO;
-                        break;
-                    case 0x25:
-                        info.fieldType = FieldType.FIELDTYPE_FISHINGKING;
-                        break;
-                    case 0x26:
-                        info.fieldType = FieldType.FIELDTYPE_SHOWABATH;
-                        break;
-                    case 0x27:
-                        info.fieldType = FieldType.FIELDTYPE_BEGINNERCAMP;
-                        break;
-                    case 0x28:
-                        info.fieldType = FieldType.FIELDTYPE_SNOWMAN;
-                        break;
-                    case 0x29:
-                        info.fieldType = FieldType.FIELDTYPE_SHOWASPA;
-                        break;
-                    case 0x2A:
-                        info.fieldType = FieldType.FIELDTYPE_HORNTAILPQ;
-                        break;
-                    case 0x2B:
-                        info.fieldType = FieldType.FIELDTYPE_CRIMSONWOODPQ;
-                        break;
+                    info.bgm = (string)bgmBox.SelectedItem;
+                    info.mapMark = (string)markBox.SelectedItem;
                 }
+                if (info.mapType == MapType.RegularMap)
+                {
+                    /*if (WzInfoTools.RemoveLeadingZeros(info.id.ToString()) != WzInfoTools.RemoveLeadingZeros(idBox.Text))
+                    {
+                        ChangeID(info.id.ToString(), idBox.Text);
+                        info.id = int.Parse(idBox.Text);
+                    }*/
+                    /*if (nameBox.Text != info.strMapName || nameBox.Text != info.strStreetName)
+                        changeStringwz(info.id, nameBox.Text, streetBox.Text);*/
+                    info.strMapName = nameBox.Text;
+                    info.strStreetName = streetBox.Text;
+                }
+                info.returnMap = cannotReturnCBX.Checked ? info.id : (int)returnBox.Value;
+                info.forcedReturn = returnHereCBX.Checked ? 999999999 : (int)forcedRet.Value;
+                info.mobRate = (float)mobRate.Value;
+                info.timeLimit = GetOptionalInt(timeLimit, timeLimitEnable);
+                info.lvLimit = GetOptionalInt(lvLimit, lvLimitEnable);
+                info.lvForceMove = GetOptionalInt(lvForceMove, lvForceMoveUse);
+                info.onFirstUserEnter = GetOptionalString(firstUserEnter, firstUserEnable);
+                info.onUserEnter = GetOptionalString(userEnter, userEnterEnable);
+                info.mapName = GetOptionalString(mapName, mapNameEnable);
+                info.mapDesc = GetOptionalString(mapDesc, mapDescEnable);
+                info.streetName = GetOptionalString(streetNameBox, streetNameEnable);
+                info.effect = GetOptionalString(effectBox, effectEnable);
+                info.moveLimit = GetOptionalInt(moveLimit, moveLimitEnable);
+                info.dropExpire = GetOptionalInt(dropExpire, dropExpireEnable);
+                info.dropRate = GetOptionalFloat(dropRate, dropRateEnable);
+                info.recovery = GetOptionalFloat(recovery, recoveryEnable);
+                info.reactorShuffle = reactorShuffle.Checked;
+                info.reactorShuffleName = GetOptionalString(reactorNameBox, reactorNameShuffle);
+                info.fs = GetOptionalFloat(fsBox, fsEnable);
+                info.createMobInterval = GetOptionalInt(createMobInterval, massEnable);
+                info.fixedMobCapacity = GetOptionalInt(fixedMobCapacity, massEnable);
+                info.decHP = GetOptionalInt(decHP, hpDecEnable);
+                info.decInterval = GetOptionalInt(decInterval, decIntervalEnable);
+                info.protectItem = GetOptionalInt(protectItem, protectEnable);
+
+                if (helpEnable.Checked) info.help = helpBox.Text.Replace("\r\n", @"\n");
+                if (summonMobEnable.Checked)
+                    info.timeMob = new MapInfo.TimeMob(
+                        GetOptionalInt(timedMobStart, timedMobEnable),
+                        GetOptionalInt(timedMobEnd, timedMobEnable),
+                        (int)timedMobId.Value,
+                        timedMobMessage.Text.Replace("\r\n", @"\n"));
+                if (autoLieDetectorEnable.Checked)
+                    info.autoLieDetector = new MapInfo.AutoLieDetector(
+                        (int)autoLieStart.Value,
+                        (int)autoLieEnd.Value,
+                        (int)autoLieInterval.Value,
+                        (int)autoLieProp.Value);
+                if (allowedItemsEnable.Checked)
+                {
+                    info.allowedItems = new List<int>();
+                    foreach (string id in allowedItems.Items)
+                        info.allowedItems.Add(int.Parse(id));
+                }
+                info.cloud = optionsList.Checked(0);
+                info.snow = optionsList.Checked(1);
+                info.rain = optionsList.Checked(2);
+                info.swim = optionsList.Checked(3);
+                info.fly = optionsList.Checked(4);
+                info.town = optionsList.Checked(5);
+                info.partyOnly = optionsList.Checked(6);
+                info.expeditionOnly = optionsList.Checked(7);
+                info.noMapCmd = optionsList.Checked(8);
+                info.hideMinimap = optionsList.Checked(9);
+                info.miniMapOnOff = optionsList.Checked(10);
+                info.personalShop = optionsList.Checked(11);
+                info.entrustedShop = optionsList.Checked(12);
+                info.noRegenMap = optionsList.Checked(13);
+                info.blockPBossChange = optionsList.Checked(14);
+                info.everlast = optionsList.Checked(15);
+                info.damageCheckFree = optionsList.Checked(16);
+                info.scrollDisable = optionsList.Checked(17);
+                info.needSkillForFly = optionsList.Checked(18);
+                info.zakum2Hack = optionsList.Checked(19);
+                info.allMoveCheck = optionsList.Checked(20);
+                info.VRLimit = optionsList.Checked(21);
+                int fieldLimitInt = 0;
+                for (int i = 0; i < fieldLimitList.Items.Count; i++)
+                {
+                    int value = (int)Math.Pow(2, i);
+                    if (fieldLimitList.Checked(i))
+                        fieldLimitInt += value;
+                }
+                info.fieldLimit = (FieldLimit)fieldLimitInt;
+                if (fieldType.SelectedIndex <= 0x22)
+                    info.fieldType = (FieldType)fieldType.SelectedIndex;
+                else
+                {
+                    switch (fieldType.SelectedIndex)
+                    {
+                        case 0x23:
+                            info.fieldType = FieldType.FIELDTYPE_WEDDING;
+                            break;
+                        case 0x24:
+                            info.fieldType = FieldType.FIELDTYPE_WEDDINGPHOTO;
+                            break;
+                        case 0x25:
+                            info.fieldType = FieldType.FIELDTYPE_FISHINGKING;
+                            break;
+                        case 0x26:
+                            info.fieldType = FieldType.FIELDTYPE_SHOWABATH;
+                            break;
+                        case 0x27:
+                            info.fieldType = FieldType.FIELDTYPE_BEGINNERCAMP;
+                            break;
+                        case 0x28:
+                            info.fieldType = FieldType.FIELDTYPE_SNOWMAN;
+                            break;
+                        case 0x29:
+                            info.fieldType = FieldType.FIELDTYPE_SHOWASPA;
+                            break;
+                        case 0x2A:
+                            info.fieldType = FieldType.FIELDTYPE_HORNTAILPQ;
+                            break;
+                        case 0x2B:
+                            info.fieldType = FieldType.FIELDTYPE_CRIMSONWOODPQ;
+                            break;
+                    }
+                }
+            }
             Close();
         }
 

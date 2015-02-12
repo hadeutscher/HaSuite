@@ -16,7 +16,7 @@ using HaCreator.MapEditor;
 
 namespace HaCreator.GUI.InstanceEditor
 {
-    public partial class RopeInstanceEditor : InstanceEditorBase
+    public partial class RopeInstanceEditor : EditorBase
     {
         public RopeAnchor item;
 
@@ -47,16 +47,19 @@ namespace HaCreator.GUI.InstanceEditor
 
         protected override void okButton_Click(object sender, EventArgs e)
         {
-            List<UndoRedoAction> actions = new List<UndoRedoAction>();
-            if (xInput.Value != item.X || yInput.Value != item.Y)
+            lock (item.Board.ParentControl)
             {
-                actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
-                item.Move((int)xInput.Value, (int)yInput.Value);
+                List<UndoRedoAction> actions = new List<UndoRedoAction>();
+                if (xInput.Value != item.X || yInput.Value != item.Y)
+                {
+                    actions.Add(UndoRedoManager.ItemMoved(item, new Microsoft.Xna.Framework.Point(item.X, item.Y), new Microsoft.Xna.Framework.Point((int)xInput.Value, (int)yInput.Value)));
+                    item.Move((int)xInput.Value, (int)yInput.Value);
+                }
+                if (actions.Count > 0)
+                    item.Board.UndoRedoMan.AddUndoBatch(actions);
+                item.ParentRope.uf = ufBox.Checked;
+                item.ParentRope.ladder = ladderBox.Checked;
             }
-            if (actions.Count > 0)
-                item.Board.UndoRedoMan.AddUndoBatch(actions);
-            item.ParentRope.uf = ufBox.Checked;
-            item.ParentRope.ladder = ladderBox.Checked;
             Close();
         }
     }

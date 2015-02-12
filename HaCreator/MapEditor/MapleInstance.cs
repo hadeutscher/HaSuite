@@ -134,6 +134,16 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
+        }
+
         public override System.Drawing.Point Origin
         {
             get
@@ -257,12 +267,28 @@ namespace HaCreator.MapEditor
             return Layer.LayerNumber == selectedLayer;
         }
 
+        // Only to be used by layer TS changing, do not use this for ANYTHING else.
+        public void SetBaseInfo(TileInfo newInfo)
+        {
+            this.baseInfo = newInfo;
+        }
+
         public override System.Drawing.Bitmap Image
         {
             get
             {
                 return baseInfo.Image;
             }
+        }
+
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
         }
 
         public override System.Drawing.Point Origin
@@ -362,6 +388,16 @@ namespace HaCreator.MapEditor
             {
                 return baseInfo.Image;
             }
+        }
+
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
         }
 
         public override System.Drawing.Point Origin
@@ -508,6 +544,16 @@ namespace HaCreator.MapEditor
             {
                 return baseInfo.Image;
             }
+        }
+
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
         }
 
         public override System.Drawing.Point Origin
@@ -721,6 +767,16 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
+        }
+
         public override System.Drawing.Point Origin
         {
             get
@@ -815,6 +871,16 @@ namespace HaCreator.MapEditor
             {
                 return baseInfo.Image;
             }
+        }
+
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
         }
 
         public override System.Drawing.Point Origin
