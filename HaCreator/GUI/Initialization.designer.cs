@@ -37,6 +37,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.pathBox = new System.Windows.Forms.ComboBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.debugButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -111,11 +112,23 @@
             this.button2.Text = "...";
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // debugButton
+            // 
+            this.debugButton.Location = new System.Drawing.Point(174, 56);
+            this.debugButton.Name = "debugButton";
+            this.debugButton.Size = new System.Drawing.Size(106, 46);
+            this.debugButton.TabIndex = 15;
+            this.debugButton.Text = "DEBUG MODE ONLY";
+            this.debugButton.UseVisualStyleBackColor = true;
+            this.debugButton.Visible = false;
+            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
+            // 
             // Initialization
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(292, 131);
+            this.Controls.Add(this.debugButton);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.pathBox);
             this.Controls.Add(this.label3);
@@ -145,6 +158,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.ComboBox pathBox;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button debugButton;
     }
 }
 

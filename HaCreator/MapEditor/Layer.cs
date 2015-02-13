@@ -82,8 +82,8 @@ namespace HaCreator.MapEditor
                     {
                         TileInstance tile = (TileInstance)item;
                         TileInfo tileBase = (TileInfo)tile.BaseInfo;
-                        IWzImageProperty tCat = Program.InfoManager.TileSets[newTS][tileBase.u];
-                        IWzImageProperty tProp = tCat[tileBase.no];
+                        WzImageProperty tCat = Program.InfoManager.TileSets[newTS][tileBase.u];
+                        WzImageProperty tProp = tCat[tileBase.no];
                         if (tProp == null)
                         {
                             tProp = tCat["0"];
@@ -119,8 +119,8 @@ namespace HaCreator.MapEditor
     {
         private Layer layer;
 
-        public LayeredItem(Board board, Layer layer, int x, int y, int z, bool beforeAdding)
-            : base(board, x, y, z, beforeAdding)
+        public LayeredItem(Board board, Layer layer, int x, int y, int z)
+            : base(board, x, y, z)
         {
             this.layer = layer;
             layer.Items.Add(this);

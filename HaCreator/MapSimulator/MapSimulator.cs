@@ -244,14 +244,15 @@ namespace HaCreator.MapSimulator
                         }*/
             /*if (!usePhysics)
             {*/
+            int offset = (state[Microsoft.Xna.Framework.Input.Keys.LeftShift] == KeyState.Down || state[Microsoft.Xna.Framework.Input.Keys.RightShift] == KeyState.Down) ? 100 : 10;
             if (state[Microsoft.Xna.Framework.Input.Keys.Left] == KeyState.Down)
-                mapShiftX = Math.Max(vr.Left, mapShiftX - 10);
+                mapShiftX = Math.Max(vr.Left, mapShiftX - offset);
             if (state[Microsoft.Xna.Framework.Input.Keys.Up] == KeyState.Down)
-                mapShiftY = Math.Max(vr.Top, mapShiftY - 10);
+                mapShiftY = Math.Max(vr.Top, mapShiftY - offset);
             if (state[Microsoft.Xna.Framework.Input.Keys.Right] == KeyState.Down)
-                mapShiftX = Math.Min(vr.Right - width, mapShiftX + 10);
+                mapShiftX = Math.Min(vr.Right - width, mapShiftX + offset);
             if (state[Microsoft.Xna.Framework.Input.Keys.Down] == KeyState.Down)
-                mapShiftY = Math.Min(vr.Bottom - height, mapShiftY + 10);
+                mapShiftY = Math.Min(vr.Bottom - height, mapShiftY + offset);
             if (state[Microsoft.Xna.Framework.Input.Keys.Escape] == KeyState.Down)
             {
                 DxDevice.Dispose();
@@ -286,7 +287,7 @@ namespace HaCreator.MapSimulator
             }*/
         }
 
-        private static MapItem CreateMapItemFromProperty(IWzImageProperty source, int x, int y, int mapCenterX, int mapCenterY, GraphicsDevice device, ref List<IWzObject> usedProps, bool flip)
+        private static MapItem CreateMapItemFromProperty(WzImageProperty source, int x, int y, int mapCenterX, int mapCenterY, GraphicsDevice device, ref List<WzObject> usedProps, bool flip)
         {
             source = WzInfoTools.GetRealProperty(source);
             if (source is WzSubProperty && ((WzSubProperty)source).WzProperties.Count == 1)
@@ -323,7 +324,7 @@ namespace HaCreator.MapSimulator
             else throw new Exception("unsupported property type in map simulator");
         }
 
-        public static BackgroundItem CreateBackgroundFromProperty(IWzImageProperty source, int x, int y, int rx, int ry, int cx, int cy, int a, BackgroundType type, bool front, int mapCenterX, int mapCenterY, GraphicsDevice device, ref List<IWzObject> usedProps, bool flip)
+        public static BackgroundItem CreateBackgroundFromProperty(WzImageProperty source, int x, int y, int rx, int ry, int cx, int cy, int a, BackgroundType type, bool front, int mapCenterX, int mapCenterY, GraphicsDevice device, ref List<WzObject> usedProps, bool flip)
         {
             source = WzInfoTools.GetRealProperty(source);
             if (source is WzSubProperty && ((WzSubProperty)source).WzProperties.Count == 1)
@@ -517,17 +518,17 @@ namespace HaCreator.MapSimulator
         {
             if (mapBoard.MiniMap == null) mapBoard.RegenerateMinimap();
             MapSimulator result = new MapSimulator(mapBoard);
-            List<IWzObject> usedProps = new List<IWzObject>();
+            List<WzObject> usedProps = new List<WzObject>();
             WzFile MapFile = Program.WzManager["map"];
             WzDirectory tileDir = (WzDirectory)MapFile["Tile"];
             GraphicsDevice device = result.DxDevice;
             foreach (LayeredItem tileObj in mapBoard.BoardItems.TileObjs)
-                result.mapObjects[tileObj.LayerNumber].Add(CreateMapItemFromProperty((IWzImageProperty)tileObj.BaseInfo.ParentObject, tileObj.X, tileObj.Y, mapBoard.CenterPoint.X, mapBoard.CenterPoint.Y, result.DxDevice, ref usedProps, tileObj is IFlippable ? ((IFlippable)tileObj).Flip : false));
+                result.mapObjects[tileObj.LayerNumber].Add(CreateMapItemFromProperty((WzImageProperty)tileObj.BaseInfo.ParentObject, tileObj.X, tileObj.Y, mapBoard.CenterPoint.X, mapBoard.CenterPoint.Y, result.DxDevice, ref usedProps, tileObj is IFlippable ? ((IFlippable)tileObj).Flip : false));
             foreach (BackgroundInstance background in mapBoard.BoardItems.BackBackgrounds)
-                result.backgrounds.Add(CreateBackgroundFromProperty((IWzImageProperty)background.BaseInfo.ParentObject, background.BaseX, background.BaseY, background.rx, background.ry, background.cx, background.cy, background.a, background.type, background.front, mapBoard.CenterPoint.X, mapBoard.CenterPoint.Y, result.DxDevice, ref usedProps, background.Flip));
+                result.backgrounds.Add(CreateBackgroundFromProperty((WzImageProperty)background.BaseInfo.ParentObject, background.BaseX, background.BaseY, background.rx, background.ry, background.cx, background.cy, background.a, background.type, background.front, mapBoard.CenterPoint.X, mapBoard.CenterPoint.Y, result.DxDevice, ref usedProps, background.Flip));
             foreach (BackgroundInstance background in mapBoard.BoardItems.FrontBackgrounds)
-                result.backgrounds.Add(CreateBackgroundFromProperty((IWzImageProperty)background.BaseInfo.ParentObject, background.BaseX, background.BaseY, background.rx, background.ry, background.cx, background.cy, background.a, background.type, background.front, mapBoard.CenterPoint.X, mapBoard.CenterPoint.Y, result.DxDevice, ref usedProps, background.Flip));
-            foreach (IWzObject obj in usedProps) obj.MSTag = null;
+                result.backgrounds.Add(CreateBackgroundFromProperty((WzImageProperty)background.BaseInfo.ParentObject, background.BaseX, background.BaseY, background.rx, background.ry, background.cx, background.cy, background.a, background.type, background.front, mapBoard.CenterPoint.X, mapBoard.CenterPoint.Y, result.DxDevice, ref usedProps, background.Flip));
+            foreach (WzObject obj in usedProps) obj.MSTag = null;
             Hashtable fhs = ConvertToMapleFootholds2(mapBoard.BoardItems.FootholdLines, mapBoard.BoardItems.FHAnchors);
             MapSimulator.footholds = fhs;
             usedProps.Clear();

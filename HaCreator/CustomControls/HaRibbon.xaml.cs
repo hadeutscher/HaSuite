@@ -135,7 +135,7 @@ namespace HaCreator.CustomControls
             CheckBox rcb = (CheckBox)e.OriginalSource;
             
             if (ViewToggled != null)
-                ViewToggled.Invoke(tilesCheck.IsChecked, objsCheck.IsChecked, npcsCheck.IsChecked, mobsCheck.IsChecked, reactCheck.IsChecked, portalCheck.IsChecked, fhCheck.IsChecked, ropeCheck.IsChecked, chairCheck.IsChecked, tooltipCheck.IsChecked, bgCheck.IsChecked);
+                ViewToggled.Invoke(tilesCheck.IsChecked, objsCheck.IsChecked, npcsCheck.IsChecked, mobsCheck.IsChecked, reactCheck.IsChecked, portalCheck.IsChecked, fhCheck.IsChecked, ropeCheck.IsChecked, chairCheck.IsChecked, tooltipCheck.IsChecked, bgCheck.IsChecked, miscCheck.IsChecked);
         }
 
         private void ShowVR_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -213,7 +213,7 @@ namespace HaCreator.CustomControls
         }
 
         public delegate void EmptyEvent();
-        public delegate void ViewToggleEvent(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds);
+        public delegate void ViewToggleEvent(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc);
         public delegate void ToggleEvent(bool pressed);
         public delegate void LayerViewChangedEvent(int layer);
 
@@ -278,7 +278,7 @@ namespace HaCreator.CustomControls
             changingIndexCnt--;
         }
 
-        public void UpdateVisibilityCheckboxes(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds)
+        public void SetVisibilityCheckboxes(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc)
         {
             tilesCheck.IsChecked = tiles;
             objsCheck.IsChecked = objs;
@@ -291,6 +291,7 @@ namespace HaCreator.CustomControls
             chairCheck.IsChecked = chairs;
             tooltipCheck.IsChecked = tooltips;
             bgCheck.IsChecked = backgrounds;
+            miscCheck.IsChecked = misc;
         }
 
         private void changeLayerBoxIndexInternal(int newIndex)
@@ -322,6 +323,17 @@ namespace HaCreator.CustomControls
             parallaxBtn.IsChecked = parallax;
             snapBtn.IsChecked = snap;
             randomBtn.IsChecked = random;
+        }
+
+        public void SetMousePos(int virtualX, int virtualY, int physicalX, int physicalY)
+        {
+            this.virtualPos.Text = "X: " + virtualX.ToString() + "\nY: " + virtualY.ToString();
+            this.physicalPos.Text = "X: " + physicalX.ToString() + "\nY: " + physicalY.ToString();
+        }
+
+        public void SetItemDesc(string desc)
+        {
+            itemDesc.Text = desc;
         }
     }
 }

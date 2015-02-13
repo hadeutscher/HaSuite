@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -20,6 +21,7 @@ namespace HaCreator.GUI
         public About()
         {
             InitializeComponent();
+            label1.Text = label1.Text.Replace("$VER", Application.ProductVersion.Substring(0, 3));
         }
 
         private void About_KeyDown(object sender, KeyEventArgs e)

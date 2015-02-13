@@ -36,7 +36,7 @@ namespace HaCreator.MapEditor
         private Font font;
         private GraphicsDevice device;
 
-        private CharTexture[] characters = new CharTexture[0x60];
+        private CharTexture[] characters = new CharTexture[0x100];
 
         public FontEngine(string fontName, FontStyle fontStyle, float size, GraphicsDevice device)
         {
@@ -49,9 +49,9 @@ namespace HaCreator.MapEditor
             //format.Alignment = StringAlignment.Near;
             //format.LineAlignment = StringAlignment.Near;
 
-            for (char ch = (char)0x20; ch < 0x80; ch++)
+            for (char ch = (char)0; ch < 0x100; ch++)
             {
-                characters[(int)ch - 0x20] = RasterizeCharacter(ch);
+                characters[(int)ch] = RasterizeCharacter(ch);
             }
         }
 
@@ -62,13 +62,15 @@ namespace HaCreator.MapEditor
         {
             string text = ch.ToString();
 
+            // Causes truetype fonts to be rendered in their exact width
             StringFormat format = StringFormat.GenericTypographic;
             SizeF size = globalGraphics.MeasureString(text, font, new PointF(0, 0), format);
 
+            // If the character is unprintable, measure it with the truetype padding to receive its padding width
             if (size.Width < 1)
             {
                 format = StringFormat.GenericDefault;
-                size = globalGraphics.MeasureString(text, font); //fallback for spaces
+                size = globalGraphics.MeasureString(text, font);
             }
 
             int width = (int)Math.Ceiling(size.Width);
@@ -79,17 +81,6 @@ namespace HaCreator.MapEditor
             using (Graphics graphics = Graphics.FromImage(bitmap))
             {
                 graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
-                /*if (antialias)
-                {
-                    graphics.TextRenderingHint =
-                        TextRenderingHint.AntiAliasGridFit;
-                }
-                else
-                {
-                    graphics.TextRenderingHint =
-                        TextRenderingHint.SingleBitPerPixelGridFit;
-                }*/
-
                 graphics.DrawString(text, font, brush, 0, 0, format);
             }
 
@@ -115,11 +106,9 @@ namespace HaCreator.MapEditor
             int xOffs = 0;
             foreach (char c in str.ToCharArray())
             {
-                //SizeF cSize = globalGraphics.MeasureString(new string(new char[] { c }), font, new PointF(0, 0), StringFormat.GenericTypographic);
-                int w = characters[c - 0x20].w;
-                int h = characters[c - 0x20].h;
-                //SizeF cSize = characters[c - 0x20].size;
-                sprite.Draw(characters[c - 0x20].texture, new Microsoft.Xna.Framework.Rectangle(position.X + xOffs, position.Y, w, h), color);
+                int w = characters[c].w;
+                int h = characters[c].h;
+                sprite.Draw(characters[c].texture, new Microsoft.Xna.Framework.Rectangle(position.X + xOffs, position.Y, w, h), color);
                 xOffs += w;
             }
         }

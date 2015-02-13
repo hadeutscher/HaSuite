@@ -13,6 +13,9 @@ using System.IO;
 using MapleLib.WzLib;
 using HaCreator.MapEditor;
 using MapleLib.WzLib.Util;
+using HaCreator.WzStructure;
+using MapleLib.WzLib.WzStructure;
+using MapleLib.Helpers;
 
 namespace HaCreator.GUI
 {
@@ -22,6 +25,10 @@ namespace HaCreator.GUI
         public Initialization()
         {
             InitializeComponent();
+            if (UserSettings.enableDebug)
+            {
+                debugButton.Visible = true;
+            }
         }
 
         public static bool XNASelfCheck(ref string exceptionResult)
@@ -58,7 +65,16 @@ namespace HaCreator.GUI
             else
                 fileVersion = (WzMapleVersion)versionBox.SelectedIndex;
 
-            // Init WZ files
+            InitializeWzFiles(wzPath, fileVersion);
+
+            Hide();
+            Application.DoEvents();
+            new HaEditor().ShowDialog();
+            Application.Exit();
+        }
+
+        private void InitializeWzFiles(string wzPath, WzMapleVersion fileVersion)
+        {
             Program.WzManager = new WzFileManager(wzPath, fileVersion);
             textBox2.Text = "Initializing String.wz...";
             Application.DoEvents();
@@ -92,14 +108,10 @@ namespace HaCreator.GUI
             textBox2.Text = "Initializing UI.wz...";
             Application.DoEvents();
             Program.WzManager.LoadWzFile("ui");
-
-            Hide();
-            Application.DoEvents();
-            new HaEditor().ShowDialog();
-            Application.Exit();
         }
 
-        string[] commonMaplePaths = new string[] { @"C:\Nexon\MapleStory", @"C:\Program Files\WIZET\MapleStory", @"C:\MapleStory" };
+
+        private static readonly string[] commonMaplePaths = new string[] { @"C:\Nexon\MapleStory", @"C:\Program Files\WIZET\MapleStory", @"C:\MapleStory" };
 
         private void Initialization_Load(object sender, EventArgs e)
         {
@@ -131,6 +143,45 @@ namespace HaCreator.GUI
                 return;
             pathBox.Items.Add(mapleSelect.SelectedPath);
             pathBox.SelectedIndex = pathBox.Items.Count - 1;
+        }
+
+        private void debugButton_Click(object sender, EventArgs e)
+        {
+            // This function iterates over all maps in the game and verifies that we recognize all their props
+            // It is meant to use by the developer(s) to speed up the process of adjusting this program for different MapleStory versions
+            string wzPath = pathBox.Text;
+            short version = -1;
+            WzMapleVersion fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, "Item.wz"), out version);
+            InitializeWzFiles(wzPath, fileVersion);
+
+            MultiBoard mb = new MultiBoard();
+            Board b = new Board(new Microsoft.Xna.Framework.Point(), new Microsoft.Xna.Framework.Point(), mb, MapleLib.WzLib.WzStructure.Data.ItemTypes.None, MapleLib.WzLib.WzStructure.Data.ItemTypes.None);
+
+            foreach (string mapid in Program.InfoManager.Maps.Keys)
+            {
+                string mapcat = "Map" + mapid.Substring(0, 1);
+                WzImage mapImage = (WzImage)Program.WzManager["map"].GetObjectFromPath("Map.wz/Map/" + mapcat + "/" + mapid + ".img");
+                if (mapImage == null)
+                {
+                    continue;
+                }
+                mapImage.ParseImage();
+                if (mapImage["info"]["link"] != null)
+                {
+                    mapImage.UnparseImage();
+                    continue;
+                }
+                MapLoader.VerifyMapPropsKnown(mapImage);
+                MapInfo info = new MapInfo(mapImage, null, null);
+                MapLoader.LoadMisc(mapImage, b);
+                if (ErrorLogger.ErrorsPresent())
+                {
+                    ErrorLogger.SaveToFile("debug_errors.txt");
+                    ErrorLogger.ClearErrors();
+                }
+                mapImage.UnparseImage(); // To preserve memory, since this is a very memory intensive test
+            }
+            MessageBox.Show("Done");
         }
     }
 }

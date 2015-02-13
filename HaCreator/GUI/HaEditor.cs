@@ -52,7 +52,6 @@ namespace HaCreator.GUI
             dih.RedockRequired += RedockControls;
             handler = new InputHandler(multiBoard);
             hcsm = new HaCreatorStateManager(multiBoard, ribbon, tabs);
-            hcsm.SelectedItemChanged += hcsm_SelectedItemChanged;
             hcsm.CloseRequested += hcsm_CloseRequested;
             hcsm.FirstMapLoaded += hcsm_FirstMapLoaded;
 
@@ -73,11 +72,6 @@ namespace HaCreator.GUI
         void hcsm_CloseRequested()
         {
             Close();
-        }
-
-        void hcsm_SelectedItemChanged(string desc)
-        {
-            
         }
 
         private void HaEditor_Load(object sender, EventArgs e)

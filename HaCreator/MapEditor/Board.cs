@@ -18,6 +18,7 @@ namespace HaCreator.MapEditor
     public class Board
     {
         private Point mapSize;
+        private Point maxMapSize;
         private Point centerPoint;
         private BoardItemsManager boardItems;
         private List<Layer> layers = new List<Layer>();
@@ -45,6 +46,8 @@ namespace HaCreator.MapEditor
             this.parent = parent;
             this.visibleTypes = visibleTypes;
             this.editedTypes = editedTypes;
+
+            this.maxMapSize = mapSize;
             
             boardItems = new BoardItemsManager(this);
             undoRedoMan = new UndoRedoManager(this);
@@ -193,7 +196,19 @@ namespace HaCreator.MapEditor
         public MapInfo MapInfo
         {
             get { return mapInfo; }
-            set { lock (parent) { mapInfo = value; } }
+            set 
+            { 
+                lock (parent) 
+                { 
+                    mapInfo = value; 
+                    if (mapInfo.VR.HasValue) 
+                    {
+                        int offsX = (mapInfo.VR.Value.Left - 100 + centerPoint.X) > 0 ? mapInfo.VR.Value.Left - 100 + centerPoint.X : 0;
+                        int offsY = (mapInfo.VR.Value.Top - 100 + centerPoint.Y) > 0 ? mapInfo.VR.Value.Top - 100 + centerPoint.Y : 0;
+                        maxMapSize = new Point(Math.Max(mapSize.X, mapInfo.VR.Value.Width + 100 - offsX), Math.Max(mapSize.Y, mapInfo.VR.Value.Height + 100 - offsY));
+                    }
+                } 
+            }
         }
 
         public System.Drawing.Bitmap MiniMap
@@ -256,6 +271,14 @@ namespace HaCreator.MapEditor
         {
             get
             {
+                return maxMapSize;
+            }
+        }
+
+        public Point MiniMapSize
+        {
+            get
+            {
                 return mapSize;
             }
         }
@@ -313,17 +336,15 @@ namespace HaCreator.MapEditor
         private BoardItem parent = null;
         private bool selected = false;
         protected Board board;
-        private bool beforeAdding;
 
         /*temporary fields used by other functions*/
         public BoardItem tempParent = null; //for mouse drag-drop
         public Point moveStartPos = new Point(); //for undo of drag-drop
 
-        public BoardItem(Board board, int x, int y, int z, bool beforeAdding)
+        public BoardItem(Board board, int x, int y, int z)
         {
             position = new Vector3(x, y, z);
             this.board = board;
-            this.beforeAdding = beforeAdding;
         }
 
         #region Methods
@@ -556,18 +577,6 @@ namespace HaCreator.MapEditor
                     else if (board.SelectedItems.Count == 0)
                         board.ParentControl.OnSelectedItemChanged(null);
                 }
-            }
-        }
-
-        public virtual bool BeforeAdding
-        {
-            get
-            {
-                return beforeAdding;
-            }
-            set
-            {
-                beforeAdding = value;
             }
         }
 

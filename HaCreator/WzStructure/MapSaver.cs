@@ -23,7 +23,7 @@ namespace HaCreator.WzStructure
             {
                 if (oldAnchor.connectedLines.Count == 0) continue;
                 //if (oldAnchor.IsMoveHandled) throw new Exception();
-                FootholdAnchor anchor = new FootholdAnchor(oldAnchor.Board, oldAnchor.X, oldAnchor.Y, oldAnchor.LayerNumber, oldAnchor.BeforeAdding);
+                FootholdAnchor anchor = new FootholdAnchor(oldAnchor.Board, oldAnchor.X, oldAnchor.Y, oldAnchor.LayerNumber);
                 anchor.connectedLines = new List<MapleLine>(oldAnchor.connectedLines.Count);
                 foreach (FootholdLine oldLine in oldAnchor.connectedLines)
                 {

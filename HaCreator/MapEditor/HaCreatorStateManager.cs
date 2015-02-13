@@ -65,27 +65,33 @@ namespace HaCreator.MapEditor
             this.multiBoard.OnSendToBackClicked += multiBoard_OnSendToBackClicked;
             this.multiBoard.ReturnToSelectionState += multiBoard_ReturnToSelectionState;
             this.multiBoard.SelectedItemChanged += multiBoard_SelectedItemChanged;
+            this.multiBoard.MouseMoved += multiBoard_MouseMoved;
 
             multiBoard.Visible = false;
             ribbon.SetEnabled(false);
         }
 
         #region MultiBoard Events
+        void multiBoard_MouseMoved(Board selectedBoard, Microsoft.Xna.Framework.Point oldPos, Microsoft.Xna.Framework.Point newPos, Microsoft.Xna.Framework.Point currPhysicalPos)
+        {
+            ribbon.SetMousePos(newPos.X, newPos.Y, currPhysicalPos.X, currPhysicalPos.Y);
+        }
+
         void multiBoard_SelectedItemChanged(BoardItem selectedItem)
         {
-            if (SelectedItemChanged != null)
+            if (selectedItem != null)
             {
-                string item = "";
-                if (selectedItem != null)
-                {
-                    item = CreateItemDescription(selectedItem, " ");
-                }
-                SelectedItemChanged.Invoke(item);
+                ribbon.SetItemDesc(CreateItemDescription(selectedItem, "\n"));
+            }
+            else
+            {
+                ribbon.SetItemDesc("");
             }
         }
 
         void multiBoard_ReturnToSelectionState()
         {
+            // No need to lock because SelectionMode() and ExitEditMode() are both thread-safe
             multiBoard.SelectedBoard.Mouse.SelectionMode();
             ExitEditMode();
             multiBoard.Focus();
@@ -202,41 +208,42 @@ namespace HaCreator.MapEditor
             Board selectedBoard = (Board)((ToolStripMenuItem)sender).Tag;
             new InfoEditor(selectedBoard.MapInfo, multiBoard).ShowDialog();
         }
-        
+
         void tabs_CurrentPageChanged(HaCreator.ThirdParty.TabPages.TabPage currentPage, HaCreator.ThirdParty.TabPages.TabPage previousPage)
         {
-            if (previousPage != null)
-                multiBoard_ReturnToSelectionState();
+            lock (multiBoard)
+            {
+                if (previousPage != null)
+                {
+                    multiBoard_ReturnToSelectionState();
+                }
 
-            multiBoard.SelectedBoard = (Board)currentPage.Tag;
-            SetLayerTSInComboBox();
-            multiBoard.Focus();
+                multiBoard.SelectedBoard = (Board)currentPage.Tag;
+                ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
+                ApplicationSettings.lastDefaultLayer = multiBoard.SelectedBoard.SelectedLayerIndex;
+                ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex);
+                ParseVisibleEditedTypes();
+                multiBoard.Focus();
+            }
         }
         #endregion
 
         #region Ribbon Handlers
         void ribbon_HaRepackerClicked()
         {
-#if !DEBUG
-            try
+            HaRepacker.Program.WzMan = new HaRepackerLib.WzFileManager();
+            bool firstRun = HaRepacker.Program.PrepareApplication(false);
+            HaRepacker.GUI.MainForm mf = new HaRepacker.GUI.MainForm(null, false, firstRun);
+            mf.unloadAllToolStripMenuItem.Visible = false;
+            mf.reloadAllToolStripMenuItem.Visible = false;
+            foreach (DictionaryEntry entry in Program.WzManager.wzFiles)
+                mf.Interop_AddLoadedWzFileToManager((WzFile)entry.Value);
+            lock (multiBoard)
             {
-#endif
-                HaRepacker.Program.WzMan = new HaRepackerLib.WzFileManager();
-                bool firstRun = HaRepacker.Program.PrepareApplication();
-                HaRepacker.GUI.MainForm mf = new HaRepacker.GUI.MainForm(null, false, firstRun);
-                mf.unloadAllToolStripMenuItem.Visible = false;
-                mf.reloadAllToolStripMenuItem.Visible = false;
-                foreach (DictionaryEntry entry in Program.WzManager.wzFiles)
-                    mf.Interop_AddLoadedWzFileToManager((WzFile)entry.Value);
+
                 mf.ShowDialog();
-                HaRepacker.Program.EndApplication(false, false);
-#if !DEBUG
             }
-            catch (Exception ex)
-            {
-                HaRepackerLib.Warning.Error("Exception while running HaRepacker: " + ex.Message);
-            }
-#endif
+            HaRepacker.Program.EndApplication(false, false);
         }
         
         bool? getTypes(ItemTypes visibleTypes, ItemTypes editedTypes, ItemTypes type)
@@ -257,9 +264,9 @@ namespace HaCreator.MapEditor
 
         private void ParseVisibleEditedTypes()
         {
-            ItemTypes visibleTypes = ApplicationSettings.theoreticalVisibleTypes;
-            ItemTypes editedTypes = ApplicationSettings.theoreticalEditedTypes;
-            ribbon.UpdateVisibilityCheckboxes(getTypes(visibleTypes, editedTypes, ItemTypes.Tiles),
+            ItemTypes visibleTypes = ApplicationSettings.theoreticalVisibleTypes = multiBoard.SelectedBoard.VisibleTypes;
+            ItemTypes editedTypes = ApplicationSettings.theoreticalEditedTypes = multiBoard.SelectedBoard.EditedTypes;
+            ribbon.SetVisibilityCheckboxes(getTypes(visibleTypes, editedTypes, ItemTypes.Tiles),
                                             getTypes(visibleTypes, editedTypes, ItemTypes.Objects),
                                             getTypes(visibleTypes, editedTypes, ItemTypes.NPCs),
                                             getTypes(visibleTypes, editedTypes, ItemTypes.Mobs),
@@ -269,9 +276,8 @@ namespace HaCreator.MapEditor
                                             getTypes(visibleTypes, editedTypes, ItemTypes.Ropes),
                                             getTypes(visibleTypes, editedTypes, ItemTypes.Chairs),
                                             getTypes(visibleTypes, editedTypes, ItemTypes.ToolTips),
-                                            getTypes(visibleTypes, editedTypes, ItemTypes.Backgrounds));
-            multiBoard.SelectedBoard.VisibleTypes = ApplicationSettings.theoreticalVisibleTypes;
-            multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
+                                            getTypes(visibleTypes, editedTypes, ItemTypes.Backgrounds),
+                                            getTypes(visibleTypes, editedTypes, ItemTypes.Misc));
         }
         
         void ribbon_RandomTilesToggled(bool pressed)
@@ -335,28 +341,32 @@ namespace HaCreator.MapEditor
             }
         }
 
-        void ribbon_ViewToggled(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds)
+        void ribbon_ViewToggled(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc)
         {
-            ItemTypes newVisibleTypes = 0;
-            ItemTypes newEditedTypes = 0;
-            setTypes(ref newVisibleTypes, ref newEditedTypes, tiles, ItemTypes.Tiles);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, objs, ItemTypes.Objects);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, npcs, ItemTypes.NPCs);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, mobs, ItemTypes.Mobs);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, reactors, ItemTypes.Reactors);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, portals, ItemTypes.Portals);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, footholds, ItemTypes.Footholds);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, ropes, ItemTypes.Ropes);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, chairs, ItemTypes.Chairs);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, tooltips, ItemTypes.ToolTips);
-            setTypes(ref newVisibleTypes, ref newEditedTypes, backgrounds, ItemTypes.Backgrounds);
-            ApplicationSettings.theoreticalVisibleTypes = newVisibleTypes;
-            ApplicationSettings.theoreticalEditedTypes = newEditedTypes;
-            if (multiBoard.SelectedBoard != null)
+            lock (multiBoard)
             {
-                InputHandler.ClearSelectedItems(multiBoard.SelectedBoard);
-                multiBoard.SelectedBoard.VisibleTypes = newVisibleTypes;
-                multiBoard.SelectedBoard.EditedTypes = newEditedTypes;
+                ItemTypes newVisibleTypes = 0;
+                ItemTypes newEditedTypes = 0;
+                setTypes(ref newVisibleTypes, ref newEditedTypes, tiles, ItemTypes.Tiles);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, objs, ItemTypes.Objects);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, npcs, ItemTypes.NPCs);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, mobs, ItemTypes.Mobs);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, reactors, ItemTypes.Reactors);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, portals, ItemTypes.Portals);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, footholds, ItemTypes.Footholds);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, ropes, ItemTypes.Ropes);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, chairs, ItemTypes.Chairs);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, tooltips, ItemTypes.ToolTips);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, backgrounds, ItemTypes.Backgrounds);
+                setTypes(ref newVisibleTypes, ref newEditedTypes, misc, ItemTypes.Misc);
+                ApplicationSettings.theoreticalVisibleTypes = newVisibleTypes;
+                ApplicationSettings.theoreticalEditedTypes = newEditedTypes;
+                if (multiBoard.SelectedBoard != null)
+                {
+                    InputHandler.ClearSelectedItems(multiBoard.SelectedBoard);
+                    multiBoard.SelectedBoard.VisibleTypes = newVisibleTypes;
+                    multiBoard.SelectedBoard.EditedTypes = newEditedTypes;
+                }
             }
         }
 
@@ -413,6 +423,8 @@ namespace HaCreator.MapEditor
                     multiBoard.Start();
                 }
                 ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
+                multiBoard.SelectedBoard.VisibleTypes = ApplicationSettings.theoreticalVisibleTypes;
+                multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
                 ParseVisibleEditedTypes();
                 multiBoard.Focus();
             }
@@ -420,14 +432,10 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Ribbon Layer Boxes
-        private void SetLayerTSInComboBox()
+        private void SetLayer(int currentLayer)
         {
-            ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
-        }
-
-        private void SetLayer(int layer)
-        {
-            multiBoard.SelectedBoard.SelectedLayerIndex = layer;
+            multiBoard.SelectedBoard.SelectedLayerIndex = currentLayer;
+            ApplicationSettings.lastDefaultLayer = currentLayer;
         }
 
         void ribbon_AllLayerToggled(int layer)
@@ -495,10 +503,8 @@ namespace HaCreator.MapEditor
         }
         #endregion
 
-        public delegate void ItemEventDelegate(string item);
         public delegate void EmptyDelegate();
 
-        public event ItemEventDelegate SelectedItemChanged;
         public event EmptyDelegate CloseRequested;
         public event EmptyDelegate FirstMapLoaded;
 
@@ -514,11 +520,10 @@ namespace HaCreator.MapEditor
                     return "Background:" + lineBreak + ((BackgroundInfo)item.BaseInfo).bS + @"\" + (((BackgroundInfo)item.BaseInfo).ani ? "ani" : "back") + @"\" + ((BackgroundInfo)item.BaseInfo).no;
                 case "PortalInstance":
                     return "Portal:" + lineBreak + "Name: " + ((PortalInstance)item).pn + lineBreak + "Type: " + Tables.PortalTypeNames[(int)((PortalInstance)item).pt];
-                case "LifeInstance":
-                    if (((LifeInstance)item).Type == ItemTypes.Mobs)
-                        return "Mob:" + lineBreak + "Name: " + ((MobInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((MobInfo)item.BaseInfo).ID;
-                    else
-                        return "Npc:" + lineBreak + "Name: " + ((NpcInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((NpcInfo)item.BaseInfo).ID;
+                case "MobInstance":
+                    return "Mob:" + lineBreak + "Name: " + ((MobInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((MobInfo)item.BaseInfo).ID;
+                case "NPCInstance":
+                    return "Npc:" + lineBreak + "Name: " + ((NpcInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((NpcInfo)item.BaseInfo).ID;
                 case "ReactorInstance":
                     return "Reactor:" + lineBreak + "ID: " + ((ReactorInfo)item.BaseInfo).ID;
                 case "FootholdAnchor":
@@ -532,26 +537,20 @@ namespace HaCreator.MapEditor
                 case "ToolTipChar":
                     return "Tooltip";
                 default:
-                    return "";
+                    if (item is INamedMisc)
+                    {
+                        return ((INamedMisc)item).Name;
+                    }
+                    else
+                    {
+                        return "";
+                    }
             }
         }
 
         public void SetTilePanel(TilePanel tp)
         {
             this.tilePanel = tp;
-        }
-
-        public void CurrentPageChangedHandler(HaCreator.ThirdParty.TabPages.TabPage currentPage, HaCreator.ThirdParty.TabPages.TabPage previousPage)
-        {
-            ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex);
-            if (previousPage != null)
-            {
-                ((Board)previousPage.Tag).Mouse.SelectionMode();
-                InputHandler.ClearSelectedItems((Board)previousPage.Tag);
-            }
-            multiBoard.SelectedBoard = (Board)currentPage.Tag;
-            multiBoard.Focus();
-            SetLayerTSInComboBox();
         }
 
         public void EnterEditMode(ItemTypes type)

@@ -406,6 +406,7 @@ namespace HaCreator.MapEditor
 
         private void DxContainer_MouseClick(object sender, MouseEventArgs e)
         {
+            // We only handle right click here because left click is handled more thoroughly by up-down handlers
             if (e.Button == MouseButtons.Right && RightMouseClick != null)
             {
                 Point realPosition = new Point(e.X, e.Y);
@@ -430,14 +431,22 @@ namespace HaCreator.MapEditor
 
         private void DxContainer_MouseDown(object sender, MouseEventArgs e)
         {
+            // If the mouse has not been moved while we were in focus (e.g. when clicking on the editor while another window focused), this event will be sent without a mousemove event preceding it.
+            // We will move it to its correct position by invoking the move event handler manually.
+            if (selectedBoard.Mouse.X != e.X || selectedBoard.Mouse.Y != e.Y)
+            {
+                // No need to lock because MouseMove locks anyway
+                DxContainer_MouseMove(sender, e);
+            }
+
             selectedBoard.Mouse.IsDown = true;
             if (e.Button == MouseButtons.Left && LeftMouseDown != null)
             {
                 bool selectedItemHigher;
                 Point realPosition = new Point(e.X, e.Y);
-                BoardItemPair objsUnderMouse = GetObjectsUnderPoint(realPosition, out selectedItemHigher);
                 lock (this)
                 {
+                    BoardItemPair objsUnderMouse = GetObjectsUnderPoint(realPosition, out selectedItemHigher);
                     LeftMouseDown(selectedBoard, objsUnderMouse.NonSelectedItem, objsUnderMouse.SelectedItem, realPosition, new Point(PhysicalToVirtual(e.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(e.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)), selectedItemHigher);
                 }
             }

@@ -230,7 +230,7 @@ namespace HaCreator.GUI
                             break;
                     }
             }
-            foreach (IWzImageProperty prop in info.additionalProps)
+            foreach (WzImageProperty prop in info.additionalProps)
             {
                 TreeNode node = unknownProps.Nodes.Add(prop.Name);
                 node.Tag = prop;
@@ -239,9 +239,9 @@ namespace HaCreator.GUI
             }
         }
 
-        private void ExtractPropList(List<IWzImageProperty> properties, TreeNode parent)
+        private void ExtractPropList(List<WzImageProperty> properties, TreeNode parent)
         {
-            foreach (IWzImageProperty prop in properties)
+            foreach (WzImageProperty prop in properties)
             {
                 TreeNode node = parent.Nodes.Add(prop.Name);
                 node.Tag = prop;

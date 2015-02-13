@@ -18,7 +18,7 @@ namespace HaRepackerLib.Controls
     public partial class HaRepackerMainPanel : UserControl
     {
         private const string selectionTypePrefix = "Selection Type: ";
-        private List<IWzObject> clipboard = new List<IWzObject>();
+        private List<WzObject> clipboard = new List<WzObject>();
         private UndoRedoManager undoRedoMan;
 
         public HaRepackerMainPanel()
@@ -70,11 +70,11 @@ namespace HaRepackerLib.Controls
         private void DataTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (DataTree.SelectedNode == null) return;
-            ShowObjectValue((IWzObject)DataTree.SelectedNode.Tag);
+            ShowObjectValue((WzObject)DataTree.SelectedNode.Tag);
             selectionLabel.Text = selectionTypePrefix + ((WzNode)DataTree.SelectedNode).GetTypeName();
         }
 
-        private void ShowObjectValue(IWzObject obj)
+        private void ShowObjectValue(WzObject obj)
         {
             mp3Player.SoundProperty = null;
             nameBox.Text = obj is WzFile ? ((WzFile)obj).Header.Copyright : obj.Name;
@@ -100,7 +100,7 @@ namespace HaRepackerLib.Controls
                 pictureBoxPanel.Visible = true;
                 textPropBox.Visible = false;
                 mp3Player.Visible = false;
-                canvasPropBox.Image = (Bitmap)obj;
+                canvasPropBox.Image = obj.GetBitmap();
                 vectorPanel.Visible = false;
                 applyChangesButton.Visible = false;
                 changeImageButton.Visible = true;
@@ -123,14 +123,14 @@ namespace HaRepackerLib.Controls
                 changeSoundButton.Visible = true;
                 saveSoundButton.Visible = true;
             }
-            else if (obj is WzStringProperty || obj is WzCompressedIntProperty || obj is WzDoubleProperty || obj is WzByteFloatProperty || obj is WzUnsignedShortProperty || obj is WzUOLProperty)
+            else if (obj is WzStringProperty || obj is WzIntProperty || obj is WzDoubleProperty || obj is WzFloatProperty || obj is WzShortProperty || obj is WzUOLProperty)
             {
                 nameBox.Visible = true;
                 canvasPropBox.Visible = false;
                 pictureBoxPanel.Visible = false;
                 textPropBox.Visible = true;
                 mp3Player.Visible = false;
-                textPropBox.Text = (string)obj;
+                textPropBox.Text = obj.ToString();
                 vectorPanel.Visible = false;
                 applyChangesButton.Visible = true;
                 changeImageButton.Visible = false;
@@ -259,8 +259,8 @@ namespace HaRepackerLib.Controls
         private void applyChangesButton_Click(object sender, EventArgs e)
         {
             if (DataTree.SelectedNode == null) return;
-            IWzObject obj = (IWzObject)DataTree.SelectedNode.Tag;
-            if (obj is IWzImageProperty) ((IWzImageProperty)obj).ParentImage.Changed = true;
+            WzObject obj = (WzObject)DataTree.SelectedNode.Tag;
+            if (obj is WzImageProperty) ((WzImageProperty)obj).ParentImage.Changed = true;
             if (obj is WzVectorProperty)
             {
                 ((WzVectorProperty)obj).X.Value = vectorPanel.X;
@@ -268,7 +268,7 @@ namespace HaRepackerLib.Controls
             }
             else if (obj is WzStringProperty)
                 ((WzStringProperty)obj).Value = textPropBox.Text;
-            else if (obj is WzByteFloatProperty)
+            else if (obj is WzFloatProperty)
             {
                 float val;
                 if (!float.TryParse(textPropBox.Text,out val)) 
@@ -276,9 +276,9 @@ namespace HaRepackerLib.Controls
                     Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
                     return;
                 }
-                ((WzByteFloatProperty)obj).Value = val;
+                ((WzFloatProperty)obj).Value = val;
             }
-            else if (obj is WzCompressedIntProperty)
+            else if (obj is WzIntProperty)
             {
                 int val;
                 if (!int.TryParse(textPropBox.Text, out val))
@@ -286,7 +286,7 @@ namespace HaRepackerLib.Controls
                     Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
                     return;
                 }
-                ((WzCompressedIntProperty)obj).Value = val;
+                ((WzIntProperty)obj).Value = val;
             }
             else if (obj is WzDoubleProperty)
             {
@@ -298,15 +298,15 @@ namespace HaRepackerLib.Controls
                 }
                 ((WzDoubleProperty)obj).Value = val;
             }
-            else if (obj is WzUnsignedShortProperty)
+            else if (obj is WzShortProperty)
             {
-                ushort val;
-                if (!ushort.TryParse(textPropBox.Text, out val))
+                short val;
+                if (!short.TryParse(textPropBox.Text, out val))
                 {
                     Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
                     return;
                 }
-                ((WzUnsignedShortProperty)obj).Value = val;
+                ((WzShortProperty)obj).Value = val;
             }
             else if (obj is WzUOLProperty)
                 ((WzUOLProperty)obj).Value = textPropBox.Text;
@@ -394,7 +394,7 @@ namespace HaRepackerLib.Controls
             clipboard.Clear();
             foreach (WzNode node in DataTree.SelectedNodes)
             {
-                IWzObject clone = null;
+                WzObject clone = null;
                 if (node.Tag is WzDirectory)
                 {
                     Warning.Error("You can't copy directories because they require too much memory");
@@ -404,9 +404,9 @@ namespace HaRepackerLib.Controls
                 {
                     clone = ((WzImage)node.Tag).DeepClone();
                 }
-                else if (node.Tag is IWzImageProperty)
+                else if (node.Tag is WzImageProperty)
                 {
-                    clone = ((IWzImageProperty)node.Tag).DeepClone();
+                    clone = ((WzImageProperty)node.Tag).DeepClone();
                 }
                 else continue;
                 clipboard.Add(clone);
@@ -419,12 +419,12 @@ namespace HaRepackerLib.Controls
             yesToAll = false;
             noToAll = false;
             WzNode parent = (WzNode)DataTree.SelectedNode;
-            IWzObject parentObj = (IWzObject)parent.Tag;
+            WzObject parentObj = (WzObject)parent.Tag;
             if (parentObj is WzFile) parentObj = ((WzFile)parentObj).WzDirectory;
 
-            foreach (IWzObject obj in clipboard)
+            foreach (WzObject obj in clipboard)
             {
-                if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) || (obj is IWzImageProperty && parentObj is IPropertyContainer))
+                if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) || (obj is WzImageProperty && parentObj is IPropertyContainer))
                 {
                     WzNode node = new WzNode(obj);
                     WzNode child = WzNode.GetChildNode(parent, node.Text);
@@ -507,7 +507,7 @@ namespace HaRepackerLib.Controls
 
         private void SearchWzProperties(IPropertyContainer parent)
         {
-            foreach (IWzImageProperty prop in parent.WzProperties)
+            foreach (WzImageProperty prop in parent.WzProperties)
             {
                 if ((0 <= prop.Name.IndexOf(searchText, StringComparison.InvariantCultureIgnoreCase)) || (searchValues && prop is WzStringProperty && (0 <= ((WzStringProperty)prop).Value.IndexOf(searchText, StringComparison.InvariantCultureIgnoreCase))))
                 {
@@ -694,7 +694,7 @@ namespace HaRepackerLib.Controls
             {
                 if (node.Tag is IPropertyContainer)
                     SearchWzProperties((IPropertyContainer)node.Tag);
-                else if (node.Tag is IWzImageProperty) continue;
+                else if (node.Tag is WzImageProperty) continue;
                 else SearchTV(node);
                 if (finished) break;
             }
@@ -721,7 +721,7 @@ namespace HaRepackerLib.Controls
             extractImages = UserSettings.ParseImagesInSearch;
             foreach (WzNode node in DataTree.SelectedNodes)
             {
-                if (node.Tag is IWzImageProperty) continue;
+                if (node.Tag is WzImageProperty) continue;
                 else if (node.Tag is IPropertyContainer)
                     SearchWzProperties((IPropertyContainer)node.Tag);
                 else SearchTV(node);

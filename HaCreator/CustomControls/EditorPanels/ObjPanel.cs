@@ -48,7 +48,7 @@ namespace HaCreator.CustomControls.EditorPanels
             objImagesContainer.Controls.Clear();
             WzImage oSImage = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem];
             if (!oSImage.Parsed) oSImage.ParseImage();
-            foreach (IWzImageProperty l0Prop in oSImage.WzProperties)
+            foreach (WzImageProperty l0Prop in oSImage.WzProperties)
                 objL0ListBox.Items.Add(l0Prop.Name);
         }
 
@@ -57,8 +57,8 @@ namespace HaCreator.CustomControls.EditorPanels
             if (objL0ListBox.SelectedItem == null) return;
             objL1ListBox.Items.Clear();
             objImagesContainer.Controls.Clear();
-            IWzImageProperty l0Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem];
-            foreach (IWzImageProperty l1Prop in l0Prop.WzProperties)
+            WzImageProperty l0Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem];
+            foreach (WzImageProperty l1Prop in l0Prop.WzProperties)
                 objL1ListBox.Items.Add(l1Prop.Name);
         }
 
@@ -66,7 +66,7 @@ namespace HaCreator.CustomControls.EditorPanels
         {
             if (objL1ListBox.SelectedItem == null) return;
             objImagesContainer.Controls.Clear();
-            IWzImageProperty l1Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem][(string)objL1ListBox.SelectedItem];
+            WzImageProperty l1Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem][(string)objL1ListBox.SelectedItem];
             foreach (WzSubProperty l2Prop in l1Prop.WzProperties)
             {
                 if (l2Prop.HCTag == null)

@@ -38,12 +38,12 @@ namespace HaRepacker
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            bool firstRun = PrepareApplication();
+            bool firstRun = PrepareApplication(true);
             Application.Run(new MainForm(wzToLoad, true, firstRun));
             EndApplication(true, true);
         }
 
-        public static bool PrepareApplication()
+        public static bool PrepareApplication(bool from_internal)
         {
             SettingsManager = new WzSettingsManager(System.IO.Path.Combine(Application.StartupPath, "HRSettings.wz"), typeof(UserSettings), typeof(ApplicationSettings));
             int tryCount = 0;
@@ -73,7 +73,7 @@ namespace HaRepacker
                 ApplicationSettings.FirstRun = false;
                 SettingsManager.Save();
             }
-            if (UserSettings.AutoAssociate)
+            if (UserSettings.AutoAssociate && from_internal)
             {
                 string path = Application.ExecutablePath;
                 Registry.ClassesRoot.CreateSubKey(".wz").SetValue("", "WzFile");

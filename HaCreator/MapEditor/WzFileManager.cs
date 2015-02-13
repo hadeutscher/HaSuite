@@ -172,7 +172,7 @@ namespace HaCreator.MapEditor
                     {
                         WzSubProperty portalContinue = (WzSubProperty)image["portalContinue"];
                         if (portalContinue == null) continue;
-                        Bitmap portalImage = (Bitmap)portalContinue["0"];
+                        Bitmap portalImage = portalContinue["0"].GetBitmap();
                         if (image.Name == "default")
                             defaultImage = portalImage;
                         else
@@ -287,12 +287,12 @@ namespace HaCreator.MapEditor
 
         public static WzVectorProperty PointToVector(string name, System.Drawing.Point source)
         {
-            return new WzVectorProperty(name, new WzCompressedIntProperty("X", source.X), new WzCompressedIntProperty("Y", source.Y));
+            return new WzVectorProperty(name, new WzIntProperty("X", source.X), new WzIntProperty("Y", source.Y));
         }
 
         public static WzVectorProperty PointToVector(string name, Microsoft.Xna.Framework.Point source)
         {
-            return new WzVectorProperty(name, new WzCompressedIntProperty("X", source.X), new WzCompressedIntProperty("Y", source.Y));
+            return new WzVectorProperty(name, new WzIntProperty("X", source.X), new WzIntProperty("Y", source.Y));
         }
 
         public static string AddLeadingZeros(string source, int maxLength)
@@ -366,13 +366,13 @@ namespace HaCreator.MapEditor
             return "";
         }
 
-        public static IWzObject GetObjectByRelativePath(IWzObject currentObject, string path)
+        public static WzObject GetObjectByRelativePath(WzObject currentObject, string path)
         {
             foreach (string directive in path.Split("/".ToCharArray()))
             {
                 if (directive == "..") currentObject = currentObject.Parent;
-                else if (currentObject is IWzImageProperty)
-                    currentObject = ((IWzImageProperty)currentObject)[directive];
+                else if (currentObject is WzImageProperty)
+                    currentObject = ((WzImageProperty)currentObject)[directive];
                 else if (currentObject is WzImage)
                     currentObject = ((WzImage)currentObject)[directive];
                 else if (currentObject is WzDirectory)
@@ -382,9 +382,9 @@ namespace HaCreator.MapEditor
             return currentObject;
         }
 
-        public static IWzObject ResolveUOL(WzUOLProperty uol)
+        public static WzObject ResolveUOL(WzUOLProperty uol)
         {
-            return (IWzObject)GetObjectByRelativePath(uol.Parent, uol.Value);
+            return (WzObject)GetObjectByRelativePath(uol.Parent, uol.Value);
         }
 
         public static string RemoveExtension(string source)
@@ -394,9 +394,9 @@ namespace HaCreator.MapEditor
             return source;
         }
 
-        public static IWzImageProperty GetRealProperty(IWzImageProperty prop)
+        public static WzImageProperty GetRealProperty(WzImageProperty prop)
         {
-            if (prop is WzUOLProperty) return (IWzImageProperty)ResolveUOL((WzUOLProperty)prop);
+            if (prop is WzUOLProperty) return (WzImageProperty)ResolveUOL((WzUOLProperty)prop);
             else return prop;
         }
 

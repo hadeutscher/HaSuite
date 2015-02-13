@@ -23,9 +23,11 @@ namespace HaCreator.WzStructure
 {
     public static class MapLoader
     {
-        private static void VerifyMapPropsKnown(WzImage mapImage)
+        public static void VerifyMapPropsKnown(WzImage mapImage)
         {
-            foreach (IWzImageProperty prop in mapImage.WzProperties) switch (prop.Name)
+            foreach (WzImageProperty prop in mapImage.WzProperties)
+            {
+                switch (prop.Name)
                 {
                     case "0":
                     case "1":
@@ -45,16 +47,26 @@ namespace HaCreator.WzStructure
                     case "portal":
                     case "seat":
                     case "ToolTip":
+                    case "clock":
+                    case "shipObj":
+                    case "area":
+                    case "coconut":
+                    case "healer":
+                    case "pulley":
+                    case "BuffZone":
+                    case "snowBall":
+                    case "monsterCarnival":
                         continue;
                     default:
-                        string error = "Unknown property " + prop.Name + ". While this map can still be edited it is recommended to report this to haha01haha01 for better functionality of the editor.";
-                        //MessageBox.Show(error);
+                        string loggerSuffix = ", map " + mapImage.Name + ((mapImage.WzFileParent != null) ? (" of version " + Enum.GetName(typeof(WzMapleVersion), mapImage.WzFileParent.MapleVersion) + ", v" + mapImage.WzFileParent.Version.ToString()) : "");
+                        string error = "Unknown property " + prop.Name + loggerSuffix;
                         MapleLib.Helpers.ErrorLogger.Log(ErrorLevel.MissingFeature, error);
                         break;
                 }
+            }
         }
 
-        private static MapType GetMapType(WzImage mapImage)
+        public static MapType GetMapType(WzImage mapImage)
         {
             switch (mapImage.Name)
             {
@@ -104,43 +116,17 @@ namespace HaCreator.WzStructure
             int VRTop = Math.Min(mostBottom - 600, mostTop - 360);
             VR = new System.Drawing.Rectangle(VRLeft, VRTop, VRRight - VRLeft, VRBottom - VRTop);
             return true;
-            /*
-            int left = int.MaxValue, top = int.MaxValue, right = int.MinValue, bottom = int.MinValue;
-            for (int layer = 0; layer <= 7; layer++)
-            {
-                WzSubProperty layerProp = (WzSubProperty)mapImage[layer.ToString()];
-                foreach (IWzImageProperty obj in layerProp["obj"].WzProperties)
-                {
-                    int x = InfoTool.GetInt(obj["x"]);
-                    int y = InfoTool.GetInt(obj["y"]);
-                    if (x < left) left = x;
-                    if (x > right) right = x;
-                    if (y < top) top = y;
-                    if (y > bottom) bottom = y;
-                }
-                foreach (IWzImageProperty tile in layerProp["tile"].WzProperties)
-                {
-                    int x = InfoTool.GetInt(tile["x"]);
-                    int y = InfoTool.GetInt(tile["y"]);
-                    if (x < left) left = x;
-                    if (x > right) right = x;
-                    if (y < top) top = y;
-                    if (y > bottom) bottom = y;
-                }
-            }
-            size = new XNA.Point(right - left + 200, bottom - top + 200);
-            center = new XNA.Point(100 - left, 100 - top);*/
         }
 
-        private static void LoadLayers(WzImage mapImage, Board mapBoard)
+        public static void LoadLayers(WzImage mapImage, Board mapBoard)
         {
             for (int layer = 0; layer <= 7; layer++)
             {
                 WzSubProperty layerProp = (WzSubProperty)mapImage[layer.ToString()];
-                IWzImageProperty tSprop = layerProp["info"]["tS"];
+                WzImageProperty tSprop = layerProp["info"]["tS"];
                 string tS = null;
                 if (tSprop != null) tS = InfoTool.GetString(tSprop);
-                foreach (IWzImageProperty obj in layerProp["obj"].WzProperties)
+                foreach (WzImageProperty obj in layerProp["obj"].WzProperties)
                 {
                     int x = InfoTool.GetInt(obj["x"]);
                     int y = InfoTool.GetInt(obj["y"]);
@@ -160,40 +146,40 @@ namespace HaCreator.WzStructure
                     int? cx = InfoTool.GetOptionalTranslatedInt(obj["cx"]);
                     int? cy = InfoTool.GetOptionalTranslatedInt(obj["cy"]);
                     string tags = InfoTool.GetOptionalString(obj["tags"]);
-                    IWzImageProperty questParent = obj["quest"];
+                    WzImageProperty questParent = obj["quest"];
                     List<ObjectInstanceQuest> questInfo = null;
                     if (questParent != null)
-                        foreach (WzCompressedIntProperty info in questParent.WzProperties)
+                        foreach (WzIntProperty info in questParent.WzProperties)
                             questInfo.Add(new ObjectInstanceQuest(int.Parse(info.Name), (QuestState)info.Value));
                     bool flip = InfoTool.GetBool(obj["f"]);
-                    IWzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
+                    WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
                     if (objInfoProp.HCTag == null)
                         objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
                     ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
-                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)objInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, z, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, false, false));
+                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)objInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, z, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, false));
                 }
-                IWzImageProperty tileParent = layerProp["tile"];
+                WzImageProperty tileParent = layerProp["tile"];
                 for (int i = 0; i < tileParent.WzProperties.Count; i++)
                 //foreach (IWzImageProperty tile in layerProp["tile"].WzProperties)
                 {
-                    IWzImageProperty tile = tileParent.WzProperties[i];
+                    WzImageProperty tile = tileParent.WzProperties[i];
                     int x = InfoTool.GetInt(tile["x"]);
                     int y = InfoTool.GetInt(tile["y"]);
                     //int zM = InfoTool.GetInt(tile["zM"]);
                     string u = InfoTool.GetString(tile["u"]);
                     int no = InfoTool.GetInt(tile["no"]);
-                    IWzImageProperty tileInfoProp = Program.InfoManager.TileSets[tS][u][no.ToString()];
+                    WzImageProperty tileInfoProp = Program.InfoManager.TileSets[tS][u][no.ToString()];
                     if (tileInfoProp.HCTag == null)
                         tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no.ToString());
                     TileInfo tileInfo = (TileInfo)tileInfoProp.HCTag;
-                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, i /*zM*/, false, false, false));
+                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, i /*zM*/, false, false));
                 }
             }
         }
 
-        private static void LoadLife(WzImage mapImage, Board mapBoard)
+        public static void LoadLife(WzImage mapImage, Board mapBoard)
         {
-            IWzImageProperty lifeParent = mapImage["life"];
+            WzImageProperty lifeParent = mapImage["life"];
             if (lifeParent == null) return;
             foreach (WzSubProperty life in lifeParent.WzProperties)
             {
@@ -219,7 +205,7 @@ namespace HaCreator.WzStructure
                         if (mobImage.HCTag == null)
                             mobImage.HCTag = MobInfo.Load(mobImage);
                         MobInfo mobInfo = (MobInfo)mobImage.HCTag;
-                        mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team, false));
+                        mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team));
                         break;
                     case "n":
                         WzImage npcImage = (WzImage)Program.WzManager["npc"][id + ".img"];
@@ -227,7 +213,7 @@ namespace HaCreator.WzStructure
                         if (npcImage.HCTag == null)
                             npcImage.HCTag = NpcInfo.Load(npcImage);
                         NpcInfo npcInfo = (NpcInfo)npcImage.HCTag;
-                        mapBoard.BoardItems.NPCs.Add((NPCInstance)npcInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team, false));
+                        mapBoard.BoardItems.NPCs.Add((NPCInstance)npcInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team));
                         break;
                     default:
                         throw new Exception("invalid life type " + type);
@@ -235,7 +221,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static void LoadReactors(WzImage mapImage, Board mapBoard)
+        public static void LoadReactors(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty reactorParent = (WzSubProperty)mapImage["reactor"];
             if (reactorParent == null) return;
@@ -247,15 +233,20 @@ namespace HaCreator.WzStructure
                 string name = InfoTool.GetOptionalString(reactor["name"]);
                 string id = InfoTool.GetString(reactor["id"]);
                 bool flip = InfoTool.GetBool(reactor["f"]);
-                mapBoard.BoardItems.Reactors.Add((ReactorInstance)Program.InfoManager.Reactors[id].CreateInstance(mapBoard, x, y, reactorTime, name, flip, false));
+                mapBoard.BoardItems.Reactors.Add((ReactorInstance)Program.InfoManager.Reactors[id].CreateInstance(mapBoard, x, y, reactorTime, name, flip));
             }
         }
 
         private static void LoadChairs(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty chairParent = (WzSubProperty)mapImage["seat"];
-            if (chairParent != null) foreach (WzVectorProperty chair in chairParent.WzProperties)
-                    mapBoard.BoardItems.Chairs.Add(new Chair(mapBoard, chair.X.Value, chair.Y.Value, false));
+            if (chairParent != null)
+            {
+                foreach (WzVectorProperty chair in chairParent.WzProperties)
+                {
+                    mapBoard.BoardItems.Chairs.Add(new Chair(mapBoard, chair.X.Value, chair.Y.Value));
+                }
+            }
             mapBoard.BoardItems.Chairs.Sort(new Comparison<Chair>(
                     delegate(Chair a, Chair b)
                     {
@@ -290,7 +281,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static void LoadRopes(WzImage mapImage, Board mapBoard)
+        public static void LoadRopes(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty ropeParent = (WzSubProperty)mapImage["ladderRope"];
             foreach (WzSubProperty rope in ropeParent.WzProperties)
@@ -324,7 +315,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static void LoadFootholds(WzImage mapImage, Board mapBoard)
+        public static void LoadFootholds(WzImage mapImage, Board mapBoard)
         {
             List<FootholdAnchor> anchors = new List<FootholdAnchor>();
             WzSubProperty footholdParent = (WzSubProperty)mapImage["foothold"];
@@ -339,8 +330,8 @@ namespace HaCreator.WzStructure
                 foreach (WzSubProperty platProp in layerProp.WzProperties)
                     foreach (WzSubProperty fhProp in platProp.WzProperties)
                     {
-                        a = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x1"]), InfoTool.GetInt(fhProp["y1"]), layer, false);
-                        b = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x2"]), InfoTool.GetInt(fhProp["y2"]), layer, false);
+                        a = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x1"]), InfoTool.GetInt(fhProp["y1"]), layer);
+                        b = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x2"]), InfoTool.GetInt(fhProp["y2"]), layer);
                         int num = int.Parse(fhProp.Name);
                         int next = InfoTool.GetInt(fhProp["next"]);
                         int prev = InfoTool.GetInt(fhProp["prev"]);
@@ -425,7 +416,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static void LoadPortals(WzImage mapImage, Board mapBoard)
+        public static void LoadPortals(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty portalParent = (WzSubProperty)mapImage["portal"];
             foreach (WzSubProperty portal in portalParent.WzProperties)
@@ -445,11 +436,11 @@ namespace HaCreator.WzStructure
                 int? delay = InfoTool.GetOptionalInt(portal["delay"]);
                 MapleBool hideTooltip = InfoTool.GetOptionalBool(portal["hideTooltip"]);
                 MapleBool onlyOnce = InfoTool.GetOptionalBool(portal["onlyOnce"]);
-                mapBoard.BoardItems.Portals.Add(PortalInfo.GetPortalInfoByType(pt).CreateInstance(mapBoard, x, y, false, pn, tn, tm, script, delay, hideTooltip, onlyOnce, horizontalImpact, verticalImpact, image, hRange, vRange));
+                mapBoard.BoardItems.Portals.Add(PortalInfo.GetPortalInfoByType(pt).CreateInstance(mapBoard, x, y, pn, tn, tm, script, delay, hideTooltip, onlyOnce, horizontalImpact, verticalImpact, image, hRange, vRange));
             }
         }
 
-        private static void LoadToolTips(WzImage mapImage, Board mapBoard)
+        public static void LoadToolTips(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty tooltipsParent = (WzSubProperty)mapImage["ToolTip"];
             WzImage tooltipsStringImage = (WzImage)Program.WzManager.String["ToolTipHelp.img"];
@@ -487,7 +478,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static void LoadBackgrounds(WzImage mapImage, Board mapBoard)
+        public static void LoadBackgrounds(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty bgParent = (WzSubProperty)mapImage["back"];
             WzSubProperty bgProp;
@@ -509,12 +500,264 @@ namespace HaCreator.WzStructure
                 string no = InfoTool.GetInt(bgProp["no"]).ToString();
                 WzImage bsImg = Program.InfoManager.BackgroundSets[bS];
                 if (bsImg == null) continue;
-                IWzImageProperty bgInfoProp = bsImg[ani ? "ani" : "back"][no];
+                WzImageProperty bgInfoProp = bsImg[ani ? "ani" : "back"][no];
                 if (bgInfoProp.HCTag == null)
                     bgInfoProp.HCTag = BackgroundInfo.Load(bgInfoProp, bS, ani, no);
                 BackgroundInfo bgInfo = (BackgroundInfo)bgInfoProp.HCTag;
                 IList list = front ? mapBoard.BoardItems.FrontBackgrounds : mapBoard.BoardItems.BackBackgrounds;
-                list.Add((BackgroundInstance)bgInfo.CreateInstance(mapBoard, x, y, i, rx, ry, cx, cy, type, a, front, flip, false));
+                list.Add((BackgroundInstance)bgInfo.CreateInstance(mapBoard, x, y, i, rx, ry, cx, cy, type, a, front, flip));
+            }
+        }
+
+        public static void LoadMisc(WzImage mapImage, Board mapBoard)
+        {
+            // All of the following properties are extremely esoteric features that only appear in a handful of maps. 
+            // They are implemented here for the sake of completeness, and being able to repack their maps without corruption.
+
+            WzImageProperty clock = mapImage["clock"];
+            WzImageProperty ship = mapImage["shipObj"];
+            WzImageProperty area = mapImage["area"];
+            WzImageProperty coconut = mapImage["coconut"];
+            WzImageProperty healer = mapImage["healer"];
+            WzImageProperty pulley = mapImage["pulley"];
+            WzImageProperty BuffZone = mapImage["BuffZone"];
+            WzImageProperty snowBall = mapImage["snowBall"];
+            WzImageProperty monsterCarnival = mapImage["monsterCarnival"];
+            if (clock != null)
+            {
+                Clock clockInstance = new Clock(mapBoard, new Rectangle(InfoTool.GetInt(clock["x"]), InfoTool.GetInt(clock["y"]), InfoTool.GetInt(clock["width"]), InfoTool.GetInt(clock["height"])));
+                mapBoard.BoardItems.Add(clockInstance, false);
+            }
+            if (ship != null)
+            {
+                string objPath = InfoTool.GetString(ship["shipObj"]);
+                string[] objPathParts = objPath.Split("/".ToCharArray());
+                string oS = WzInfoTools.RemoveExtension(objPathParts[objPathParts.Length - 4]);
+                string l0 = objPathParts[objPathParts.Length - 3];
+                string l1 = objPathParts[objPathParts.Length - 2];
+                string l2 = objPathParts[objPathParts.Length - 1];
+                WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
+                if (objInfoProp.HCTag == null)
+                    objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
+                ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
+                ShipObject shipInstance = new ShipObject(objInfo, mapBoard, 
+                    InfoTool.GetInt(ship["x"]), 
+                    InfoTool.GetInt(ship["y"]), 
+                    InfoTool.GetOptionalInt(ship["z"]), 
+                    InfoTool.GetOptionalInt(ship["x0"]), 
+                    InfoTool.GetInt(ship["tMove"]), 
+                    InfoTool.GetInt(ship["shipKind"]), 
+                    InfoTool.GetBool(ship["f"]));
+                mapBoard.BoardItems.Add(shipInstance, false);
+            }
+            if (area != null)
+            {
+                foreach (WzImageProperty prop in area.WzProperties)
+                {
+                    int x1 = InfoTool.GetInt(prop["x1"]);
+                    int x2 = InfoTool.GetInt(prop["x2"]);
+                    int y1 = InfoTool.GetInt(prop["y1"]);
+                    int y2 = InfoTool.GetInt(prop["y2"]);
+                    Area currArea = new Area(mapBoard, new Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)), prop.Name);
+                    mapBoard.BoardItems.Add(currArea, false);
+                }
+            }
+            if (coconut != null)
+            {
+                mapBoard.MapInfo.coconut = new MapInfo.Coconut(
+                    InfoTool.GetInt(coconut["avatar"]["0"]["0"]["cap"]),
+                    InfoTool.GetInt(coconut["avatar"]["0"]["1"]["cap"]),
+                    InfoTool.GetInt(coconut["avatar"]["1"]["0"]["cap"]),
+                    InfoTool.GetInt(coconut["avatar"]["1"]["1"]["cap"]),
+                    InfoTool.GetInt(coconut["avatar"]["0"]["0"]["clothes"]),
+                    InfoTool.GetInt(coconut["avatar"]["0"]["1"]["clothes"]),
+                    InfoTool.GetInt(coconut["avatar"]["1"]["0"]["clothes"]),
+                    InfoTool.GetInt(coconut["avatar"]["1"]["1"]["clothes"]),
+                    InfoTool.GetInt(coconut["countBombing"]),
+                    InfoTool.GetInt(coconut["countFalling"]),
+                    InfoTool.GetInt(coconut["countHit"]),
+                    InfoTool.GetInt(coconut["countStopped"]),
+                    InfoTool.GetInt(coconut["timeDefault"]),
+                    InfoTool.GetInt(coconut["timeFinish"]),
+                    InfoTool.GetInt(coconut["timeExpand"]),
+                    InfoTool.GetInt(coconut["timeMessage"]),
+                    InfoTool.GetString(coconut["effectLose"]),
+                    InfoTool.GetString(coconut["effectWin"]),
+                    InfoTool.GetString(coconut["eventName"]),
+                    InfoTool.GetString(coconut["eventObjectName"]),
+                    InfoTool.GetString(coconut["soundLose"]),
+                    InfoTool.GetString(coconut["soundWin"]));
+            }
+            if (healer != null)
+            {
+                string objPath = InfoTool.GetString(healer["healer"]);
+                string[] objPathParts = objPath.Split("/".ToCharArray());
+                string oS = WzInfoTools.RemoveExtension(objPathParts[objPathParts.Length - 4]);
+                string l0 = objPathParts[objPathParts.Length - 3];
+                string l1 = objPathParts[objPathParts.Length - 2];
+                string l2 = objPathParts[objPathParts.Length - 1];
+                WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
+                if (objInfoProp.HCTag == null)
+                    objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
+                ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
+                Healer healerInstance = new Healer(objInfo, mapBoard,
+                    InfoTool.GetInt(healer["x"]),
+                    InfoTool.GetInt(healer["yMin"]),
+                    InfoTool.GetInt(healer["yMax"]),
+                    InfoTool.GetInt(healer["healMin"]),
+                    InfoTool.GetInt(healer["healMax"]),
+                    InfoTool.GetInt(healer["fall"]),
+                    InfoTool.GetInt(healer["rise"]));
+                mapBoard.BoardItems.Add(healerInstance, false);
+            }
+            if (pulley != null)
+            {
+                string objPath = InfoTool.GetString(pulley["pulley"]);
+                string[] objPathParts = objPath.Split("/".ToCharArray());
+                string oS = WzInfoTools.RemoveExtension(objPathParts[objPathParts.Length - 4]);
+                string l0 = objPathParts[objPathParts.Length - 3];
+                string l1 = objPathParts[objPathParts.Length - 2];
+                string l2 = objPathParts[objPathParts.Length - 1];
+                WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
+                if (objInfoProp.HCTag == null)
+                    objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
+                ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
+                Pulley pulleyInstance = new Pulley(objInfo, mapBoard,
+                    InfoTool.GetInt(pulley["x"]),
+                    InfoTool.GetInt(pulley["y"]));
+                mapBoard.BoardItems.Add(pulleyInstance, false);
+            }
+            if (BuffZone != null)
+            {
+                foreach (WzImageProperty zone in BuffZone.WzProperties)
+                {
+                    int x1 = InfoTool.GetInt(zone["x1"]);
+                    int x2 = InfoTool.GetInt(zone["x2"]);
+                    int y1 = InfoTool.GetInt(zone["y1"]);
+                    int y2 = InfoTool.GetInt(zone["y2"]);
+                    int id = InfoTool.GetInt(zone["ItemID"]);
+                    int interval = InfoTool.GetInt(zone["Interval"]);
+                    int duration = InfoTool.GetInt(zone["Duration"]);
+                    BuffZone currZone = new BuffZone(mapBoard, new Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)), id, interval, duration, zone.Name);
+                    mapBoard.BoardItems.Add(currZone, false);
+                }
+            }
+            if (snowBall != null)
+            {
+                mapBoard.MapInfo.snowBall = new MapInfo.Snowball(
+                    InfoTool.GetString(snowBall["0"]["portal"]),
+                    InfoTool.GetString(snowBall["0"]["snowBall"]),
+                    InfoTool.GetString(snowBall["0"]["snowMan"]),
+                    InfoTool.GetInt(snowBall["0"]["y"]),
+                    InfoTool.GetString(snowBall["1"]["portal"]),
+                    InfoTool.GetString(snowBall["1"]["snowBall"]),
+                    InfoTool.GetString(snowBall["1"]["snowMan"]),
+                    InfoTool.GetInt(snowBall["1"]["y"]),
+                    InfoTool.GetString(snowBall["damageSnowBall"]),
+                    InfoTool.GetInt(snowBall["damageSnowMan0"]),
+                    InfoTool.GetInt(snowBall["damageSnowMan1"]),
+                    InfoTool.GetInt(snowBall["dx"]),
+                    InfoTool.GetInt(snowBall["recoveryAmount"]),
+                    InfoTool.GetInt(snowBall["section1"]),
+                    InfoTool.GetInt(snowBall["section2"]),
+                    InfoTool.GetInt(snowBall["section3"]),
+                    InfoTool.GetInt(snowBall["snowManHP"]),
+                    InfoTool.GetInt(snowBall["snowManWait"]),
+                    InfoTool.GetInt(snowBall["speed"]),
+                    InfoTool.GetInt(snowBall["x"]),
+                    InfoTool.GetInt(snowBall["x0"]),
+                    InfoTool.GetInt(snowBall["xMax"]),
+                    InfoTool.GetInt(snowBall["xMin"]));
+            }
+            if (monsterCarnival != null)
+            {
+                MapInfo.MonsterCarnival mc = new MapInfo.MonsterCarnival();
+                mc.deathCP = InfoTool.GetInt(monsterCarnival["deathCP"]);
+                mc.effectLose = InfoTool.GetString(monsterCarnival["effectLose"]);
+                mc.effectWin = InfoTool.GetString(monsterCarnival["effectWin"]);
+                
+                WzImageProperty guardian = monsterCarnival["guardian"];
+                mc.guardian = new int[guardian.WzProperties.Count];
+                for (int i = 0; i < mc.guardian.Length; i++)
+                {
+                    mc.guardian[i] = InfoTool.GetInt(guardian[i.ToString()]);
+                }
+                WzImageProperty mob = monsterCarnival["mob"];
+                mc.mobID = new int[mob.WzProperties.Count];
+                mc.mobTime = new int[mob.WzProperties.Count];
+                mc.spendCP = new int[mob.WzProperties.Count];
+                for (int i = 0; i < mc.mobID.Length; i++)
+                {
+                    mc.mobID[i] = InfoTool.GetInt(mob[i.ToString()]["id"]);
+                    mc.mobTime[i] = InfoTool.GetInt(mob[i.ToString()]["mobTime"]);
+                    mc.spendCP[i] = InfoTool.GetInt(mob[i.ToString()]["spendCP"]);
+                }
+
+                WzImageProperty guardianPos = monsterCarnival["guardianGenPos"];
+                for (int i = 0; i < guardianPos.WzProperties.Count; i++)
+                {
+                    mapBoard.BoardItems.Add(new MCGuardian(mapBoard,
+                        InfoTool.GetInt(guardianPos[i.ToString()]["x"]),
+                        InfoTool.GetInt(guardianPos[i.ToString()]["y"]),
+                        InfoTool.GetOptionalInt(guardianPos[i.ToString()]["team"]),
+                        InfoTool.GetInt(guardianPos[i.ToString()]["f"])), false);
+                }
+                WzImageProperty mobPos = monsterCarnival["mobGenPos"];
+                for (int i = 0; i < mobPos.WzProperties.Count; i++)
+                {
+                    mapBoard.BoardItems.Add(new MCMob(mapBoard,
+                        InfoTool.GetInt(mobPos[i.ToString()]["x"]),
+                        InfoTool.GetInt(mobPos[i.ToString()]["y"]),
+                        InfoTool.GetOptionalInt(mobPos[i.ToString()]["team"])), false);
+                }
+
+                mc.mapDivided = InfoTool.GetInt(monsterCarnival["mapDivided"]);
+                mc.reactorBlue = InfoTool.GetInt(monsterCarnival["reactorBlue"]);
+                mc.reactorRed = InfoTool.GetInt(monsterCarnival["reactorRed"]);
+                mc.rewardClimax = InfoTool.GetFloat(monsterCarnival["reward"]["climax"]);
+                WzImageProperty cpdiff = monsterCarnival["reward"]["cpDiff"];
+                mc.reward_cpDiff = new int[cpdiff.WzProperties.Count];
+                for (int i = 0; i < mc.reward_cpDiff.Length; i++)
+                {
+                    mc.reward_cpDiff[i] = InfoTool.GetInt(cpdiff[i.ToString()]);
+                }
+                WzImageProperty prob = monsterCarnival["reward"]["probChange"];
+                mc.probChange_loseCoin = new float[prob.WzProperties.Count];
+                mc.probChange_loseCP = new float[prob.WzProperties.Count];
+                mc.probChange_loseNuff = new float[prob.WzProperties.Count];
+                mc.probChange_loseRecovery = new float[prob.WzProperties.Count];
+                mc.probChange_wInCoin = new float[prob.WzProperties.Count];
+                mc.probChange_winCP = new float[prob.WzProperties.Count];
+                mc.probChange_winNuff = new float[prob.WzProperties.Count];
+                mc.probChange_winRecovery = new float[prob.WzProperties.Count];
+                for (int i = 0; i < mc.reward_cpDiff.Length; i++)
+                {
+                    mc.probChange_loseCoin[i] = InfoTool.GetFloat(prob[i.ToString()]["loseCoin"]);
+                    mc.probChange_loseCP[i] = InfoTool.GetFloat(prob[i.ToString()]["loseCP"]);
+                    mc.probChange_loseNuff[i] = InfoTool.GetFloat(prob[i.ToString()]["loseNuff"]);
+                    mc.probChange_loseRecovery[i] = InfoTool.GetFloat(prob[i.ToString()]["loseRecovery"]);
+                    mc.probChange_wInCoin[i] = InfoTool.GetFloat(prob[i.ToString()]["wInCoin"]);
+                    mc.probChange_winCP[i] = InfoTool.GetFloat(prob[i.ToString()]["winCP"]);
+                    mc.probChange_winNuff[i] = InfoTool.GetFloat(prob[i.ToString()]["winNuff"]);
+                    mc.probChange_winRecovery[i] = InfoTool.GetFloat(prob[i.ToString()]["winRecovery"]);
+                }
+
+                mc.rewardMapLose = InfoTool.GetInt(monsterCarnival["rewardMapLose"]);
+                mc.rewardMapWin = InfoTool.GetInt(monsterCarnival["rewardMapWin"]);
+                
+                WzImageProperty skill = monsterCarnival["skill"];
+                mc.skill = new int[skill.WzProperties.Count];
+                for (int i = 0; i < mc.skill.Length; i++)
+                {
+                    mc.skill[i] = InfoTool.GetInt(skill[i.ToString()]);
+                }
+                mc.soundLose = InfoTool.GetString(monsterCarnival["soundLose"]);
+                mc.soundWin = InfoTool.GetString(monsterCarnival["soundWin"]);
+                mc.timeDefault = InfoTool.GetInt(monsterCarnival["timeDefault"]);
+                mc.timeExpand = InfoTool.GetInt(monsterCarnival["timeExpand"]);
+                mc.timeFinish = InfoTool.GetInt(monsterCarnival["timeFinish"]);
+                mc.timeMessage = InfoTool.GetInt(monsterCarnival["timeMessage"]);
+                mapBoard.MapInfo.monsterCarnival = mc;
             }
         }
 
@@ -552,7 +795,7 @@ namespace HaCreator.WzStructure
             }
             else
             {
-                IWzImageProperty miniMap = mapImage["miniMap"];
+                WzImageProperty miniMap = mapImage["miniMap"];
                 size = new Point(InfoTool.GetInt(miniMap["width"]), InfoTool.GetInt(miniMap["height"]));
                 center = new Point(InfoTool.GetInt(miniMap["centerX"]), InfoTool.GetInt(miniMap["centerY"]));
                 if (info.VR == null)
@@ -560,22 +803,25 @@ namespace HaCreator.WzStructure
                     info.VR = new System.Drawing.Rectangle(69 - center.X, 86 - center.Y, size.X - 69 - 69, size.Y - 86 - 86);
                 }
             }
-            CreateMap(mapName, WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)), CreateStandardMapMenu(rightClickHandler), size, center, 8, Tabs, multiBoard);
-            Board mapBoard = multiBoard.SelectedBoard;
-            mapBoard.MapInfo = info;
-            if (mapImage["miniMap"] != null)
-                mapBoard.MiniMap = ((WzCanvasProperty)mapImage["miniMap"]["canvas"]).PngProperty.GetPNG(false);
-            LoadLayers(mapImage, mapBoard);
-            LoadLife(mapImage, mapBoard);
-            LoadFootholds(mapImage, mapBoard);
-            LoadRopes(mapImage, mapBoard);
-            LoadChairs(mapImage, mapBoard);
-            LoadPortals(mapImage, mapBoard);
-            LoadReactors(mapImage, mapBoard);
-            LoadToolTips(mapImage, mapBoard);
-            LoadBackgrounds(mapImage, mapBoard);
-            mapBoard.BoardItems.Sort();
-
+            lock (multiBoard)
+            {
+                CreateMap(mapName, WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)), CreateStandardMapMenu(rightClickHandler), size, center, 8, Tabs, multiBoard);
+                Board mapBoard = multiBoard.SelectedBoard;
+                mapBoard.MapInfo = info;
+                if (mapImage["miniMap"] != null)
+                    mapBoard.MiniMap = ((WzCanvasProperty)mapImage["miniMap"]["canvas"]).PngProperty.GetPNG(false);
+                LoadLayers(mapImage, mapBoard);
+                LoadLife(mapImage, mapBoard);
+                LoadFootholds(mapImage, mapBoard);
+                LoadRopes(mapImage, mapBoard);
+                LoadChairs(mapImage, mapBoard);
+                LoadPortals(mapImage, mapBoard);
+                LoadReactors(mapImage, mapBoard);
+                LoadToolTips(mapImage, mapBoard);
+                LoadBackgrounds(mapImage, mapBoard);
+                LoadMisc(mapImage, mapBoard);
+                mapBoard.BoardItems.Sort();
+            }
             if (ErrorLogger.ErrorsPresent())
             {
                 ErrorLogger.SaveToFile("errors.txt");

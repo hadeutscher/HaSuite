@@ -40,7 +40,7 @@ namespace HaCreator.MapEditor
         private TileInfo[] tileRandomList;
 
         public Mouse(Board board)
-            : base(board, 0, 0, false)
+            : base(board, 0, 0)
         {
             IsDown = false;
         }
@@ -61,7 +61,6 @@ namespace HaCreator.MapEditor
                 {
                     Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(currAddedObj) });
                     //Board.BoardItems.Add(currAddedObj.CreateInstance(Board.Layers[Board.SelectedLayerIndex], Board, x, y, 50, false, false));
-                    currAddedObj.BeforeAdding = false;
                     ReleaseItem(currAddedObj);
                     if (currAddedObj is LayeredItem)
                     {
@@ -72,7 +71,7 @@ namespace HaCreator.MapEditor
                         Board.BoardItems.Sort();
                     }
                     if (state == MouseState.StaticObjectAdding)
-                        currAddedObj = currAddedInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false, true);
+                        currAddedObj = currAddedInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false);
                     else
                         currAddedObj = tileRandomList[NextInt32(tileRandomList.Length)].CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false, true);
                     Board.BoardItems.Add(currAddedObj, false);
@@ -82,7 +81,7 @@ namespace HaCreator.MapEditor
                 {
                     Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(currAddedObj) });
                     ReleaseItem(currAddedObj);
-                    currAddedObj = new Chair(Board, X, Y, true);
+                    currAddedObj = new Chair(Board, X, Y);
                     Board.BoardItems.Add(currAddedObj, false);
                     BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
                 }
@@ -142,7 +141,7 @@ namespace HaCreator.MapEditor
         {
             lock (Board.ParentControl)
             {
-                FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex, false);
+                FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex);
                 Board.BoardItems.FHAnchors.Add(fhAnchor);
                 Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(fhAnchor) });
                 if (connectedLines.Count == 0)
@@ -234,7 +233,7 @@ namespace HaCreator.MapEditor
                 Clear();
                 if (newInfo.Image == null) ((MapleExtractableInfo)newInfo).ParseImage();
                 currAddedInfo = newInfo;
-                currAddedObj = newInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - newInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - newInfo.Image.Height / 2, 50, false, true);
+                currAddedObj = newInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - newInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - newInfo.Image.Height / 2, 50, false);
                 Board.BoardItems.Add(currAddedObj, false);
                 BindItem(currAddedObj, new Microsoft.Xna.Framework.Point(newInfo.Origin.X - newInfo.Image.Width / 2, newInfo.Origin.Y - newInfo.Image.Height / 2));
                 state = MouseState.StaticObjectAdding;
@@ -276,7 +275,7 @@ namespace HaCreator.MapEditor
             lock (Board.ParentControl)
             {
                 Clear();
-                currAddedObj = new Chair(Board, X, Y, true);
+                currAddedObj = new Chair(Board, X, Y);
                 Board.BoardItems.Add(currAddedObj, false);
                 BindItem(currAddedObj, new Microsoft.Xna.Framework.Point());
                 state = MouseState.Chairs;
@@ -334,6 +333,11 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Overrides
+        protected override bool RemoveConnectedLines
+        {
+            get { return false; }
+        }
+
         public override MapleDrawableInfo BaseInfo
         {
             get { return null; }

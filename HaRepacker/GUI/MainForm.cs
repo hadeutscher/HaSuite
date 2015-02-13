@@ -387,14 +387,14 @@ namespace HaRepacker.GUI
         private void RunWzObjExtraction(object param)
         {
             ChangeApplicationState(false);
-            List<IWzObject> objsToDump = (List<IWzObject>)((object[])param)[0];
+            List<WzObject> objsToDump = (List<WzObject>)((object[])param)[0];
             string path = (string)((object[])param)[1];
             ProgressingWzSerializer serializer = (ProgressingWzSerializer)((object[])param)[2];
             UpdateProgressBar(MainPanel.mainProgressBar, 0, false, true);
             if (serializer is IWzObjectSerializer)
             {
                 UpdateProgressBar(MainPanel.mainProgressBar, objsToDump.Count, true, true);
-                foreach (IWzObject obj in objsToDump)
+                foreach (WzObject obj in objsToDump)
                 {
                     ((IWzObjectSerializer)serializer).SerializeObject(obj, path);
                     UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
@@ -533,10 +533,10 @@ namespace HaRepacker.GUI
         {
             string outPath = GetOutputDirectory();
             if (outPath == "") return;
-            List<IWzObject> objs = new List<IWzObject>();
+            List<WzObject> objs = new List<WzObject>();
             foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-                if (node.Tag is IWzObject)
-                    objs.Add((IWzObject)node.Tag);
+                if (node.Tag is WzObject)
+                    objs.Add((WzObject)node.Tag);
             WzPngMp3Serializer serializer = new WzPngMp3Serializer();
             threadDone = false;
             runningThread = new Thread(new ParameterizedThreadStart(RunWzObjExtraction));
@@ -584,10 +584,10 @@ namespace HaRepacker.GUI
         {
             SaveFileDialog dialog = new SaveFileDialog() { Title = "Select where to save the XML", Filter = "eXtended Markup Language (*.xml)|*.xml" };
             if (dialog.ShowDialog() != DialogResult.OK) return;
-            List<IWzObject> objs = new List<IWzObject>();
+            List<WzObject> objs = new List<WzObject>();
             foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
-                if (node.Tag is IWzObject)
-                    objs.Add((IWzObject)node.Tag);
+                if (node.Tag is WzObject)
+                    objs.Add((WzObject)node.Tag);
             WzNewXmlSerializer serializer = new WzNewXmlSerializer(UserSettings.Indentation, UserSettings.LineBreakType);
             threadDone = false;
             runningThread = new Thread(new ParameterizedThreadStart(RunWzObjExtraction));
@@ -604,13 +604,13 @@ namespace HaRepacker.GUI
             }
         }
 
-        private bool ValidAnimation(IWzObject prop)
+        private bool ValidAnimation(WzObject prop)
         {
             if (!(prop is WzSubProperty)) return false;
             WzSubProperty castedProp = (WzSubProperty)prop;
             List<WzCanvasProperty> props = new List<WzCanvasProperty>(castedProp.WzProperties.Count);
             int foo;
-            foreach (IWzImageProperty subprop in castedProp.WzProperties)
+            foreach (WzImageProperty subprop in castedProp.WzProperties)
             {
                 if (!(subprop is WzCanvasProperty)) continue;
                 if (!int.TryParse(subprop.Name, out foo)) return false;
@@ -625,7 +625,7 @@ namespace HaRepacker.GUI
         private void aPNGToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (MainPanel.DataTree.SelectedNode == null) return;
-            if (!ValidAnimation((IWzObject)MainPanel.DataTree.SelectedNode.Tag))
+            if (!ValidAnimation((WzObject)MainPanel.DataTree.SelectedNode.Tag))
                 Warning.Error("This item is not an animation.");
             else
             {
@@ -675,7 +675,7 @@ namespace HaRepacker.GUI
             }
             else if (!FloatingPointInputBox.Show("Add float", out name, out d))
                 return;
-            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzByteFloatProperty(name, (float)d), MainPanel.UndoRedoMan);
+            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzFloatProperty(name, (float)d), MainPanel.UndoRedoMan);
         }
 
         private void wzCanvasPropertyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -703,7 +703,7 @@ namespace HaRepacker.GUI
             }
             else if (!IntInputBox.Show("Add int", out name, out value))
                 return;
-            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzCompressedIntProperty(name, (int)value), MainPanel.UndoRedoMan);
+            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzIntProperty(name, (int)value), MainPanel.UndoRedoMan);
         }
 
         private void wzConvexPropertyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -798,7 +798,7 @@ namespace HaRepacker.GUI
             }
             else if (!IntInputBox.Show("Add ushort", out name, out value))
                 return;
-            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzUnsignedShortProperty(name, (ushort)value), MainPanel.UndoRedoMan);
+            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzShortProperty(name, (short)value), MainPanel.UndoRedoMan);
         }
 
         private void wzUolPropertyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -826,7 +826,7 @@ namespace HaRepacker.GUI
             }
             else if (!VectorInputBox.Show("Add vector", out name, out pt))
                 return;
-            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzVectorProperty(name, new WzCompressedIntProperty("X",((Point)pt).X),new WzCompressedIntProperty("Y",((Point)pt).Y)), MainPanel.UndoRedoMan);
+            ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzVectorProperty(name, new WzIntProperty("X",((Point)pt).X),new WzIntProperty("Y",((Point)pt).Y)), MainPanel.UndoRedoMan);
         }
 
         private void expandAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -842,7 +842,7 @@ namespace HaRepacker.GUI
         private void xMLToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             if (MainPanel.DataTree.SelectedNode == null ||(!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile) && !(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))) return;
-             WzFile wzFile = ((IWzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
+             WzFile wzFile = ((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
             if (!(wzFile is WzFile)) return;
             OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the XML files", Filter = "eXtended Markup Language (*.xml)|*.xml", Multiselect = true };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
@@ -912,18 +912,18 @@ namespace HaRepacker.GUI
             string[] files = (string[])arr[1];
             WzNode parent = (WzNode)arr[2];
             byte[] iv = (byte[])arr[3];
-            IWzObject parentObj = (IWzObject)parent.Tag;
+            WzObject parentObj = (WzObject)parent.Tag;
             if (parentObj is WzFile) parentObj = ((WzFile)parentObj).WzDirectory;
             UpdateProgressBar(MainPanel.mainProgressBar, files.Length, true, true);
             foreach (string file in files)
             {
-                List<IWzObject> objs;
+                List<WzObject> objs;
                 try
                 {
                     if (deserializer is WzXmlDeserializer)
                         objs = ((WzXmlDeserializer)deserializer).ParseXML(file);
                     else
-                        objs = new List<IWzObject> { ((WzImgDeserializer)deserializer).WzImageFromIMGFile(file, iv, Path.GetFileName(file)) };
+                        objs = new List<WzObject> { ((WzImgDeserializer)deserializer).WzImageFromIMGFile(file, iv, Path.GetFileName(file)) };
                 }
                 catch (ThreadAbortException)
                 {
@@ -935,9 +935,9 @@ namespace HaRepacker.GUI
                     UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
                     continue;
                 }
-                foreach (IWzObject obj in objs)
+                foreach (WzObject obj in objs)
                 {
-                    if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) || (obj is IWzImageProperty && parentObj is IPropertyContainer))
+                    if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) || (obj is WzImageProperty && parentObj is IPropertyContainer))
                     {
                         WzNode node = new WzNode(obj);
                         InsertWzNodeThreadSafe(node, parent);
@@ -951,7 +951,7 @@ namespace HaRepacker.GUI
         private void iMGToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             if (MainPanel.DataTree.SelectedNode == null || (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile) && !(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))) return;
-            WzFile wzFile = ((IWzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
+            WzFile wzFile = ((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
             if (!(wzFile is WzFile)) return;
             OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the IMG files", Filter = "WZ Image Files (*.img)|*.img", Multiselect = true };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;

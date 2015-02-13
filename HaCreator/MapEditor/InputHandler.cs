@@ -60,15 +60,6 @@ namespace HaCreator.MapEditor
                     List<BoardItem> toRemove = new List<BoardItem>();
                     foreach (BoardItem item in selectedBoard.BoardItems)
                     {
-                        /*bool itemUnderNewRect = MultiBoard.IsItemUnderRectangle(item, newRect);
-                        bool newPosUnderRectangle = MultiBoard.IsItemUnderRectangle(item, newRect);
-                        if (itemUnderNewRect && (ApplicationSettings.editedTypes & item.Type) == item.Type && (selectedBoard.SelectedLayerIndex == -1 || item.CheckIfLayerSelected(selectedBoard.SelectedLayerIndex)))
-                        {
-                            //if (item.IsRectrangleTransparent(Math.Max(item.Left, newRect.Left) - item.Left, Math.Max(item.Top, newRect.Top) - item.Top, Math.Min(item.Right, newRect.Right) - item.Left, Math.Min(item.Bottom, newRect.Bottom) - item.Top))
-                                item.Selected = true;
-                        }
-                        else if (item.Selected && !itemUnderNewRect && (MultiBoard.IsItemUnderRectangle(item, oldRect) || !MultiBoard.IsPointInsideRectangle(newPos, item.Left, item.Top, item.Right, item.Bottom) || item.IsPixelTransparent(newRect.Left - item.Left, newRect.Top - item.Top)))
-                            toRemove.Add(item);*/
                         if (MultiBoard.IsItemUnderRectangle(item, newRect) && (selectedBoard.EditedTypes & item.Type) == item.Type && (selectedBoard.SelectedLayerIndex == -1 || item.CheckIfLayerSelected(selectedBoard.SelectedLayerIndex)))
                             item.Selected = true;
                         else if (item.Selected && MultiBoard.IsItemUnderRectangle(item, oldRect))
@@ -95,7 +86,10 @@ namespace HaCreator.MapEditor
                     }
                 }
                 else if (selectedBoard.Mouse.State == MouseState.Footholds)
+                {
+                    // Foothold snap-like behavior
                     selectedBoard.Mouse.DoSnap();
+                }
 
                 if ((selectedBoard.Mouse.BoundItems.Count > 0 || selectedBoard.Mouse.MultiSelectOngoing) && selectedBoard.Mouse.State == MouseState.Selection)
                 {
@@ -279,11 +273,11 @@ namespace HaCreator.MapEditor
                 if (mouseState == MouseState.Selection)
                 {
                     ClearBoundItems(selectedBoard);
-                    if (!rightClickTarget.Selected)
-                        ClearSelectedItems(selectedBoard);
                     if (ClickOnMinimap(selectedBoard, realPosition)) return;
                     if (rightClickTarget == null)
                         return;
+                    if (!rightClickTarget.Selected)
+                        ClearSelectedItems(selectedBoard);
                     ContextMenuStrip menuStrip = new ContextMenuStrip();
                     menuStrip.Tag = rightClickTarget;
                     rightClickTarget.Selected = true;
@@ -372,40 +366,56 @@ namespace HaCreator.MapEditor
                     selectedBoard.Mouse.MinimapBrowseOngoing = true;
                     HandleMinimapBrowse(selectedBoard, realPosition);
                 }
-                else if (selectedBoard.Mouse.State == MouseState.Selection)//handle drag-drop, multiple selection and all that
+                else if (selectedBoard.Mouse.State == MouseState.Selection)
                 {
-                    BoardItem itemToSelect = null;
+                    //handle drag-drop, multiple selection and all that
                     bool ctrlDown = (Control.ModifierKeys & Keys.Control) == Keys.Control;
-                    if (item == null && selectedItem == null) //multi-drag
+                    if (item == null && selectedItem == null) //drag-selection is starting
                     {
-                        if (!ctrlDown) ClearSelectedItems(selectedBoard);
+                        if (!ctrlDown)
+                        {
+                            ClearSelectedItems(selectedBoard);
+                        }
                         selectedBoard.Mouse.MultiSelectOngoing = true;
                         selectedBoard.Mouse.MultiSelectStart = virtualPosition;
-                        return;
                     }
-                    bool itemAlreadySelected = false; //do not attempt to understand this algorithm, I know I can't
-                    if (item == null)
+                    else //Single click on item
                     {
-                        itemToSelect = selectedItem;
-                        itemAlreadySelected = true;
-                    }
-                    else if (selectedItem == null) itemToSelect = item;
-                    else if (!selectedItemHigher) itemToSelect = item;
-                    else
-                    {
-                        itemToSelect = selectedItem;
-                        itemAlreadySelected = true;
-                    }
-                    if (!itemAlreadySelected && !ctrlDown)
-                    {
-                        ClearSelectedItems(selectedBoard);
-                    }
-                    if (itemAlreadySelected && ctrlDown)
-                        itemToSelect.Selected = false;
-                    else
-                    {
-                        itemToSelect.Selected = true;
-                        BindAllSelectedItems(selectedBoard);
+                        BoardItem itemToSelect = null;
+                        bool itemAlreadySelected = false;
+
+                        if (item == null) // If user didn't click on any item, we want to change selectedItem's selection mode (to unselect it)
+                        {
+                            itemToSelect = selectedItem;
+                            itemAlreadySelected = true;
+                        }
+                        else if (selectedItem == null) // We are guaranteed (item != null) at this point, so just select item
+                        {
+                            itemToSelect = item;
+                        }
+                        else if (!selectedItemHigher) // item needs to be selected but there is already a selectedItem; only switch selection if the selectedItem is not higher
+                        {
+                            itemToSelect = item;
+                        }
+                        else // Otherwise, just mark selectedItem as the item we are selecting
+                        {
+                            itemToSelect = selectedItem;
+                            itemAlreadySelected = true;
+                        }
+
+                        if (!itemAlreadySelected && !ctrlDown) // If we are changing selection and ctrl is not down, clear current selected items
+                        {
+                            ClearSelectedItems(selectedBoard);
+                        }
+                        if (itemAlreadySelected && ctrlDown) // If we are clicking a selected item and ctrl IS down, we need to toggle its selection
+                        {
+                            itemToSelect.Selected = false;
+                        }
+                        else // Otherwise, mark the item as selected (if it's already selected nothing will happen) and bind it to the mouse to start drag-drop action
+                        {
+                            itemToSelect.Selected = true;
+                            BindAllSelectedItems(selectedBoard);
+                        }
                     }
                 }
             }
@@ -415,7 +425,7 @@ namespace HaCreator.MapEditor
         {
             foreach (BoardItem itemToSelect in selectedBoard.SelectedItems)
             {
-                selectedBoard.Mouse.BindItem(itemToSelect, new Point((itemToSelect.X/* - itemToSelect.Origin.X*/) - selectedBoard.Mouse.X, (itemToSelect.Y/* - itemToSelect.Origin.Y*/) - selectedBoard.Mouse.Y));
+                selectedBoard.Mouse.BindItem(itemToSelect, new Point(itemToSelect.X - selectedBoard.Mouse.X, itemToSelect.Y - selectedBoard.Mouse.Y));
                 if (itemToSelect is BackgroundInstance)
                     itemToSelect.moveStartPos = new Point(((BackgroundInstance)itemToSelect).BaseX, ((BackgroundInstance)itemToSelect).BaseY);
                 else
@@ -439,13 +449,7 @@ namespace HaCreator.MapEditor
             lock (board.ParentControl)
             {
                 object[] keys = new object[board.Mouse.BoundItems.Count];
-                //int i = 0;
                 board.Mouse.BoundItems.Keys.CopyTo(keys, 0);
-                /*foreach (DictionaryEntry entry in board.Mouse.BoundItems)
-                {
-                    keys[i] = entry.Key;
-                    i++;
-                }*/
                 List<UndoRedoAction> undoActions = new List<UndoRedoAction>();
                 bool addUndo;
                 foreach (object key in keys)

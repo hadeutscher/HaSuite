@@ -66,18 +66,25 @@ namespace HaCreator
         public static System.Drawing.FontStyle FontStyle = System.Drawing.FontStyle.Regular;
         public static int dotDescriptionBoxSize = 100;
 
-
         public static bool useMiniMap = true;
         public static bool showVR = true;
         public static bool useSnapping = true;
         public static bool emulateParallax = true;
         public static bool suppressWarnings = false;
+
+        // Controls debug features such feature compatibility testing and special exception handling
+        public static bool enableDebug =
+#if DEBUG
+            true;
+#else
+            false;
+#endif
     }
 
     public static class ApplicationSettings
     {
-        public static ItemTypes theoreticalVisibleTypes = ItemTypes.All;
-        public static ItemTypes theoreticalEditedTypes = ItemTypes.All ^ ItemTypes.Backgrounds;
+        public static ItemTypes theoreticalVisibleTypes = ItemTypes.All; // These two are marked theoretical because the visible\edited types in effect (Board.VisibleTypes\EditedTypes)
+        public static ItemTypes theoreticalEditedTypes = ItemTypes.All ^ ItemTypes.Backgrounds; // are subject to the current mode of operation
         public static int MapleVersionIndex = 3;
         public static string MapleFolder = "";
         public static int MapleFolderIndex = 0;
@@ -85,9 +92,9 @@ namespace HaCreator
         public static int lastRadioIndex = 3;
         public static bool newTab = true;
         public static bool randomTiles = true;
-        public static int lastDefaultLayer = 0;
-        public static string AuthorEmail = Encoding.ASCII.GetChars(new byte[] { 
+        public static int lastDefaultLayer = -1;
+        public static string AuthorEmail = new string(Encoding.ASCII.GetChars(new byte[] { 
                                             0x68,0x61,0x68,0x61,0x30,0x31,0x68,0x61,0x68,0x61,0x30,0x31,0x40,0x67,0x6d,0x61,0x69,0x6c,0x2e,0x63,0x6f,0x6d 
-                                            }).ToString(); // The email address is obfuscated to prevent spambots from finding it on the git webpage
+                                            })); // The email address is obfuscated to prevent spambots from finding it on the git webpage
     }
 }

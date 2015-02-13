@@ -23,10 +23,10 @@ namespace Footholds
 
         private void SpawnpointInfo_Load(object sender, EventArgs e)
         {
-            XLbl.Text = ((WzCompressedIntProperty)spawnpoint.Data["x"]).Value.ToString();
-            YLbl.Text = ((WzCompressedIntProperty)spawnpoint.Data["y"]).Value.ToString();
+            XLbl.Text = ((WzIntProperty)spawnpoint.Data["x"]).Value.ToString();
+            YLbl.Text = ((WzIntProperty)spawnpoint.Data["y"]).Value.ToString();
             MobIDLbl.Text = ((WzStringProperty)spawnpoint.Data["id"]).Value;
-            FHIDLbl.Text = ((WzCompressedIntProperty)spawnpoint.Data["fh"]).Value.ToString();
+            FHIDLbl.Text = ((WzIntProperty)spawnpoint.Data["fh"]).Value.ToString();
         }
     }
 }

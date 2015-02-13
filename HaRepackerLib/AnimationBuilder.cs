@@ -44,7 +44,7 @@ namespace HaRepackerLib
             Point biggestPng = new Point(0, 0);
             Point SmallestEmptySpace = new Point(65535, 65535);
             Point MaximumPngMappingEndingPts = new Point(0, 0);
-            foreach (IWzImageProperty subprop in parent.WzProperties)
+            foreach (WzImageProperty subprop in parent.WzProperties)
             {
                 if (subprop is WzCanvasProperty)
                 {
@@ -57,7 +57,7 @@ namespace HaRepackerLib
                 }
             }
             List<WzCanvasProperty> sortedProps = new List<WzCanvasProperty>();
-            foreach (IWzImageProperty subprop in parent.WzProperties)
+            foreach (WzImageProperty subprop in parent.WzProperties)
             {
                 if (subprop is WzCanvasProperty)
                 {
@@ -88,7 +88,7 @@ namespace HaRepackerLib
                 Bitmap bmp = subprop.PngProperty.GetPNG(false);
                 WzVectorProperty origin = (WzVectorProperty)subprop["origin"];
                 bmpList.Add(OptimizeBitmapTransparent(bmp, origin, biggestPng, SmallestEmptySpace, MaximumPngMappingEndingPts));
-                WzCompressedIntProperty delayProp = (WzCompressedIntProperty)subprop["delay"];
+                WzIntProperty delayProp = (WzIntProperty)subprop["delay"];
                 int delay =100;
                 if (delayProp != null) delay = delayProp.Value;
                 delayList.Add(delay);

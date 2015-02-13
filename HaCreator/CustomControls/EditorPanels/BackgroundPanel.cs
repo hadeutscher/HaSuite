@@ -42,7 +42,7 @@ namespace HaCreator.CustomControls.EditorPanels
             if (!bgSetImage.Parsed) bgSetImage.ParseImage();
             if (aniBg.Checked)
             {
-                IWzImageProperty aniProp = bgSetImage["ani"];
+                WzImageProperty aniProp = bgSetImage["ani"];
                 if (aniProp == null || aniProp.WzProperties == null) return;
                 foreach (WzSubProperty aniBgProp in aniProp.WzProperties)
                 {
@@ -56,7 +56,7 @@ namespace HaCreator.CustomControls.EditorPanels
             }
             else
             {
-                IWzImageProperty backProp = bgSetImage["back"];
+                WzImageProperty backProp = bgSetImage["back"];
                 foreach (WzCanvasProperty backBg in backProp.WzProperties)
                 {
                     if (backBg.HCTag == null)

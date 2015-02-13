@@ -36,7 +36,7 @@ namespace HaCreator.GUI
             {
                 WzImage tSImage = Program.InfoManager.TileSets[tS];
                 if (!tSImage.Parsed) tSImage.ParseImage();
-                IWzImageProperty enh0 = tSImage["enH0"];
+                WzImageProperty enh0 = tSImage["enH0"];
                 if (enh0 == null) continue;
                 WzCanvasProperty image = (WzCanvasProperty)enh0["0"];
                 if (image == null) continue;

@@ -14,13 +14,13 @@ namespace HaRepackerLib
 {
     public class WzNode : TreeNode
     {
-        public WzNode(IWzObject SourceObject)
+        public WzNode(WzObject SourceObject)
             : base(SourceObject.Name)
         {
             ParseChilds(SourceObject);
         }
 
-        private void ParseChilds(IWzObject SourceObject)
+        private void ParseChilds(WzObject SourceObject)
         {
             if (SourceObject == null) throw new NullReferenceException("Cannot create a null WzNode");
             Tag = SourceObject;
@@ -36,12 +36,12 @@ namespace HaRepackerLib
             else if (SourceObject is WzImage)
             {
                 if (((WzImage)SourceObject).Parsed)
-                    foreach (IWzImageProperty prop in ((WzImage)SourceObject).WzProperties)
+                    foreach (WzImageProperty prop in ((WzImage)SourceObject).WzProperties)
                         Nodes.Add(new WzNode(prop));
             }
             else if (SourceObject is IPropertyContainer)
             {
-                foreach (IWzImageProperty prop in ((IPropertyContainer)SourceObject).WzProperties)
+                foreach (WzImageProperty prop in ((IPropertyContainer)SourceObject).WzProperties)
                     Nodes.Add(new WzNode(prop));
             }
         }
@@ -49,8 +49,8 @@ namespace HaRepackerLib
         public void Delete()
         {
             Remove();
-            if (Tag is IWzImageProperty) ((IWzImageProperty)Tag).ParentImage.Changed = true;
-            ((IWzObject)Tag).Remove();
+            if (Tag is WzImageProperty) ((WzImageProperty)Tag).ParentImage.Changed = true;
+            ((WzObject)Tag).Remove();
         }
 
         public bool CanHaveChilds
@@ -74,16 +74,16 @@ namespace HaRepackerLib
 
         public static bool CanNodeBeInserted(WzNode parentNode, string name)
         {
-            IWzObject obj = (IWzObject)parentNode.Tag;
+            WzObject obj = (WzObject)parentNode.Tag;
             if (obj is IPropertyContainer) return ((IPropertyContainer)obj)[name] == null;
             else if (obj is WzDirectory) return ((WzDirectory)obj)[name] == null;
             else if (obj is WzFile) return ((WzFile)obj).WzDirectory[name] == null;
             else return false;
         }
 
-        private void addObjInternal(IWzObject obj)
+        private void addObjInternal(WzObject obj)
         {
-            IWzObject TaggedObject = (IWzObject)Tag;
+            WzObject TaggedObject = (WzObject)Tag;
             if (TaggedObject is WzFile) TaggedObject = ((WzFile)TaggedObject).WzDirectory;
             if (TaggedObject is WzDirectory)
             {
@@ -96,14 +96,14 @@ namespace HaRepackerLib
             else if (TaggedObject is WzImage)
             {
                 if (!((WzImage)TaggedObject).Parsed) ((WzImage)TaggedObject).ParseImage();
-                if (obj is IWzImageProperty)
-                    ((WzImage)TaggedObject).AddProperty((IWzImageProperty)obj);
+                if (obj is WzImageProperty)
+                    ((WzImage)TaggedObject).AddProperty((WzImageProperty)obj);
                 else return;
             }
             else if (TaggedObject is IPropertyContainer)
             {
-                if (obj is IWzImageProperty)
-                    ((IPropertyContainer)TaggedObject).AddProperty((IWzImageProperty)obj);
+                if (obj is WzImageProperty)
+                    ((IPropertyContainer)TaggedObject).AddProperty((WzImageProperty)obj);
                 else return;
             }
             else return;
@@ -113,7 +113,7 @@ namespace HaRepackerLib
         {
             if (CanNodeBeInserted(newParent, Text))
             {
-                addObjInternal((IWzObject)newParent.Tag);
+                addObjInternal((WzObject)newParent.Tag);
                 return true;
             }
             else
@@ -127,7 +127,7 @@ namespace HaRepackerLib
         {
             if (CanNodeBeInserted(newParent, Text))
             {
-                addObjInternal((IWzObject)newParent.Tag);
+                addObjInternal((WzObject)newParent.Tag);
                 Parent.Nodes.Remove(this);
                 newParent.Nodes.Add(this);
                 return true;
@@ -145,7 +145,7 @@ namespace HaRepackerLib
             {
                 TryParseImage();
                 this.Nodes.Add(node);
-                addObjInternal((IWzObject)node.Tag);
+                addObjInternal((WzObject)node.Tag);
                 return true;
             }
             else
@@ -164,7 +164,7 @@ namespace HaRepackerLib
             }
         }
 
-        public bool AddObject(IWzObject obj, UndoRedoManager undoRedoMan)
+        public bool AddObject(WzObject obj, UndoRedoManager undoRedoMan)
         {
             if (CanNodeBeInserted(this, obj.Name))
             {
@@ -172,7 +172,7 @@ namespace HaRepackerLib
                 addObjInternal(obj);
                 WzNode node = new WzNode(obj);
                 Nodes.Add(node);
-                if (node.Tag is IWzImageProperty) ((IWzImageProperty)node.Tag).ParentImage.Changed = true;
+                if (node.Tag is WzImageProperty) ((WzImageProperty)node.Tag).ParentImage.Changed = true;
                 undoRedoMan.AddUndoBatch(new System.Collections.Generic.List<UndoRedoAction> { UndoRedoManager.ObjectAdded(this, node) });
                 node.EnsureVisible();
                 return true;
@@ -187,7 +187,7 @@ namespace HaRepackerLib
         public void Reparse()
         {
             Nodes.Clear();
-            ParseChilds((IWzObject)Tag);
+            ParseChilds((WzObject)Tag);
         }
 
         public string GetTypeName()
@@ -198,8 +198,8 @@ namespace HaRepackerLib
         public void ChangeName(string name)
         {
             Text = name;
-            ((IWzObject)Tag).Name = name;
-            if (Tag is IWzImageProperty) ((IWzImageProperty)Tag).ParentImage.Changed = true;
+            ((WzObject)Tag).Name = name;
+            if (Tag is WzImageProperty) ((WzImageProperty)Tag).ParentImage.Changed = true;
         }
 
         public WzNode TopLevelNode

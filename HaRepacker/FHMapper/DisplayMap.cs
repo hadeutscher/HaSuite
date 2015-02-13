@@ -43,8 +43,8 @@ namespace Footholds
             MapPBox.Size = theMap.Size;
             MapPBox.Image = theMap;
 
-          xOffset = (int)((((thePortals.ToArray()[0].Shape.X) +20) - ((WzCompressedIntProperty)thePortals.ToArray()[0].Data["x"]).Value)*-1);
-          yOffset = (int)((((thePortals.ToArray()[0].Shape.Y) + 20) - ((WzCompressedIntProperty)thePortals.ToArray()[0].Data["y"]).Value) * -1);
+          xOffset = (int)((((thePortals.ToArray()[0].Shape.X) +20) - ((WzIntProperty)thePortals.ToArray()[0].Data["x"]).Value)*-1);
+          yOffset = (int)((((thePortals.ToArray()[0].Shape.Y) + 20) - ((WzIntProperty)thePortals.ToArray()[0].Data["y"]).Value) * -1);
         }
 
         public Bitmap ResizeBitMap(Bitmap img, int nWidth, int nHeight)

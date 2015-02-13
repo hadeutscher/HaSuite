@@ -25,11 +25,11 @@ namespace HaCreator.MapEditor
         private Bitmap image;
         private Texture2D texture;
         private System.Drawing.Point origin;
-        private IWzObject parentObject;
+        private WzObject parentObject;
         int width;
         int height;
 
-        public MapleDrawableInfo(Bitmap image, System.Drawing.Point origin, IWzObject parentObject)
+        public MapleDrawableInfo(Bitmap image, System.Drawing.Point origin, WzObject parentObject)
         {
             this.Image = image;
             this.origin = origin;
@@ -41,7 +41,7 @@ namespace HaCreator.MapEditor
             texture = BoardItem.TextureFromBitmap(device, image);
         }
 
-        public abstract BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding);
+        public abstract BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip);
 
         public virtual Texture2D GetTexture(SpriteBatch sprite)
         {
@@ -49,7 +49,7 @@ namespace HaCreator.MapEditor
             return texture;
         }
 
-        public virtual IWzObject ParentObject
+        public virtual WzObject ParentObject
         {
             get
             {
@@ -111,7 +111,7 @@ namespace HaCreator.MapEditor
 
     public abstract class MapleExtractableInfo : MapleDrawableInfo
     {
-        public MapleExtractableInfo(Bitmap image, System.Drawing.Point origin, IWzObject parentObject)
+        public MapleExtractableInfo(Bitmap image, System.Drawing.Point origin, WzObject parentObject)
             : base(image, origin, parentObject)
         {
         }
@@ -146,7 +146,7 @@ namespace HaCreator.MapEditor
         private bool fullFootholdInfo = false;
 
 
-        public ObjectInfo(Bitmap image, System.Drawing.Point origin, string oS, string l0, string l1, string l2, IWzObject parentObject)
+        public ObjectInfo(Bitmap image, System.Drawing.Point origin, string oS, string l0, string l1, string l2, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this._oS = oS;
@@ -166,7 +166,7 @@ namespace HaCreator.MapEditor
             WzCanvasProperty frame1 = (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject["0"]);
             ObjectInfo result = new ObjectInfo(frame1.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)frame1["origin"]),oS,l0,l1,l2, parentObject);
             WzSubProperty chairs = (WzSubProperty)parentObject["seat"];
-            IWzImageProperty footholds = (IWzImageProperty)frame1["foothold"];
+            WzImageProperty footholds = (WzImageProperty)frame1["foothold"];
             if (footholds != null)
             {
                 if (footholds is WzConvexProperty)
@@ -236,7 +236,7 @@ namespace HaCreator.MapEditor
                 {
                     foreach (XNA.Point foothold in footholdOffsets)
                     {
-                        FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, false);
+                        FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber);
                         board.BoardItems.FHAnchors.Add(anchor);
                         instance.BindItem(anchor, foothold);
                         anchors.Add(anchor);
@@ -249,7 +249,7 @@ namespace HaCreator.MapEditor
                     {
                         foreach (XNA.Point foothold in anchorList)
                         {
-                            FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, false);
+                            FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber);
                             board.BoardItems.FHAnchors.Add(anchor);
                             instance.BindItem(anchor, foothold);
                             anchors.Add(anchor);
@@ -261,7 +261,7 @@ namespace HaCreator.MapEditor
             }
             if  (chairOffsets != null) foreach (XNA.Point chairPos in chairOffsets)
             {
-                Chair chair = new Chair(board, x + chairPos.X, y + chairPos.Y, false);
+                Chair chair = new Chair(board, x + chairPos.X, y + chairPos.Y);
                 board.BoardItems.Chairs.Add(chair);
                 instance.BindItem(chair, chairPos);
             }
@@ -273,16 +273,16 @@ namespace HaCreator.MapEditor
             }*/
         }
 
-        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding)
+        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
-            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, false, false, false, false, null, null, null, null, null, null, null, flip, beforeAdding);
+            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, false, false, false, false, null, null, null, null, null, null, null, flip);
             ParseOffsets(instance, layer, board, x, y);
             return instance;
         }
 
-        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool beforeAdding, bool parseOffsets)
+        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool parseOffsets)
         {
-            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, beforeAdding);
+            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip);
             if (parseOffsets) ParseOffsets(instance, layer, board, x, y);
             return instance;
         }
@@ -367,7 +367,7 @@ namespace HaCreator.MapEditor
         private string _no;
         private List<XNA.Point> footholdOffsets = new List<XNA.Point>();
 
-        public TileInfo(Bitmap image, System.Drawing.Point origin, string tS, string u, string no, IWzObject parentObject)
+        public TileInfo(Bitmap image, System.Drawing.Point origin, string tS, string u, string no, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this._tS = tS;
@@ -401,7 +401,7 @@ namespace HaCreator.MapEditor
             List<FootholdAnchor> anchors = new List<FootholdAnchor>();
             foreach (XNA.Point foothold in footholdOffsets)
             {
-                FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, false);
+                FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber);
                 anchors.Add(anchor);
                 board.BoardItems.FHAnchors.Add(anchor);
                 instance.BindItem(anchor, foothold);
@@ -413,16 +413,16 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding)
+        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
-            TileInstance instance = new TileInstance(this, layer, board, x, y, z, beforeAdding);
+            TileInstance instance = new TileInstance(this, layer, board, x, y, z);
             ParseOffsets(instance, board, layer, x, y);
             return instance;
         }
 
-        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding, bool parseOffsets)
+        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool parseOffsets)
         {
-            TileInstance instance = new TileInstance(this, layer, board, x, y, z, beforeAdding);
+            TileInstance instance = new TileInstance(this, layer, board, x, y, z);
             if (parseOffsets) ParseOffsets(instance, board, layer, x, y);
             return instance;
         }
@@ -497,7 +497,7 @@ namespace HaCreator.MapEditor
         private bool _undead;
         private bool _firstAttack;*/
 
-        public MobInfo(Bitmap image, System.Drawing.Point origin, string id, string name, IWzObject parentObject)
+        public MobInfo(Bitmap image, System.Drawing.Point origin, string id, string name, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this.id = id;
@@ -547,16 +547,16 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding)
+        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             if (Image == null) ParseImage();
-            return new MobInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, null, UserSettings.defaultMobTime, flip, false, null, null, beforeAdding);
+            return new MobInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, null, UserSettings.defaultMobTime, flip, false, null, null);
         }
 
-        public BoardItem CreateInstance(Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team, bool beforeAdding)
+        public BoardItem CreateInstance(Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
         {
             if (Image == null) ParseImage();
-            return new MobInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, limitedname, UserSettings.defaultMobTime, flip, hide, info, team, beforeAdding);
+            return new MobInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, limitedname, UserSettings.defaultMobTime, flip, hide, info, team);
         }
 
         public string ID
@@ -681,7 +681,7 @@ namespace HaCreator.MapEditor
 
         private WzImage LinkedImage;
 
-        public NpcInfo(Bitmap image, System.Drawing.Point origin, string id, string name, IWzObject parentObject)
+        public NpcInfo(Bitmap image, System.Drawing.Point origin, string id, string name, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this.id = id;
@@ -731,16 +731,16 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding)
+        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             if (Image == null) ParseImage();
-            return new NPCInstance(this, board, x, y, x - UserSettings.Npcrx0Offset, x + UserSettings.Npcrx1Offset, null, 0, flip, false, null, null, beforeAdding);
+            return new NPCInstance(this, board, x, y, x - UserSettings.Npcrx0Offset, x + UserSettings.Npcrx1Offset, null, 0, flip, false, null, null);
         }
 
-        public BoardItem CreateInstance(Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team, bool beforeAdding)
+        public BoardItem CreateInstance(Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
         {
             if (Image == null) ParseImage();
-            return new NPCInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, limitedname, mobTime, flip, hide, info, team, beforeAdding);
+            return new NPCInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, limitedname, mobTime, flip, hide, info, team);
         }
 
         public string ID
@@ -774,7 +774,7 @@ namespace HaCreator.MapEditor
 
         private PortalType type;
 
-        public PortalInfo(PortalType type, Bitmap image, System.Drawing.Point origin, IWzObject parentObject)
+        public PortalInfo(PortalType type, Bitmap image, System.Drawing.Point origin, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this.type = type;
@@ -809,40 +809,40 @@ namespace HaCreator.MapEditor
            return portal;
         }
 
-        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding)
+        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             switch (type)
             {
                 case PortalType.PORTALTYPE_STARTPOINT:
-                    return new PortalInstance(this, board, x, y, beforeAdding, "sp", type, "", 999999999, null, null, null, null, null, null, null, null, null);
+                    return new PortalInstance(this, board, x, y, "sp", type, "", 999999999, null, null, null, null, null, null, null, null, null);
                 case PortalType.PORTALTYPE_INVISIBLE:
                 case PortalType.PORTALTYPE_VISIBLE:
                 case PortalType.PORTALTYPE_COLLISION:
                 case PortalType.PORTALTYPE_CHANGABLE:
                 case PortalType.PORTALTYPE_CHANGABLE_INVISIBLE:
-                    return new PortalInstance(this, board, x, y, beforeAdding, "portal", type, "", 999999999, null, null, null, null, null, null, null, null, null);
+                    return new PortalInstance(this, board, x, y, "portal", type, "", 999999999, null, null, null, null, null, null, null, null, null);
                 case PortalType.PORTALTYPE_TOWNPORTAL_POINT:
-                    return new PortalInstance(this, board, x, y, beforeAdding, "tp", type, "", 999999999, null, null, null, null, null, null, null, null, null);
+                    return new PortalInstance(this, board, x, y, "tp", type, "", 999999999, null, null, null, null, null, null, null, null, null);
                 case PortalType.PORTALTYPE_SCRIPT:
                 case PortalType.PORTALTYPE_SCRIPT_INVISIBLE:
                 case PortalType.PORTALTYPE_COLLISION_SCRIPT:
-                    return new PortalInstance(this, board, x, y, beforeAdding, "portal", type, "", 999999999, "script", null, null, null, null, null, null, null, null);
+                    return new PortalInstance(this, board, x, y, "portal", type, "", 999999999, "script", null, null, null, null, null, null, null, null);
                 case PortalType.PORTALTYPE_HIDDEN:
-                    return new PortalInstance(this, board, x, y, beforeAdding, "portal", type, "", 999999999, null, null, null, null, null, null, "", null, null);
+                    return new PortalInstance(this, board, x, y, "portal", type, "", 999999999, null, null, null, null, null, null, "", null, null);
                 case PortalType.PORTALTYPE_SCRIPT_HIDDEN:
-                    return new PortalInstance(this, board, x, y, beforeAdding, "portal", type, "", 999999999, "script", null, null, null, null, null, "", null, null);
+                    return new PortalInstance(this, board, x, y, "portal", type, "", 999999999, "script", null, null, null, null, null, "", null, null);
                 case PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP:
                 case PortalType.PORTALTYPE_COLLISION_CUSTOM_IMPACT:
                 case PortalType.PORTALTYPE_COLLISION_UNKNOWN_PCIG:
-                    return new PortalInstance(this, board, x, y, beforeAdding, "portal", type, "", 999999999, "script", null, null, null, null, null, "", null, null);
+                    return new PortalInstance(this, board, x, y, "portal", type, "", 999999999, "script", null, null, null, null, null, "", null, null);
                 default:
                     throw new Exception("unknown pt @ CreateInstance");
             }
         }
 
-        public PortalInstance CreateInstance(Board board, int x, int y, bool beforeAdding, string pn, string tn, int tm, string script, int? delay, MapleBool hideTooltip, MapleBool onlyOnce, int? horizontalImpact, int? verticalImpact, string image, int? hRange, int? vRange)
+        public PortalInstance CreateInstance(Board board, int x, int y, string pn, string tn, int tm, string script, int? delay, MapleBool hideTooltip, MapleBool onlyOnce, int? horizontalImpact, int? verticalImpact, string image, int? hRange, int? vRange)
         {
-            return new PortalInstance(this, board, x, y, beforeAdding, pn, type, tn, tm, script, delay, hideTooltip, onlyOnce, horizontalImpact, verticalImpact, image, hRange, vRange);
+            return new PortalInstance(this, board, x, y, pn, type, tn, tm, script, delay, hideTooltip, onlyOnce, horizontalImpact, verticalImpact, image, hRange, vRange);
         }
 
         public static PortalInfo GetPortalInfoByType(PortalType type)
@@ -857,7 +857,7 @@ namespace HaCreator.MapEditor
 
         private WzImage LinkedImage;
 
-        public ReactorInfo(Bitmap image, System.Drawing.Point origin, string id, IWzObject parentObject)
+        public ReactorInfo(Bitmap image, System.Drawing.Point origin, string id, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this.id = id;
@@ -905,16 +905,16 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding)
+        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             if (Image == null) ParseImage();
-            return new ReactorInstance(this, board, x, y, UserSettings.defaultReactorTime, "", flip, beforeAdding);
+            return new ReactorInstance(this, board, x, y, UserSettings.defaultReactorTime, "", flip);
         }
 
-        public BoardItem CreateInstance(Board board, int x, int y, int reactorTime, string name, bool flip, bool beforeAdding)
+        public BoardItem CreateInstance(Board board, int x, int y, int reactorTime, string name, bool flip)
         {
             if (Image == null) ParseImage();
-            return new ReactorInstance(this, board, x, y, reactorTime, name, flip, beforeAdding);
+            return new ReactorInstance(this, board, x, y, reactorTime, name, flip);
         }
 
         public string ID
@@ -936,7 +936,7 @@ namespace HaCreator.MapEditor
         private bool _ani;
         private string _no;
 
-        public BackgroundInfo(Bitmap image, System.Drawing.Point origin, string bS, bool ani, string no, IWzObject parentObject)
+        public BackgroundInfo(Bitmap image, System.Drawing.Point origin, string bS, bool ani, string no, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             _bS = bS;
@@ -944,13 +944,13 @@ namespace HaCreator.MapEditor
             _no = no;
         }
 
-        public static BackgroundInfo Load(IWzImageProperty parentObject)
+        public static BackgroundInfo Load(WzImageProperty parentObject)
         {
             string[] path = parentObject.FullPath.Split(@"\".ToCharArray());
             return Load(parentObject,WzInfoTools.RemoveExtension(path[path.Length - 3]), path[path.Length - 2] == "ani", path[path.Length - 1]);
         }
 
-        public static BackgroundInfo Load(IWzImageProperty parentObject, string bS, bool ani, string no)
+        public static BackgroundInfo Load(WzImageProperty parentObject, string bS, bool ani, string no)
         {
             WzCanvasProperty frame0 = ani ?(WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject["0"]) : (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject);
             return new BackgroundInfo(frame0.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)frame0["origin"]), bS, ani, no, parentObject);
@@ -958,17 +958,17 @@ namespace HaCreator.MapEditor
 
         public static void Reload(BackgroundInfo objToReload)
         {
-                objToReload = Load((IWzImageProperty)objToReload.ParentObject,objToReload.bS,objToReload.ani,objToReload.no);
+                objToReload = Load((WzImageProperty)objToReload.ParentObject,objToReload.bS,objToReload.ani,objToReload.no);
         }
 
-        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool beforeAdding)
+        public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
-            return new BackgroundInstance(this, board, x, y, z, -100, -100, 0, 0, 0, 255, false, flip, beforeAdding);
+            return new BackgroundInstance(this, board, x, y, z, -100, -100, 0, 0, 0, 255, false, flip);
         }
 
-        public BoardItem CreateInstance(Board board, int x, int y, int z, int rx, int ry, int cx, int cy, BackgroundType type, int a, bool front, bool flip, bool beforeAdding)
+        public BoardItem CreateInstance(Board board, int x, int y, int z, int rx, int ry, int cx, int cy, BackgroundType type, int a, bool front, bool flip)
         {
-            return new BackgroundInstance(this, board, x, y, z, rx, ry, cx, cy, type, a, front, flip, beforeAdding);
+            return new BackgroundInstance(this, board, x, y, z, rx, ry, cx, cy, type, a, front, flip);
         }
 
         public string bS

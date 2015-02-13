@@ -25,21 +25,21 @@ namespace Footholds
 
         private void Edit_Load(object sender, EventArgs e)
         {
-            PrevLbl.Text = ((WzCompressedIntProperty)fh.Data["prev"]).Value.ToString();
-            NextLbl.Text = ((WzCompressedIntProperty)fh.Data["next"]).Value.ToString();
+            PrevLbl.Text = ((WzIntProperty)fh.Data["prev"]).Value.ToString();
+            NextLbl.Text = ((WzIntProperty)fh.Data["next"]).Value.ToString();
             if (!(bool)settings.ToArray()[1])
-                PrevTBox.Text = ((WzCompressedIntProperty)fh.Data["prev"]).Value.ToString();
+                PrevTBox.Text = ((WzIntProperty)fh.Data["prev"]).Value.ToString();
             else
                 PrevTBox.Text = settings.ToArray()[0].ToString();
             if (!(bool)settings.ToArray()[3])
-                NextTBox.Text = ((WzCompressedIntProperty)fh.Data["next"]).Value.ToString();
+                NextTBox.Text = ((WzIntProperty)fh.Data["next"]).Value.ToString();
             else
                 NextTBox.Text = settings.ToArray()[2].ToString();
             if (!(bool)settings.ToArray()[5])
-                try {ForceTBox.Text = ((WzCompressedIntProperty)fh.Data["force"]).Value.ToString();} catch { }
+                try {ForceTBox.Text = ((WzIntProperty)fh.Data["force"]).Value.ToString();} catch { }
             else
                 ForceTBox.Text = settings.ToArray()[4].ToString();
-            try { ForceLbl.Text = ((WzCompressedIntProperty)fh.Data["force"]).Value.ToString(); }
+            try { ForceLbl.Text = ((WzIntProperty)fh.Data["force"]).Value.ToString(); }
             catch { ForceLbl.Text = "None"; }
         }
 
@@ -49,12 +49,12 @@ namespace Footholds
             {
                 if (PrevTBox.Text != "")
                 {
-                    ((WzCompressedIntProperty)fh.Data["prev"]).Value = int.Parse(PrevTBox.Text);
+                    ((WzIntProperty)fh.Data["prev"]).Value = int.Parse(PrevTBox.Text);
                     fh.Data["prev"].ParentImage.Changed = true;
                 }
                 if (NextTBox.Text != "")
                 {
-                    ((WzCompressedIntProperty)fh.Data["next"]).Value = int.Parse(NextTBox.Text);
+                    ((WzIntProperty)fh.Data["next"]).Value = int.Parse(NextTBox.Text);
                     fh.Data["next"].ParentImage.Changed = true;
                 }
 
@@ -62,13 +62,13 @@ namespace Footholds
                 {
                     if (ForceLbl.Text == "None")
                     {
-                        WzCompressedIntProperty forceProperty = new WzCompressedIntProperty("force", int.Parse(ForceTBox.Text));
+                        WzIntProperty forceProperty = new WzIntProperty("force", int.Parse(ForceTBox.Text));
                         fh.Data.AddProperty(forceProperty);
                         fh.Data.ParentImage.Changed = true;
                     }
                     else
                     {
-                        ((WzCompressedIntProperty)fh.Data["force"]).Value = int.Parse(ForceTBox.Text);
+                        ((WzIntProperty)fh.Data["force"]).Value = int.Parse(ForceTBox.Text);
                         fh.Data["force"].ParentImage.Changed = true;
                     }
                 }

@@ -55,8 +55,8 @@ namespace HaCreator.MapEditor
 
         //private int zM;
 
-        public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool beforeAdding)
-            : base(board, layer, x, y, z, beforeAdding)
+        public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip)
+            : base(board, layer, x, y, z)
         {
             this.baseInfo = baseInfo;
             this.flip = flip;
@@ -111,19 +111,12 @@ namespace HaCreator.MapEditor
         public override void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
-            //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
         }
 
         public override bool CheckIfLayerSelected(int selectedLayer)
         {
             return Layer.LayerNumber == selectedLayer;
-        }
-
-        public override void InsertItem()
-        {
-            base.InsertItem();
-            //baseInfo.ParseOffsets(this, Layer, Board, X, Y);
         }
 
         public override System.Drawing.Bitmap Image
@@ -169,23 +162,25 @@ namespace HaCreator.MapEditor
     {
         private TileInfo baseInfo;
 
-        public TileInstance(TileInfo baseInfo, Layer layer, Board board, int x, int y, int z, bool beforeAdding)
-            : base(board, layer, x, y, z, beforeAdding)
+        public TileInstance(TileInfo baseInfo, Layer layer, Board board, int x, int y, int z)
+            : base(board, layer, x, y, z)
         {
             this.baseInfo = baseInfo;
             AttachToLayer(layer);
-            //baseInfo.ParseOffsets(this, Board, Layer, X, Y);
         }
 
         public void AttachToLayer(Layer layer)
         {
-            if (layer.tS != null && layer.tS != baseInfo.tS)
+            lock (board.ParentControl)
             {
-                Board.BoardItems.TileObjs.Remove(this);
-                layer.Items.Remove(this);
-                throw new Exception("tile added to a layer with different tS");
+                if (layer.tS != null && layer.tS != baseInfo.tS)
+                {
+                    Board.BoardItems.TileObjs.Remove(this);
+                    layer.Items.Remove(this);
+                    throw new Exception("tile added to a layer with different tS");
+                }
+                else layer.tS = baseInfo.tS;
             }
-            else layer.tS = baseInfo.tS;
         }
 
         public void DoSnap()
@@ -243,22 +238,26 @@ namespace HaCreator.MapEditor
 
         public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
         {
-            Layer thisLayer = Layer;
-            base.RemoveItem(ref undoPipe);
-            thisLayer.RecheckTileSet();
+            lock (board.ParentControl)
+            {
+                Layer thisLayer = Layer;
+                base.RemoveItem(ref undoPipe);
+                thisLayer.RecheckTileSet();
+            }
         }
 
         public override void InsertItem()
         {
-            base.InsertItem();
-            AttachToLayer(Layer);
-            //baseInfo.ParseOffsets(this, Board, Layer, X, Y);
+            lock (board.ParentControl)
+            {
+                base.InsertItem();
+                AttachToLayer(Layer);
+            }
         }
 
         public override void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
-            //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), /*Flip ? SpriteEffects.FlipHorizontally : */SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
         }
 
@@ -312,8 +311,8 @@ namespace HaCreator.MapEditor
         private int? info; //no idea
         private int? team; //for carnival
 
-        public LifeInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team, bool beforeAdding)
-            : base(board, x, y, -1, beforeAdding)
+        public LifeInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
+            : base(board, x, y, -1)
         {
             this.limitedname = limitedname;
             this.baseInfo = baseInfo;
@@ -450,8 +449,8 @@ namespace HaCreator.MapEditor
 
     public class MobInstance : LifeInstance
     {
-        public MobInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team, bool beforeAdding) 
-            : base(baseInfo, board, x, y, rx0, rx1, limitedname, mobTime, flip, hide, info, team, beforeAdding) {}
+        public MobInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) 
+            : base(baseInfo, board, x, y, rx0, rx1, limitedname, mobTime, flip, hide, info, team) {}
 
         public override ItemTypes Type
         {
@@ -461,8 +460,8 @@ namespace HaCreator.MapEditor
 
     public class NPCInstance : LifeInstance
     {
-        public NPCInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team, bool beforeAdding) 
-            : base(baseInfo, board, x, y, rx0, rx1, limitedname, mobTime, flip, hide, info, team, beforeAdding) {}
+        public NPCInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) 
+            : base(baseInfo, board, x, y, rx0, rx1, limitedname, mobTime, flip, hide, info, team) {}
 
         public override ItemTypes Type
         {
@@ -488,8 +487,8 @@ namespace HaCreator.MapEditor
         private int? _hRange;
         private int? _vRange;
 
-        public PortalInstance(PortalInfo baseInfo, Board board, int x, int y, bool beforeAdding, string pn, PortalType pt, string tn, int tm, string script, int? delay, MapleBool hideTooltip, MapleBool onlyOnce, int? horizontalImpact, int? verticalImpact, string image, int? hRange, int? vRange)
-            : base(board, x, y, -1, beforeAdding)
+        public PortalInstance(PortalInfo baseInfo, Board board, int x, int y, string pn, PortalType pt, string tn, int tm, string script, int? delay, MapleBool hideTooltip, MapleBool onlyOnce, int? horizontalImpact, int? verticalImpact, string image, int? hRange, int? vRange)
+            : base(board, x, y, -1)
         {
             this.baseInfo = baseInfo;
             _pn = pn;
@@ -509,18 +508,8 @@ namespace HaCreator.MapEditor
 
         public override void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
         {
-            /*if (BeforeAdding)
-            {
-                Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
-                //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
-                sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), SpriteEffects.None, 1f);
-            }
-            else
-            {*/
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
-            //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), SpriteEffects.None, 1f);
-            //}
         }
 
         public override bool CheckIfLayerSelected(int selectedLayer)
@@ -711,8 +700,8 @@ namespace HaCreator.MapEditor
         private bool flip;
         private string name;
 
-        public ReactorInstance(ReactorInfo baseInfo, Board board, int x, int y, int reactorTime, string name, bool flip, bool beforeAdding)
-            : base(board, x, y, -1, beforeAdding)
+        public ReactorInstance(ReactorInfo baseInfo, Board board, int x, int y, int reactorTime, string name, bool flip)
+            : base(board, x, y, -1)
         {
             this.baseInfo = baseInfo;
             this.reactorTime = reactorTime;
@@ -810,8 +799,8 @@ namespace HaCreator.MapEditor
         private bool _front;
         private BackgroundType _type;
 
-        public BackgroundInstance(BackgroundInfo baseInfo, Board board, int x, int y, int z, int rx, int ry, int cx, int cy, BackgroundType type, int a, bool front, bool flip, bool beforeAdding)
-            : base(board, x, y, z, beforeAdding)
+        public BackgroundInstance(BackgroundInfo baseInfo, Board board, int x, int y, int z, int rx, int ry, int cx, int cy, BackgroundType type, int a, bool front, bool flip)
+            : base(board, x, y, z)
         {
             this.baseInfo = baseInfo;
             this.flip = flip;

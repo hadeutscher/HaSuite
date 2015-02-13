@@ -20,6 +20,7 @@ namespace HaCreator
         public static WzFileManager WzManager;
         public static WzInformationManager InfoManager;
         public static WzSettingsManager SettingsManager;
+        public const string Version = "2.1";
 
         static void SelfCheck()
         {
@@ -77,21 +78,16 @@ namespace HaCreator
             MultiBoard.RecalculateSettings();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-#if !DEBUG
-            try
+            /*try
             {
                 Application.Run(new GUI.Initialization());
             }
             catch (Exception e)
             {
                 Application.Run(new ExceptionHandler(e));
-            }
-#else
-            //System.Windows.Application a = new System.Windows.Application();
-            //a.Run(new CustomControls.HaRibbon());
-            //Application.Run(new GUI.HaEditor());
+            }*/
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.Run(new GUI.Initialization());
-#endif
             SettingsManager.Save();
         }
     }

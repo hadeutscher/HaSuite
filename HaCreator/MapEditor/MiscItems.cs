@@ -15,12 +15,17 @@ using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.MapEditor
 {
+    public interface INamedMisc
+    {
+        string Name { get; }
+    }
+
     public class MiscDot : MapleDot
     {
         private MiscRectangle parentItem;
 
-        public MiscDot(MiscRectangle parentItem, Board board, int x, int y, bool beforeAdding)
-            : base(board, x, y, beforeAdding)
+        public MiscDot(MiscRectangle parentItem, Board board, int x, int y)
+            : base(board, x, y)
         {
             this.parentItem = parentItem;
         }
@@ -43,6 +48,11 @@ namespace HaCreator.MapEditor
         public override ItemTypes Type
         {
             get { return ItemTypes.Misc; }
+        }
+
+        protected override bool RemoveConnectedLines
+        {
+            get { return false; }
         }
 
         public MiscRectangle ParentRectangle { get { return parentItem; } set { parentItem = value; } }
@@ -76,29 +86,32 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public abstract class MiscRectangle : MapleRectangle
+    public abstract class MiscRectangle : MapleRectangle, INamedMisc
     {
         public abstract string Name { get; }
 
         public MiscRectangle(Board board, Rectangle rect)
             : base(board, rect)
         {
-            PointA = new MiscDot(this, board, rect.Left, rect.Top, false);
-            PointB = new MiscDot(this, board, rect.Right, rect.Top, false);
-            PointC = new MiscDot(this, board, rect.Right, rect.Bottom, false);
-            PointD = new MiscDot(this, board, rect.Left, rect.Bottom, false);
-            board.BoardItems.ToolTipDots.Add((ToolTipDot)PointA);
-            board.BoardItems.ToolTipDots.Add((ToolTipDot)PointB);
-            board.BoardItems.ToolTipDots.Add((ToolTipDot)PointC);
-            board.BoardItems.ToolTipDots.Add((ToolTipDot)PointD);
-            LineAB = new MiscLine(board, PointA, PointB);
-            LineBC = new MiscLine(board, PointB, PointC);
-            LineCD = new MiscLine(board, PointC, PointD);
-            LineDA = new MiscLine(board, PointD, PointA);
-            LineAB.yBind = true;
-            LineBC.xBind = true;
-            LineCD.yBind = true;
-            LineDA.xBind = true;
+            lock (board.ParentControl)
+            {
+                PointA = new MiscDot(this, board, rect.Left, rect.Top);
+                PointB = new MiscDot(this, board, rect.Right, rect.Top);
+                PointC = new MiscDot(this, board, rect.Right, rect.Bottom);
+                PointD = new MiscDot(this, board, rect.Left, rect.Bottom);
+                board.BoardItems.MiscItems.Add((MiscDot)PointA);
+                board.BoardItems.MiscItems.Add((MiscDot)PointB);
+                board.BoardItems.MiscItems.Add((MiscDot)PointC);
+                board.BoardItems.MiscItems.Add((MiscDot)PointD);
+                LineAB = new MiscLine(board, PointA, PointB);
+                LineBC = new MiscLine(board, PointB, PointC);
+                LineCD = new MiscLine(board, PointC, PointD);
+                LineDA = new MiscLine(board, PointD, PointA);
+                LineAB.yBind = true;
+                LineBC.xBind = true;
+                LineCD.yBind = true;
+                LineDA.xBind = true;
+            }
         }
 
         public override Color Color
@@ -111,13 +124,13 @@ namespace HaCreator.MapEditor
 
         public override ItemTypes Type
         {
-            get { return ItemTypes.ToolTips; }
+            get { return ItemTypes.Misc; }
         }
 
         public override void Draw(SpriteBatch sprite, Color dotColor, int xShift, int yShift)
         {
             base.Draw(sprite, dotColor, xShift, yShift);
-            //sprite.DrawString(Board.ParentControl.ArialFont, Name, new Vector2(X + xShift + 2, Y + yShift + 2), Color.Black);
+            board.ParentControl.FontEngine.DrawString(sprite, new System.Drawing.Point(X + xShift + 2, Y + yShift + 2), Color.Black, Name, Width);
         }
     }
 
@@ -126,18 +139,20 @@ namespace HaCreator.MapEditor
         private int itemID;
         private int interval;
         private int duration;
+        private string zoneName;
 
-        public BuffZone(Board board, Rectangle rect, int itemID, int interval, int duration)
+        public BuffZone(Board board, Rectangle rect, int itemID, int interval, int duration, string zoneName)
             : base(board, rect)
         {
             this.itemID = itemID;
             this.interval = interval;
             this.duration = duration;
+            this.zoneName = zoneName;
         }
 
         public override string  Name
         {
-	        get { return "BuffZone"; }
+	        get { return "BuffZone " + this.zoneName; }
         }
 
         public int ItemID
@@ -156,6 +171,11 @@ namespace HaCreator.MapEditor
         {
             get { return duration; }
             set { duration = value; }
+        }
+        public string ZoneName
+        {
+            get { return zoneName; }
+            set { zoneName = value; }
         }
     }
 
@@ -240,30 +260,38 @@ namespace HaCreator.MapEditor
         
     }
 
-    public class ShipObject : BoardItem, IFlippable
+    public class ShipObject : BoardItem, IFlippable, INamedMisc
     {
         private ObjectInfo baseInfo; //shipObj
         private bool flip;
-        private int x0;
+        private int? x0;
+        private int? zVal;
         private int tMove;
         private int shipKind;
 
-        public ShipObject(ObjectInfo baseInfo, Board board, int x, int y, int z, int x0, int tMove, int shipKind, bool flip, bool beforeAdding)
-            : base(board, x, y, z, beforeAdding)
+        public ShipObject(ObjectInfo baseInfo, Board board, int x, int y, int? zVal, int? x0, int tMove, int shipKind, bool flip)
+            : base(board, x, y, -1)
         {
             this.baseInfo = baseInfo;
             this.flip = flip;
             this.x0 = x0;
+            this.zVal = zVal;
             this.tMove = tMove;
             this.shipKind = shipKind;
             if (flip)
                 X -= Width - 2 * Origin.X;
         }
 
-        public int X0
+        public int? X0
         {
             get { return x0; }
             set { x0 = value; }
+        }
+
+        public int? zValue
+        {
+            get { return zVal; }
+            set { zVal = value; }
         }
 
         public int TimeMove
@@ -281,6 +309,14 @@ namespace HaCreator.MapEditor
         public override ItemTypes Type
         {
             get { return ItemTypes.Misc; }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return "Special: Ship";
+            }
         }
 
         public override MapleDrawableInfo BaseInfo
@@ -312,7 +348,6 @@ namespace HaCreator.MapEditor
         public override void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
-            //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
         }
 
@@ -348,6 +383,190 @@ namespace HaCreator.MapEditor
         }
     }
 
+    public class Healer : BoardItem, INamedMisc
+    {
+        private ObjectInfo baseInfo;
+        public int yMin;
+        public int yMax;
+        public int healMin;
+        public int healMax;
+        public int fall;
+        public int rise;
+
+        public Healer(ObjectInfo baseInfo, Board board, int x, int yMin, int yMax, int healMin, int healMax, int fall, int rise)
+            : base(board, x, (yMax + yMin) / 2, -1)
+        {
+            this.baseInfo = baseInfo;
+            this.yMin = yMin;
+            this.yMax = yMax;
+            this.healMin = healMin;
+            this.healMax = healMax;
+            this.fall = fall;
+            this.rise = rise;
+        }
+
+        public override int Y
+        {
+            get
+            {
+                return (yMax + yMin) / 2;
+            }
+            set
+            {
+                lock (board.ParentControl)
+                {
+                    int offs = value - Y;
+                    yMax += offs;
+                    yMin += offs;
+                }
+            }
+        }
+
+        public override void Move(int x, int y)
+        {
+            lock (board.ParentControl)
+            {
+                position.X = x;
+                int offs = y - Y;
+                yMax += offs;
+                yMin += offs;
+            }
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        public override MapleDrawableInfo BaseInfo
+        {
+            get { return baseInfo; }
+        }
+
+        public override Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        {
+            Color c = base.GetColor(editedTypes, selectedLayer, selected);
+            return c;
+        }
+
+        public override void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
+        {
+            Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
+            sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), SpriteEffects.None, 0);
+        }
+
+        public override bool CheckIfLayerSelected(int selectedLayer)
+        {
+            return true;
+        }
+
+        public override System.Drawing.Bitmap Image
+        {
+            get
+            {
+                return baseInfo.Image;
+            }
+        }
+
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
+        }
+
+        public override System.Drawing.Point Origin
+        {
+            get
+            {
+                return baseInfo.Origin;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return "Special: Healer";
+            }
+        }
+    }
+
+    public class Pulley : BoardItem, INamedMisc
+    {
+        private ObjectInfo baseInfo;
+
+        public Pulley(ObjectInfo baseInfo, Board board, int x, int y)
+            : base(board, x, y, -1)
+        {
+            this.baseInfo = baseInfo;
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        public override MapleDrawableInfo BaseInfo
+        {
+            get { return baseInfo; }
+        }
+
+        public override Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        {
+            Color c = base.GetColor(editedTypes, selectedLayer, selected);
+            return c;
+        }
+
+        public override void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
+        {
+            Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
+            sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), SpriteEffects.None, 0);
+        }
+
+        public override bool CheckIfLayerSelected(int selectedLayer)
+        {
+            return true;
+        }
+
+        public override System.Drawing.Bitmap Image
+        {
+            get
+            {
+                return baseInfo.Image;
+            }
+        }
+
+        public override int Width
+        {
+            get { return baseInfo.Width; }
+        }
+
+        public override int Height
+        {
+            get { return baseInfo.Height; }
+        }
+
+        public override System.Drawing.Point Origin
+        {
+            get
+            {
+                return baseInfo.Origin;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return "Special: Pulley";
+            }
+        }
+    }
+
     public class Clock : MiscRectangle
     {
         public Clock(Board board, Rectangle rect)
@@ -358,6 +577,132 @@ namespace HaCreator.MapEditor
         public override string Name
         {
             get { return "Clock"; }
+        }
+    }
+
+    public class Area : MiscRectangle
+    {
+        string id;
+
+        public Area(Board board, Rectangle rect, string id)
+            : base(board, rect)
+        {
+            this.id = id;
+        }
+
+        public string Identifier
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        public override string Name
+        {
+            get { return "Area " + id; }
+        }
+    }
+
+    public class MCMob : MapleDot, INamedMisc
+    {
+        public int? team;
+
+        public MCMob(Board board, int x, int y, int? team)
+            : base(board, x, y)
+        {
+            this.team = team;
+        }
+
+        public override bool CheckIfLayerSelected(int selectedLayer)
+        {
+            return true;
+        }
+
+        public override void DoSnap()
+        {
+        }
+
+        public override Color Color
+        {
+            get
+            {
+                return UserSettings.MiscColor;
+            }
+        }
+
+        public override Color InactiveColor
+        {
+            get { return MultiBoard.MiscInactiveColor; }
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        protected override bool RemoveConnectedLines
+        {
+            get { return true; }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return "Special: MC Mob";
+            }
+        }
+    }
+
+    public class MCGuardian : MapleDot, INamedMisc
+    {
+        public int? team;
+        public int f;
+
+        public MCGuardian(Board board, int x, int y, int? team, int f)
+            : base(board, x, y)
+        {
+            this.team = team;
+            this.f = f;
+        }
+
+        public override bool CheckIfLayerSelected(int selectedLayer)
+        {
+            return true;
+        }
+
+        public override void DoSnap()
+        {
+        }
+
+        public override Color Color
+        {
+            get
+            {
+                return UserSettings.MiscColor;
+            }
+        }
+
+        public override Color InactiveColor
+        {
+            get { return MultiBoard.MiscInactiveColor; }
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        protected override bool RemoveConnectedLines
+        {
+            get { return true; }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return "Special: MC Guardian";
+            }
         }
     }
 }

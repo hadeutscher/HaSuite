@@ -110,6 +110,8 @@ namespace HaCreator.MapEditor
         public MapleList<ToolTipChar> CharacterToolTips = new MapleList<ToolTipChar>(ItemTypes.ToolTips, true);
         public MapleList<ToolTip> ToolTips = new MapleList<ToolTip>(ItemTypes.ToolTips, true);
         public MapleList<ToolTipDot> ToolTipDots = new MapleList<ToolTipDot>(ItemTypes.ToolTips, true);
+        public MapleList<BoardItem> MiscItems = new MapleList<BoardItem>(ItemTypes.Misc, true);
+        public MapleList<MiscDot> MiscDots = new MapleList<MiscDot>(ItemTypes.Misc, true);
 
         public List<Rope> Ropes = new List<Rope>();
         public IMapleList[] AllItemLists;
@@ -123,7 +125,7 @@ namespace HaCreator.MapEditor
 
         public BoardItemsManager(Board board)
         {
-            AllItemLists = new IMapleList[] { BackBackgrounds, TileObjs, Mobs, NPCs, Reactors, Portals, FrontBackgrounds, FootholdLines, RopeLines, FHAnchors, RopeAnchors, Chairs, CharacterToolTips, ToolTips, ToolTipDots };
+            AllItemLists = new IMapleList[] { BackBackgrounds, TileObjs, Mobs, NPCs, Reactors, Portals, FrontBackgrounds, FootholdLines, RopeLines, FHAnchors, RopeAnchors, Chairs, CharacterToolTips, ToolTips, ToolTipDots, MiscItems };
             this.board = board;
         }
 
@@ -148,6 +150,10 @@ namespace HaCreator.MapEditor
                     {
                         BackBackgrounds.Remove((BackgroundInstance)item);
                     }
+                }
+                else if (item.Type == ItemTypes.Misc)
+                {
+                    MiscItems.Remove(item);
                 }
                 else
                 {
@@ -186,6 +192,10 @@ namespace HaCreator.MapEditor
                         BackBackgrounds.Add((BackgroundInstance)item);
                     }
                     if (sort) Sort();
+                }
+                else if (item.Type == ItemTypes.Misc)
+                {
+                    MiscItems.Add(item);
                 }
                 else
                 {

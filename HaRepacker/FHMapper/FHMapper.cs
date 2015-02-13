@@ -27,7 +27,7 @@ namespace HaRepacker.FHMapper
 
         public void SaveMap(WzImage img, double zoom)
         {
-            WzFile wzFile = (WzFile)((IWzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
+            WzFile wzFile = (WzFile)((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
             // Spawnpoint foothold and portal lists
             List<SpawnPoint.Spawnpoint> MSPs = new List<SpawnPoint.Spawnpoint>();
             List<FootHold.Foothold> FHs = new List<FootHold.Foothold>();
@@ -36,15 +36,15 @@ namespace HaRepacker.FHMapper
             Point center;
             try
             {
-                bmpSize = new Size(((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["width"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["height"]).Value);
-                center = new Point(((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["centerX"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["miniMap"])["centerY"]).Value);
+                bmpSize = new Size(((WzIntProperty)((WzSubProperty)img["miniMap"])["width"]).Value, ((WzIntProperty)((WzSubProperty)img["miniMap"])["height"]).Value);
+                center = new Point(((WzIntProperty)((WzSubProperty)img["miniMap"])["centerX"]).Value, ((WzIntProperty)((WzSubProperty)img["miniMap"])["centerY"]).Value);
             }
             catch (KeyNotFoundException)
             {
                 try
                 {
-                    bmpSize = new Size(((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRRight"]).Value - ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRLeft"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRBottom"]).Value - ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRTop"]).Value);
-                    center = new Point(((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRRight"]).Value, ((WzCompressedIntProperty)((WzSubProperty)img["info"])["VRBottom"]).Value);
+                    bmpSize = new Size(((WzIntProperty)((WzSubProperty)img["info"])["VRRight"]).Value - ((WzIntProperty)((WzSubProperty)img["info"])["VRLeft"]).Value, ((WzIntProperty)((WzSubProperty)img["info"])["VRBottom"]).Value - ((WzIntProperty)((WzSubProperty)img["info"])["VRTop"]).Value);
+                    center = new Point(((WzIntProperty)((WzSubProperty)img["info"])["VRRight"]).Value, ((WzIntProperty)((WzSubProperty)img["info"])["VRBottom"]).Value);
                     //center = new Point(0, 0);
                 }
                 catch
@@ -73,9 +73,9 @@ namespace HaRepacker.FHMapper
                 foreach (WzSubProperty p in ps.WzProperties)
                 {
                     //WzSubProperty p = (WzSubProperty)p10.ExtendedProperty;
-                    int x = ((WzCompressedIntProperty)p["x"]).Value + center.X;
-                    int y = ((WzCompressedIntProperty)p["y"]).Value + center.Y;
-                    int type = ((WzCompressedIntProperty)p["pt"]).Value;
+                    int x = ((WzIntProperty)p["x"]).Value + center.X;
+                    int y = ((WzIntProperty)p["y"]).Value + center.Y;
+                    int type = ((WzIntProperty)p["pt"]).Value;
                     Color pColor = Color.Red;
                     if (type == 0)
                         pColor = Color.Orange;
@@ -103,8 +103,8 @@ namespace HaRepacker.FHMapper
                         Color MSPColor = Color.ForestGreen;
                         if (((WzStringProperty)sp["type"]).Value == "m")// Only mobs (NPC = "n")
                         {
-                            int x = ((WzCompressedIntProperty)sp["x"]).Value + center.X - 15;
-                            int y = ((WzCompressedIntProperty)sp["y"]).Value + center.Y - 15;
+                            int x = ((WzIntProperty)sp["x"]).Value + center.X - 15;
+                            int y = ((WzIntProperty)sp["y"]).Value + center.Y - 15;
                             drawBuf.FillRectangle(new SolidBrush(Color.FromArgb(95, MSPColor.R, MSPColor.G, MSPColor.B)), x, y, 30, 30);
                             drawBuf.DrawRectangle(new Pen(Color.Black, 1F), x, y, 30, 30);
                             drawBuf.DrawString(sp.Name, new Font("Pragmata", 8), new SolidBrush(Color.Red), x + 7, y + 7.3F);
@@ -119,17 +119,17 @@ namespace HaRepacker.FHMapper
                 {
                 }
                 WzSubProperty fhs = (WzSubProperty)img["foothold"];
-                foreach (IWzImageProperty fhspl0 in fhs.WzProperties)
+                foreach (WzImageProperty fhspl0 in fhs.WzProperties)
                 {
-                    foreach (IWzImageProperty fhspl1 in fhspl0.WzProperties)
+                    foreach (WzImageProperty fhspl1 in fhspl0.WzProperties)
                     {
                         Color c = Color.FromArgb(95, Color.FromArgb(GetPseudoRandomColor(fhspl1.Name)));
                         foreach (WzSubProperty fh in fhspl1.WzProperties)
                         {
-                            int x = ((WzCompressedIntProperty)fh["x1"]).Value + center.X;
-                            int y = ((WzCompressedIntProperty)fh["y1"]).Value + center.Y;
-                            int width = ((((WzCompressedIntProperty)fh["x2"]).Value + center.X) - x);
-                            int height = ((((WzCompressedIntProperty)fh["y2"]).Value + center.Y) - y);
+                            int x = ((WzIntProperty)fh["x1"]).Value + center.X;
+                            int y = ((WzIntProperty)fh["y1"]).Value + center.Y;
+                            int width = ((((WzIntProperty)fh["x2"]).Value + center.X) - x);
+                            int height = ((((WzIntProperty)fh["y2"]).Value + center.Y) - y);
                             if (width < 0)
                             {
                                 x += width;// *2;
@@ -176,11 +176,11 @@ namespace HaRepacker.FHMapper
                             string l0 = ((WzStringProperty)obj["l0"]).Value;
                             string l1 = ((WzStringProperty)obj["l1"]).Value;
                             string l2 = ((WzStringProperty)obj["l2"]).Value;
-                            int x = ((WzCompressedIntProperty)obj["x"]).Value + center.X;
-                            int y = ((WzCompressedIntProperty)obj["y"]).Value + center.Y;
+                            int x = ((WzIntProperty)obj["x"]).Value + center.X;
+                            int y = ((WzIntProperty)obj["y"]).Value + center.Y;
                             WzVectorProperty origin;
                             WzPngProperty png;
-                            IWzImageProperty objData = (IWzImageProperty)wzFile.GetObjectFromPath(wzFile.WzDirectory.Name + "/Obj/" + imgName + "/" + l0 + "/" + l1 + "/" + l2 + "/0");
+                            WzImageProperty objData = (WzImageProperty)wzFile.GetObjectFromPath(wzFile.WzDirectory.Name + "/Obj/" + imgName + "/" + l0 + "/" + l1 + "/" + l2 + "/0");
                         tryagain:
                             if (objData is WzCanvasProperty)
                             {
@@ -189,7 +189,7 @@ namespace HaRepacker.FHMapper
                             }
                             else if (objData is WzUOLProperty)
                             {
-                                IWzObject currProp = objData.Parent;
+                                WzObject currProp = objData.Parent;
                                 foreach (string directive in ((WzUOLProperty)objData).Value.Split("/".ToCharArray()))
                                 {
                                     if (directive == "..") currProp = currProp.Parent;
@@ -214,7 +214,7 @@ namespace HaRepacker.FHMapper
                                         }
                                     }
                                 }
-                                objData = (IWzImageProperty)currProp;
+                                objData = (WzImageProperty)currProp;
                                 goto tryagain;
                             }
                             else throw new Exception("unknown type at map renderer");
@@ -246,13 +246,13 @@ namespace HaRepacker.FHMapper
 
                         //WzSubProperty tile = (WzSubProperty)te.ExtendedProperty;
 
-                        int x = ((WzCompressedIntProperty)tile["x"]).Value + center.X;
+                        int x = ((WzIntProperty)tile["x"]).Value + center.X;
 
-                        int y = ((WzCompressedIntProperty)tile["y"]).Value + center.Y;
+                        int y = ((WzIntProperty)tile["y"]).Value + center.Y;
 
                         string tilePackName = ((WzStringProperty)tile["u"]).Value;
 
-                        string tileID = ((WzCompressedIntProperty)tile["no"]).Value.ToString();
+                        string tileID = ((WzIntProperty)tile["no"]).Value.ToString();
 
                         Point origin = new Point(((WzVectorProperty)((WzCanvasProperty)((WzSubProperty)tileSet[tilePackName])[tileID])["origin"]).X.Value, ((WzVectorProperty)((WzCanvasProperty)((WzSubProperty)tileSet[tilePackName])[tileID])["origin"]).Y.Value);
 
