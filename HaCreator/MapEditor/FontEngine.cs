@@ -93,7 +93,7 @@ namespace HaCreator.MapEditor
         public void DrawString(SpriteBatch sprite, Point position, Microsoft.Xna.Framework.Color color, string str, int maxWidth)
         {
             //if the string is too long, truncate it and place "..."
-            if (UserSettings.clipText && globalGraphics.MeasureString(str, font).Width > maxWidth)
+            if (UserSettings.ClipText && globalGraphics.MeasureString(str, font).Width > maxWidth)
             {
                 int dotsWidth = (int)globalGraphics.MeasureString("...", font, new PointF(0, 0), StringFormat.GenericTypographic).Width;
                 do

@@ -27,7 +27,7 @@ namespace HaCreator
         public static bool ShowErrorsMessage = true;
         public static bool ShowMousePos = true;
         public static bool XGAResolution = false;
-        public static bool clipText = false;
+        public static bool ClipText = false;
         public static System.Drawing.Color TabColor = System.Drawing.Color.LightSteelBlue;
         public static int LineWidth = 1;
         public static int DotWidth = 3;
@@ -55,7 +55,8 @@ namespace HaCreator
         public static int defaultMobTime = 7;
         public static int defaultReactorTime = 7;
         public static float SnapDistance = 10;
-        public static int ScrollDistance = 70;
+        public static float SignificantDistance = 10;
+        public static int ScrollDistance = 120;
         public static double ScrollFactor = 1;
         public static double ScrollBase = 1.05;
         public static double ScrollExponentFactor = 1;

@@ -26,6 +26,7 @@ namespace HaCreator.GUI
             inactiveaBox.Value = UserSettings.NonActiveAlpha;
             showMousePosCheckbox.Checked = UserSettings.ShowMousePos;
             xgaResolutionCheckbox.Checked = UserSettings.XGAResolution;
+            clipBox.Checked = UserSettings.ClipText;
 
             tabColorPicker.Color = UserSettings.TabColor;
             dragColorPicker.Color = XNAToSystemColor(UserSettings.SelectSquare);
@@ -57,6 +58,7 @@ namespace HaCreator.GUI
             scrollbaseBox.Value = (decimal)UserSettings.ScrollBase;
             scrollexpBox.Value = (decimal)UserSettings.ScrollExponentFactor;
             scrollfactBox.Value = (decimal)UserSettings.ScrollFactor;
+            movementBox.Value = (decimal)UserSettings.SignificantDistance;
         }
 
         public static Color XNAToSystemColor(Microsoft.Xna.Framework.Color color)
@@ -83,6 +85,7 @@ namespace HaCreator.GUI
             UserSettings.NonActiveAlpha = (int)inactiveaBox.Value;
             UserSettings.ShowMousePos = showMousePosCheckbox.Checked;
             UserSettings.XGAResolution = xgaResolutionCheckbox.Checked;
+            UserSettings.ClipText = clipBox.Checked;
 
             UserSettings.TabColor = tabColorPicker.Color;
             UserSettings.SelectSquare = SystemToXNAColor(dragColorPicker.Color);
@@ -112,6 +115,7 @@ namespace HaCreator.GUI
             UserSettings.ScrollBase = (double)scrollbaseBox.Value;
             UserSettings.ScrollExponentFactor = (double)scrollexpBox.Value;
             UserSettings.ScrollFactor = (double)scrollfactBox.Value;
+            UserSettings.SignificantDistance = (float)movementBox.Value;
 
             Close();
         }

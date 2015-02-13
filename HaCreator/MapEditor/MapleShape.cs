@@ -142,27 +142,29 @@ namespace HaCreator.MapEditor
 
         public virtual void DoSnap()
         {
-            if (!InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey) || connectedLines.Count == 0 || !(connectedLines[0] is FootholdLine)) return;
-            FootholdAnchor closestAnchor = null;
-            double closestAngle = double.MaxValue;
-            bool xClosest = true;
-            foreach (FootholdLine line in connectedLines)
+            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey) && connectedLines.Count != 0 && connectedLines[0] is FootholdLine)
             {
-                FootholdAnchor otherAnchor = (FootholdAnchor)(line.FirstDot == this ? line.SecondDot : line.FirstDot);
-                double xAngle = Math.Abs(Math.Atan((double)(Y - otherAnchor.Y) / (double)(X - otherAnchor.X)));
-                double yAngle = Math.Abs(Math.Atan((double)(X - otherAnchor.X) / (double)(Y - otherAnchor.Y)));
-                double minAngle;
-                bool xSmaller = false;
-                if (xAngle < yAngle) { xSmaller = true; minAngle = xAngle; }
-                else { xSmaller = false; minAngle = yAngle; }
-                if (minAngle < closestAngle) { xClosest = xSmaller; closestAnchor = otherAnchor; closestAngle = minAngle; }
-            }
-            if (closestAnchor != null)
-            {
-                if (xClosest)
-                    Y = closestAnchor.Y;
-                else
-                    X = closestAnchor.X;
+                FootholdAnchor closestAnchor = null;
+                double closestAngle = double.MaxValue;
+                bool xClosest = true;
+                foreach (FootholdLine line in connectedLines)
+                {
+                    FootholdAnchor otherAnchor = (FootholdAnchor)(line.FirstDot == this ? line.SecondDot : line.FirstDot);
+                    double xAngle = Math.Abs(Math.Atan((double)(Y - otherAnchor.Y) / (double)(X - otherAnchor.X)));
+                    double yAngle = Math.Abs(Math.Atan((double)(X - otherAnchor.X) / (double)(Y - otherAnchor.Y)));
+                    double minAngle;
+                    bool xSmaller = false;
+                    if (xAngle < yAngle) { xSmaller = true; minAngle = xAngle; }
+                    else { xSmaller = false; minAngle = yAngle; }
+                    if (minAngle < closestAngle) { xClosest = xSmaller; closestAnchor = otherAnchor; closestAngle = minAngle; }
+                }
+                if (closestAnchor != null)
+                {
+                    if (xClosest)
+                        Y = closestAnchor.Y;
+                    else
+                        X = closestAnchor.X;
+                }
             }
         }
 

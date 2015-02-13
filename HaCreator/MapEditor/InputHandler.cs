@@ -69,6 +69,11 @@ namespace HaCreator.MapEditor
                         item.Selected = false;
                     toRemove.Clear();
                 }
+                else if (selectedBoard.Mouse.SingleSelectStarting && Math.Sqrt(Math.Pow(Math.Abs(newPos.X - selectedBoard.Mouse.SingleSelectStart.X), 2) + Math.Pow(Math.Abs(newPos.Y - selectedBoard.Mouse.SingleSelectStart.Y), 2)) > UserSettings.SignificantDistance)
+                {
+                    BindAllSelectedItems(selectedBoard, selectedBoard.Mouse.SingleSelectStart);
+                    selectedBoard.Mouse.SingleSelectStarting = false;
+                }
                 else if (selectedBoard.Mouse.BoundItems.Count > 0)
                 {
                     //snapping
@@ -93,7 +98,10 @@ namespace HaCreator.MapEditor
 
                 if ((selectedBoard.Mouse.BoundItems.Count > 0 || selectedBoard.Mouse.MultiSelectOngoing) && selectedBoard.Mouse.State == MouseState.Selection)
                 {
-                    //auto scrolling
+                    // auto scrolling
+                    // Bind physicalpos to our dxcontainer, to prevent extremely fast scrolling
+                    currPhysicalPos = new Point(Math.Min(Math.Max(currPhysicalPos.X, 0), parentBoard.Width), Math.Min(Math.Max(currPhysicalPos.Y, 0), parentBoard.Height));
+
                     if (currPhysicalPos.X - UserSettings.ScrollDistance < 0 && oldPos.X > newPos.X) //move to left
                         selectedBoard.hScroll = (int)Math.Max(0, selectedBoard.hScroll - Math.Pow(UserSettings.ScrollBase, (UserSettings.ScrollDistance - currPhysicalPos.X) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor);
                     else if (currPhysicalPos.X + UserSettings.ScrollDistance > selectedBoard.ParentControl.Width && oldPos.X < newPos.X) //move to right
@@ -332,15 +340,22 @@ namespace HaCreator.MapEditor
             lock (parentBoard)
             {
                 if (selectedBoard.Mouse.State == MouseState.Selection)//handle drag-drop selection end
+                {
                     ClearBoundItems(selectedBoard);
+                }
                 else if (selectedBoard.Mouse.State == MouseState.StaticObjectAdding ||
                     selectedBoard.Mouse.State == MouseState.RandomTiles ||
                     selectedBoard.Mouse.State == MouseState.Chairs ||
                     selectedBoard.Mouse.State == MouseState.Ropes ||
-                    selectedBoard.Mouse.State == MouseState.Tooltip) //handle clicks that are meant to add an item to the board
+                    selectedBoard.Mouse.State == MouseState.Tooltip ||
+                    selectedBoard.Mouse.State == MouseState.Clock) //handle clicks that are meant to add an item to the board
+                {
                     selectedBoard.Mouse.PlaceObject();
+                }
                 else if (selectedBoard.Mouse.State == MouseState.Footholds)
+                {
                     selectedBoard.Mouse.TryConnectFoothold();
+                }
             }
         }
         
@@ -384,7 +399,7 @@ namespace HaCreator.MapEditor
                         BoardItem itemToSelect = null;
                         bool itemAlreadySelected = false;
 
-                        if (item == null) // If user didn't click on any item, we want to change selectedItem's selection mode (to unselect it)
+                        if (item == null) // If user didn't click on any non-selected item, we want to keep selectedItem as our bound item
                         {
                             itemToSelect = selectedItem;
                             itemAlreadySelected = true;
@@ -407,14 +422,16 @@ namespace HaCreator.MapEditor
                         {
                             ClearSelectedItems(selectedBoard);
                         }
-                        if (itemAlreadySelected && ctrlDown) // If we are clicking a selected item and ctrl IS down, we need to toggle its selection
+                        if (ctrlDown) // If we are clicking an item and ctrl IS down, we need to toggle its selection
                         {
-                            itemToSelect.Selected = false;
+                            itemToSelect.Selected = !itemToSelect.Selected;
                         }
                         else // Otherwise, mark the item as selected (if it's already selected nothing will happen) and bind it to the mouse to start drag-drop action
                         {
                             itemToSelect.Selected = true;
-                            BindAllSelectedItems(selectedBoard);
+                            selectedBoard.Mouse.SingleSelectStarting = true;
+                            selectedBoard.Mouse.SingleSelectStart = virtualPosition;
+                            //BindAllSelectedItems(selectedBoard); // not binding selected items here because we will bind them after significant movement
                         }
                     }
                 }
@@ -423,9 +440,14 @@ namespace HaCreator.MapEditor
 
         private void BindAllSelectedItems(Board selectedBoard)
         {
+            BindAllSelectedItems(selectedBoard, new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y));
+        }
+
+        private void BindAllSelectedItems(Board selectedBoard, Point mousePosition)
+        {
             foreach (BoardItem itemToSelect in selectedBoard.SelectedItems)
             {
-                selectedBoard.Mouse.BindItem(itemToSelect, new Point(itemToSelect.X - selectedBoard.Mouse.X, itemToSelect.Y - selectedBoard.Mouse.Y));
+                selectedBoard.Mouse.BindItem(itemToSelect, new Point(itemToSelect.X - mousePosition.X, itemToSelect.Y - mousePosition.Y));
                 if (itemToSelect is BackgroundInstance)
                     itemToSelect.moveStartPos = new Point(((BackgroundInstance)itemToSelect).BaseX, ((BackgroundInstance)itemToSelect).BaseY);
                 else

@@ -33,7 +33,8 @@ namespace HaCreator.CustomControls.EditorPanels
                 miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.FootholdColor)), "Foothold", true),
                 miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.RopeColor)), "Rope", true),
                 miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.ChairColor)), "Chair", true),
-                miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.ToolTipColor)), "Tooltip", true)
+                miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.ToolTipColor)), "Tooltip", true),
+                miscItemsContainer.Add(CreateColoredBitmap(WzInfoTools.XNAToDrawingColor(UserSettings.MiscColor)), "Clock", true)
             };
             foreach (ImageViewer item in commonItems)
             {
@@ -75,6 +76,11 @@ namespace HaCreator.CustomControls.EditorPanels
                 case "Tooltip":
                     hcsm.EnterEditMode(ItemTypes.Footholds);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetTooltipMode();
+                    hcsm.MultiBoard.Focus();
+                    break;
+                case "Clock":
+                    hcsm.EnterEditMode(ItemTypes.Misc);
+                    hcsm.MultiBoard.SelectedBoard.Mouse.SetClockMode();
                     hcsm.MultiBoard.Focus();
                     break;
             }

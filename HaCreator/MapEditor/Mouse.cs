@@ -23,7 +23,8 @@ namespace HaCreator.MapEditor
         Footholds,
         Ropes,
         Chairs,
-        Tooltip
+        Tooltip,
+        Clock
     }
 
     public class Mouse : MapleDot //inheriting mapledot to make it easier to attach maplelines to it
@@ -34,6 +35,8 @@ namespace HaCreator.MapEditor
         private bool minimapBrowseOngoing;
         private bool multiSelectOngoing;
         private Xna.Point multiSelectStart;
+        private bool singleSelectStarting;
+        private Xna.Point singleSelectStart;
         private MouseState state;
         private MapleDrawableInfo currAddedInfo;
         private BoardItem currAddedObj;
@@ -111,6 +114,26 @@ namespace HaCreator.MapEditor
                         CreateTooltip();
                     }
                 }
+                else if (state == MouseState.Clock)
+                {
+                    int count = BoundItems.Count;
+                    object[] keys = new object[count];
+                    BoundItems.Keys.CopyTo(keys, 0);
+                    Clock c = null;
+                    foreach (object k in keys)
+                    {
+                        if (k is Clock)
+                        {
+                            c = (Clock)k;
+                        }
+                    }
+                    for (int i = 0; i < keys.Length; i++)
+                    {
+                        ReleaseItem((BoardItem)keys[i]);
+                    }
+                    Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(c) });
+                    CreateClock();
+                }
             }
         }
 
@@ -133,6 +156,20 @@ namespace HaCreator.MapEditor
                 Board.BoardItems.ToolTips.Add(tt);
                 BindItem(tt.PointA, new Xna.Point());
                 BindItem(tt.PointC, new Xna.Point());
+            }
+        }
+
+        private void CreateClock()
+        {
+            lock (Board.ParentControl)
+            {
+                Clock clock = new Clock(Board, new Xna.Rectangle(X - 100, Y - 100, 200, 200));
+                Board.BoardItems.MiscItems.Add(clock);
+                BindItem(clock, new Xna.Point(clock.Width / 2, clock.Height / 2));
+                BindItem(clock.PointA, new Xna.Point(-clock.Width / 2, -clock.Height / 2));
+                BindItem(clock.PointB, new Xna.Point(clock.Width / 2, -clock.Height / 2));
+                BindItem(clock.PointC, new Xna.Point(clock.Width / 2, clock.Height / 2));
+                BindItem(clock.PointD, new Xna.Point(-clock.Width / 2, clock.Height / 2));
             }
         }
 
@@ -208,6 +245,15 @@ namespace HaCreator.MapEditor
                     FootholdLine fh = (FootholdLine)connectedLines[0];
                     fh.Remove(false, ref foo);
                     Board.BoardItems.FootholdLines.Remove(fh);
+                } 
+                else if (state == MouseState.Clock)
+                {
+                    object[] keys = new object[BoundItems.Keys.Count];
+                    BoundItems.Keys.CopyTo(keys, 0);
+                    for (int i = 0; i < keys.Length; i++)
+                    {
+                        ((BoardItem)keys[i]).RemoveItem(ref foo);
+                    }
                 }
                 InputHandler.ClearBoundItems(Board);
                 InputHandler.ClearSelectedItems(Board);
@@ -292,6 +338,16 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public void SetClockMode()
+        {
+            lock (Board.ParentControl)
+            {
+                Clear();
+                state = MouseState.Clock;
+                CreateClock();
+            }
+        }
+
         #region Properties
         public bool IsDown
         {
@@ -304,6 +360,8 @@ namespace HaCreator.MapEditor
                     multiSelectOngoing = false;
                     multiSelectStart = new Xna.Point();
                     minimapBrowseOngoing = false;
+                    singleSelectStarting = false;
+                    singleSelectStart = new Xna.Point();
                 }
             }
         }
@@ -324,6 +382,18 @@ namespace HaCreator.MapEditor
         {
             get { return multiSelectStart; }
             set { multiSelectStart = value; }
+        }
+
+        public bool SingleSelectStarting
+        {
+            get { return singleSelectStarting; }
+            set { singleSelectStarting = value; }
+        }
+
+        public Xna.Point SingleSelectStart
+        {
+            get { return singleSelectStart; }
+            set { singleSelectStart = value; }
         }
 
         public MouseState State

@@ -196,7 +196,10 @@ namespace HaCreator.MapEditor
                     if (item.Selected || item.Equals(this)) continue;
                     TileInstance tile = (TileInstance)item;
                     int dx = tile.X - this.X, dy = tile.Y - this.Y;
-                    if (dx > MultiBoard.FirstSnapVerification || dy > MultiBoard.FirstSnapVerification || Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)) > MultiBoard.FirstSnapVerification) //first verification to save time
+                    // first verification to save time
+                    // Note that we are first checking dx and dy alone; although this is already covered by the following distance calculation,
+                    // it is significantly faster and will likely weed out most of the candidates before calculating their actual distance.
+                    if (dx > MultiBoard.FirstSnapVerification || dy > MultiBoard.FirstSnapVerification || Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)) > MultiBoard.FirstSnapVerification) 
                         continue;
                     foreach (TileSnapInfo snapInfo in tilegroup.tileList)
                     {

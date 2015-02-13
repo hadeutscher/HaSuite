@@ -70,6 +70,7 @@
             this.label38 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.errorsCheckBox = new System.Windows.Forms.CheckBox();
             this.xgaResolutionCheckbox = new System.Windows.Forms.CheckBox();
             this.showMousePosCheckbox = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
@@ -83,15 +84,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.inactiveaBox = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label26 = new System.Windows.Forms.Label();
-            this.zShiftBox = new System.Windows.Forms.NumericUpDown();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.okayButton = new System.Windows.Forms.Button();
-            this.cancelButton = new System.Windows.Forms.Button();
             this.ttLineColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.ttcSelectColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.ttcColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
@@ -106,7 +98,18 @@
             this.dragFillColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.dragColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.tabColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
-            this.errorsCheckBox = new System.Windows.Forms.CheckBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label26 = new System.Windows.Forms.Label();
+            this.zShiftBox = new System.Windows.Forms.NumericUpDown();
+            this.label25 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.okayButton = new System.Windows.Forms.Button();
+            this.cancelButton = new System.Windows.Forms.Button();
+            this.clipBox = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.movementBox = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
@@ -128,6 +131,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.inactiveaBox)).BeginInit();
             this.tabPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.movementBox)).BeginInit();
             this.SuspendLayout();
             // 
             // label2
@@ -151,7 +155,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(148, 161);
+            this.label4.Location = new System.Drawing.Point(183, 154);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 6;
@@ -159,7 +163,7 @@
             // 
             // linewBox
             // 
-            this.linewBox.Location = new System.Drawing.Point(241, 159);
+            this.linewBox.Location = new System.Drawing.Point(247, 152);
             this.linewBox.Maximum = new decimal(new int[] {
             255,
             0,
@@ -181,7 +185,7 @@
             // 
             // dotwBox
             // 
-            this.dotwBox.Location = new System.Drawing.Point(357, 159);
+            this.dotwBox.Location = new System.Drawing.Point(247, 126);
             this.dotwBox.Maximum = new decimal(new int[] {
             255,
             0,
@@ -204,7 +208,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(300, 161);
+            this.label5.Location = new System.Drawing.Point(186, 128);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(55, 13);
             this.label5.TabIndex = 8;
@@ -631,12 +635,13 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(545, 397);
+            this.tabControl1.Size = new System.Drawing.Size(545, 473);
             this.tabControl1.TabIndex = 77;
             // 
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.clipBox);
             this.tabPage1.Controls.Add(this.errorsCheckBox);
             this.tabPage1.Controls.Add(this.xgaResolutionCheckbox);
             this.tabPage1.Controls.Add(this.showMousePosCheckbox);
@@ -648,14 +653,23 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(537, 371);
+            this.tabPage1.Size = new System.Drawing.Size(537, 447);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
+            // 
+            // errorsCheckBox
+            // 
+            this.errorsCheckBox.AutoSize = true;
+            this.errorsCheckBox.Location = new System.Drawing.Point(165, 178);
+            this.errorsCheckBox.Name = "errorsCheckBox";
+            this.errorsCheckBox.Size = new System.Drawing.Size(260, 17);
+            this.errorsCheckBox.TabIndex = 60;
+            this.errorsCheckBox.Text = "Show warning message about encountered errors";
             // 
             // xgaResolutionCheckbox
             // 
             this.xgaResolutionCheckbox.AutoSize = true;
-            this.xgaResolutionCheckbox.Location = new System.Drawing.Point(169, 227);
+            this.xgaResolutionCheckbox.Location = new System.Drawing.Point(165, 222);
             this.xgaResolutionCheckbox.Name = "xgaResolutionCheckbox";
             this.xgaResolutionCheckbox.Size = new System.Drawing.Size(155, 17);
             this.xgaResolutionCheckbox.TabIndex = 59;
@@ -664,7 +678,7 @@
             // showMousePosCheckbox
             // 
             this.showMousePosCheckbox.AutoSize = true;
-            this.showMousePosCheckbox.Location = new System.Drawing.Point(169, 206);
+            this.showMousePosCheckbox.Location = new System.Drawing.Point(165, 201);
             this.showMousePosCheckbox.Name = "showMousePosCheckbox";
             this.showMousePosCheckbox.Size = new System.Drawing.Size(193, 17);
             this.showMousePosCheckbox.TabIndex = 58;
@@ -844,132 +858,6 @@
             this.label8.TabIndex = 56;
             this.label8.Text = "Click on the colors to change them.";
             // 
-            // tabPage3
-            // 
-            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage3.Controls.Add(this.label26);
-            this.tabPage3.Controls.Add(this.zShiftBox);
-            this.tabPage3.Controls.Add(this.label25);
-            this.tabPage3.Controls.Add(this.label19);
-            this.tabPage3.Controls.Add(this.label10);
-            this.tabPage3.Controls.Add(this.label9);
-            this.tabPage3.Controls.Add(this.label38);
-            this.tabPage3.Controls.Add(this.scrollfactBox);
-            this.tabPage3.Controls.Add(this.label28);
-            this.tabPage3.Controls.Add(this.mobrx0Box);
-            this.tabPage3.Controls.Add(this.scrolldistBox);
-            this.tabPage3.Controls.Add(this.label29);
-            this.tabPage3.Controls.Add(this.scrollexpBox);
-            this.tabPage3.Controls.Add(this.mobrx1Box);
-            this.tabPage3.Controls.Add(this.label37);
-            this.tabPage3.Controls.Add(this.label31);
-            this.tabPage3.Controls.Add(this.scrollbaseBox);
-            this.tabPage3.Controls.Add(this.npcrx0Box);
-            this.tabPage3.Controls.Add(this.label36);
-            this.tabPage3.Controls.Add(this.label30);
-            this.tabPage3.Controls.Add(this.label35);
-            this.tabPage3.Controls.Add(this.npcrx1Box);
-            this.tabPage3.Controls.Add(this.snapdistBox);
-            this.tabPage3.Controls.Add(this.label33);
-            this.tabPage3.Controls.Add(this.label34);
-            this.tabPage3.Controls.Add(this.mobtimeBox);
-            this.tabPage3.Controls.Add(this.reacttimeBox);
-            this.tabPage3.Controls.Add(this.label32);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(537, 371);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Advanced";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(153, 171);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(295, 13);
-            this.label26.TabIndex = 83;
-            this.label26.Text = "The change in Z caused when using the +\\- numpad buttons";
-            // 
-            // zShiftBox
-            // 
-            this.zShiftBox.Location = new System.Drawing.Point(99, 168);
-            this.zShiftBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
-            this.zShiftBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.zShiftBox.Name = "zShiftBox";
-            this.zShiftBox.Size = new System.Drawing.Size(48, 20);
-            this.zShiftBox.TabIndex = 82;
-            this.zShiftBox.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(15, 169);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(38, 13);
-            this.label25.TabIndex = 81;
-            this.label25.Text = "Z-Shift";
-            // 
-            // label19
-            // 
-            this.label19.Location = new System.Drawing.Point(153, 278);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(378, 45);
-            this.label19.TabIndex = 79;
-            this.label19.Text = "The formula for scrolling speed is (ScrollBase^(d*ScrollExponent))*ScrollFactor, " +
-    "where d is the distance between the mouse and the autoscroll bounds set by Scrol" +
-    "lDistance.";
-            // 
-            // label10
-            // 
-            this.label10.Location = new System.Drawing.Point(153, 241);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(378, 32);
-            this.label10.TabIndex = 78;
-            this.label10.Text = "Auto-Scroll will start when a selected object gets out of the bounds set by <Scro" +
-    "ll Distance>. The bigger the number is, the sooner autoscroll will start.";
-            // 
-            // label9
-            // 
-            this.label9.Location = new System.Drawing.Point(153, 6);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(362, 38);
-            this.label9.TabIndex = 77;
-            this.label9.Text = "It is not recommended to change anything here unless you know what are you doing." +
-    "";
-            // 
-            // okayButton
-            // 
-            this.okayButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.okayButton.Location = new System.Drawing.Point(215, 415);
-            this.okayButton.Name = "okayButton";
-            this.okayButton.Size = new System.Drawing.Size(66, 28);
-            this.okayButton.TabIndex = 78;
-            this.okayButton.Text = "OK";
-            this.okayButton.Click += new System.EventHandler(this.okButton_Click);
-            // 
-            // cancelButton
-            // 
-            this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.cancelButton.Location = new System.Drawing.Point(287, 415);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(66, 28);
-            this.cancelButton.TabIndex = 79;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
             // ttLineColorPicker
             // 
             this.ttLineColorPicker.Color = System.Drawing.Color.White;
@@ -1110,20 +998,170 @@
             this.tabColorPicker.Size = new System.Drawing.Size(16, 16);
             this.tabColorPicker.TabIndex = 42;
             // 
-            // errorsCheckBox
+            // tabPage3
             // 
-            this.errorsCheckBox.AutoSize = true;
-            this.errorsCheckBox.Location = new System.Drawing.Point(169, 183);
-            this.errorsCheckBox.Name = "errorsCheckBox";
-            this.errorsCheckBox.Size = new System.Drawing.Size(260, 17);
-            this.errorsCheckBox.TabIndex = 60;
-            this.errorsCheckBox.Text = "Show warning message about encountered errors";
+            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage3.Controls.Add(this.label1);
+            this.tabPage3.Controls.Add(this.movementBox);
+            this.tabPage3.Controls.Add(this.label26);
+            this.tabPage3.Controls.Add(this.zShiftBox);
+            this.tabPage3.Controls.Add(this.label25);
+            this.tabPage3.Controls.Add(this.label19);
+            this.tabPage3.Controls.Add(this.label10);
+            this.tabPage3.Controls.Add(this.label9);
+            this.tabPage3.Controls.Add(this.label38);
+            this.tabPage3.Controls.Add(this.scrollfactBox);
+            this.tabPage3.Controls.Add(this.label28);
+            this.tabPage3.Controls.Add(this.mobrx0Box);
+            this.tabPage3.Controls.Add(this.scrolldistBox);
+            this.tabPage3.Controls.Add(this.label29);
+            this.tabPage3.Controls.Add(this.scrollexpBox);
+            this.tabPage3.Controls.Add(this.mobrx1Box);
+            this.tabPage3.Controls.Add(this.label37);
+            this.tabPage3.Controls.Add(this.label31);
+            this.tabPage3.Controls.Add(this.scrollbaseBox);
+            this.tabPage3.Controls.Add(this.npcrx0Box);
+            this.tabPage3.Controls.Add(this.label36);
+            this.tabPage3.Controls.Add(this.label30);
+            this.tabPage3.Controls.Add(this.label35);
+            this.tabPage3.Controls.Add(this.npcrx1Box);
+            this.tabPage3.Controls.Add(this.snapdistBox);
+            this.tabPage3.Controls.Add(this.label33);
+            this.tabPage3.Controls.Add(this.label34);
+            this.tabPage3.Controls.Add(this.mobtimeBox);
+            this.tabPage3.Controls.Add(this.reacttimeBox);
+            this.tabPage3.Controls.Add(this.label32);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(537, 447);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Advanced";
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(153, 171);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(295, 13);
+            this.label26.TabIndex = 83;
+            this.label26.Text = "The change in Z caused when using the +\\- numpad buttons";
+            // 
+            // zShiftBox
+            // 
+            this.zShiftBox.Location = new System.Drawing.Point(99, 168);
+            this.zShiftBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.zShiftBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.zShiftBox.Name = "zShiftBox";
+            this.zShiftBox.Size = new System.Drawing.Size(48, 20);
+            this.zShiftBox.TabIndex = 82;
+            this.zShiftBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(15, 169);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(38, 13);
+            this.label25.TabIndex = 81;
+            this.label25.Text = "Z-Shift";
+            // 
+            // label19
+            // 
+            this.label19.Location = new System.Drawing.Point(153, 278);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(378, 45);
+            this.label19.TabIndex = 79;
+            this.label19.Text = "The formula for scrolling speed is (ScrollBase^(d*ScrollExponent))*ScrollFactor, " +
+    "where d is the distance between the mouse and the autoscroll bounds set by Scrol" +
+    "lDistance.";
+            // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(153, 241);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(378, 32);
+            this.label10.TabIndex = 78;
+            this.label10.Text = "Auto-Scroll will start when a selected object gets out of the bounds set by <Scro" +
+    "ll Distance>. The bigger the number is, the sooner autoscroll will start.";
+            // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(153, 6);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(362, 38);
+            this.label9.TabIndex = 77;
+            this.label9.Text = "It is not recommended to change anything here unless you know what are you doing." +
+    "";
+            // 
+            // okayButton
+            // 
+            this.okayButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.okayButton.Location = new System.Drawing.Point(210, 491);
+            this.okayButton.Name = "okayButton";
+            this.okayButton.Size = new System.Drawing.Size(66, 28);
+            this.okayButton.TabIndex = 78;
+            this.okayButton.Text = "OK";
+            this.okayButton.Click += new System.EventHandler(this.okButton_Click);
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
+            this.cancelButton.Location = new System.Drawing.Point(282, 491);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(66, 28);
+            this.cancelButton.TabIndex = 79;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
+            // clipBox
+            // 
+            this.clipBox.AutoSize = true;
+            this.clipBox.Location = new System.Drawing.Point(165, 245);
+            this.clipBox.Name = "clipBox";
+            this.clipBox.Size = new System.Drawing.Size(67, 17);
+            this.clipBox.TabIndex = 61;
+            this.clipBox.Text = "Clip Text";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(15, 399);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(109, 13);
+            this.label1.TabIndex = 84;
+            this.label1.Text = "Significant Movement";
+            // 
+            // movementBox
+            // 
+            this.movementBox.DecimalPlaces = 3;
+            this.movementBox.Location = new System.Drawing.Point(130, 399);
+            this.movementBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.movementBox.Name = "movementBox";
+            this.movementBox.Size = new System.Drawing.Size(58, 20);
+            this.movementBox.TabIndex = 85;
             // 
             // UserSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(569, 455);
+            this.ClientSize = new System.Drawing.Size(569, 531);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okayButton);
             this.Controls.Add(this.tabControl1);
@@ -1156,6 +1194,7 @@
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.movementBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1241,5 +1280,8 @@
         private System.Windows.Forms.NumericUpDown fontSize;
         private System.Windows.Forms.CheckBox xgaResolutionCheckbox;
         private System.Windows.Forms.CheckBox errorsCheckBox;
+        private System.Windows.Forms.CheckBox clipBox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown movementBox;
     }
 }

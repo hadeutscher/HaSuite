@@ -48,16 +48,6 @@ namespace HaCreator.MapEditor
             this.snapx = snapx;
             this.snapy = snapy;
         }
-
-/*        public bool Snaps(string A_0, int A_1, int A_2, int A_3)
-        {
-            return ((this.tileCat == A_0) && (MishpatPithagoras((double)(snapx * A_3), (double)(snapy * A_3), (double)A_1, (double)A_2) <= 10.0));
-        }
-
-        public static double MishpatPithagoras(double A_0, double A_1, double A_2, double A_3) //allowedxSnap, allowedySnap, distancex, distancey snapping other -> this
-        {
-            return Math.Sqrt(Math.Pow(A_2 - A_0, 2.0) + Math.Pow(A_3 - A_1, 2.0));
-        }*/
     }
 
 
@@ -66,20 +56,6 @@ namespace HaCreator.MapEditor
     {
         public string tileCat;
         public List<TileSnapInfo> tileList = new List<TileSnapInfo>();
-
-/*        public Point Snap(string tS, int A_1, int A_2, int A_3)
-        {
-            A_1 -= base.b.f("x");
-            A_2 -= base.b.f("y");
-            foreach (TileSnapInfo calc in this.tileList)
-            {
-                if (calc.Snaps(tS, A_1, A_2, A_3))
-                {
-                    return new Point((calc.snapx * A_3) + base.b.f("x"), (calc.snapy * A_3) + base.b.f("y"));
-                }
-            }
-            return new Point(0xffff, 0xffff);
-        }*/
     }
 
     //Credits to Koolk
