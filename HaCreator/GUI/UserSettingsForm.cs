@@ -63,7 +63,7 @@ namespace HaCreator.GUI
 
         public static Color XNAToSystemColor(Microsoft.Xna.Framework.Color color)
         {
-            return Color.FromArgb((int)color.PackedValue);
+            return Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
         public static Microsoft.Xna.Framework.Color SystemToXNAColor(Color color)

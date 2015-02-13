@@ -324,7 +324,7 @@ namespace HaCreator.MapEditor
 
         public Layer SelectedLayer
         {
-            get { return Layers[SelectedLayerIndex]; }
+            get { return SelectedLayerIndex == -1 ? null : Layers[SelectedLayerIndex]; }
         }
         #endregion
     }
