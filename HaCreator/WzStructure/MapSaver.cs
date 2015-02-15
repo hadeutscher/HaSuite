@@ -9,11 +9,299 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HaCreator.MapEditor;
+using MapleLib.WzLib;
+using MapleLib.WzLib.WzProperties;
+using MapleLib.WzLib.WzStructure.Data;
+using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.WzStructure
 {
-    public static class MapSaver
+    public class MapSaver
     {
+        Board board;
+        WzImage image;
+        public MapSaver(Board board)
+        {
+            this.board = board;
+            string name = "";
+            switch (board.MapInfo.mapType)
+            {
+                case MapType.RegularMap:
+                    name = board.MapInfo.id.ToString();
+                    break;
+                case MapType.MapLogin:
+                case MapType.CashShopPreview:
+                    name = board.MapInfo.strMapName;
+                    break;
+                default:
+                    throw new Exception("Unknown map type");
+            }
+            this.image = new WzImage(name + ".img");
+        }
+
+        private void SaveMapInfo()
+        {
+            // We are not saving string.wz's mapName and streetName here, this will be handled later
+            // Note - we also need to save the tooltip text in string.wz
+            board.MapInfo.Save(image);
+        }
+
+        private void SaveMiniMap()
+        {
+            if (board.MiniMap != null)
+            {
+                WzSubProperty miniMap = new WzSubProperty();
+                WzCanvasProperty canvas = new WzCanvasProperty();
+                canvas.PngProperty = new WzPngProperty();
+                canvas.PngProperty.SetPNG(board.MiniMap);
+                miniMap["canvas"] = canvas;
+                miniMap["width"] = InfoTool.SetInt(board.MiniMapSize.X);
+                miniMap["height"] = InfoTool.SetInt(board.MiniMapSize.Y);
+                miniMap["centerX"] = InfoTool.SetInt(board.CenterPoint.X);
+                miniMap["centerY"] = InfoTool.SetInt(board.CenterPoint.Y);
+                miniMap["mag"] = InfoTool.SetInt(4);
+                image["miniMap"] = miniMap;
+            }
+        }
+
+        public void SaveLayers()
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                WzSubProperty layerProp = new WzSubProperty();
+                WzSubProperty infoProp = new WzSubProperty();
+                
+                // Info
+                Layer l = board.Layers[i];
+                if (l.tS != null) 
+                {
+                    infoProp["tS"] = InfoTool.SetString(l.tS);
+                }
+                layerProp["info"] = infoProp;
+
+                // Organize items and save objects
+                List<TileInstance> tiles = new List<TileInstance>();
+                WzSubProperty objParent = new WzSubProperty();
+                int objIndex = 0;
+                foreach (LayeredItem item in l.Items)
+                {
+                    if (item is ObjectInstance)
+                    {
+                        WzSubProperty obj = new WzSubProperty();
+                        ObjectInstance objInst = (ObjectInstance)item;
+                        ObjectInfo objInfo = (ObjectInfo)objInst.BaseInfo;
+
+                        obj["x"] = InfoTool.SetInt(objInst.X);
+                        obj["y"] = InfoTool.SetInt(objInst.Y);
+                        obj["z"] = InfoTool.SetInt(objInst.Z);
+                        obj["zM"] = InfoTool.SetInt(objInst.zM);
+                        obj["oS"] = InfoTool.SetString(objInfo.oS);
+                        obj["l0"] = InfoTool.SetString(objInfo.l0);
+                        obj["l1"] = InfoTool.SetString(objInfo.l1);
+                        obj["l2"] = InfoTool.SetString(objInfo.l2);
+                        obj["name"] = InfoTool.SetOptionalString(objInst.Name);
+                        obj["r"] = InfoTool.SetOptionalBool(objInst.r);
+                        obj["hide"] = InfoTool.SetOptionalBool(objInst.hide);
+                        obj["reactor"] = InfoTool.SetOptionalBool(objInst.reactor);
+                        obj["flow"] = InfoTool.SetOptionalBool(objInst.flow);
+                        obj["rx"] = InfoTool.SetOptionalTranslatedInt(objInst.rx);
+                        obj["ry"] = InfoTool.SetOptionalTranslatedInt(objInst.ry);
+                        obj["cx"] = InfoTool.SetOptionalTranslatedInt(objInst.cx);
+                        obj["cy"] = InfoTool.SetOptionalTranslatedInt(objInst.cy);
+                        obj["tags"] = InfoTool.SetOptionalString(objInst.tags);
+                        if (objInst.QuestInfo != null)
+                        {
+                            WzSubProperty questParent = new WzSubProperty();
+                            foreach (ObjectInstanceQuest objQuest in objInst.QuestInfo)
+                            {
+                                questParent[objQuest.questId.ToString()] = InfoTool.SetInt((int)objQuest.state);
+                            }
+                            obj["quest"] = questParent;
+                        }
+                        obj["f"] = InfoTool.SetBool(objInst.Flip);
+
+                        objParent[objIndex.ToString()] = obj;
+                        objIndex++;
+                    }
+                    else if (item is TileInstance)
+                    {
+                        tiles.Add((TileInstance)item);
+                    }
+                    else
+                    {
+                        throw new Exception("Unkown type in layered lists");
+                    }
+                }
+                layerProp["obj"] = objParent;
+
+                // Save tiles
+                tiles.Sort((a,b) => a.Z.CompareTo(b.Z));
+                WzSubProperty tileParent = new WzSubProperty();
+                for (int j = 0; j < tiles.Count; j++)
+                {
+                    TileInstance tileInst = tiles[j];
+                    TileInfo tileInfo = (TileInfo)tileInst.BaseInfo;
+                    WzSubProperty tile = new WzSubProperty();
+
+                    tile["x"] = InfoTool.SetInt(tileInst.X);
+                    tile["y"] = InfoTool.SetInt(tileInst.Y);
+                    tile["zM"] = InfoTool.SetInt(tileInst.zM);
+                    tile["u"] = InfoTool.SetString(tileInfo.u);
+                    tile["no"] = InfoTool.SetInt(int.Parse(tileInfo.no));
+
+                    tileParent[j.ToString()] = tile;
+                }
+                layerProp["tile"] = tileParent;
+
+                image[i.ToString()] = layerProp;
+            }
+        }
+
+        public void SaveRopes()
+        {
+            WzSubProperty ropeParent = new WzSubProperty();
+            for (int i = 0; i < board.BoardItems.Ropes.Count; i++)
+            {
+                Rope ropeInst = board.BoardItems.Ropes[i];
+                WzSubProperty rope = new WzSubProperty();
+
+                rope["x"] = InfoTool.SetInt(ropeInst.FirstAnchor.X);
+                rope["y1"] = InfoTool.SetInt(ropeInst.FirstAnchor.Y);
+                rope["y2"] = InfoTool.SetInt(ropeInst.SecondAnchor.Y);
+                rope["uf"] = InfoTool.SetBool(ropeInst.uf);
+                rope["page"] = InfoTool.SetInt(ropeInst.page);
+                rope["l"] = InfoTool.SetBool(ropeInst.ladder);
+
+                ropeParent[i.ToString()] = rope;
+            }
+            image["ladderRope"] = ropeParent;
+        }
+
+        public void SaveChairs()
+        {
+            if (board.BoardItems.Chairs.Count == 0)
+            {
+                return;
+            }
+            WzSubProperty chairParent = new WzSubProperty();
+            for (int i = 0; i < board.BoardItems.Chairs.Count; i++)
+            {
+                Chair chairInst = board.BoardItems.Chairs[i];
+                WzVectorProperty chair = new WzVectorProperty();
+                chair.X = new WzIntProperty("X", chairInst.X);
+                chair.Y = new WzIntProperty("Y", chairInst.Y);
+                chairParent[i.ToString()] = chair;
+            }
+            image["seat"] = chairParent;
+        }
+
+        public void SavePortals()
+        {
+            WzSubProperty portalParent = new WzSubProperty();
+            for (int i = 0; i < board.BoardItems.Portals.Count; i++)
+            {
+                PortalInstance portalInst = board.BoardItems.Portals[i];
+                WzSubProperty portal = new WzSubProperty();
+
+                portal["x"] = InfoTool.SetInt(portalInst.X);
+                portal["y"] = InfoTool.SetInt(portalInst.Y);
+                portal["pt"] = InfoTool.SetInt((int)portalInst.pt);
+                portal["tm"] = InfoTool.SetInt(portalInst.tm);
+                portal["tn"] = InfoTool.SetString(portalInst.tn);
+                portal["pn"] = InfoTool.SetString(portalInst.pn);
+                portal["image"] = InfoTool.SetOptionalString(portalInst.image);
+                portal["script"] = InfoTool.SetOptionalString(portalInst.script);
+                portal["verticalImpact"] = InfoTool.SetOptionalInt(portalInst.verticalImpact);
+                portal["horizontalImpact"] = InfoTool.SetOptionalInt(portalInst.horizontalImpact);
+                portal["hRange"] = InfoTool.SetOptionalInt(portalInst.hRange);
+                portal["vRange"] = InfoTool.SetOptionalInt(portalInst.vRange);
+                portal["delay"] = InfoTool.SetOptionalInt(portalInst.delay);
+                portal["hideTooltip"] = InfoTool.SetOptionalBool(portalInst.hideTooltip);
+                portal["onlyOnce"] = InfoTool.SetOptionalBool(portalInst.onlyOnce);
+
+                portalParent[i.ToString()] = portal;
+            }
+            image["portal"] = portalParent;
+        }
+
+        public void SaveReactors()
+        {
+            WzSubProperty reactorParent = new WzSubProperty();
+            for (int i = 0; i < board.BoardItems.Reactors.Count; i++)
+            {
+                ReactorInstance reactorInst = board.BoardItems.Reactors[i];
+                WzSubProperty reactor = new WzSubProperty();
+
+                reactor["x"] = InfoTool.SetInt(reactorInst.X);
+                reactor["y"] = InfoTool.SetInt(reactorInst.Y);
+                reactor["reactorTime"] = InfoTool.SetInt(reactorInst.ReactorTime);
+                reactor["name"] = InfoTool.SetOptionalString(reactorInst.Name);
+                reactor["id"] = InfoTool.SetString(((ReactorInfo)reactorInst.BaseInfo).ID);
+                reactor["f"] = InfoTool.SetBool(reactorInst.Flip);
+
+                reactorParent[i.ToString()] = reactor;
+            }
+            image["reactor"] = reactorParent;
+        }
+
+        public void SaveTooltips()
+        {
+            if (board.BoardItems.ToolTips.Count == 0)
+            {
+                return;
+            }
+            WzSubProperty tooltipParent = new WzSubProperty();
+
+            image["ToolTip"] = tooltipParent;
+        }
+
+        public void SaveBackgrounds()
+        {
+            WzSubProperty bgParent = new WzSubProperty();
+
+            image["back"] = bgParent;
+        }
+
+        public void SaveFootholds()
+        {
+            WzSubProperty fhParent = new WzSubProperty();
+
+            image["foothold"] = fhParent;
+        }
+
+        public void SaveLife()
+        {
+            WzSubProperty lifeParent = new WzSubProperty();
+
+            image["life"] = lifeParent;
+        }
+
+        public void SaveMisc()
+        {
+        }
+
+        public void SaveMapImage()
+        {
+            SaveMapInfo();
+            SaveMiniMap();
+            SaveLayers();
+            SaveRopes();
+            SaveChairs();
+            SavePortals();
+            SaveReactors();
+            SaveTooltips();
+            SaveBackgrounds();
+            SaveFootholds();
+            SaveLife();
+            SaveMisc();
+        }
+
+        public WzImage MapImage
+        {
+            get { return image; }
+        }
+
+
         public static void ConvertToMapleFootholds2(ref MapleList<FootholdLine> oldFootholds, ref MapleList<FootholdAnchor> oldAnchors)
         {
             //Part 1 - copying and filtering out unused anchors

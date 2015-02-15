@@ -275,14 +275,14 @@ namespace HaCreator.MapEditor
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
-            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, false, false, false, false, null, null, null, null, null, null, null, flip);
+            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, 0, false, false, false, false, null, null, null, null, null, null, null, flip);
             ParseOffsets(instance, layer, board, x, y);
             return instance;
         }
 
-        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool parseOffsets)
+        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, int zM, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool parseOffsets)
         {
-            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip);
+            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, zM, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip);
             if (parseOffsets) ParseOffsets(instance, layer, board, x, y);
             return instance;
         }
@@ -415,14 +415,14 @@ namespace HaCreator.MapEditor
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
-            TileInstance instance = new TileInstance(this, layer, board, x, y, z);
+            TileInstance instance = new TileInstance(this, layer, board, x, y, z, 0);
             ParseOffsets(instance, board, layer, x, y);
             return instance;
         }
 
-        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip, bool parseOffsets)
+        public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, int zM, bool flip, bool parseOffsets)
         {
-            TileInstance instance = new TileInstance(this, layer, board, x, y, z);
+            TileInstance instance = new TileInstance(this, layer, board, x, y, z, zM);
             if (parseOffsets) ParseOffsets(instance, board, layer, x, y);
             return instance;
         }

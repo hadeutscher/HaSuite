@@ -131,7 +131,7 @@ namespace HaCreator.WzStructure
                     int x = InfoTool.GetInt(obj["x"]);
                     int y = InfoTool.GetInt(obj["y"]);
                     int z = InfoTool.GetInt(obj["z"]);
-                    //int zM = InfoTool.GetInt(obj["zM"]);
+                    int zM = InfoTool.GetInt(obj["zM"]);
                     string oS = InfoTool.GetString(obj["oS"]);
                     string l0 = InfoTool.GetString(obj["l0"]);
                     string l1 = InfoTool.GetString(obj["l1"]);
@@ -156,23 +156,22 @@ namespace HaCreator.WzStructure
                     if (objInfoProp.HCTag == null)
                         objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
                     ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
-                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)objInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, z, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, false));
+                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)objInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, z, zM, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, false));
                 }
                 WzImageProperty tileParent = layerProp["tile"];
                 for (int i = 0; i < tileParent.WzProperties.Count; i++)
-                //foreach (IWzImageProperty tile in layerProp["tile"].WzProperties)
                 {
                     WzImageProperty tile = tileParent.WzProperties[i];
                     int x = InfoTool.GetInt(tile["x"]);
                     int y = InfoTool.GetInt(tile["y"]);
-                    //int zM = InfoTool.GetInt(tile["zM"]);
+                    int zM = InfoTool.GetInt(tile["zM"]);
                     string u = InfoTool.GetString(tile["u"]);
                     int no = InfoTool.GetInt(tile["no"]);
                     WzImageProperty tileInfoProp = Program.InfoManager.TileSets[tS][u][no.ToString()];
                     if (tileInfoProp.HCTag == null)
                         tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no.ToString());
                     TileInfo tileInfo = (TileInfo)tileInfoProp.HCTag;
-                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, i /*zM*/, false, false));
+                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, i, zM, false, false));
                 }
             }
         }

@@ -49,13 +49,14 @@ namespace HaCreator.MapEditor
         private MapleBool _reactor;
         private MapleBool _flow;
         private int? _rx, _ry, _cx, _cy;
+        private int _zM;
         private string _tags;
         private List<ObjectInstanceQuest> questInfo;
         
 
         //private int zM;
 
-        public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip)
+        public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, int zM, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip)
             : base(board, layer, x, y, z)
         {
             this.baseInfo = baseInfo;
@@ -71,7 +72,7 @@ namespace HaCreator.MapEditor
             this._cy = cy;
             this._tags = tags;
             this.questInfo = questInfo;
-            //this.zM = zM;
+            this._zM = zM;
             if (flip)
                 X -= Width - 2 * Origin.X;
         }
@@ -155,6 +156,7 @@ namespace HaCreator.MapEditor
         public int? ry { get { return _ry; } set { _ry = value; } }
         public int? cx { get { return _cx; } set { _cx = value; } }
         public int? cy { get { return _cy; } set { _cy = value; } }
+        public int zM { get { return _zM; } set { _zM = value; } }
         public List<ObjectInstanceQuest> QuestInfo { get { return questInfo; } set { questInfo = value; } }
     }
 
@@ -162,11 +164,14 @@ namespace HaCreator.MapEditor
     {
         private TileInfo baseInfo;
 
-        public TileInstance(TileInfo baseInfo, Layer layer, Board board, int x, int y, int z)
+        private int _zM;
+
+        public TileInstance(TileInfo baseInfo, Layer layer, Board board, int x, int y, int z, int zM)
             : base(board, layer, x, y, z)
         {
             this.baseInfo = baseInfo;
             AttachToLayer(layer);
+            this._zM = zM;
         }
 
         public void AttachToLayer(Layer layer)
@@ -300,6 +305,8 @@ namespace HaCreator.MapEditor
                 return baseInfo.Origin;
             }
         }
+
+        public int zM { get { return _zM; } set { _zM = value; } }
     }
 
     public abstract class LifeInstance : BoardItem, IFlippable
