@@ -60,21 +60,28 @@ namespace HaCreator.MapEditor
             if (list.ListType == ItemTypes.None)
             {
                 foreach (BoardItem item in list)
+                {
                     if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X, yShift - item.Origin.Y) && ((visibleTypes & item.Type) == item.Type))
                         item.Draw(sprite, item.GetColor(editedTypes, selectedLayerIndex, item.Selected), xShift, yShift);
+                }
             }
             else if ((visibleTypes & list.ListType) == list.ListType)
             {
                 if (list.Selectable)
                 {
                     foreach (BoardItem item in list)
+                    {
                         if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X, yShift - item.Origin.Y))
                             item.Draw(sprite, item.GetColor(editedTypes, selectedLayerIndex, item.Selected), xShift, yShift);
+                    }
                 }
                 else
                 {
                     foreach (MapleLine line in list)
-                        line.Draw(sprite, line.GetColor(editedTypes, selectedLayerIndex), xShift, yShift);
+                    {
+                        if (parent.IsItemInRange(line.FirstDot.X, line.FirstDot.Y, Math.Abs(line.FirstDot.X - line.SecondDot.X), Math.Abs(line.FirstDot.Y - line.SecondDot.Y), xShift, yShift))
+                            line.Draw(sprite, line.GetColor(editedTypes, selectedLayerIndex), xShift, yShift);
+                    }
                 }
             }
         }
@@ -332,7 +339,8 @@ namespace HaCreator.MapEditor
     public abstract class BoardItem
     {
         protected Vector3 position;
-        private Hashtable boundItems = new Hashtable();//key = point (distance); value = BoardItem
+        private Hashtable boundItems = new Hashtable();//key = BoardItem; value = point (distance)
+        private List<BoardItem> boundItemsList = new List<BoardItem>();
         private BoardItem parent = null;
         private bool selected = false;
         protected Board board;
@@ -356,19 +364,24 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public virtual void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public virtual void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (Board.ParentControl)
             {
                 object[] keys = new object[boundItems.Keys.Count];
                 boundItems.Keys.CopyTo(keys, 0);
-                foreach (object key in keys) ((BoardItem)key).RemoveItem(ref undoPipe);
+                foreach (object key in keys) ((BoardItem)key).RemoveItem(undoPipe);
 
-                undoPipe.Add(UndoRedoManager.ItemDeleted(this));
+                if (undoPipe != null)
+                {
+                    undoPipe.Add(UndoRedoManager.ItemDeleted(this));
+                }
                 if (parent != null)
                 {
-                    if (!(parent is Mouse))
+                    if (!(parent is Mouse) && undoPipe != null)
+                    {
                         undoPipe.Add(UndoRedoManager.ItemsUnlinked(parent, this, (Microsoft.Xna.Framework.Point)parent.boundItems[this]));
+                    }
                     parent.ReleaseItem(this);
                 }
                 Selected = false;
@@ -395,6 +408,7 @@ namespace HaCreator.MapEditor
             {
                 if (boundItems.Contains(item)) return;
                 boundItems[item] = distance;
+                boundItemsList.Add(item);
                 item.parent = this;
             }
         }
@@ -406,6 +420,7 @@ namespace HaCreator.MapEditor
                 if (boundItems.Contains(item))
                 {
                     boundItems.Remove(item);
+                    boundItemsList.Remove(item);
                     item.parent = null;
                 }
             }
@@ -593,6 +608,14 @@ namespace HaCreator.MapEditor
             get
             {
                 return boundItems;
+            }
+        }
+
+        public virtual List<BoardItem> BoundItemsList
+        {
+            get
+            {
+                return boundItemsList;
             }
         }
 

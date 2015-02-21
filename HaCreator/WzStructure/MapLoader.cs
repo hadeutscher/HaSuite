@@ -168,8 +168,9 @@ namespace HaCreator.WzStructure
                     string u = InfoTool.GetString(tile["u"]);
                     int no = InfoTool.GetInt(tile["no"]);
                     WzImageProperty tileInfoProp = Program.InfoManager.TileSets[tS][u][no.ToString()];
+                    int? mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[tS]["info"]["mag"]);
                     if (tileInfoProp.HCTag == null)
-                        tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no.ToString());
+                        tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no.ToString(), mag);
                     TileInfo tileInfo = (TileInfo)tileInfoProp.HCTag;
                     mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, i, zM, false, false));
                 }
@@ -295,23 +296,24 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static void CheckAnchorPairMerge(FootholdAnchor a, FootholdAnchor b)
+        private static bool IsAnchorPrevOfFoothold(FootholdAnchor a, FootholdLine x)
         {
-            if (a.X == b.X && a.Y == b.Y && a.LayerNumber == b.LayerNumber)
+            int prevnum = x.prev;
+            int nextnum = x.next;
+
+            foreach (FootholdLine l in a.connectedLines)
             {
-                FootholdLine lineA = (FootholdLine)a.connectedLines[0];
-                FootholdLine lineB = (FootholdLine)b.connectedLines[0];
-                if ((lineA.next == lineB.num && lineB.prev == lineA.num)
-                    || (lineA.prev == lineB.num && lineB.next == lineA.num))
+                if (l.num == prevnum)
                 {
-                    b.removed = true;
-                    if (lineB.FirstDot == b) //b is firstdot
-                        lineB.FirstDot = a;
-                    else
-                        lineB.SecondDot = a;
-                    a.connectedLines.Add(lineB);
+                    return true;
+                }
+                else if (l.num == nextnum)
+                {
+                    return false;
                 }
             }
+
+            throw new Exception("Could not match anchor to foothold");
         }
 
         public static void LoadFootholds(WzImage mapImage, Board mapBoard)
@@ -321,96 +323,63 @@ namespace HaCreator.WzStructure
             int layer;
             FootholdAnchor a;
             FootholdAnchor b;
-            FootholdAnchor c;
-            FootholdAnchor d;
+            MapleTable<int, FootholdLine> fhs = new MapleTable<int, FootholdLine>();
             foreach (WzSubProperty layerProp in footholdParent.WzProperties)
             {
                 layer = int.Parse(layerProp.Name);
                 foreach (WzSubProperty platProp in layerProp.WzProperties)
+                {
                     foreach (WzSubProperty fhProp in platProp.WzProperties)
                     {
-                        a = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x1"]), InfoTool.GetInt(fhProp["y1"]), layer);
-                        b = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x2"]), InfoTool.GetInt(fhProp["y2"]), layer);
+                        a = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x1"]), InfoTool.GetInt(fhProp["y1"]), layer, false);
+                        b = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x2"]), InfoTool.GetInt(fhProp["y2"]), layer, false);
                         int num = int.Parse(fhProp.Name);
                         int next = InfoTool.GetInt(fhProp["next"]);
                         int prev = InfoTool.GetInt(fhProp["prev"]);
                         if (a.X != b.X || a.Y != b.Y)
                         {
-                            FootholdLine fh = new FootholdLine(mapBoard, a, b);
+                            FootholdLine fh = new FootholdLine(mapBoard, a, b, false);
                             fh.num = num;
                             fh.prev = prev;
                             fh.next = next;
                             mapBoard.BoardItems.FootholdLines.Add(fh);
+                            fhs[num] = fh;
                             anchors.Add(a);
                             anchors.Add(b);
                         }
                     }
+                }
 
                 anchors.Sort(new Comparison<FootholdAnchor>(FootholdAnchor.FHAnchorSorter));
-                int groupStart = 0; //inclusive
-                int groupEnd = 0; //inclusive
                 for (int i = 0; i < anchors.Count - 1; i++)
                 {
                     a = anchors[i];
                     b = anchors[i + 1];
-                    if (a.Y != b.Y && a.X != b.X && a.LayerNumber == b.LayerNumber)
+                    if (a.X == b.X && a.Y == b.Y)
                     {
-                        groupEnd = i;
-                        if (groupEnd - groupStart == 1) //there are 2 objects in the group, since groupEnd and groupStart are inclusive
+                        FootholdAnchor.MergeAnchors(a, b); // Transfer lines from b to a
+                        anchors.RemoveAt(i + 1); // Remove b
+                        i--; // Fix index after we removed b
+                    }
+                }
+                foreach (FootholdAnchor anchor in anchors)
+                {
+                    if (anchor.connectedLines.Count > 2)
+                    {
+                        foreach (FootholdLine line in anchor.connectedLines)
                         {
-                            c = anchors[groupStart];
-                            d = anchors[groupEnd];
-                            CheckAnchorPairMerge(c, d);
-                        }
-                        else if (groupEnd - groupStart != 0)
-                        {
-                            for (int j = groupStart; j <= groupEnd; j++)
+                            if (IsAnchorPrevOfFoothold(anchor, line))
                             {
-                                c = anchors[j];
-                                for (int k = groupStart; k <= groupEnd; k++)
-                                {
-                                    if (c.removed) break;
-                                    d = anchors[k];
-                                    if (d.removed) continue;
-                                    CheckAnchorPairMerge(c, d);
-                                }
+                                line.prevOverride = fhs[line.prev];
+                            }
+                            else
+                            {
+                                line.nextOverride = fhs[line.next];
                             }
                         }
-                        groupStart = groupEnd + 1;
                     }
+                    mapBoard.BoardItems.FHAnchors.Add(anchor);
                 }
-
-                groupEnd = anchors.Count - 1;
-                if (groupEnd - groupStart == 1) //there are 2 objects in the group, since groupEnd and groupStart are inclusive
-                {
-                    c = anchors[groupStart];
-                    d = anchors[groupEnd];
-                    CheckAnchorPairMerge(c, d);
-                }
-                else if (groupEnd - groupStart != 0)
-                {
-                    for (int j = groupStart; j <= groupEnd; j++)
-                    {
-                        c = anchors[j];
-                        for (int k = groupStart; k <= groupEnd; k++)
-                        {
-                            if (c.removed) break;
-                            d = anchors[k];
-                            if (d.removed) continue;
-                            CheckAnchorPairMerge(c, d);
-                        }
-                    }
-                }
-
-                //FootholdAnchor.MergeAnchors(ref anchors);
-                /*if (mapBoard.BoardItems.FHAnchors.Count + anchors.Count > mapBoard.BoardItems.FHAnchors.Capacity)
-                    mapBoard.BoardItems.FHAnchors.Capacity = mapBoard.BoardItems.FHAnchors.Count + anchors.Count;
-                anchors.ForEach(X => if  mapBoard.BoardItems.FHAnchors.Add(X));
-                anchors.Clear();*/
-                mapBoard.BoardItems.FHAnchors.Capacity = mapBoard.BoardItems.FHAnchors.Count + anchors.Count * 2;
-                foreach (FootholdAnchor anchor in anchors)
-                    if (!anchor.removed)
-                        mapBoard.BoardItems.FHAnchors.Add(anchor);
                 anchors.Clear();
             }
         }

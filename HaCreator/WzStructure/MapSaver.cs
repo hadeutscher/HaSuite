@@ -13,6 +13,7 @@ using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure;
+using HaCreator.MapEditor.TilesDesign;
 
 namespace HaCreator.WzStructure
 {
@@ -23,6 +24,10 @@ namespace HaCreator.WzStructure
         public MapSaver(Board board)
         {
             this.board = board;
+        }
+
+        private void CreateImage()
+        {
             string name = "";
             switch (board.MapInfo.mapType)
             {
@@ -37,6 +42,7 @@ namespace HaCreator.WzStructure
                     throw new Exception("Unknown map type");
             }
             this.image = new WzImage(name + ".img");
+            this.image.Changed = true;
         }
 
         private void SaveMapInfo()
@@ -169,7 +175,7 @@ namespace HaCreator.WzStructure
                 rope["y1"] = InfoTool.SetInt(ropeInst.FirstAnchor.Y);
                 rope["y2"] = InfoTool.SetInt(ropeInst.SecondAnchor.Y);
                 rope["uf"] = InfoTool.SetBool(ropeInst.uf);
-                rope["page"] = InfoTool.SetInt(ropeInst.page);
+                rope["page"] = InfoTool.SetInt(ropeInst.LayerNumber);
                 rope["l"] = InfoTool.SetBool(ropeInst.ladder);
 
                 ropeParent[i.ToString()] = rope;
@@ -282,6 +288,7 @@ namespace HaCreator.WzStructure
 
         public void SaveMapImage()
         {
+            CreateImage();
             SaveMapInfo();
             SaveMiniMap();
             SaveLayers();
@@ -311,7 +318,7 @@ namespace HaCreator.WzStructure
             {
                 if (oldAnchor.connectedLines.Count == 0) continue;
                 //if (oldAnchor.IsMoveHandled) throw new Exception();
-                FootholdAnchor anchor = new FootholdAnchor(oldAnchor.Board, oldAnchor.X, oldAnchor.Y, oldAnchor.LayerNumber);
+                FootholdAnchor anchor = new FootholdAnchor(oldAnchor.Board, oldAnchor.X, oldAnchor.Y, oldAnchor.LayerNumber, true);
                 anchor.connectedLines = new List<MapleLine>(oldAnchor.connectedLines.Count);
                 foreach (FootholdLine oldLine in oldAnchor.connectedLines)
                 {
@@ -439,8 +446,8 @@ namespace HaCreator.WzStructure
                         {
                             //footholds.RemoveAt(i);
                             line.remove = true;
-                            footholds.Add(new FootholdLine(line.Board, line.FirstDot, anchor));
-                            footholds.Add(new FootholdLine(line.Board, anchor, line.SecondDot));
+                            footholds.Add(new FootholdLine(line.Board, line.FirstDot, anchor, true));
+                            footholds.Add(new FootholdLine(line.Board, anchor, line.SecondDot, true));
                             //i--;
                             break;
                             //anchor.keyAnchor = line.FirstDot.Y == line.SecondDot.Y && IsValidKeyAnchor(anchor);
@@ -451,9 +458,9 @@ namespace HaCreator.WzStructure
                             //footholds.RemoveAt(i);
                             line.remove = true;
                             if (direction)
-                                footholds.Add(new FootholdLine(line.Board, line.FirstDot, anchor));
+                                footholds.Add(new FootholdLine(line.Board, line.FirstDot, anchor, true));
                             else
-                                footholds.Add(new FootholdLine(line.Board, anchor, line.SecondDot));
+                                footholds.Add(new FootholdLine(line.Board, anchor, line.SecondDot, true));
                             break;
                         }
                     }
@@ -561,10 +568,10 @@ namespace HaCreator.WzStructure
             foreach (FootholdLine fh in footholds) { /*anchor.keyAnchor = false; */oldFootholds.Add(fh); }
         }
 
-        private static FootholdAnchor GetOtherAnchor(FootholdLine line, FootholdAnchor currAnchor)
+        /*private static FootholdAnchor GetOtherAnchor(FootholdLine line, FootholdAnchor currAnchor)
         {
             return (FootholdAnchor)(line.FirstDot == currAnchor ? line.SecondDot : line.FirstDot);
-        }
+        }*/
 
         private static FootholdLine GetOtherLine(FootholdLine line, FootholdAnchor currAnchor)
         {
@@ -669,5 +676,257 @@ namespace HaCreator.WzStructure
                 else return 0;
             }
         }
+
+        private static bool FootholdExists(FootholdAnchor a, FootholdAnchor b)
+        {
+            foreach (FootholdLine line in a.connectedLines)
+            {
+                if ((line.FirstDot == a && line.SecondDot == b) || (line.SecondDot == a && line.FirstDot == b))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool SnappedTilesConnected(TileInstance a, TileInstance b)
+        {
+            foreach (FootholdAnchor anchor in a.BoundItems)
+            {
+                foreach (FootholdLine line in anchor.connectedLines)
+                {
+                    if ((line.FirstDot == anchor && b.BoundItems.Contains(line.SecondDot))
+                     || (line.SecondDot == anchor && b.BoundItems.Contains(line.FirstDot)))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private FootholdAnchor FindOptimalContinuationAnchor(FootholdLine line)
+        {
+            int y = line.FirstDot.Y;
+            int x0 = Math.Min(line.FirstDot.X, line.SecondDot.X);
+            int x1 = Math.Max(line.FirstDot.X, line.SecondDot.X);
+            FootholdAnchor result = null;
+            int distance = int.MaxValue;
+            foreach (FootholdAnchor anchor in board.BoardItems.FHAnchors)
+            {
+                // Find an anchor on the same layer, with 1 connected line, in the X range of our target line, whose line is not vertical
+                if (anchor.LayerNumber != line.LayerNumber || anchor.connectedLines.Count != 1 || anchor.X < x0 || anchor.X > x1 || anchor.connectedLines[0].FirstDot.X == anchor.connectedLines[0].SecondDot.X)
+                {
+                    continue;
+                }
+
+                int d = Math.Abs(anchor.Y - y);
+                if (d < distance)
+                {
+                    distance = d;
+                    result = anchor;
+                }
+
+                if (distance == 0)
+                {
+                    // Not going to find anything better
+                    return result;
+                }
+            }
+            return distance < 10 ? result : null;
+        }
+
+        private static FootholdLine GetConnectingLine(FootholdAnchor a, FootholdAnchor b)
+        {
+            foreach (FootholdLine line in a.connectedLines)
+            {
+                if ((line.FirstDot == a && line.SecondDot == b) || (line.SecondDot == a && line.FirstDot == b))
+                {
+                    return line;
+                }
+            }
+            return null;
+        }
+
+        private static FootholdAnchor GetOtherAnchor(FootholdLine line, FootholdAnchor first)
+        {
+            if (line.FirstDot == first)
+                return (FootholdAnchor)line.SecondDot;
+            else if (line.SecondDot == first)
+                return (FootholdAnchor)line.FirstDot;
+            else
+                throw new Exception("GetOtherAnchor: line is not properly connected");
+        }
+
+        /*private void SplitLine(FootholdLine line, FootholdAnchor anchor)
+        {
+            // Create first line
+            if (!FootholdExists((FootholdAnchor)line.FirstDot, anchor))
+            {
+                board.BoardItems.FootholdLines.Add(new FootholdLine(board, line.FirstDot, anchor, line.ForbidFallDown, line.CantThrough, line.Piece, line.Force, true));
+            }
+
+            // Create second line
+            if (!FootholdExists((FootholdAnchor)line.SecondDot, anchor))
+            {
+                board.BoardItems.FootholdLines.Add(new FootholdLine(board, line.SecondDot, anchor, line.ForbidFallDown, line.CantThrough, line.Piece, line.Force, true));
+            }
+
+            // Remove long line
+            line.FirstDot.DisconnectLine(line);
+            line.SecondDot.DisconnectLine(line);
+            board.BoardItems.FootholdLines.RemoveAt(i);
+
+        }*/
+
+        public void ActualizeFootholds()
+        {
+            board.BoardItems.FHAnchors.Sort(new Comparison<FootholdAnchor>(FootholdAnchor.FHAnchorSorter));
+            
+            // Merge foothold anchors
+            // This sorts out all foothold inconsistencies in all non-edU tiles
+            for (int i = 0; i < board.BoardItems.FHAnchors.Count - 1; i++)
+            {
+                FootholdAnchor a = board.BoardItems.FHAnchors[i];
+                FootholdAnchor b = board.BoardItems.FHAnchors[i + 1];
+                if (a.X == b.X && a.Y == b.Y && a.LayerNumber == b.LayerNumber && (a.user || b.user))
+                {
+                    if (a.user != b.user)
+                    {
+                        a.user = false;
+                    }
+                    FootholdAnchor.MergeAnchors(a, b); // Transfer lines from b to a
+                    b.RemoveItem(null); // Remove b
+                    i--; // Fix index after we removed b
+                }
+            }
+
+            // Organize edU tiles
+            foreach (LayeredItem li in board.BoardItems.TileObjs)
+            {
+                if (!(li is TileInstance))
+                {
+                    continue;
+                }
+                TileInstance tileInst = (TileInstance)li;
+                TileInfo tileInfo = (TileInfo)li.BaseInfo;
+                // Ensure that the tile is an edU, that it was created by the user in this session, and that it doesnt have some messed up foothold structure we can't deal with
+                if (tileInfo.u == "edU" && tileInst.BoundItemsList.Count > 0 && tileInst.BoundItemsList.Count == 4)
+                {
+                    if (((FootholdAnchor)tileInst.BoundItemsList[1]).Y != ((FootholdAnchor)tileInst.BoundItemsList[2]).Y ||
+                        ((FootholdAnchor)tileInst.BoundItemsList[0]).Y != ((FootholdAnchor)tileInst.BoundItemsList[3]).Y)
+                    {
+                        continue;
+                    }
+
+                    FootholdLine surfaceLine = GetConnectingLine((FootholdAnchor)tileInst.BoundItemsList[1], (FootholdAnchor)tileInst.BoundItemsList[2]);
+                    if (surfaceLine == null)
+                    {
+                        continue;
+                    }
+
+                    FootholdAnchor contAnchor = FindOptimalContinuationAnchor(surfaceLine);
+                    if (contAnchor == null)
+                    {
+                        continue;
+                    }
+
+                    // The anchor is guaranteed to have exactly 1 line
+                    FootholdLine anchorLine = (FootholdLine)contAnchor.connectedLines[0];
+                    // The line is guaranteed to be non-vertical
+                    Direction direction = GetOtherAnchor(anchorLine, contAnchor).X > contAnchor.X ? Direction.Right : Direction.Left;
+                    FootholdAnchor remainingAnchor;
+                    if (direction == Direction.Right)
+                    {
+                        // Remove the rightmost footholds
+                        ((FootholdAnchor)tileInst.BoundItemsList[3]).RemoveItem(null);
+                        ((FootholdAnchor)tileInst.BoundItemsList[2]).RemoveItem(null);
+                        remainingAnchor = (FootholdAnchor)tileInst.BoundItemsList[1];
+                    }
+                    else
+                    {
+                        // Remove the leftmost footholds
+                        // We keep using the index 0 because every time we remove it the list is updated accordingly, shifting the next object to index 0
+                        ((FootholdAnchor)tileInst.BoundItemsList[0]).RemoveItem(null);
+                        ((FootholdAnchor)tileInst.BoundItemsList[0]).RemoveItem(null);
+                        remainingAnchor = (FootholdAnchor)tileInst.BoundItemsList[0];
+                    }
+                    board.BoardItems.FootholdLines.Add(new FootholdLine(board, remainingAnchor, contAnchor, surfaceLine.ForbidFallDown, surfaceLine.CantThrough, surfaceLine.Piece, surfaceLine.Force, true));
+                }
+            }
+
+            // Remove all Tile-FH bindings since they have no meaning now
+            foreach (LayeredItem li in board.BoardItems.TileObjs)
+            {
+                if (!(li is TileInstance))
+                {
+                    continue;
+                }
+                TileInstance tileInst = (TileInstance)li;
+
+                while (tileInst.BoundItemsList.Count > 0)
+                {
+                    tileInst.ReleaseItem(tileInst.BoundItemsList[0]);
+                }
+            }
+
+            board.UndoRedoMan.UndoList.Clear();
+            board.UndoRedoMan.RedoList.Clear();
+
+            // Break foothold lines
+            /*for (int i = 0; i < board.BoardItems.FootholdLines.Count; i++)
+            {
+                FootholdLine line = board.BoardItems.FootholdLines[i];
+                if (line.FirstDot.X == line.SecondDot.X || line.FirstDot.Y == line.SecondDot.Y)
+                {
+                    foreach (FootholdAnchor anchor in board.BoardItems.FHAnchors)
+                    {
+                        if ((anchor.X == line.FirstDot.X && anchor.X == line.SecondDot.X && Math.Min(line.FirstDot.Y, line.SecondDot.Y) < anchor.Y && Math.Max(line.FirstDot.Y, line.SecondDot.Y) > anchor.Y && anchor.AllConnectedLinesVertical())
+                         || (anchor.Y == line.FirstDot.Y && anchor.Y == line.SecondDot.Y && Math.Min(line.FirstDot.X, line.SecondDot.X) < anchor.X && Math.Max(line.FirstDot.X, line.SecondDot.X) > anchor.X && anchor.AllConnectedLinesHorizontal()))
+                        {
+                            // Create first line
+                            if (!FootholdExists((FootholdAnchor)line.FirstDot, anchor)) 
+                            {
+                                board.BoardItems.FootholdLines.Add(new FootholdLine(board, line.FirstDot, anchor, line.ForbidFallDown, line.CantThrough, line.Piece, line.Force, true));
+                            }
+
+                            // Create second line
+                            if (!FootholdExists((FootholdAnchor)line.SecondDot, anchor))
+                            {
+                                board.BoardItems.FootholdLines.Add(new FootholdLine(board, line.SecondDot, anchor, line.ForbidFallDown, line.CantThrough, line.Piece, line.Force, true));
+                            }
+
+                            // Remove long line
+                            line.FirstDot.DisconnectLine(line);
+                            line.SecondDot.DisconnectLine(line);
+                            board.BoardItems.FootholdLines.RemoveAt(i);
+                            i--; // To conserve the current loop position
+                        }
+                    }
+                }
+            }
+
+            // Special tile snapping cases
+            MapleTable<LayeredItem, bool> leftSnapping = new MapleTable<LayeredItem,bool>();
+            MapleTable<LayeredItem, bool> rightSnapping = new MapleTable<LayeredItem,bool>();
+            foreach (LayeredItem li in board.BoardItems.TileObjs) {
+                if (!(li is TileInstance))
+                    continue;
+                TileInstance tileInst = (TileInstance)li;
+                TileInfo tileInfo = (TileInfo)li.BaseInfo;
+                if (tileInst.BoundItems.Count > 0) // This if statement ensures in one check: 1.that the tile is foothold-containing type and 2.that it was created by the user in this session
+                {
+                    Tuple<TileInstance, TileInstance> sideSnaps = tileInst.FindExactSideSnaps();
+                    TileInstance prev = sideSnaps.Item1;
+                    TileInstance next = sideSnaps.Item2;
+                }
+            }*/
+        }
+    }
+
+    enum Direction
+    {
+        Left,
+        Right
     }
 }

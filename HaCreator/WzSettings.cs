@@ -72,6 +72,7 @@ namespace HaCreator
         public static bool useSnapping = true;
         public static bool emulateParallax = true;
         public static bool suppressWarnings = false;
+        public static bool FixFootholdMispositions = true;
 
         // Controls debug features such feature compatibility testing and special exception handling
         public static bool enableDebug =

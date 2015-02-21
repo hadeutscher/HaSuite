@@ -80,7 +80,7 @@ namespace HaCreator.MapEditor
             get { return ItemTypes.Misc; }
         }
 
-        public override void Remove(bool removeDots, ref List<UndoRedoAction> undoPipe)
+        public override void Remove(bool removeDots, List<UndoRedoAction> undoPipe)
         {
             
         }

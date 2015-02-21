@@ -59,11 +59,19 @@ namespace HaCreator.CustomControls.EditorPanels
             switch (item.Name)
             {
                 case "Foothold":
+                    if (!hcsm.AssertLayerSelected())
+                    {
+                        return;
+                    }
                     hcsm.EnterEditMode(ItemTypes.Footholds);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetFootholdMode();
                     hcsm.MultiBoard.Focus();
                     break;
                 case "Rope":
+                    if (!hcsm.AssertLayerSelected())
+                    {
+                        return;
+                    }
                     hcsm.EnterEditMode(ItemTypes.Ropes);
                     hcsm.MultiBoard.SelectedBoard.Mouse.SetRopeMode();
                     hcsm.MultiBoard.Focus();

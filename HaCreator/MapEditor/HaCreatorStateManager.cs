@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HaCreator.ThirdParty.TabPages;
 using MapleLib.WzLib;
+using HaCreator.WzStructure;
 
 namespace HaCreator.MapEditor
 {
@@ -55,6 +56,7 @@ namespace HaCreator.MapEditor
             this.ribbon.SnappingToggled += ribbon_SnappingToggled;
             this.ribbon.RandomTilesToggled += ribbon_RandomTilesToggled;
             this.ribbon.HaRepackerClicked += ribbon_HaRepackerClicked;
+            this.ribbon.FinalizeClicked += ribbon_FinalizeClicked;
 
             this.tabs.CurrentPageChanged += tabs_CurrentPageChanged;
 
@@ -229,6 +231,17 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Ribbon Handlers
+        void ribbon_FinalizeClicked()
+        {
+            if (MessageBox.Show("This will finalize all footholds, removing their Tile bindings and clearing the Undo/Redo list in the process.\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                lock (multiBoard)
+                {
+                    new MapSaver(multiBoard.SelectedBoard).ActualizeFootholds();
+                }
+            }
+        }
+
         void ribbon_HaRepackerClicked()
         {
             HaRepacker.Program.WzMan = new HaRepackerLib.WzFileManager();
@@ -563,6 +576,16 @@ namespace HaCreator.MapEditor
         {
             multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
             ribbon.SetEnabled(true);
+        }
+
+        public bool AssertLayerSelected()
+        {
+            if (multiBoard.SelectedBoard.SelectedLayerIndex == -1)
+            {
+                MessageBox.Show("Select a real layer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
         }
 
         public MultiBoard MultiBoard

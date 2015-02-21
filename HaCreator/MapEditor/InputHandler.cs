@@ -173,7 +173,7 @@ namespace HaCreator.MapEditor
                                 {
                                     BoardItem item = selectedBoard.SelectedItems[selectedItemIndex];
                                     if (item is ToolTipDot) selectedItemIndex++;
-                                    else item.RemoveItem(ref actions);
+                                    else item.RemoveItem(actions);
                                 }
                                 break;
                             case MouseState.RandomTiles:
@@ -184,7 +184,7 @@ namespace HaCreator.MapEditor
                                 break;
                             case MouseState.Footholds:
                                 while (selectedBoard.Mouse.connectedLines.Count > 0 && selectedBoard.Mouse.connectedLines[0].FirstDot.connectedLines.Count > 0)
-                                    selectedBoard.Mouse.connectedLines[0].FirstDot.connectedLines[0].Remove(false, ref actions);
+                                    selectedBoard.Mouse.connectedLines[0].FirstDot.connectedLines[0].Remove(false, actions);
                                 break;
                         }
                         break;

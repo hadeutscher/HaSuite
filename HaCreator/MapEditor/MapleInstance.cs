@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure;
+using HaCreator.MapEditor.TilesDesign;
 
 namespace HaCreator.MapEditor
 {
@@ -188,50 +189,138 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public void DoSnap()
+        private List<Tuple<double, TileInstance, MapTileDesignPotential>> FindSnappableTiles(float threshold)
         {
-            TileSnapGroup tilegroup = (TileSnapGroup)TileSnap.tileCats[baseInfo.u];
-            double closestDistance = 201d;
-            TileInstance closestTile = null;
-            TileSnapInfo closestInfo = null;
+            List<Tuple<double, TileInstance, MapTileDesignPotential>> result = new List<Tuple<double, TileInstance, MapTileDesignPotential>>();
+            MapTileDesign tilegroup = (MapTileDesign)TileSnap.tileCats[baseInfo.u];
+            int mag = baseInfo.mag;
+            float first_threshold = MultiBoard.FirstSnapVerification * mag;
             foreach (BoardItem item in Board.BoardItems)
             {
                 if (item is TileInstance)
                 {
-                    if (item.Selected || item.Equals(this)) continue;
+                    if (item.Selected || item.Equals(this))
+                        continue;
                     TileInstance tile = (TileInstance)item;
+                    if (tile.LayerNumber != this.LayerNumber)
+                        continue;
                     int dx = tile.X - this.X, dy = tile.Y - this.Y;
                     // first verification to save time
                     // Note that we are first checking dx and dy alone; although this is already covered by the following distance calculation,
                     // it is significantly faster and will likely weed out most of the candidates before calculating their actual distance.
-                    if (dx > MultiBoard.FirstSnapVerification || dy > MultiBoard.FirstSnapVerification || Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)) > MultiBoard.FirstSnapVerification) 
+                    if (dx > first_threshold || dy > first_threshold || Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)) > first_threshold)
                         continue;
-                    foreach (TileSnapInfo snapInfo in tilegroup.tileList)
+                    foreach (MapTileDesignPotential snapInfo in tilegroup.potentials)
                     {
-                        if (snapInfo.tileCat != tile.baseInfo.u) continue;
-                        double distance = Math.Sqrt(Math.Pow(this.X - tile.X + snapInfo.snapx, 2) + Math.Pow(this.Y - tile.Y + snapInfo.snapy, 2));
-                        if (distance > UserSettings.SnapDistance) continue;
-                        if (distance < closestDistance)
-                        {
-                            closestDistance = distance;
-                            closestTile = tile;
-                            closestInfo = snapInfo;
-                        }
+                        if (snapInfo.type != tile.baseInfo.u) continue;
+                        double distance = Math.Sqrt(Math.Pow(this.X - tile.X + snapInfo.x * mag, 2) + Math.Pow(this.Y - tile.Y + snapInfo.y * mag, 2));
+                        if (distance > threshold) continue;
+                        result.Add(new Tuple<double, TileInstance, MapTileDesignPotential>(distance, tile, snapInfo));
                     }
                 }
             }
-            if (closestTile != null)
+            return result;
+        }
+
+        public void DoSnap()
+        {
+            // Get candidates
+            var candidates = FindSnappableTiles(UserSettings.SnapDistance);
+            if (candidates.Count == 0)
             {
-                Point parentOffs = (Point)this.Parent.BoundItems[this];
-                Point snapOffs = new Point(this.Parent.X + parentOffs.X - (closestTile.X - closestInfo.snapx), this.Parent.Y + parentOffs.Y - (closestTile.Y - closestInfo.snapy));
-                foreach (BoardItem item in Board.SelectedItems)
-                {
-                    if (item.tempParent != null || item.Parent == null) continue;
-                    parentOffs = (Point)item.Parent.BoundItems[item];
-                    item.SnapMove(item.Parent.X + parentOffs.X - snapOffs.X, item.Parent.Y + parentOffs.Y - snapOffs.Y);
-                }
-                this.SnapMove(closestTile.X - closestInfo.snapx, closestTile.Y - closestInfo.snapy);
+                return;
             }
+            
+            // Get closest candidate
+            int best = 0;
+            for (int i = 1; i < candidates.Count; i++)
+            {
+                if (candidates[i].Item1 < candidates[best].Item1)
+                {
+                    best = i;
+                }
+            }
+
+            // Move all selected items to snap
+            int mag = baseInfo.mag;
+            TileInstance closestTile = candidates[best].Item2;
+            MapTileDesignPotential closestInfo = candidates[best].Item3;
+            Point parentOffs = (Point)this.Parent.BoundItems[this];
+            Point snapOffs = new Point(this.Parent.X + parentOffs.X - (closestTile.X - closestInfo.x * mag), this.Parent.Y + parentOffs.Y - (closestTile.Y - closestInfo.y * mag));
+            foreach (BoardItem item in Board.SelectedItems)
+            {
+                if (item.tempParent != null || item.Parent == null) continue;
+                parentOffs = (Point)item.Parent.BoundItems[item];
+                item.SnapMove(item.Parent.X + parentOffs.X - snapOffs.X, item.Parent.Y + parentOffs.Y - snapOffs.Y);
+            }
+            this.SnapMove(closestTile.X - closestInfo.x * mag, closestTile.Y - closestInfo.y * mag);
+        }
+
+        public Tuple<TileInstance, TileInstance> FindExactSideSnaps()
+        {
+            var candidates = FindSnappableTiles(0); // Find exact snaps only
+            List<TileInstance> prevSnaps = new List<TileInstance>();
+            List<TileInstance> nextSnaps = new List<TileInstance>();
+
+            foreach (var candidate in candidates)
+            {
+                TileInstance tile = candidate.Item2;
+                MapTileDesignPotential snap = candidate.Item3;
+                bool prev = false;
+                if (tile.BoundItems.Count == 0)
+                    continue;
+                switch (this.baseInfo.u) 
+                {
+                    case "enH0":
+                    case "slRU":
+                    case "slLU":
+                        // These are all pretty simple, they can only snap on left and right.
+                        prev = tile.X < this.X;
+                        break;
+                    case "enV0":
+                        // Left bound: If the other tile is below us, it is prev
+                        prev = tile.Y > this.Y;
+                        break;
+                    case "enV1":
+                        // Right bound: If the other tile is above us, it is prev
+                        prev = tile.Y < this.Y;
+                        break;
+                    case "edU":
+                        // edU can snap to sl*U, enV* and enH0 tiles
+                        switch (tile.baseInfo.u)
+                        {
+                            case "enH0":
+                            case "slRU":
+                            case "slLU":
+                                // Snap on our left and right
+                                prev = tile.X < this.X;
+                                break;
+                            case "enV0":
+                                // Left bound: always a prev snap
+                                prev = true;
+                                break;
+                            case "enV1":
+                                // Right bound: always a next snap
+                                prev = false;
+                                break;
+                            default:
+                                continue; // Illegal state, drop the tile
+                        }
+                        break;
+                    default:
+                        continue; // Illegal state, drop the tile
+                }
+                if (prev)
+                {
+                    prevSnaps.Add(tile);
+                }
+                else
+                {
+                    nextSnaps.Add(tile);
+                }
+            }
+
+            return new Tuple<TileInstance, TileInstance>(prevSnaps.Count == 1 ? prevSnaps[0] : null, nextSnaps.Count == 1 ? nextSnaps[0] : null);
         }
 
         public override ItemTypes Type
@@ -244,12 +333,12 @@ namespace HaCreator.MapEditor
             get { return baseInfo; }
         }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
                 Layer thisLayer = Layer;
-                base.RemoveItem(ref undoPipe);
+                base.RemoveItem(undoPipe);
                 thisLayer.RecheckTileSet();
             }
         }

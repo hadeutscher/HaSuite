@@ -20,6 +20,7 @@ using MapleLib.WzLib.WzStructure.Data;
 using System.Collections;
 using HaCreator.ThirdParty;
 using HaCreator.GUI;
+using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.CustomControls.EditorPanels
 {
@@ -64,6 +65,7 @@ namespace HaCreator.CustomControls.EditorPanels
             tileImagesContainer.Controls.Clear();
             WzImage tileSetImage = Program.InfoManager.TileSets[(string)tileSetList.SelectedItem];
             if (tileSetImage == null) return;
+            int? mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"]);
             foreach (WzSubProperty tCat in tileSetImage.WzProperties)
             {
                 if (tCat.Name == "info") continue;
@@ -77,7 +79,7 @@ namespace HaCreator.CustomControls.EditorPanels
                     {
                         WzCanvasProperty tile = (WzCanvasProperty)tCat.WzProperties[i];
                         if (tile.HCTag == null)
-                            tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name);
+                            tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
                         randomInfos[i] = (TileInfo)tile.HCTag;
                     }
                     item.Tag = randomInfos;
@@ -89,7 +91,7 @@ namespace HaCreator.CustomControls.EditorPanels
                     foreach (WzCanvasProperty tile in tCat.WzProperties)
                     {
                         if (tile.HCTag == null)
-                            tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name);
+                            tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
                         ImageViewer item = tileImagesContainer.Add(tile.PngProperty.GetPNG(false), tCat.Name + "/" + tile.Name, true);
                         item.Tag = tile.HCTag;
                         item.MouseDown += new MouseEventHandler(tileItem_Click);
@@ -101,9 +103,9 @@ namespace HaCreator.CustomControls.EditorPanels
 
         void tileItem_Click(object sender, MouseEventArgs e)
         {
-            if (hcsm.MultiBoard.SelectedBoard.SelectedLayerIndex == -1)
+            ImageViewer item = (ImageViewer)sender;
+            if (!hcsm.AssertLayerSelected())
             {
-                MessageBox.Show("Select a real layer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             Layer layer = hcsm.MultiBoard.SelectedBoard.SelectedLayer;
@@ -111,9 +113,9 @@ namespace HaCreator.CustomControls.EditorPanels
             {
                 TileInfo infoToAdd = null;
                 if (ApplicationSettings.randomTiles)
-                    infoToAdd = ((TileInfo[])((ImageViewer)sender).Tag)[0];
+                    infoToAdd = ((TileInfo[])item.Tag)[0];
                 else
-                    infoToAdd = (TileInfo)((ImageViewer)sender).Tag;
+                    infoToAdd = (TileInfo)item.Tag;
                 if (infoToAdd.tS != layer.tS)
                 {
                     if (MessageBox.Show("This action will change the layer's tS. Proceed?", "Layer tS Change", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
@@ -126,11 +128,11 @@ namespace HaCreator.CustomControls.EditorPanels
             }
             hcsm.EnterEditMode(ItemTypes.Tiles);
             if (ApplicationSettings.randomTiles)
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetRandomTilesMode((TileInfo[])((ImageViewer)sender).Tag);
+                hcsm.MultiBoard.SelectedBoard.Mouse.SetRandomTilesMode((TileInfo[])item.Tag);
             else
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((TileInfo)((ImageViewer)sender).Tag);
+                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((TileInfo)item.Tag);
             hcsm.MultiBoard.Focus();
-            ((ImageViewer)sender).IsActive = true;
+            item.IsActive = true;
         }
     }
 }

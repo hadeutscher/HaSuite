@@ -41,16 +41,16 @@ namespace HaCreator.MapEditor
 
         protected abstract bool RemoveConnectedLines { get; }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
-                base.RemoveItem(ref undoPipe);
+                base.RemoveItem(undoPipe);
                 if (RemoveConnectedLines)
                 {
                     while (connectedLines.Count > 0)
                     {
-                        connectedLines[0].Remove(false, ref undoPipe);
+                        connectedLines[0].Remove(false, undoPipe);
                     }
                 }
             }
@@ -185,11 +185,13 @@ namespace HaCreator.MapEditor
         private int layer;
 
         public bool removed;
+        public bool user;
 
-        public FootholdAnchor(Board board, int x, int y, int layer)
+        public FootholdAnchor(Board board, int x, int y, int layer, bool user)
             : base(board, x, y)
         {
             this.layer = layer;
+            this.user = user;
         }
 
         public override bool CheckIfLayerSelected(int selectedLayer)
@@ -238,9 +240,56 @@ namespace HaCreator.MapEditor
                         return 1;
                     else if (c.LayerNumber < d.LayerNumber)
                         return -1;
-                    else return 0;
+                    else
+                    {
+                        if (c.user && !d.user)
+                            return 1;
+                        else if (!c.user && d.user)
+                            return -1;
+                        else 
+                            return 0;
+                    }
                 }
             }
+        }
+
+        public static void MergeAnchors(FootholdAnchor a, FootholdAnchor b)
+        {
+            foreach (FootholdLine line in b.connectedLines)
+            {
+                if (line.FirstDot == b)
+                    line.FirstDot = a;
+                else if (line.SecondDot == b)
+                    line.SecondDot = a;
+                else
+                    throw new Exception("No anchor matches foothold");
+
+                a.connectedLines.Add(line);
+            }
+            b.connectedLines.Clear();
+        }
+
+        public bool AllConnectedLinesVertical()
+        {
+            foreach (MapleLine line in connectedLines)
+            {
+                if (line.FirstDot.X != line.SecondDot.X)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public bool AllConnectedLinesHorizontal()
+        {
+            foreach (MapleLine line in connectedLines)
+            {
+                if (line.FirstDot.Y != line.SecondDot.Y)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public int LayerNumber
@@ -265,7 +314,7 @@ namespace HaCreator.MapEditor
 
         public override bool CheckIfLayerSelected(int selectedLayer)
         {
-            return selectedLayer == parentRope.page;
+            return selectedLayer == parentRope.LayerNumber;
         }
 
         public override Color Color
@@ -288,8 +337,8 @@ namespace HaCreator.MapEditor
 
         public int LayerNumber
         {
-            get { return parentRope.page; }
-            set { parentRope.page = value; }
+            get { return parentRope.LayerNumber; }
+            set { parentRope.LayerNumber = value; }
         }
 
         protected override bool RemoveConnectedLines
@@ -298,9 +347,9 @@ namespace HaCreator.MapEditor
             get { throw new NotImplementedException(); }
         }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
-            parentRope.Remove(ref undoPipe);
+            parentRope.Remove(undoPipe);
         }
 
         public override void DoSnap()
@@ -420,7 +469,7 @@ namespace HaCreator.MapEditor
             secondDot.PointMoved += new MapleDot.OnPointMovedDelegate(OnSecondDotMoved);
         }
 
-        public virtual void Remove(bool removeDots, ref List<UndoRedoAction> undoPipe)
+        public virtual void Remove(bool removeDots, List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
@@ -428,13 +477,17 @@ namespace HaCreator.MapEditor
                 secondDot.DisconnectLine(this);
                 if (this is FootholdLine) board.BoardItems.FootholdLines.Remove((FootholdLine)this);
                 else if (this is RopeLine) board.BoardItems.RopeLines.Remove((RopeLine)this);
-                if (!(secondDot is Mouse))
+                if (!(secondDot is Mouse) && undoPipe != null)
+                {
                     undoPipe.Add(UndoRedoManager.LineRemoved(this, firstDot, secondDot));
+                }
                 if (removeDots)
                 {
-                    firstDot.RemoveItem(ref undoPipe);
+                    firstDot.RemoveItem(undoPipe);
                     if (secondDot != null)
-                        secondDot.RemoveItem(ref undoPipe);
+                    {
+                        secondDot.RemoveItem(undoPipe);
+                    }
                 }
             }
         }
@@ -507,7 +560,7 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public class FootholdLine : MapleLine
+    public class FootholdLine : MapleLine, IContainsLayerInfo
     {
         private MapleBool _cantThrough;
         private MapleBool _forbidFallDown;
@@ -521,6 +574,10 @@ namespace HaCreator.MapEditor
         public int prev = 0;
         public int next = 0;
         public Foothold fh;
+        public bool user;
+
+        public FootholdLine prevOverride = null;
+        public FootholdLine nextOverride = null;
 
         internal FootholdLine() : base() { }
         public static FootholdLine CreateCustomFootholdLine(Board board, MapleDot firstDot, MapleDot secondDot)
@@ -532,40 +589,44 @@ namespace HaCreator.MapEditor
             return result;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot)
+        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, bool user)
             : base(board, firstDot, secondDot)
         {
             _cantThrough = null;
             _forbidFallDown = null;
             _piece = null;
             _force = null;
+            this.user = user;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot)
+        public FootholdLine(Board board, MapleDot firstDot, bool user)
             : base(board, firstDot)
         {
             _cantThrough = null;
             _forbidFallDown = null;
             _piece = null;
             _force = null;
+            this.user = user;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force)
+        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, bool user)
             : base(board, firstDot, secondDot)
         {
             this._cantThrough = cantThrough;
             this._forbidFallDown = forbidFallDown;
             this._piece = piece;
             this._force = force;
+            this.user = user;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force)
+        public FootholdLine(Board board, MapleDot firstDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, bool user)
             : base(board, firstDot)
         {
             this._cantThrough = cantThrough;
             this._forbidFallDown = forbidFallDown;
             this._piece = piece;
             this._force = force;
+            this.user = user;
         }
 
         public override Color Color
@@ -621,6 +682,7 @@ namespace HaCreator.MapEditor
         public int? Piece { get { return _piece; } set { _piece = value; } }
         public MapleBool ForbidFallDown { get { return _forbidFallDown; } set { _forbidFallDown = value; } }
         public MapleBool CantThrough { get { return _cantThrough; } set { _cantThrough = value; } }
+        public int LayerNumber { get { return ((FootholdAnchor)FirstDot).LayerNumber; } set { throw new NotImplementedException(); } }
 
         public int num; //temporary, for saving.
     }
@@ -668,7 +730,7 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public class Rope
+    public class Rope : IContainsLayerInfo
     {
         private Board board;
         private RopeAnchor firstAnchor;
@@ -691,7 +753,7 @@ namespace HaCreator.MapEditor
             Create();
         }
 
-        public void Remove(ref List<UndoRedoAction> undoPipe)
+        public void Remove(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
@@ -700,7 +762,10 @@ namespace HaCreator.MapEditor
                 board.BoardItems.RopeAnchors.Remove(firstAnchor);
                 board.BoardItems.RopeAnchors.Remove(secondAnchor);
                 board.BoardItems.RopeLines.Remove(line);
-                undoPipe.Add(UndoRedoManager.RopeRemoved(this));
+                if (undoPipe != null)
+                {
+                    undoPipe.Add(UndoRedoManager.RopeRemoved(this));
+                }
             }
         }
 
@@ -714,7 +779,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public int page { get { return _page; } set { _page = value; } }
+        public int LayerNumber { get { return _page; } set { _page = value; } }
         public bool ladder { get { return _ladder; } set { _ladder = value; } }
         public bool uf { get { return _uf; } set { _uf = value; } }
 
@@ -789,7 +854,7 @@ namespace HaCreator.MapEditor
             get { return ItemTypes.ToolTips; }
         }
 
-        public override void Remove(bool removeDots, ref List<UndoRedoAction> undoPipe)
+        public override void Remove(bool removeDots, List<UndoRedoAction> undoPipe)
         {
             
         }
@@ -1004,15 +1069,15 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
-                base.RemoveItem(ref undoPipe);
-                PointA.RemoveItem(ref undoPipe);
-                PointB.RemoveItem(ref undoPipe);
-                PointC.RemoveItem(ref undoPipe);
-                PointD.RemoveItem(ref undoPipe);
+                base.RemoveItem(undoPipe);
+                PointA.RemoveItem(undoPipe);
+                PointB.RemoveItem(undoPipe);
+                PointC.RemoveItem(undoPipe);
+                PointD.RemoveItem(undoPipe);
             }
         }
     }
@@ -1096,13 +1161,13 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
-                base.RemoveItem(ref undoPipe);
+                base.RemoveItem(undoPipe);
                 if (ttc != null)
-                    ttc.RemoveItem(ref undoPipe);
+                    ttc.RemoveItem(undoPipe);
             }
         }
     }
@@ -1161,13 +1226,16 @@ namespace HaCreator.MapEditor
             if (boundTooltip != null) Board.ParentControl.DrawLine(sprite, new Vector2(X + Width / 2 + xShift, Y + Height / 2 + yShift), new Vector2(boundTooltip.X + boundTooltip.Width / 2 + xShift, boundTooltip.Y + boundTooltip.Height / 2 + yShift), UserSettings.ToolTipBindingLine);
         }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
                 if (boundTooltip == null) return; //already removed via the parent tooltip
-                base.RemoveItem(ref undoPipe);
-                undoPipe.Add(UndoRedoManager.ToolTipUnlinked(boundTooltip, this));
+                base.RemoveItem(undoPipe);
+                if (undoPipe != null)
+                {
+                    undoPipe.Add(UndoRedoManager.ToolTipUnlinked(boundTooltip, this));
+                }
                 boundTooltip.CharacterToolTip = null;
                 boundTooltip = null;
             }

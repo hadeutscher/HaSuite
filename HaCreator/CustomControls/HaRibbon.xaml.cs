@@ -70,6 +70,8 @@ namespace HaCreator.CustomControls
             new InputGestureCollection() { });
         public static readonly RoutedUICommand Parallax = new RoutedUICommand("Parallax", "Parallax", typeof(HaRibbon),
             new InputGestureCollection() { });
+        public static readonly RoutedUICommand Finalize = new RoutedUICommand("Finalize", "Finalize", typeof(HaRibbon),
+            new InputGestureCollection() { });
         public static readonly RoutedUICommand AllLayerView = new RoutedUICommand("AllLayerView", "AllLayerView", typeof(HaRibbon),
             new InputGestureCollection() { });
         public static readonly RoutedUICommand MapSim = new RoutedUICommand("MapSim", "MapSim", typeof(HaRibbon),
@@ -156,6 +158,12 @@ namespace HaCreator.CustomControls
                 ParallaxToggled.Invoke(((RibbonToggleButton)e.OriginalSource).IsChecked.Value);
         }
 
+        private void Finalize_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (FinalizeClicked != null)
+                FinalizeClicked.Invoke();
+        }
+
         private void AllLayerView_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             layerBox.IsEnabled = !layerCheckbox.IsChecked.Value;
@@ -224,6 +232,7 @@ namespace HaCreator.CustomControls
         public event EmptyEvent HelpClicked;
         public event EmptyEvent SettingsClicked;
         public event EmptyEvent ExitClicked;
+        public event EmptyEvent FinalizeClicked;
         public event ViewToggleEvent ViewToggled;
         public event ToggleEvent ShowVRToggled;
         public event ToggleEvent ShowMinimapToggled;

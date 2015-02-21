@@ -169,6 +169,19 @@
     <Compile Include="GUI\EditorBase.Designer.cs">
       <DependentUpon>EditorBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="MapEditor\TilesDesign\bsc.cs" />
+    <Compile Include="MapEditor\TilesDesign\edD.cs" />
+    <Compile Include="MapEditor\TilesDesign\edU.cs" />
+    <Compile Include="MapEditor\TilesDesign\enH0.cs" />
+    <Compile Include="MapEditor\TilesDesign\enH1.cs" />
+    <Compile Include="MapEditor\TilesDesign\enV0.cs" />
+    <Compile Include="MapEditor\TilesDesign\enV1.cs" />
+    <Compile Include="MapEditor\TilesDesign\MapTileDesign.cs" />
+    <Compile Include="MapEditor\TilesDesign\MapTileDesignPotential.cs" />
+    <Compile Include="MapEditor\TilesDesign\slLD.cs" />
+    <Compile Include="MapEditor\TilesDesign\slLU.cs" />
+    <Compile Include="MapEditor\TilesDesign\slRD.cs" />
+    <Compile Include="MapEditor\TilesDesign\slRU.cs" />
     <Compile Include="ThirdParty\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
     </Compile>
@@ -458,7 +471,7 @@
     <Compile Include="MapEditor\MultiBoardControl.Designer.cs">
       <DependentUpon>MultiBoardControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="MapEditor\Snapping.cs" />
+    <Compile Include="MapEditor\TilesDesign\Snapping.cs" />
     <Compile Include="MapEditor\UndoRedoManager.cs" />
     <Compile Include="MapEditor\WzFileManager.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

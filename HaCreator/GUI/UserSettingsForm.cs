@@ -27,6 +27,7 @@ namespace HaCreator.GUI
             showMousePosCheckbox.Checked = UserSettings.ShowMousePos;
             xgaResolutionCheckbox.Checked = UserSettings.XGAResolution;
             clipBox.Checked = UserSettings.ClipText;
+            fixFh.Checked = UserSettings.FixFootholdMispositions;
 
             tabColorPicker.Color = UserSettings.TabColor;
             dragColorPicker.Color = XNAToSystemColor(UserSettings.SelectSquare);
@@ -86,6 +87,7 @@ namespace HaCreator.GUI
             UserSettings.ShowMousePos = showMousePosCheckbox.Checked;
             UserSettings.XGAResolution = xgaResolutionCheckbox.Checked;
             UserSettings.ClipText = clipBox.Checked;
+            UserSettings.FixFootholdMispositions = fixFh.Checked;
 
             UserSettings.TabColor = tabColorPicker.Color;
             UserSettings.SelectSquare = SystemToXNAColor(dragColorPicker.Color);

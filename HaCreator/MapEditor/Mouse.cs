@@ -76,7 +76,7 @@ namespace HaCreator.MapEditor
                     if (state == MouseState.StaticObjectAdding)
                         currAddedObj = currAddedInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false);
                     else
-                        currAddedObj = tileRandomList[NextInt32(tileRandomList.Length)].CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false, true);
+                        currAddedObj = tileRandomList[NextInt32(tileRandomList.Length)].CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, 0, false, true);
                     Board.BoardItems.Add(currAddedObj, false);
                     BindItem(currAddedObj, new Microsoft.Xna.Framework.Point(currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2));
                 }
@@ -178,17 +178,17 @@ namespace HaCreator.MapEditor
         {
             lock (Board.ParentControl)
             {
-                FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex);
+                FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex, true);
                 Board.BoardItems.FHAnchors.Add(fhAnchor);
                 Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(fhAnchor) });
                 if (connectedLines.Count == 0)
                 {
-                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, true));
                 }
                 else
                 {
                     connectedLines[0].ConnectSecondDot(fhAnchor);
-                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, true));
                 }
             }
         }
@@ -200,21 +200,24 @@ namespace HaCreator.MapEditor
                 Xna.Point pos = new Xna.Point(X, Y);
                 foreach (FootholdAnchor anchor in Board.BoardItems.FHAnchors)
                 {
-                    if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom))
+                    if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom) && anchor.LayerNumber == board.SelectedLayerIndex)
                     {
-                        if (connectedLines.Count > 0)
+                        if (connectedLines.Count > 0) // Are we already holding a foothold?
                         {
+                            // We are, so connect the two ends
+                            // Check that we are not connecting a foothold to itself, or creating duplicate footholds
                             if (connectedLines[0].FirstDot != anchor && !FootholdLine.Exists(anchor.X, anchor.Y, connectedLines[0].FirstDot.X, connectedLines[0].FirstDot.Y, Board))
                             {
                                 Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.LineAdded(connectedLines[0], connectedLines[0].FirstDot, anchor) });
                                 connectedLines[0].ConnectSecondDot(anchor);
-                                FootholdLine fh = new FootholdLine(Board, anchor);
+                                // Now that we finished the previous foothold, create a new one between the anchor and the mouse
+                                FootholdLine fh = new FootholdLine(Board, anchor, true);
                                 Board.BoardItems.FootholdLines.Add(fh);
                             }
                         }
-                        else
+                        else // Construct a footholdline between the anchor and the mouse
                         {
-                            Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor));
+                            Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor, true));
                         }
                     }
                 }
@@ -225,10 +228,9 @@ namespace HaCreator.MapEditor
         {
             lock (Board.ParentControl)
             {
-                List<UndoRedoAction> foo = new List<UndoRedoAction>(); //the undoPipe here has no meaning, we don't need any undo info anyway
                 if (currAddedObj != null)
                 {
-                    currAddedObj.RemoveItem(ref foo);
+                    currAddedObj.RemoveItem(null);
                     currAddedObj = null;
                 }
                 if (state == MouseState.Ropes || state == MouseState.Tooltip)
@@ -236,14 +238,14 @@ namespace HaCreator.MapEditor
                     object[] keys = new object[BoundItems.Keys.Count];
                     BoundItems.Keys.CopyTo(keys, 0);
                     if (state == MouseState.Ropes)
-                        ((RopeAnchor)keys[0]).RemoveItem(ref foo);
+                        ((RopeAnchor)keys[0]).RemoveItem(null);
                     else
-                        ((ToolTipDot)keys[0]).ParentTooltip.RemoveItem(ref foo);
+                        ((ToolTipDot)keys[0]).ParentTooltip.RemoveItem(null);
                 }
                 else if (state == MouseState.Footholds && connectedLines.Count > 0)
                 {
                     FootholdLine fh = (FootholdLine)connectedLines[0];
-                    fh.Remove(false, ref foo);
+                    fh.Remove(false, null);
                     Board.BoardItems.FootholdLines.Remove(fh);
                 } 
                 else if (state == MouseState.Clock)
@@ -252,7 +254,7 @@ namespace HaCreator.MapEditor
                     BoundItems.Keys.CopyTo(keys, 0);
                     for (int i = 0; i < keys.Length; i++)
                     {
-                        ((BoardItem)keys[i]).RemoveItem(ref foo);
+                        ((BoardItem)keys[i]).RemoveItem(null);
                     }
                 }
                 InputHandler.ClearBoundItems(Board);
@@ -471,7 +473,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
         }
         #endregion

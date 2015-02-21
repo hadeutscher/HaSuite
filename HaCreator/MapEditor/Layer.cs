@@ -6,6 +6,7 @@
 
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
+using MapleLib.WzLib.WzStructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,13 +84,14 @@ namespace HaCreator.MapEditor
                         TileInstance tile = (TileInstance)item;
                         TileInfo tileBase = (TileInfo)tile.BaseInfo;
                         WzImageProperty tCat = Program.InfoManager.TileSets[newTS][tileBase.u];
+                        int? mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[newTS]["info"]["mag"]);
                         WzImageProperty tProp = tCat[tileBase.no];
                         if (tProp == null)
                         {
                             tProp = tCat["0"];
                         }
                         if (tProp.HCTag == null)
-                            tProp.HCTag = TileInfo.Load((WzCanvasProperty)tProp, newTS, tileBase.u, tileBase.no);
+                            tProp.HCTag = TileInfo.Load((WzCanvasProperty)tProp, newTS, tileBase.u, tileBase.no, mag);
                         TileInfo tileInfo = (TileInfo)tProp.HCTag;
                         tile.SetBaseInfo(tileInfo);
                     }
@@ -126,12 +128,12 @@ namespace HaCreator.MapEditor
             layer.Items.Add(this);
         }
 
-        public override void RemoveItem(ref List<UndoRedoAction> undoPipe)
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
             {
                 layer.Items.Remove(this);
-                base.RemoveItem(ref undoPipe);
+                base.RemoveItem(undoPipe);
             }
         }
 

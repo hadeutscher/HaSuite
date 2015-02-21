@@ -79,8 +79,6 @@ namespace HaRepacker.GUI
                 encryptionBox.SelectedIndex = (int)encVersion;
                 LoadWzFileThreadSafe(wzToLoad, MainPanel, false);
             }
-
-            mapper = new FHMapper.FHMapper(MainPanel);
         }
 
         public void Interop_AddLoadedWzFileToManager(WzFile f)
@@ -261,13 +259,14 @@ namespace HaRepacker.GUI
 
         private void renderMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            mapper = new FHMapper.FHMapper(MainPanel);
             mapper.ParseSettings();
             if (MainPanel.DataTree.SelectedNode.Tag is WzImage)
             {
                 WzImage img = (WzImage)MainPanel.DataTree.SelectedNode.Tag;
                 if (!Directory.Exists("Renders\\" + img.Name.Substring(0, img.Name.Length - 4)))
                     Directory.CreateDirectory("Renders\\" + img.Name.Substring(0, img.Name.Length - 4));
-                new FHMapper.FHMapper(MainPanel).SaveMap(img, double.Parse(zoomTextBox.TextBox.Text));
+                mapper.SaveMap(img, double.Parse(zoomTextBox.TextBox.Text));
             }
         }
 

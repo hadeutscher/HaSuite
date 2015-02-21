@@ -70,6 +70,7 @@
             this.label38 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.clipBox = new System.Windows.Forms.CheckBox();
             this.errorsCheckBox = new System.Windows.Forms.CheckBox();
             this.xgaResolutionCheckbox = new System.Windows.Forms.CheckBox();
             this.showMousePosCheckbox = new System.Windows.Forms.CheckBox();
@@ -99,6 +100,8 @@
             this.dragColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.tabColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.movementBox = new System.Windows.Forms.NumericUpDown();
             this.label26 = new System.Windows.Forms.Label();
             this.zShiftBox = new System.Windows.Forms.NumericUpDown();
             this.label25 = new System.Windows.Forms.Label();
@@ -107,9 +110,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.clipBox = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.movementBox = new System.Windows.Forms.NumericUpDown();
+            this.fixFh = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
@@ -130,8 +131,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.rInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.inactiveaBox)).BeginInit();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.movementBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).BeginInit();
             this.SuspendLayout();
             // 
             // label2
@@ -641,6 +642,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.fixFh);
             this.tabPage1.Controls.Add(this.clipBox);
             this.tabPage1.Controls.Add(this.errorsCheckBox);
             this.tabPage1.Controls.Add(this.xgaResolutionCheckbox);
@@ -656,6 +658,15 @@
             this.tabPage1.Size = new System.Drawing.Size(537, 447);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
+            // 
+            // clipBox
+            // 
+            this.clipBox.AutoSize = true;
+            this.clipBox.Location = new System.Drawing.Point(165, 245);
+            this.clipBox.Name = "clipBox";
+            this.clipBox.Size = new System.Drawing.Size(67, 17);
+            this.clipBox.TabIndex = 61;
+            this.clipBox.Text = "Clip Text";
             // 
             // errorsCheckBox
             // 
@@ -736,7 +747,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(537, 371);
+            this.tabPage2.Size = new System.Drawing.Size(537, 447);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graphics";
             // 
@@ -1038,6 +1049,28 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Advanced";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(15, 399);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(109, 13);
+            this.label1.TabIndex = 84;
+            this.label1.Text = "Significant Movement";
+            // 
+            // movementBox
+            // 
+            this.movementBox.DecimalPlaces = 3;
+            this.movementBox.Location = new System.Drawing.Point(130, 399);
+            this.movementBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.movementBox.Name = "movementBox";
+            this.movementBox.Size = new System.Drawing.Size(58, 20);
+            this.movementBox.TabIndex = 85;
+            // 
             // label26
             // 
             this.label26.AutoSize = true;
@@ -1126,36 +1159,14 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // clipBox
+            // fixFh
             // 
-            this.clipBox.AutoSize = true;
-            this.clipBox.Location = new System.Drawing.Point(165, 245);
-            this.clipBox.Name = "clipBox";
-            this.clipBox.Size = new System.Drawing.Size(67, 17);
-            this.clipBox.TabIndex = 61;
-            this.clipBox.Text = "Clip Text";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(15, 399);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(109, 13);
-            this.label1.TabIndex = 84;
-            this.label1.Text = "Significant Movement";
-            // 
-            // movementBox
-            // 
-            this.movementBox.DecimalPlaces = 3;
-            this.movementBox.Location = new System.Drawing.Point(130, 399);
-            this.movementBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
-            this.movementBox.Name = "movementBox";
-            this.movementBox.Size = new System.Drawing.Size(58, 20);
-            this.movementBox.TabIndex = 85;
+            this.fixFh.AutoSize = true;
+            this.fixFh.Location = new System.Drawing.Point(165, 268);
+            this.fixFh.Name = "fixFh";
+            this.fixFh.Size = new System.Drawing.Size(148, 17);
+            this.fixFh.TabIndex = 62;
+            this.fixFh.Text = "Fix Footholds Mispositions";
             // 
             // UserSettingsForm
             // 
@@ -1193,8 +1204,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.inactiveaBox)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.movementBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zShiftBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1283,5 +1294,6 @@
         private System.Windows.Forms.CheckBox clipBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown movementBox;
+        private System.Windows.Forms.CheckBox fixFh;
     }
 }

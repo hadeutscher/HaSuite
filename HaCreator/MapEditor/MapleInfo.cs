@@ -17,6 +17,7 @@ using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure;
+using HaCreator.MapEditor.TilesDesign;
 
 namespace HaCreator.MapEditor
 {
@@ -221,7 +222,7 @@ namespace HaCreator.MapEditor
         {
             for (int i = 0; i < anchors.Count - 1; i++)
             {
-                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1]);
+                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], true);
                 board.BoardItems.FootholdLines.Add(fh);
             }
         }
@@ -236,7 +237,7 @@ namespace HaCreator.MapEditor
                 {
                     foreach (XNA.Point foothold in footholdOffsets)
                     {
-                        FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber);
+                        FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, true);
                         board.BoardItems.FHAnchors.Add(anchor);
                         instance.BindItem(anchor, foothold);
                         anchors.Add(anchor);
@@ -249,7 +250,7 @@ namespace HaCreator.MapEditor
                     {
                         foreach (XNA.Point foothold in anchorList)
                         {
-                            FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber);
+                            FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, true);
                             board.BoardItems.FHAnchors.Add(anchor);
                             instance.BindItem(anchor, foothold);
                             anchors.Add(anchor);
@@ -365,35 +366,99 @@ namespace HaCreator.MapEditor
         private string _tS;
         private string _u;
         private string _no;
+        private int _mag;
         private List<XNA.Point> footholdOffsets = new List<XNA.Point>();
 
-        public TileInfo(Bitmap image, System.Drawing.Point origin, string tS, string u, string no, WzObject parentObject)
+        public TileInfo(Bitmap image, System.Drawing.Point origin, string tS, string u, string no, int mag, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this._tS = tS;
             this._u = u;
             this._no = no;
+            this._mag = mag;
         }
 
-        public static TileInfo Load(WzCanvasProperty parentObject)
+        public static TileInfo Load(WzCanvasProperty parentObject, WzSubProperty infoObject)
         {
             string[] path = parentObject.FullPath.Split(@"\".ToCharArray());
-            return Load(parentObject,WzInfoTools.RemoveExtension(path[path.Length - 3]), path[path.Length - 2], path[path.Length - 1]);
+            int? mag = InfoTool.GetOptionalInt(infoObject["mag"]);
+            return Load(parentObject,WzInfoTools.RemoveExtension(path[path.Length - 3]), path[path.Length - 2], path[path.Length - 1], mag.HasValue ? mag.Value : 1);
         }
 
-        public static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no)
+        public static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no, int? mag)
         {
-            TileInfo result = new TileInfo(parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), tS,u,no, parentObject);
+            TileInfo result = new TileInfo(parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), tS, u, no, mag.HasValue ? mag.Value : 1, parentObject);
             WzConvexProperty footholds = (WzConvexProperty)parentObject["foothold"];
             if (footholds != null)
                 foreach (WzVectorProperty foothold in footholds.WzProperties)
                     result.footholdOffsets.Add(WzInfoTools.VectorToXNAPoint(foothold));
+            if (UserSettings.FixFootholdMispositions)
+            {
+                FixFootholdMispositions(result);
+            }
             return result;
+        }
+
+        /* The sole reason behind this function's existence is that Nexon's designers are a bunch of incompetent goons.
+
+         * In a nutshell, some tiles (mostly old ones) have innate footholds that do not overlap when snapping them to each other, causing a weird foothold structure.
+         * I do not know how Nexon's editor overcame this; I am assuming they manually connected the footholds to sort that out. However, since HaCreator only allows automatic
+         * connection of footholds, we need to sort these cases out preemptively here.
+        */
+        private static void FixFootholdMispositions(TileInfo result)
+        {
+            switch (result.u)
+            {
+                case "enV0":
+                    MoveFootholdY(result, true, false, 60);
+                    MoveFootholdY(result, false, true, 60);
+                    break;
+                case "enV1":
+                    MoveFootholdY(result, true, true, 60);
+                    MoveFootholdY(result, false, false, 60);
+                    break;
+                case "enH0":
+                    MoveFootholdX(result, true, true, 90);
+                    MoveFootholdX(result, false, false, 90);
+                    break;
+                case "slLU":
+                    MoveFootholdX(result, true, false, -90);
+                    MoveFootholdX(result, false, true, -90);
+                    break;
+                case "slRU":
+                    MoveFootholdX(result, true, true, 90);
+                    MoveFootholdX(result, false, false, 90);
+                    break;
+                case "edU":
+                    MoveFootholdY(result, true, false, 0);
+                    MoveFootholdY(result, false, false, 0);
+                    break;
+            }
+        }
+
+        private static void MoveFootholdY(TileInfo result, bool first, bool top, int height)
+        {
+            int idx = first ? 0 : result.footholdOffsets.Count - 1;
+            int y = top ? 0 : (height * result.mag);
+            if (result.footholdOffsets[idx].Y != y)
+            {
+                result.footholdOffsets[idx] = new XNA.Point(result.footholdOffsets[idx].X, y);
+            }
+        }
+
+        private static void MoveFootholdX(TileInfo result, bool first, bool left, int width)
+        {
+            int idx = first ? 0 : result.footholdOffsets.Count - 1;
+            int x = left ? 0 : (width * result.mag);
+            if (result.footholdOffsets[idx].X != x)
+            {
+                result.footholdOffsets[idx] = new XNA.Point(x, result.footholdOffsets[idx].Y);
+            }
         }
 
         public static void Reload(TileInfo objToReload)
         {
-            objToReload = Load((WzCanvasProperty)objToReload.ParentObject, objToReload.tS,objToReload.u,objToReload.no);
+            objToReload = Load((WzCanvasProperty)objToReload.ParentObject, objToReload.tS, objToReload.u, objToReload.no, objToReload.mag);
         }
 
         public void ParseOffsets(TileInstance instance, Board board, Layer layer, int x, int y)
@@ -401,14 +466,14 @@ namespace HaCreator.MapEditor
             List<FootholdAnchor> anchors = new List<FootholdAnchor>();
             foreach (XNA.Point foothold in footholdOffsets)
             {
-                FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber);
+                FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, true);
                 anchors.Add(anchor);
                 board.BoardItems.FHAnchors.Add(anchor);
                 instance.BindItem(anchor, foothold);
             }
             for (int i = 0; i < anchors.Count - 1; i++)
             {
-                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1]);
+                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], true);
                 board.BoardItems.FootholdLines.Add(fh);
             }
         }
@@ -461,6 +526,12 @@ namespace HaCreator.MapEditor
             {
                 this._no = value;
             }
+        }
+
+        public int mag
+        {
+            get { return _mag; }
+            set { _mag = value; }
         }
 
         public List<XNA.Point> FootholdOffsets

@@ -195,7 +195,6 @@ namespace HaCreator.MapEditor
         {
             boardToSort = null;
             Board board;
-            List<UndoRedoAction> foo;
             switch (type)
             {
                 case UndoRedoType.ItemDeleted:
@@ -203,8 +202,7 @@ namespace HaCreator.MapEditor
                     item.InsertItem();
                     break;
                 case UndoRedoType.ItemAdded:
-                    foo = new List<UndoRedoAction>(); //the undoPipe here has no meaning, we don't need any undo info anyway
-                    item.RemoveItem(ref foo);
+                    item.RemoveItem(null);
                     break;
                 case UndoRedoType.ItemMoved:
                     Point oldPos = (Point)ParamA;
@@ -226,14 +224,13 @@ namespace HaCreator.MapEditor
                     ((MapleDot)ParamB).connectedLines.Add((MapleLine)ParamC);
                     break;
                 case UndoRedoType.LineAdded:
-                    foo = new List<UndoRedoAction>();
                     board = ((MapleDot)ParamB).Board;
                     if (ParamC is FootholdLine)
                         board.BoardItems.FootholdLines.Remove((FootholdLine)ParamC);
                     else if (ParamC is RopeLine)
                         board.BoardItems.RopeLines.Remove((RopeLine)ParamC);
                     else throw new Exception("wrong type at undoredo, lineadded");
-                    ((MapleLine)ParamC).Remove(false, ref foo);
+                    ((MapleLine)ParamC).Remove(false, null);
                     break;
                 case UndoRedoType.ToolTipLinked:
                     ((ToolTip)item).CharacterToolTip = null;
@@ -260,8 +257,7 @@ namespace HaCreator.MapEditor
                     ((BoardItem)((List<IContainsLayerInfo>)ParamC)[0]).Board.Layers[(int)ParamB].RecheckTileSet();
                     break;
                 case UndoRedoType.RopeAdded:
-                    foo = new List<UndoRedoAction>();
-                    ((Rope)ParamA).Remove(ref foo);
+                    ((Rope)ParamA).Remove(null);
                     break;
                 case UndoRedoType.RopeRemoved:
                     ((Rope)ParamA).Create();
