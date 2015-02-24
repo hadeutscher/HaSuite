@@ -78,7 +78,10 @@ namespace HaRepackerLib
             if (!OpenWzFile(path, encVersion, version, out newFile)) return null;
             WzNode node = new WzNode(newFile);
             panel.DataTree.Nodes.Add(node);
-            SortNodesRecursively(node);
+            if (UserSettings.Sort)
+            {
+                SortNodesRecursively(node);
+            }
             return newFile;
         }
 
@@ -87,7 +90,10 @@ namespace HaRepackerLib
             wzFiles.Add(f);
             WzNode node = new WzNode(f);
             panel.DataTree.Nodes.Add(node);
-            SortNodesRecursively(node);
+            if (UserSettings.Sort)
+            {
+                SortNodesRecursively(node);
+            }
         }
 
         private void SortNodesRecursively(WzNode parent)

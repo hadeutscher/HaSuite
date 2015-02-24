@@ -189,7 +189,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        private List<Tuple<double, TileInstance, MapTileDesignPotential>> FindSnappableTiles(float threshold)
+        public List<Tuple<double, TileInstance, MapTileDesignPotential>> FindSnappableTiles(float threshold)
         {
             List<Tuple<double, TileInstance, MapTileDesignPotential>> result = new List<Tuple<double, TileInstance, MapTileDesignPotential>>();
             MapTileDesign tilegroup = (MapTileDesign)TileSnap.tileCats[baseInfo.u];
@@ -573,7 +573,7 @@ namespace HaCreator.MapEditor
     {
         private PortalInfo baseInfo;
         private string _pn;
-        private PortalType _pt;
+        private string _pt;
         private string _tn;
         private int _tm;
         private string _script;
@@ -586,7 +586,7 @@ namespace HaCreator.MapEditor
         private int? _hRange;
         private int? _vRange;
 
-        public PortalInstance(PortalInfo baseInfo, Board board, int x, int y, string pn, PortalType pt, string tn, int tm, string script, int? delay, MapleBool hideTooltip, MapleBool onlyOnce, int? horizontalImpact, int? verticalImpact, string image, int? hRange, int? vRange)
+        public PortalInstance(PortalInfo baseInfo, Board board, int x, int y, string pn, string pt, string tn, int tm, string script, int? delay, MapleBool hideTooltip, MapleBool onlyOnce, int? horizontalImpact, int? verticalImpact, string image, int? hRange, int? vRange)
             : base(board, x, y, -1)
         {
             this.baseInfo = baseInfo;
@@ -670,7 +670,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public PortalType pt
+        public string pt
         {
             get
             {

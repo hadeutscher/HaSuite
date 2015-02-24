@@ -29,10 +29,10 @@ namespace HaCreator.CustomControls.EditorPanels
             this.hcsm = hcsm;
             InitializeComponent();
 
-            for (int i = 0; i < Program.InfoManager.Portals.Length; i++)
+            foreach (string pt in Program.InfoManager.PortalTypeById)
             {
-                PortalInfo pInfo = PortalInfo.GetPortalInfoByType((PortalType)i);
-                ImageViewer item = portalImageContainer.Add(pInfo.Image, Tables.PortalTypeNames[i], true);
+                PortalInfo pInfo = PortalInfo.GetPortalInfoByType(pt);
+                ImageViewer item = portalImageContainer.Add(pInfo.Image, Tables.PortalTypeNames[pt], true);
                 item.Tag = pInfo;
                 item.MouseDown += new MouseEventHandler(portal_MouseDown);
                 item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);

@@ -519,7 +519,7 @@ namespace HaCreator.MapSimulator
             if (mapBoard.MiniMap == null) mapBoard.RegenerateMinimap();
             MapSimulator result = new MapSimulator(mapBoard);
             List<WzObject> usedProps = new List<WzObject>();
-            WzFile MapFile = Program.WzManager["map"];
+            WzDirectory MapFile = Program.WzManager["map"];
             WzDirectory tileDir = (WzDirectory)MapFile["Tile"];
             GraphicsDevice device = result.DxDevice;
             foreach (LayeredItem tileObj in mapBoard.BoardItems.TileObjs)

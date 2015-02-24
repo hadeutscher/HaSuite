@@ -211,7 +211,7 @@ namespace HaCreator.WzStructure
 
                 portal["x"] = InfoTool.SetInt(portalInst.X);
                 portal["y"] = InfoTool.SetInt(portalInst.Y);
-                portal["pt"] = InfoTool.SetInt((int)portalInst.pt);
+                portal["pt"] = InfoTool.SetInt(Program.InfoManager.PortalIdByType[portalInst.pt]);
                 portal["tm"] = InfoTool.SetInt(portalInst.tm);
                 portal["tn"] = InfoTool.SetString(portalInst.tn);
                 portal["pn"] = InfoTool.SetString(portalInst.pn);
@@ -733,7 +733,7 @@ namespace HaCreator.WzStructure
                     return result;
                 }
             }
-            return distance < 10 ? result : null;
+            return distance < 50 ? result : null;
         }
 
         private static FootholdLine GetConnectingLine(FootholdAnchor a, FootholdAnchor b)
@@ -815,6 +815,12 @@ namespace HaCreator.WzStructure
                 {
                     if (((FootholdAnchor)tileInst.BoundItemsList[1]).Y != ((FootholdAnchor)tileInst.BoundItemsList[2]).Y ||
                         ((FootholdAnchor)tileInst.BoundItemsList[0]).Y != ((FootholdAnchor)tileInst.BoundItemsList[3]).Y)
+                    {
+                        continue;
+                    }
+
+                    // Only work with snapped edU's
+                    if (tileInst.FindSnappableTiles(0).Count == 0)
                     {
                         continue;
                     }

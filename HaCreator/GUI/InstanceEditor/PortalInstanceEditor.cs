@@ -26,9 +26,12 @@ namespace HaCreator.GUI.InstanceEditor
         public PortalInstanceEditor(PortalInstance item)
         {
             InitializeComponent();
-            int portalTypes = Program.InfoManager.Portals.Length;
+            int portalTypes = Program.InfoManager.PortalTypeById.Count;
             object[] portals = new object[portalTypes];
-            Array.Copy(Tables.PortalTypeNames, portals, portalTypes);
+            for (int i = 0; i < portalTypes; i++)
+            {
+                portals[i] = Tables.PortalTypeNames[Program.InfoManager.PortalTypeById[i]];
+            }
             ptComboBox.Items.AddRange(portals);
             this.item = item;
 
@@ -51,7 +54,7 @@ namespace HaCreator.GUI.InstanceEditor
 
             xInput.Value = item.X;
             yInput.Value = item.Y;
-            ptComboBox.SelectedIndex = (int)item.pt;
+            ptComboBox.SelectedIndex = Program.InfoManager.PortalIdByType[item.pt];
             pnBox.Text = item.pn;
             if (item.tm == item.Board.MapInfo.id) thisMap.Checked = true;
             else tmBox.Value = item.tm;
@@ -99,7 +102,7 @@ namespace HaCreator.GUI.InstanceEditor
                 if (actions.Count > 0)
                     item.Board.UndoRedoMan.AddUndoBatch(actions);
 
-                item.pt = (PortalType)ptComboBox.SelectedIndex;
+                item.pt = Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
                 switch (item.pt)
                 {
                     case PortalType.PORTALTYPE_STARTPOINT:
@@ -299,7 +302,7 @@ namespace HaCreator.GUI.InstanceEditor
                         break;
                 }
 
-                if (portalImageList.SelectedItem != null && Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex] != null)
+                if (portalImageList.SelectedItem != null && Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]] != null)
                 {
                     item.image = (string)portalImageList.SelectedItem;
                 }
@@ -322,7 +325,7 @@ namespace HaCreator.GUI.InstanceEditor
         private void ptComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             btnBrowseTn.Enabled = thisMap.Checked;
-            switch ((PortalType)ptComboBox.SelectedIndex)
+            switch (Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex])
             {
                 case PortalType.PORTALTYPE_STARTPOINT:
                     rowMan.SetInvisible("pn");
@@ -475,10 +478,11 @@ namespace HaCreator.GUI.InstanceEditor
                     rowMan.SetVisible("bool");
                     break;
             }
-            leftBlankLabel.Visible = (PortalType)ptComboBox.SelectedIndex == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP;
-            if (ptComboBox.SelectedIndex == (int)PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP)
+            string pt = Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex];
+            leftBlankLabel.Visible = pt == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP;
+            if (pt == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP)
                 btnBrowseTn.Enabled = true;
-            PortalGameImageInfo imageInfo = Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex];
+            PortalGameImageInfo imageInfo = Program.InfoManager.GamePortals[pt];
             if (imageInfo == null) rowMan.SetInvisible("image");
             else
             {
@@ -499,9 +503,9 @@ namespace HaCreator.GUI.InstanceEditor
                 if (portalImageList.SelectedItem == null) 
                     return;
                 else if ((string)portalImageList.SelectedItem == "default") 
-                    portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex].DefaultImage);
+                    portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]].DefaultImage);
                 else 
-                    portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[(PortalType)ptComboBox.SelectedIndex][(string)portalImageList.SelectedItem]);
+                    portalImageBox.Image = new Bitmap(Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]][(string)portalImageList.SelectedItem]);
             }
         }
 

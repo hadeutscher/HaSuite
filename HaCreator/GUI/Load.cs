@@ -181,7 +181,7 @@ namespace HaCreator.GUI
                 {
                     string mapid = mapBrowser.SelectedItem.Substring(0, 9);
                     string mapcat = "Map" + mapid.Substring(0, 1);
-                    mapImage = (WzImage)Program.WzManager["map"].GetObjectFromPath("Map.wz/Map/" + mapcat + "/" + mapid + ".img");
+                    mapImage = (WzImage)Program.WzManager["map"]["Map"][mapcat][mapid + ".img"];
                     mapName = WzInfoTools.GetMapNameById(mapid);
                     streetName = WzInfoTools.GetStreetNameById(mapid);
                 }

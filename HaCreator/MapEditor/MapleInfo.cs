@@ -595,10 +595,13 @@ namespace HaCreator.MapEditor
             WzStringProperty link = (WzStringProperty)((WzSubProperty)((WzImage)ParentObject)["info"])["link"];
             if (link != null)
             {
-                LinkedImage = (WzImage)Program.WzManager.GetWzFileByName("mob")[link.Value + ".img"];
+                LinkedImage = (WzImage)Program.WzManager["mob"][link.Value + ".img"];
                 ExtractPNGFromImage(LinkedImage);
             }
-            else ExtractPNGFromImage((WzImage)ParentObject);
+            else
+            {
+                ExtractPNGFromImage((WzImage)ParentObject);
+            }
         }
 
         public static MobInfo Load(WzImage parentObject)
@@ -779,10 +782,13 @@ namespace HaCreator.MapEditor
             WzStringProperty link = (WzStringProperty)((WzSubProperty)((WzImage)ParentObject)["info"])["link"];
             if (link != null)
             {
-                LinkedImage = (WzImage)Program.WzManager.GetWzFileByName("npc")[link.Value + ".img"];
+                LinkedImage = (WzImage)Program.WzManager["npc"][link.Value + ".img"];
                 ExtractPNGFromImage(LinkedImage);
             }
-            else ExtractPNGFromImage((WzImage)ParentObject);
+            else
+            {
+                ExtractPNGFromImage((WzImage)ParentObject);
+            }
         }
 
         public static NpcInfo Load(WzImage parentObject)
@@ -841,42 +847,18 @@ namespace HaCreator.MapEditor
 
     public class PortalInfo : MapleDrawableInfo
     {
-        public static MapleTable<PortalType> ptByShortName = CreatePortalTypeHashtable();
+        private string type;
 
-        private PortalType type;
-
-        public PortalInfo(PortalType type, Bitmap image, System.Drawing.Point origin, WzObject parentObject)
+        public PortalInfo(string type, Bitmap image, System.Drawing.Point origin, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this.type = type;
         }
 
-        public static MapleTable<PortalType> CreatePortalTypeHashtable()
-        {
-            MapleTable<PortalType> result = new MapleTable<PortalType>();
-            result.Add("sp", PortalType.PORTALTYPE_STARTPOINT);
-            result.Add("pi", PortalType.PORTALTYPE_INVISIBLE);
-            result.Add("pv", PortalType.PORTALTYPE_VISIBLE);
-            result.Add("pc", PortalType.PORTALTYPE_COLLISION);
-            result.Add("pg", PortalType.PORTALTYPE_CHANGABLE);
-            result.Add("pgi", PortalType.PORTALTYPE_CHANGABLE_INVISIBLE);
-            result.Add("tp", PortalType.PORTALTYPE_TOWNPORTAL_POINT);
-            result.Add("ps", PortalType.PORTALTYPE_SCRIPT);
-            result.Add("psi", PortalType.PORTALTYPE_SCRIPT_INVISIBLE);
-            result.Add("pcs", PortalType.PORTALTYPE_COLLISION_SCRIPT);
-            result.Add("ph", PortalType.PORTALTYPE_HIDDEN);
-            result.Add("psh", PortalType.PORTALTYPE_SCRIPT_HIDDEN);
-            result.Add("pcj", PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP);
-            result.Add("pci", PortalType.PORTALTYPE_COLLISION_CUSTOM_IMPACT);
-            result.Add("pcig", PortalType.PORTALTYPE_COLLISION_UNKNOWN_PCIG);
-            return result;
-        }
-
-
         public static PortalInfo Load(WzCanvasProperty parentObject)
         {
-           PortalInfo portal = new PortalInfo((PortalType)ptByShortName[parentObject.Name], parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), parentObject);
-           Program.InfoManager.Portals[(int)ptByShortName[parentObject.Name]] = portal;
+           PortalInfo portal = new PortalInfo(parentObject.Name, parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), parentObject);
+           Program.InfoManager.Portals.Add(portal.type, portal);
            return portal;
         }
 
@@ -916,9 +898,9 @@ namespace HaCreator.MapEditor
             return new PortalInstance(this, board, x, y, pn, type, tn, tm, script, delay, hideTooltip, onlyOnce, horizontalImpact, verticalImpact, image, hRange, vRange);
         }
 
-        public static PortalInfo GetPortalInfoByType(PortalType type)
+        public static PortalInfo GetPortalInfoByType(string type)
         {
-            return Program.InfoManager.Portals[(int)type];
+            return Program.InfoManager.Portals[type];
         }
     }
 
@@ -954,10 +936,13 @@ namespace HaCreator.MapEditor
             WzStringProperty link = (WzStringProperty)((WzSubProperty)((WzImage)ParentObject)["info"])["link"];
             if (link != null)
             {
-                LinkedImage = (WzImage)Program.WzManager.GetWzFileByName("reactor")[link.Value + ".img"];
+                LinkedImage = (WzImage)Program.WzManager["reactor"][link.Value + ".img"];
                 ExtractPNGFromImage(LinkedImage);
             }
-            else ExtractPNGFromImage((WzImage)ParentObject);
+            else
+            {
+                ExtractPNGFromImage((WzImage)ParentObject);
+            }
         }
 
         public static ReactorInfo Load(WzImage parentObject)

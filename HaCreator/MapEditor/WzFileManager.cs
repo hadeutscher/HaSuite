@@ -18,10 +18,32 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.MapEditor
 {
+    public class WzMainDirectory
+    {
+        private WzFile file;
+        private WzDirectory directory;
+
+        public WzMainDirectory(WzFile file)
+        {
+            this.file = file;
+            this.directory = file.WzDirectory;
+        }
+
+        public WzMainDirectory(WzFile file, WzDirectory directory)
+        {
+            this.file = file;
+            this.directory = directory;
+        }
+
+        public WzFile File { get { return file; } }
+        public WzDirectory MainDir { get { return directory; } }
+    }
+
     public class WzFileManager
     {
         private string baseDir;
-        public Hashtable wzFiles = new Hashtable();
+        public MapleTable<string, WzFile> wzFiles = new MapleTable<string, WzFile>();
+        public MapleTable<string, WzMainDirectory> wzDirs = new MapleTable<string, WzMainDirectory>();
         private WzMapleVersion version;
 
         public WzFileManager(string directory, WzMapleVersion version)
@@ -40,8 +62,11 @@ namespace HaCreator.MapEditor
         {
             try
             {
-                wzFiles.Add(name.ToLower(), new WzFile(Path.Combine(baseDir, name + ".wz"), version));
-                ((WzFile)wzFiles[name.ToLower()]).ParseWzFile();
+                WzFile wzf = new WzFile(Path.Combine(baseDir, name + ".wz"), version);
+                wzf.ParseWzFile();
+                name = name.ToLower();
+                wzFiles[name] = wzf;
+                wzDirs[name] = new WzMainDirectory(wzf);
                 return true;
             }
             catch (Exception e)
@@ -51,19 +76,46 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public WzFile GetWzFileByName(string name)
+        public bool LoadDataWzFile(string name)
         {
-            return (WzFile)wzFiles[name.ToLower()];
+            try
+            {
+                WzFile wzf = new WzFile(Path.Combine(baseDir, name + ".wz"), version);
+                wzf.ParseWzFile();
+                name = name.ToLower();
+                wzFiles[name] = wzf;
+                wzDirs[name] = new WzMainDirectory(wzf);
+                foreach (WzDirectory mainDir in wzf.WzDirectory.WzDirectories)
+                {
+                    wzDirs[mainDir.Name.ToLower()] = new WzMainDirectory(wzf, mainDir);
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error initializing " + name + ".wz (" + e.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
+                return false;
+            }
         }
 
-        public WzFile this[string name]
+        public WzMainDirectory GetMainDirectoryByName(string name)
         {
-            get { return (WzFile)wzFiles[name.ToLower()]; }
+            return wzDirs[name.ToLower()];
         }
 
-        public WzFile String
+        public WzDirectory this[string name]
         {
-            get { return GetWzFileByName("string"); }
+            get { return wzDirs[name.ToLower()].MainDir; }
+        }
+
+        public WzDirectory String
+        {
+            get { return GetMainDirectoryByName("string").MainDir; }
+        }
+
+        public bool HasDataFile
+        {
+            get { return File.Exists(Path.Combine(baseDir, "Data.wz")); }
         }
 
         public void ExtractMobFile()
@@ -92,7 +144,7 @@ namespace HaCreator.MapEditor
 
         public void ExtractReactorFile()
         {
-            foreach (WzImage reactorImage in this["reactor"].WzDirectory.WzImages)
+            foreach (WzImage reactorImage in this["reactor"].WzImages)
             {
                 ReactorInfo reactor = ReactorInfo.Load(reactorImage);
                 Program.InfoManager.Reactors[reactor.ID] = reactor;
@@ -101,7 +153,7 @@ namespace HaCreator.MapEditor
 
         public void ExtractSoundFile()
         {
-            foreach (WzImage soundImage in this["sound"].WzDirectory.WzImages)
+            foreach (WzImage soundImage in this["sound"].WzImages)
             {
                 if (!soundImage.Name.ToLower().Contains("bgm")) continue;
                 if (!soundImage.Parsed) soundImage.ParseImage();
@@ -157,13 +209,20 @@ namespace HaCreator.MapEditor
 
         public void ExtractPortals()
         {
-            WzSubProperty portalParent = (WzSubProperty)this["map"].GetObjectFromPath("Map.wz/MapHelper.img/portal");
+            WzSubProperty portalParent = (WzSubProperty)this["map"]["MapHelper.img"]["portal"];
             WzSubProperty editorParent = (WzSubProperty)portalParent["editor"];
-            Program.InfoManager.Portals = new PortalInfo[editorParent.WzProperties.Count];
-            foreach (WzCanvasProperty portal in editorParent.WzProperties)
+            Program.InfoManager.Portals = new MapleTable<string, PortalInfo>();
+            Program.InfoManager.PortalTypeById = new List<string>();
+            Program.InfoManager.PortalIdByType = new MapleTable<string, int>();
+            for (int i = 0; i < editorParent.WzProperties.Count; i++)
+            {
+                WzCanvasProperty portal = (WzCanvasProperty)editorParent.WzProperties[i];
+                Program.InfoManager.PortalTypeById.Add(portal.Name);
                 PortalInfo.Load(portal);
+            }
             WzSubProperty gameParent = (WzSubProperty)portalParent["game"];
             foreach (WzSubProperty portal in gameParent.WzProperties)
+            {
                 if (portal.WzProperties[0] is WzSubProperty)
                 {
                     MapleTable<Bitmap> images = new MapleTable<Bitmap>();
@@ -178,11 +237,17 @@ namespace HaCreator.MapEditor
                         else
                             images.Add(image.Name, portalImage);
                     }
-                    Program.InfoManager.GamePortals.Add(PortalInfo.ptByShortName[portal.Name], new PortalGameImageInfo(defaultImage, images));
+                    Program.InfoManager.GamePortals.Add(portal.Name, new PortalGameImageInfo(defaultImage, images));
                 }
+            }
+
+            for (int i = 0; i < Program.InfoManager.PortalTypeById.Count; i++)
+            {
+                Program.InfoManager.PortalIdByType[Program.InfoManager.PortalTypeById[i]] = i;
+            }
         }
 
-        public void ExtractItems()
+/*        public void ExtractItems()
         {
             WzImage consImage = (WzImage)String["Consume.img"];
             if (!consImage.Parsed) consImage.ParseImage();
@@ -192,7 +257,7 @@ namespace HaCreator.MapEditor
                 string name = nameProp == null ? "" : nameProp.Value;
                 Program.InfoManager.Items.Add(WzInfoTools.AddLeadingZeros(item.Name, 7), name);
             }
-        }
+        }*/
     }
 
     public class PortalGameImageInfo
@@ -226,42 +291,10 @@ namespace HaCreator.MapEditor
         }
     }
 
-    //read "MapleTable" out loud, lulz are guaranteed
-    public class MapleTable<T> : Hashtable 
-    {
-        public T this[string id]
-        {
-            get
-            {
-                return (T)this[(object)id];
-            }
-            set
-            {
-                this[(object)id] = value;
-            }
-        }
-    }
-
-    public class MapleTable<T1, T2> : Hashtable
-    {
-        public T2 this[T1 id]
-        {
-            get
-            {
-                return (T2)this[(object)id];
-            }
-            set
-            {
-                this[(object)id] = value;
-            }
-        }
-    }
-
     public class WzInformationManager
     {
         public MapleTable<string> NPCs = new MapleTable<string>();
         public MapleTable<string> Mobs = new MapleTable<string>();
-        public MapleTable<string> Items = new MapleTable<string>();
         public MapleTable<ReactorInfo> Reactors = new MapleTable<ReactorInfo>();
         public MapleTable<WzImage> TileSets = new MapleTable<WzImage>();
         public MapleTable<WzImage> ObjectSets = new MapleTable<WzImage>();
@@ -269,8 +302,10 @@ namespace HaCreator.MapEditor
         public MapleTable<WzSoundProperty> BGMs = new MapleTable<WzSoundProperty>();
         public MapleTable<Bitmap> MapMarks = new MapleTable<Bitmap>();
         public MapleTable<string> Maps = new MapleTable<string>();
-        public PortalInfo[] Portals;
-        public MapleTable<PortalType, PortalGameImageInfo> GamePortals = new MapleTable<PortalType, PortalGameImageInfo>();
+        public MapleTable<string, PortalInfo> Portals;
+        public List<string> PortalTypeById;
+        public MapleTable<string, int> PortalIdByType;
+        public MapleTable<string, PortalGameImageInfo> GamePortals = new MapleTable<string, PortalGameImageInfo>();
     }
 
     public static class WzInfoTools
@@ -321,7 +356,7 @@ namespace HaCreator.MapEditor
         public static string GetMobNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzStringProperty mobName = (WzStringProperty)Program.WzManager.String.GetObjectFromPath(@"String.wz/Mob.img/" + id + @"/name");
+            WzStringProperty mobName = (WzStringProperty)Program.WzManager.String["Mob.img"][id]["name"];
             if (mobName != null) return mobName.Value;
             else return "";
         }
@@ -329,7 +364,7 @@ namespace HaCreator.MapEditor
         public static string GetNpcNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzStringProperty npcName = (WzStringProperty)Program.WzManager.String.GetObjectFromPath(@"String.wz/Npc.img/" + id + @"/name");
+            WzStringProperty npcName = (WzStringProperty)Program.WzManager.String["Npc.img"][id]["name"];
             if (npcName != null) return npcName.Value;
             else return "";
         }
@@ -337,7 +372,7 @@ namespace HaCreator.MapEditor
         public static string GetMapNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzImage mapNameParent = (WzImage)Program.WzManager.String.WzDirectory["Map.img"];
+            WzImage mapNameParent = (WzImage)Program.WzManager.String["Map.img"];
             foreach (WzSubProperty mapNameCategory in mapNameParent.WzProperties)
             {
                 WzSubProperty mapNameDirectory = (WzSubProperty)mapNameCategory[id];
@@ -353,7 +388,7 @@ namespace HaCreator.MapEditor
         public static string GetStreetNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzImage mapNameParent = (WzImage)Program.WzManager.String.WzDirectory["Map.img"];
+            WzImage mapNameParent = (WzImage)Program.WzManager.String["Map.img"];
             foreach (WzSubProperty mapNameCategory in mapNameParent.WzProperties)
             {
                 WzSubProperty mapNameDirectory = (WzSubProperty)mapNameCategory[id];

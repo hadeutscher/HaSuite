@@ -61,7 +61,10 @@ namespace HaCreator.GUI
             WzMapleVersion fileVersion;
             short version = -1;
             if (versionBox.SelectedIndex == 3)
-                fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, "Item.wz"), out version);
+            {
+                string testFile = File.Exists(Path.Combine(wzPath, "Data.wz")) ? "Data.wz" : "Item.wz";
+                fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, testFile), out version);
+            }
             else
                 fileVersion = (WzMapleVersion)versionBox.SelectedIndex;
 
@@ -76,38 +79,58 @@ namespace HaCreator.GUI
         private void InitializeWzFiles(string wzPath, WzMapleVersion fileVersion)
         {
             Program.WzManager = new WzFileManager(wzPath, fileVersion);
-            textBox2.Text = "Initializing String.wz...";
-            Application.DoEvents();
-            Program.WzManager.LoadWzFile("string");
-            Program.WzManager.ExtractMaps();
-            Program.WzManager.ExtractItems();
-            textBox2.Text = "Initializing Mob.wz...";
-            Application.DoEvents();
-            Program.WzManager.LoadWzFile("mob");
-            Program.WzManager.ExtractMobFile();
-            textBox2.Text = "Initializing Npc.wz...";
-            Application.DoEvents();
-            Program.WzManager.LoadWzFile("npc");
-            Program.WzManager.ExtractNpcFile();
-            textBox2.Text = "Initializing Reactor.wz...";
-            Application.DoEvents();
-            Program.WzManager.LoadWzFile("reactor");
-            Program.WzManager.ExtractReactorFile();
-            textBox2.Text = "Initializing Sound.wz...";
-            Application.DoEvents();
-            Program.WzManager.LoadWzFile("sound");
-            Program.WzManager.ExtractSoundFile();
-            textBox2.Text = "Initializing Map.wz...";
-            Application.DoEvents();
-            Program.WzManager.LoadWzFile("map");
-            Program.WzManager.ExtractMapMarks();
-            Program.WzManager.ExtractPortals();
-            Program.WzManager.ExtractTileSets();
-            Program.WzManager.ExtractObjSets();
-            Program.WzManager.ExtractBackgroundSets();
-            textBox2.Text = "Initializing UI.wz...";
-            Application.DoEvents();
-            Program.WzManager.LoadWzFile("ui");
+            if (Program.WzManager.HasDataFile)
+            {
+                textBox2.Text = "Initializing Data.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadDataWzFile("data");
+                Program.WzManager.ExtractMaps();
+                //Program.WzManager.ExtractItems();
+                Program.WzManager.ExtractMobFile();
+                Program.WzManager.ExtractNpcFile();
+                Program.WzManager.ExtractReactorFile();
+                Program.WzManager.ExtractSoundFile();
+                Program.WzManager.ExtractMapMarks();
+                Program.WzManager.ExtractPortals();
+                Program.WzManager.ExtractTileSets();
+                Program.WzManager.ExtractObjSets();
+                Program.WzManager.ExtractBackgroundSets();
+            }
+            else
+            {
+                textBox2.Text = "Initializing String.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadWzFile("string");
+                Program.WzManager.ExtractMaps();
+                //Program.WzManager.ExtractItems();
+                textBox2.Text = "Initializing Mob.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadWzFile("mob");
+                Program.WzManager.ExtractMobFile();
+                textBox2.Text = "Initializing Npc.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadWzFile("npc");
+                Program.WzManager.ExtractNpcFile();
+                textBox2.Text = "Initializing Reactor.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadWzFile("reactor");
+                Program.WzManager.ExtractReactorFile();
+                textBox2.Text = "Initializing Sound.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadWzFile("sound");
+                Program.WzManager.ExtractSoundFile();
+                textBox2.Text = "Initializing Map.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadWzFile("map");
+                Program.WzManager.ExtractMapMarks();
+                Program.WzManager.ExtractPortals();
+                Program.WzManager.ExtractTileSets();
+                Program.WzManager.ExtractObjSets();
+                Program.WzManager.ExtractBackgroundSets();
+                textBox2.Text = "Initializing UI.wz...";
+                Application.DoEvents();
+                Program.WzManager.LoadWzFile("ui");
+            }
         }
 
 
@@ -160,7 +183,7 @@ namespace HaCreator.GUI
             foreach (string mapid in Program.InfoManager.Maps.Keys)
             {
                 string mapcat = "Map" + mapid.Substring(0, 1);
-                WzImage mapImage = (WzImage)Program.WzManager["map"].GetObjectFromPath("Map.wz/Map/" + mapcat + "/" + mapid + ".img");
+                WzImage mapImage = (WzImage)Program.WzManager["map"]["Map"][mapcat][mapid + ".img"];
                 if (mapImage == null)
                 {
                     continue;

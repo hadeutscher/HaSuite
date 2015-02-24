@@ -172,19 +172,7 @@ namespace HaRepackerLib.Controls
         #endregion
 
         #region Exported Fields
-        private bool sort = UserSettings.Sort;
-
         public UndoRedoManager UndoRedoMan { get { return undoRedoMan; } }
-
-        public bool Sort
-        {
-            get { return sort; }
-            set
-            {
-                sort = value;
-                UserSettings.Sort = value;
-            }
-        }
         #endregion
 
         private void saveImageButton_Click(object sender, EventArgs e)

@@ -602,7 +602,6 @@
             this.MainPanel.Location = new System.Drawing.Point(0, 25);
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(683, 344);
-            this.MainPanel.Sort = true;
             this.MainPanel.TabIndex = 0;
             // 
             // MainForm

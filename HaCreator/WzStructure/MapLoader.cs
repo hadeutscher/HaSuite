@@ -391,7 +391,7 @@ namespace HaCreator.WzStructure
             {
                 int x = InfoTool.GetInt(portal["x"]);
                 int y = InfoTool.GetInt(portal["y"]);
-                PortalType pt = (PortalType)InfoTool.GetInt(portal["pt"]);
+                string pt = Program.InfoManager.PortalTypeById[InfoTool.GetInt(portal["pt"])];
                 int tm = InfoTool.GetInt(portal["tm"]);
                 string tn = InfoTool.GetString(portal["tn"]);
                 string pn = InfoTool.GetString(portal["pn"]);
@@ -411,11 +411,23 @@ namespace HaCreator.WzStructure
         public static void LoadToolTips(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty tooltipsParent = (WzSubProperty)mapImage["ToolTip"];
+            if (tooltipsParent == null)
+            {
+                return;
+            }
+
             WzImage tooltipsStringImage = (WzImage)Program.WzManager.String["ToolTipHelp.img"];
-            if (!tooltipsStringImage.Parsed) tooltipsStringImage.ParseImage();
+            if (!tooltipsStringImage.Parsed)
+            {
+                tooltipsStringImage.ParseImage();
+            }
+
             WzSubProperty tooltipStrings = (WzSubProperty)tooltipsStringImage["Mapobject"][mapBoard.MapInfo.id.ToString()];
-            if (tooltipStrings == null || tooltipsParent == null) return;
-            //if (tooltipStrings == null ^ tooltipsParent == null) throw new Exception("at LoadToolTips, only one tooltip parent is null");
+            if (tooltipStrings == null)
+            {
+                return;
+            }
+
             for (int i = 0; true; i++)
             {
                 string num = i.ToString();
@@ -462,7 +474,8 @@ namespace HaCreator.WzStructure
                 int a = InfoTool.GetInt(bgProp["a"]);
                 BackgroundType type = (BackgroundType)InfoTool.GetInt(bgProp["type"]);
                 bool front = InfoTool.GetBool(bgProp["front"]);
-                bool flip = InfoTool.GetBool(bgProp["f"]);
+                bool? flip_t = InfoTool.GetOptionalBool(bgProp["f"]);
+                bool flip = flip_t.HasValue ? flip_t.Value : false;
                 string bS = InfoTool.GetString(bgProp["bS"]);
                 bool ani = InfoTool.GetBool(bgProp["ani"]);
                 string no = InfoTool.GetInt(bgProp["no"]).ToString();

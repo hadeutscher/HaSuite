@@ -20,7 +20,7 @@ namespace HaRepacker.GUI
         {
             this.panel = panel;
             InitializeComponent();
-            sortBox.Checked = panel.Sort;
+            sortBox.Checked = UserSettings.Sort;
             apngIncompEnable.Checked = UserSettings.UseApngIncompatibilityFrame;
             autoAssociateBox.Checked = UserSettings.AutoAssociate;
             if (UserSettings.DefaultXmlFolder != "") 
@@ -41,7 +41,7 @@ namespace HaRepacker.GUI
         private void okButton_Click(object sender, EventArgs e)
         {
             if (indentBox.Value < 0) { Warning.Error("Indent must be above 0"); return; }
-            panel.Sort = sortBox.Checked;
+            UserSettings.Sort = sortBox.Checked;
             UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
             UserSettings.AutoAssociate = autoAssociateBox.Checked;
             if (defXmlFolderEnable.Checked)

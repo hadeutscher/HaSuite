@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 //using System.Drawing;
 using Microsoft.Xna.Framework;
+using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.MapEditor.TilesDesign
 {
