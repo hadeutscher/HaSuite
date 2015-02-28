@@ -23,8 +23,9 @@ namespace HaCreator.WzStructure
 {
     public static class MapLoader
     {
-        public static void VerifyMapPropsKnown(WzImage mapImage)
+        public static List<string> VerifyMapPropsKnown(WzImage mapImage, bool userless)
         {
+            List<string> copyPropNames = new List<string>();
             foreach (WzImageProperty prop in mapImage.WzProperties)
             {
                 switch (prop.Name)
@@ -50,20 +51,34 @@ namespace HaCreator.WzStructure
                     case "clock":
                     case "shipObj":
                     case "area":
-                    case "coconut":
                     case "healer":
                     case "pulley":
                     case "BuffZone":
-                    case "snowBall":
-                    case "monsterCarnival":
+                        continue;
+                    case "coconut": // The coconut event. Prop is copied but not edit-supported, we don't need to notify the user since it has no stateful objects. (e.g. 109080002)
+                    case "user": // A map prop that dresses the user with predefined items according to his job. No stateful objects. (e.g. 930000010)
+                    case "noSkill": // Preset in Monster Carnival maps, can only guess by its name that it blocks skills. Nothing stateful. (e.g. 980031100)
+                    case "snowMan": // I don't even know what is this for; it seems to only have 1 prop with a path to the snowman, which points to a nonexistant image. (e.g. 889100001)
+                    case "weather": // This has something to do with cash weather items, and exists in some nautlius maps (e.g. 108000500)
+                        copyPropNames.Add(prop.Name);
+                        continue;
+                    case "snowBall": // The snowball/snowman event. It has the snowman itself, which is a stateful object (somewhat of a mob), but we do not support it.
+                    case "monsterCarnival": // The Monster Carnival. It has an immense amount of info and stateful objects, including the mobs and guardians. We do not support it. (e.g. 980000201)
+                        copyPropNames.Add(prop.Name);
+                        if (!userless)
+                        {
+                            MessageBox.Show("The map you are opening has the feature \"" + prop.Name + "\", which is purposely not supported in the editor.\r\nTo get around this, HaCreator will copy the original feature's data byte-to-byte. This might cause the feature to stop working if it depends on map objects, such as footholds or mobs.");
+                        }
                         continue;
                     default:
                         string loggerSuffix = ", map " + mapImage.Name + ((mapImage.WzFileParent != null) ? (" of version " + Enum.GetName(typeof(WzMapleVersion), mapImage.WzFileParent.MapleVersion) + ", v" + mapImage.WzFileParent.Version.ToString()) : "");
                         string error = "Unknown property " + prop.Name + loggerSuffix;
                         MapleLib.Helpers.ErrorLogger.Log(ErrorLevel.MissingFeature, error);
+                        copyPropNames.Add(prop.Name);
                         break;
                 }
             }
+            return copyPropNames;
         }
 
         public static MapType GetMapType(WzImage mapImage)
@@ -185,7 +200,7 @@ namespace HaCreator.WzStructure
             {
                 string id = InfoTool.GetString(life["id"]);
                 int x = InfoTool.GetInt(life["x"]);
-                //int y = InfoTool.GetInt(life["y"]);
+                int y = InfoTool.GetInt(life["y"]);
                 int cy = InfoTool.GetInt(life["cy"]);
                 int? mobTime = InfoTool.GetOptionalInt(life["mobTime"]);
                 int? info = InfoTool.GetOptionalInt(life["info"]);
@@ -205,7 +220,7 @@ namespace HaCreator.WzStructure
                         if (mobImage.HCTag == null)
                             mobImage.HCTag = MobInfo.Load(mobImage);
                         MobInfo mobInfo = (MobInfo)mobImage.HCTag;
-                        mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team));
+                        mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, x - rx0, rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
                         break;
                     case "n":
                         WzImage npcImage = (WzImage)Program.WzManager["npc"][id + ".img"];
@@ -213,7 +228,7 @@ namespace HaCreator.WzStructure
                         if (npcImage.HCTag == null)
                             npcImage.HCTag = NpcInfo.Load(npcImage);
                         NpcInfo npcInfo = (NpcInfo)npcImage.HCTag;
-                        mapBoard.BoardItems.NPCs.Add((NPCInstance)npcInfo.CreateInstance(mapBoard, x, cy, rx0, rx1, limitedname, mobTime, flip, hide, info, team));
+                        mapBoard.BoardItems.NPCs.Add((NPCInstance)npcInfo.CreateInstance(mapBoard, x, cy, x - rx0, rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
                         break;
                     default:
                         throw new Exception("invalid life type " + type);
@@ -370,11 +385,17 @@ namespace HaCreator.WzStructure
                         {
                             if (IsAnchorPrevOfFoothold(anchor, line))
                             {
-                                line.prevOverride = fhs[line.prev];
+                                if (fhs.Contains(line.prev))
+                                {
+                                    line.prevOverride = fhs[line.prev];
+                                }
                             }
                             else
                             {
-                                line.nextOverride = fhs[line.next];
+                                if (fhs.Contains(line.next))
+                                {
+                                    line.nextOverride = fhs[line.next];
+                                }
                             }
                         }
                     }
@@ -443,7 +464,7 @@ namespace HaCreator.WzStructure
                 int y1 = InfoTool.GetInt(tooltipProp["y1"]);
                 int y2 = InfoTool.GetInt(tooltipProp["y2"]);
                 Microsoft.Xna.Framework.Rectangle tooltipPos = new Microsoft.Xna.Framework.Rectangle(x1, y1, x2 - x1, y2 - y1);
-                HaCreator.MapEditor.ToolTip tt = new HaCreator.MapEditor.ToolTip(mapBoard, tooltipPos, title, desc);
+                HaCreator.MapEditor.ToolTip tt = new HaCreator.MapEditor.ToolTip(mapBoard, tooltipPos, title, desc, i);
                 mapBoard.BoardItems.ToolTips.Add(tt);
                 if (tooltipChar != null)
                 {
@@ -498,12 +519,10 @@ namespace HaCreator.WzStructure
             WzImageProperty clock = mapImage["clock"];
             WzImageProperty ship = mapImage["shipObj"];
             WzImageProperty area = mapImage["area"];
-            WzImageProperty coconut = mapImage["coconut"];
             WzImageProperty healer = mapImage["healer"];
             WzImageProperty pulley = mapImage["pulley"];
             WzImageProperty BuffZone = mapImage["BuffZone"];
-            WzImageProperty snowBall = mapImage["snowBall"];
-            WzImageProperty monsterCarnival = mapImage["monsterCarnival"];
+            WzImageProperty swimArea = mapImage["swimArea"];
             if (clock != null)
             {
                 Clock clockInstance = new Clock(mapBoard, new Rectangle(InfoTool.GetInt(clock["x"]), InfoTool.GetInt(clock["y"]), InfoTool.GetInt(clock["width"]), InfoTool.GetInt(clock["height"])));
@@ -542,32 +561,6 @@ namespace HaCreator.WzStructure
                     Area currArea = new Area(mapBoard, new Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)), prop.Name);
                     mapBoard.BoardItems.Add(currArea, false);
                 }
-            }
-            if (coconut != null)
-            {
-                mapBoard.MapInfo.coconut = new MapInfo.Coconut(
-                    InfoTool.GetInt(coconut["avatar"]["0"]["0"]["cap"]),
-                    InfoTool.GetInt(coconut["avatar"]["0"]["1"]["cap"]),
-                    InfoTool.GetInt(coconut["avatar"]["1"]["0"]["cap"]),
-                    InfoTool.GetInt(coconut["avatar"]["1"]["1"]["cap"]),
-                    InfoTool.GetInt(coconut["avatar"]["0"]["0"]["clothes"]),
-                    InfoTool.GetInt(coconut["avatar"]["0"]["1"]["clothes"]),
-                    InfoTool.GetInt(coconut["avatar"]["1"]["0"]["clothes"]),
-                    InfoTool.GetInt(coconut["avatar"]["1"]["1"]["clothes"]),
-                    InfoTool.GetInt(coconut["countBombing"]),
-                    InfoTool.GetInt(coconut["countFalling"]),
-                    InfoTool.GetInt(coconut["countHit"]),
-                    InfoTool.GetInt(coconut["countStopped"]),
-                    InfoTool.GetInt(coconut["timeDefault"]),
-                    InfoTool.GetInt(coconut["timeFinish"]),
-                    InfoTool.GetInt(coconut["timeExpand"]),
-                    InfoTool.GetInt(coconut["timeMessage"]),
-                    InfoTool.GetString(coconut["effectLose"]),
-                    InfoTool.GetString(coconut["effectWin"]),
-                    InfoTool.GetString(coconut["eventName"]),
-                    InfoTool.GetString(coconut["eventObjectName"]),
-                    InfoTool.GetString(coconut["soundLose"]),
-                    InfoTool.GetString(coconut["soundWin"]));
             }
             if (healer != null)
             {
@@ -623,123 +616,19 @@ namespace HaCreator.WzStructure
                     mapBoard.BoardItems.Add(currZone, false);
                 }
             }
-            if (snowBall != null)
+            if (swimArea != null)
             {
-                mapBoard.MapInfo.snowBall = new MapInfo.Snowball(
-                    InfoTool.GetString(snowBall["0"]["portal"]),
-                    InfoTool.GetString(snowBall["0"]["snowBall"]),
-                    InfoTool.GetString(snowBall["0"]["snowMan"]),
-                    InfoTool.GetInt(snowBall["0"]["y"]),
-                    InfoTool.GetString(snowBall["1"]["portal"]),
-                    InfoTool.GetString(snowBall["1"]["snowBall"]),
-                    InfoTool.GetString(snowBall["1"]["snowMan"]),
-                    InfoTool.GetInt(snowBall["1"]["y"]),
-                    InfoTool.GetString(snowBall["damageSnowBall"]),
-                    InfoTool.GetInt(snowBall["damageSnowMan0"]),
-                    InfoTool.GetInt(snowBall["damageSnowMan1"]),
-                    InfoTool.GetInt(snowBall["dx"]),
-                    InfoTool.GetInt(snowBall["recoveryAmount"]),
-                    InfoTool.GetInt(snowBall["section1"]),
-                    InfoTool.GetInt(snowBall["section2"]),
-                    InfoTool.GetInt(snowBall["section3"]),
-                    InfoTool.GetInt(snowBall["snowManHP"]),
-                    InfoTool.GetInt(snowBall["snowManWait"]),
-                    InfoTool.GetInt(snowBall["speed"]),
-                    InfoTool.GetInt(snowBall["x"]),
-                    InfoTool.GetInt(snowBall["x0"]),
-                    InfoTool.GetInt(snowBall["xMax"]),
-                    InfoTool.GetInt(snowBall["xMin"]));
+                foreach (WzImageProperty prop in area.WzProperties)
+                {
+                    int x1 = InfoTool.GetInt(prop["x1"]);
+                    int x2 = InfoTool.GetInt(prop["x2"]);
+                    int y1 = InfoTool.GetInt(prop["y1"]);
+                    int y2 = InfoTool.GetInt(prop["y2"]);
+                    SwimArea currArea = new SwimArea(mapBoard, new Rectangle(Math.Min(x1, x2), Math.Min(y1, y2), Math.Abs(x2 - x1), Math.Abs(y2 - y1)), prop.Name);
+                    mapBoard.BoardItems.Add(currArea, false);
+                }
             }
-            if (monsterCarnival != null)
-            {
-                MapInfo.MonsterCarnival mc = new MapInfo.MonsterCarnival();
-                mc.deathCP = InfoTool.GetInt(monsterCarnival["deathCP"]);
-                mc.effectLose = InfoTool.GetString(monsterCarnival["effectLose"]);
-                mc.effectWin = InfoTool.GetString(monsterCarnival["effectWin"]);
-                
-                WzImageProperty guardian = monsterCarnival["guardian"];
-                mc.guardian = new int[guardian.WzProperties.Count];
-                for (int i = 0; i < mc.guardian.Length; i++)
-                {
-                    mc.guardian[i] = InfoTool.GetInt(guardian[i.ToString()]);
-                }
-                WzImageProperty mob = monsterCarnival["mob"];
-                mc.mobID = new int[mob.WzProperties.Count];
-                mc.mobTime = new int[mob.WzProperties.Count];
-                mc.spendCP = new int[mob.WzProperties.Count];
-                for (int i = 0; i < mc.mobID.Length; i++)
-                {
-                    mc.mobID[i] = InfoTool.GetInt(mob[i.ToString()]["id"]);
-                    mc.mobTime[i] = InfoTool.GetInt(mob[i.ToString()]["mobTime"]);
-                    mc.spendCP[i] = InfoTool.GetInt(mob[i.ToString()]["spendCP"]);
-                }
-
-                WzImageProperty guardianPos = monsterCarnival["guardianGenPos"];
-                for (int i = 0; i < guardianPos.WzProperties.Count; i++)
-                {
-                    mapBoard.BoardItems.Add(new MCGuardian(mapBoard,
-                        InfoTool.GetInt(guardianPos[i.ToString()]["x"]),
-                        InfoTool.GetInt(guardianPos[i.ToString()]["y"]),
-                        InfoTool.GetOptionalInt(guardianPos[i.ToString()]["team"]),
-                        InfoTool.GetInt(guardianPos[i.ToString()]["f"])), false);
-                }
-                WzImageProperty mobPos = monsterCarnival["mobGenPos"];
-                for (int i = 0; i < mobPos.WzProperties.Count; i++)
-                {
-                    mapBoard.BoardItems.Add(new MCMob(mapBoard,
-                        InfoTool.GetInt(mobPos[i.ToString()]["x"]),
-                        InfoTool.GetInt(mobPos[i.ToString()]["y"]),
-                        InfoTool.GetOptionalInt(mobPos[i.ToString()]["team"])), false);
-                }
-
-                mc.mapDivided = InfoTool.GetInt(monsterCarnival["mapDivided"]);
-                mc.reactorBlue = InfoTool.GetInt(monsterCarnival["reactorBlue"]);
-                mc.reactorRed = InfoTool.GetInt(monsterCarnival["reactorRed"]);
-                mc.rewardClimax = InfoTool.GetFloat(monsterCarnival["reward"]["climax"]);
-                WzImageProperty cpdiff = monsterCarnival["reward"]["cpDiff"];
-                mc.reward_cpDiff = new int[cpdiff.WzProperties.Count];
-                for (int i = 0; i < mc.reward_cpDiff.Length; i++)
-                {
-                    mc.reward_cpDiff[i] = InfoTool.GetInt(cpdiff[i.ToString()]);
-                }
-                WzImageProperty prob = monsterCarnival["reward"]["probChange"];
-                mc.probChange_loseCoin = new float[prob.WzProperties.Count];
-                mc.probChange_loseCP = new float[prob.WzProperties.Count];
-                mc.probChange_loseNuff = new float[prob.WzProperties.Count];
-                mc.probChange_loseRecovery = new float[prob.WzProperties.Count];
-                mc.probChange_wInCoin = new float[prob.WzProperties.Count];
-                mc.probChange_winCP = new float[prob.WzProperties.Count];
-                mc.probChange_winNuff = new float[prob.WzProperties.Count];
-                mc.probChange_winRecovery = new float[prob.WzProperties.Count];
-                for (int i = 0; i < mc.reward_cpDiff.Length; i++)
-                {
-                    mc.probChange_loseCoin[i] = InfoTool.GetFloat(prob[i.ToString()]["loseCoin"]);
-                    mc.probChange_loseCP[i] = InfoTool.GetFloat(prob[i.ToString()]["loseCP"]);
-                    mc.probChange_loseNuff[i] = InfoTool.GetFloat(prob[i.ToString()]["loseNuff"]);
-                    mc.probChange_loseRecovery[i] = InfoTool.GetFloat(prob[i.ToString()]["loseRecovery"]);
-                    mc.probChange_wInCoin[i] = InfoTool.GetFloat(prob[i.ToString()]["wInCoin"]);
-                    mc.probChange_winCP[i] = InfoTool.GetFloat(prob[i.ToString()]["winCP"]);
-                    mc.probChange_winNuff[i] = InfoTool.GetFloat(prob[i.ToString()]["winNuff"]);
-                    mc.probChange_winRecovery[i] = InfoTool.GetFloat(prob[i.ToString()]["winRecovery"]);
-                }
-
-                mc.rewardMapLose = InfoTool.GetInt(monsterCarnival["rewardMapLose"]);
-                mc.rewardMapWin = InfoTool.GetInt(monsterCarnival["rewardMapWin"]);
-                
-                WzImageProperty skill = monsterCarnival["skill"];
-                mc.skill = new int[skill.WzProperties.Count];
-                for (int i = 0; i < mc.skill.Length; i++)
-                {
-                    mc.skill[i] = InfoTool.GetInt(skill[i.ToString()]);
-                }
-                mc.soundLose = InfoTool.GetString(monsterCarnival["soundLose"]);
-                mc.soundWin = InfoTool.GetString(monsterCarnival["soundWin"]);
-                mc.timeDefault = InfoTool.GetInt(monsterCarnival["timeDefault"]);
-                mc.timeExpand = InfoTool.GetInt(monsterCarnival["timeExpand"]);
-                mc.timeFinish = InfoTool.GetInt(monsterCarnival["timeFinish"]);
-                mc.timeMessage = InfoTool.GetInt(monsterCarnival["timeMessage"]);
-                mapBoard.MapInfo.monsterCarnival = mc;
-            }
+            // Some misc items are not implemented here; these are copied byte-to-byte from the original. See VerifyMapPropsKnown for details.
         }
 
         public static ContextMenuStrip CreateStandardMapMenu(EventHandler rightClickHandler)
@@ -749,11 +638,15 @@ namespace HaCreator.WzStructure
             return result;
         }
 
-        public static void CreateMapFromImage(WzImage mapImage, string mapName, string streetName, PageCollection Tabs, MultiBoard multiBoard, EventHandler rightClickHandler)
+        public static void CreateMapFromImage(WzImage mapImage, string mapName, string streetName, string categoryName, WzSubProperty strMapProp, PageCollection Tabs, MultiBoard multiBoard, EventHandler rightClickHandler)
         {
             if (!mapImage.Parsed) mapImage.ParseImage();
-            VerifyMapPropsKnown(mapImage);
-            MapInfo info = new MapInfo(mapImage, mapName, streetName);
+            List<string> copyPropNames = VerifyMapPropsKnown(mapImage, false);
+            MapInfo info = new MapInfo(mapImage, mapName, streetName, categoryName);
+            foreach (string copyPropName in copyPropNames)
+            {
+                info.additionalNonInfoProps.Add(mapImage[copyPropName]);
+            }
             MapType type = GetMapType(mapImage);
             if (type == MapType.RegularMap)
                 info.id = int.Parse(WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)));

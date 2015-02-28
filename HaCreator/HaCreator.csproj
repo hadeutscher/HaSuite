@@ -169,6 +169,18 @@
     <Compile Include="GUI\EditorBase.Designer.cs">
       <DependentUpon>EditorBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\Repack.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Repack.Designer.cs">
+      <DependentUpon>Repack.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\Save.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\Save.Designer.cs">
+      <DependentUpon>Save.cs</DependentUpon>
+    </Compile>
     <Compile Include="MapEditor\TilesDesign\bsc.cs" />
     <Compile Include="MapEditor\TilesDesign\edD.cs" />
     <Compile Include="MapEditor\TilesDesign\edU.cs" />
@@ -342,7 +354,6 @@
     <Compile Include="MapEditor\MiscItems.cs" />
     <Compile Include="MapEditor\Mouse.cs" />
     <Compile Include="MapEditor\MapleShape.cs" />
-    <Compile Include="MapSimulator\Character.cs" />
     <Compile Include="MapSimulator\DXObject.cs" />
     <Compile Include="MapSimulator\MapSimulator.cs">
       <SubType>Form</SubType>
@@ -445,6 +456,12 @@
     <EmbeddedResource Include="GUI\Load.resx">
       <DependentUpon>Load.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Repack.resx">
+      <DependentUpon>Repack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Save.resx">
+      <DependentUpon>Save.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserSettingsForm.resx">
       <DependentUpon>UserSettingsForm.cs</DependentUpon>
@@ -574,6 +591,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\HaLogo32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Foothold.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

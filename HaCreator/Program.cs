@@ -21,6 +21,7 @@ namespace HaCreator
         public static WzInformationManager InfoManager;
         public static WzSettingsManager SettingsManager;
         public const string Version = "2.1";
+        public static bool Restarting;
 
         static void SelfCheck()
         {
@@ -89,6 +90,10 @@ namespace HaCreator
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             Application.Run(new GUI.Initialization());
             SettingsManager.Save();
+            if (Restarting)
+            {
+                Application.Restart();
+            }
         }
     }
 }

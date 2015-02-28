@@ -134,7 +134,8 @@ namespace HaCreator.GUI
                 toRemove.Dispose();
             }
             WzImage mapImage = null;
-            string mapName = null, streetName = null;
+            string mapName = null, streetName = "", categoryName = "";
+            WzSubProperty strMapProp = null;
             if (NewSelect.Checked)
             {
                 ApplicationSettings.lastRadioIndex = 0;
@@ -163,30 +164,29 @@ namespace HaCreator.GUI
                 {
                     mapImage = (WzImage)Program.WzManager["ui"]["MapLogin.img"];
                     mapName = "MapLogin";
-                    streetName = "";
                 }
                 else if (mapBrowser.SelectedItem == "MapLogin1")
                 {
                     mapImage = (WzImage)Program.WzManager["ui"]["MapLogin1.img"];
                     mapName = "MapLogin1";
-                    streetName = "";
                 }
                 else if (mapBrowser.SelectedItem == "CashShopPreview")
                 {
                     mapImage = (WzImage)Program.WzManager["ui"]["CashShopPreview.img"];
                     mapName = "CashShopPreview";
-                    streetName = "";
                 }
                 else
                 {
                     string mapid = mapBrowser.SelectedItem.Substring(0, 9);
                     string mapcat = "Map" + mapid.Substring(0, 1);
                     mapImage = (WzImage)Program.WzManager["map"]["Map"][mapcat][mapid + ".img"];
-                    mapName = WzInfoTools.GetMapNameById(mapid);
-                    streetName = WzInfoTools.GetStreetNameById(mapid);
+                    strMapProp = WzInfoTools.GetMapStringProp(mapid);
+                    mapName = WzInfoTools.GetMapName(strMapProp);
+                    streetName = WzInfoTools.GetMapStreetName(strMapProp);
+                    categoryName = WzInfoTools.GetMapCategoryName(strMapProp);
                 }
             }
-            MapLoader.CreateMapFromImage(mapImage, mapName, streetName, Tabs, multiBoard, rightClickHandler);
+            MapLoader.CreateMapFromImage(mapImage, mapName, streetName, categoryName, strMapProp, Tabs, multiBoard, rightClickHandler);
             DialogResult = DialogResult.OK;
             Close();
         }

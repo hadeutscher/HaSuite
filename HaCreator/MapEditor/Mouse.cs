@@ -202,6 +202,10 @@ namespace HaCreator.MapEditor
                 {
                     if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom) && anchor.LayerNumber == board.SelectedLayerIndex)
                     {
+                        if (anchor.connectedLines.Count > 1)
+                        {
+                            continue;
+                        }
                         if (connectedLines.Count > 0) // Are we already holding a foothold?
                         {
                             // We are, so connect the two ends

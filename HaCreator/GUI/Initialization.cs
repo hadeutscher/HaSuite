@@ -194,8 +194,8 @@ namespace HaCreator.GUI
                     mapImage.UnparseImage();
                     continue;
                 }
-                MapLoader.VerifyMapPropsKnown(mapImage);
-                MapInfo info = new MapInfo(mapImage, null, null);
+                MapLoader.VerifyMapPropsKnown(mapImage, true);
+                MapInfo info = new MapInfo(mapImage, null, null, null);
                 MapLoader.LoadMisc(mapImage, b);
                 if (ErrorLogger.ErrorsPresent())
                 {

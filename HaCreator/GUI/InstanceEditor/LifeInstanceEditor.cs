@@ -31,8 +31,9 @@ namespace HaCreator.GUI.InstanceEditor
 
             xInput.Value = item.X;
             yInput.Value = item.Y;
-            rx0Box.Value = item.rx0;
-            rx1Box.Value = item.rx1;
+            rx0Box.Value = item.rx0Shift;
+            rx1Box.Value = item.rx1Shift;
+            yShiftBox.Value = item.yShift;
             LoadOptionalInt(item.Info, infoEnable, infoBox);
             LoadOptionalInt(item.Team, teamEnable, teamBox);
             LoadOptionalInt(item.MobTime, mobTimeEnable, mobTimeBox);
@@ -59,8 +60,9 @@ namespace HaCreator.GUI.InstanceEditor
                 }
                 if (actions.Count > 0)
                     item.Board.UndoRedoMan.AddUndoBatch(actions);
-                item.rx0 = (int)rx0Box.Value;
-                item.rx1 = (int)rx1Box.Value;
+                item.rx0Shift = (int)rx0Box.Value;
+                item.rx1Shift = (int)rx1Box.Value;
+                item.yShift = (int)yShiftBox.Value;
                 item.MobTime = GetOptionalInt(mobTimeEnable, mobTimeBox);
                 item.Info = GetOptionalInt(infoEnable, infoBox);
                 item.Team = GetOptionalInt(teamEnable, teamBox);

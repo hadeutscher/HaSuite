@@ -463,6 +463,10 @@ namespace HaRepackerLib.Controls
                         e.SuppressKeyPress = true;
                         break;
                     case Keys.F:
+                        if (findStrip.Visible == true)
+                        {
+                            findBox.Focus();
+                        }
                         findStrip.Visible = true;
                         e.Handled = true;
                         e.SuppressKeyPress = true;

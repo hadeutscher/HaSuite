@@ -438,6 +438,8 @@ namespace HaCreator.MapEditor
 
         private static void MoveFootholdY(TileInfo result, bool first, bool top, int height)
         {
+            if (result.footholdOffsets.Count < 1)
+                return;
             int idx = first ? 0 : result.footholdOffsets.Count - 1;
             int y = top ? 0 : (height * result.mag);
             if (result.footholdOffsets[idx].Y != y)
@@ -448,6 +450,8 @@ namespace HaCreator.MapEditor
 
         private static void MoveFootholdX(TileInfo result, bool first, bool left, int width)
         {
+            if (result.footholdOffsets.Count < 1)
+                return;
             int idx = first ? 0 : result.footholdOffsets.Count - 1;
             int x = left ? 0 : (width * result.mag);
             if (result.footholdOffsets[idx].X != x)
@@ -624,13 +628,13 @@ namespace HaCreator.MapEditor
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             if (Image == null) ParseImage();
-            return new MobInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, null, UserSettings.defaultMobTime, flip, false, null, null);
+            return new MobInstance(this, board, x, y, UserSettings.Mobrx0Offset, UserSettings.Mobrx1Offset, 20, null, UserSettings.defaultMobTime, flip, false, null, null);
         }
 
-        public BoardItem CreateInstance(Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
+        public BoardItem CreateInstance(Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
         {
             if (Image == null) ParseImage();
-            return new MobInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, limitedname, UserSettings.defaultMobTime, flip, hide, info, team);
+            return new MobInstance(this, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide, info, team);
         }
 
         public string ID
@@ -644,108 +648,6 @@ namespace HaCreator.MapEditor
             get { return name; }
             set { this.name = value; }
         }
-
-        /*public int level
-        {
-            get { return _level; }
-            set { _level = value; }
-        }
-
-        public int maxHP
-        {
-            get { return _maxHP; }
-            set { _maxHP = value; }
-        }
-
-        public int maxMP
-        {
-            get { return _maxMP; }
-            set { _maxMP = value; }
-        }
-
-        public int PADamage
-        {
-            get { return _PADamage; }
-            set { _PADamage = value; }
-        }
-
-        public int MADamage
-        {
-            get { return _MADamage; }
-            set { _MADamage = value; }
-        }
-
-        public int PDDamage
-        {
-            get { return _PDDamage; }
-            set { _PDDamage = value; }
-        }
-
-        public int MDDamage
-        {
-            get { return _MDDamage; }
-            set { _MDDamage = value; }
-        }
-
-        public int speed
-        {
-            get { return _speed; }
-            set { _speed = value; }
-        }
-
-        public int acc
-        {
-            get { return _acc; }
-            set { _acc = value; }
-        }
-
-        public int eva
-        {
-            get { return _eva; }
-            set { _eva = value; }
-        }
-
-        public int pushed
-        {
-            get { return _pushed; }
-            set { _pushed = value; }
-        }
-
-        public int exp
-        {
-            get { return _exp; }
-            set { _exp = value; }
-        }
-
-        public int hpRecovery
-        {
-            get { return _hpRecovery; }
-            set { _hpRecovery = value; }
-        }
-
-        public int mpRecovery
-        {
-            get { return _mpRecovery; }
-            set { _mpRecovery = value; }
-        }
-
-        public bool boss
-        {
-            get { return _boss; }
-            set { _boss = value; }
-        }
-
-        public bool undead
-        {
-            get { return _undead; }
-            set { _undead = value; }
-        }
-
-        public bool firstAttack
-        {
-            get { return _firstAttack; }
-            set { _firstAttack = value; }
-        }*/
     }
 
     public class NpcInfo : MapleExtractableInfo
@@ -811,13 +713,13 @@ namespace HaCreator.MapEditor
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             if (Image == null) ParseImage();
-            return new NPCInstance(this, board, x, y, x - UserSettings.Npcrx0Offset, x + UserSettings.Npcrx1Offset, null, 0, flip, false, null, null);
+            return new NPCInstance(this, board, x, y, UserSettings.Npcrx0Offset, UserSettings.Npcrx1Offset, 8, null, 0, flip, false, null, null);
         }
 
-        public BoardItem CreateInstance(Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
+        public BoardItem CreateInstance(Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
         {
             if (Image == null) ParseImage();
-            return new NPCInstance(this, board, x, y, x - UserSettings.Mobrx0Offset, x + UserSettings.Mobrx1Offset, limitedname, mobTime, flip, hide, info, team);
+            return new NPCInstance(this, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide, info, team);
         }
 
         public string ID

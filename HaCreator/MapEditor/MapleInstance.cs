@@ -189,7 +189,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public List<Tuple<double, TileInstance, MapTileDesignPotential>> FindSnappableTiles(float threshold)
+        public List<Tuple<double, TileInstance, MapTileDesignPotential>> FindSnappableTiles(float threshold, Predicate<TileInstance> pred = null)
         {
             List<Tuple<double, TileInstance, MapTileDesignPotential>> result = new List<Tuple<double, TileInstance, MapTileDesignPotential>>();
             MapTileDesign tilegroup = (MapTileDesign)TileSnap.tileCats[baseInfo.u];
@@ -209,6 +209,8 @@ namespace HaCreator.MapEditor
                     // Note that we are first checking dx and dy alone; although this is already covered by the following distance calculation,
                     // it is significantly faster and will likely weed out most of the candidates before calculating their actual distance.
                     if (dx > first_threshold || dy > first_threshold || Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)) > first_threshold)
+                        continue;
+                    if (pred != null && !pred.Invoke(tile))
                         continue;
                     foreach (MapTileDesignPotential snapInfo in tilegroup.potentials)
                     {
@@ -401,8 +403,9 @@ namespace HaCreator.MapEditor
     public abstract class LifeInstance : BoardItem, IFlippable
     {
         private MapleDrawableInfo baseInfo;
-        private int _rx0;
-        private int _rx1;
+        private int _rx0Shift;
+        private int _rx1Shift;
+        private int _yShift;
         private int? mobTime;
         private string limitedname;
         private MapleBool flip;
@@ -410,13 +413,14 @@ namespace HaCreator.MapEditor
         private int? info; //no idea
         private int? team; //for carnival
 
-        public LifeInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
+        public LifeInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team)
             : base(board, x, y, -1)
         {
             this.limitedname = limitedname;
             this.baseInfo = baseInfo;
-            this._rx0 = rx0;
-            this._rx1 = rx1;
+            this._rx0Shift = rx0Shift;
+            this._rx1Shift = rx1Shift;
+            this._yShift = yShift;
             this.mobTime = mobTime;
             this.info = info;
             this.team = team;
@@ -506,27 +510,39 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public int rx0
+        public int rx0Shift
         {
             get
             {
-                return _rx0;
+                return _rx0Shift;
             }
             set
             {
-                _rx0 = value;
+                _rx0Shift = value;
             }
         }
 
-        public int rx1
+        public int rx1Shift
         {
             get
             {
-                return _rx1;
+                return _rx1Shift;
             }
             set
             {
-                _rx1 = value;
+                _rx1Shift = value;
+            }
+        }
+
+        public int yShift
+        {
+            get 
+            {
+                return _yShift;
+            }
+            set 
+            {
+                _yShift = value;
             }
         }
 
@@ -548,8 +564,8 @@ namespace HaCreator.MapEditor
 
     public class MobInstance : LifeInstance
     {
-        public MobInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) 
-            : base(baseInfo, board, x, y, rx0, rx1, limitedname, mobTime, flip, hide, info, team) {}
+        public MobInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) 
+            : base(baseInfo, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide, info, team) {}
 
         public override ItemTypes Type
         {
@@ -559,8 +575,8 @@ namespace HaCreator.MapEditor
 
     public class NPCInstance : LifeInstance
     {
-        public NPCInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0, int rx1, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) 
-            : base(baseInfo, board, x, y, rx0, rx1, limitedname, mobTime, flip, hide, info, team) {}
+        public NPCInstance(MapleDrawableInfo baseInfo, Board board, int x, int y, int rx0Shift, int rx1Shift, int yShift, string limitedname, int? mobTime, MapleBool flip, MapleBool hide, int? info, int? team) 
+            : base(baseInfo, board, x, y, rx0Shift, rx1Shift, yShift, limitedname, mobTime, flip, hide, info, team) {}
 
         public override ItemTypes Type
         {

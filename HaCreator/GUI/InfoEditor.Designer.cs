@@ -50,10 +50,10 @@
             this.unknownProps = new System.Windows.Forms.TreeView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
             this.returnHereCBX = new System.Windows.Forms.CheckBox();
             this.cannotReturnCBX = new System.Windows.Forms.CheckBox();
             this.mobRate = new System.Windows.Forms.NumericUpDown();
-            this.IDLabel = new System.Windows.Forms.Label();
             this.soundPlayer = new HaRepackerLib.Controls.SoundPlayer();
             this.returnBox = new System.Windows.Forms.NumericUpDown();
             this.forcedRet = new System.Windows.Forms.NumericUpDown();
@@ -136,7 +136,9 @@
             this.label123 = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.categoryBox = new System.Windows.Forms.TextBox();
+            this.IDLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mobRate)).BeginInit();
@@ -171,7 +173,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(50, 175);
+            this.label1.Location = new System.Drawing.Point(50, 193);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 0;
@@ -180,7 +182,7 @@
             // bgmBox
             // 
             this.bgmBox.FormattingEnabled = true;
-            this.bgmBox.Location = new System.Drawing.Point(89, 172);
+            this.bgmBox.Location = new System.Drawing.Point(89, 190);
             this.bgmBox.Name = "bgmBox";
             this.bgmBox.Size = new System.Drawing.Size(273, 21);
             this.bgmBox.TabIndex = 1;
@@ -189,7 +191,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(40, 138);
+            this.label2.Location = new System.Drawing.Point(40, 168);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 3;
@@ -248,7 +250,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(18, 66);
+            this.label6.Location = new System.Drawing.Point(18, 92);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(66, 13);
             this.label6.TabIndex = 37;
@@ -257,7 +259,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(5, 92);
+            this.label9.Location = new System.Drawing.Point(5, 118);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(78, 13);
             this.label9.TabIndex = 40;
@@ -354,6 +356,8 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.label8);
+            this.tabPage1.Controls.Add(this.categoryBox);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.returnHereCBX);
             this.tabPage1.Controls.Add(this.cannotReturnCBX);
@@ -381,10 +385,19 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Essential Settings";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(28, 143);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(53, 13);
+            this.label7.TabIndex = 152;
+            this.label7.Text = "mobRate:";
+            // 
             // returnHereCBX
             // 
             this.returnHereCBX.AutoSize = true;
-            this.returnHereCBX.Location = new System.Drawing.Point(252, 92);
+            this.returnHereCBX.Location = new System.Drawing.Point(252, 118);
             this.returnHereCBX.Name = "returnHereCBX";
             this.returnHereCBX.Size = new System.Drawing.Size(82, 17);
             this.returnHereCBX.TabIndex = 151;
@@ -394,7 +407,7 @@
             // cannotReturnCBX
             // 
             this.cannotReturnCBX.AutoSize = true;
-            this.cannotReturnCBX.Location = new System.Drawing.Point(252, 66);
+            this.cannotReturnCBX.Location = new System.Drawing.Point(252, 92);
             this.cannotReturnCBX.Name = "cannotReturnCBX";
             this.cannotReturnCBX.Size = new System.Drawing.Size(82, 17);
             this.cannotReturnCBX.TabIndex = 150;
@@ -404,7 +417,7 @@
             // mobRate
             // 
             this.mobRate.DecimalPlaces = 5;
-            this.mobRate.Location = new System.Drawing.Point(87, 115);
+            this.mobRate.Location = new System.Drawing.Point(87, 141);
             this.mobRate.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -414,18 +427,9 @@
             this.mobRate.Size = new System.Drawing.Size(159, 20);
             this.mobRate.TabIndex = 54;
             // 
-            // IDLabel
-            // 
-            this.IDLabel.AutoSize = true;
-            this.IDLabel.Location = new System.Drawing.Point(87, 138);
-            this.IDLabel.Name = "IDLabel";
-            this.IDLabel.Size = new System.Drawing.Size(31, 13);
-            this.IDLabel.TabIndex = 53;
-            this.IDLabel.Text = "1234";
-            // 
             // soundPlayer
             // 
-            this.soundPlayer.Location = new System.Drawing.Point(50, 199);
+            this.soundPlayer.Location = new System.Drawing.Point(50, 217);
             this.soundPlayer.MaximumSize = new System.Drawing.Size(310, 86);
             this.soundPlayer.MinimumSize = new System.Drawing.Size(310, 86);
             this.soundPlayer.Name = "soundPlayer";
@@ -435,7 +439,7 @@
             // 
             // returnBox
             // 
-            this.returnBox.Location = new System.Drawing.Point(87, 63);
+            this.returnBox.Location = new System.Drawing.Point(87, 89);
             this.returnBox.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -447,7 +451,7 @@
             // 
             // forcedRet
             // 
-            this.forcedRet.Location = new System.Drawing.Point(87, 89);
+            this.forcedRet.Location = new System.Drawing.Point(87, 115);
             this.forcedRet.Maximum = new decimal(new int[] {
             2147483647,
             0,
@@ -1460,14 +1464,30 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // label7
+            // label8
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(28, 117);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(53, 13);
-            this.label7.TabIndex = 152;
-            this.label7.Text = "mobRate:";
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(32, 66);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(52, 13);
+            this.label8.TabIndex = 153;
+            this.label8.Text = "Category:";
+            // 
+            // categoryBox
+            // 
+            this.categoryBox.Location = new System.Drawing.Point(87, 63);
+            this.categoryBox.Name = "categoryBox";
+            this.categoryBox.Size = new System.Drawing.Size(159, 20);
+            this.categoryBox.TabIndex = 154;
+            // 
+            // IDLabel
+            // 
+            this.IDLabel.AutoSize = true;
+            this.IDLabel.Location = new System.Drawing.Point(87, 168);
+            this.IDLabel.Name = "IDLabel";
+            this.IDLabel.Size = new System.Drawing.Size(31, 13);
+            this.IDLabel.TabIndex = 53;
+            this.IDLabel.Text = "1234";
             // 
             // InfoEditor
             // 
@@ -1561,7 +1581,6 @@
         private System.Windows.Forms.TextBox mapName;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.ComboBox fieldType;
-        private System.Windows.Forms.Label IDLabel;
         private System.Windows.Forms.NumericUpDown mobRate;
         private System.Windows.Forms.CheckBox reactorNameShuffle;
         private System.Windows.Forms.TextBox reactorNameBox;
@@ -1632,5 +1651,8 @@
         private System.Windows.Forms.CheckBox returnHereCBX;
         private System.Windows.Forms.CheckBox cannotReturnCBX;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox categoryBox;
+        private System.Windows.Forms.Label IDLabel;
     }
 }

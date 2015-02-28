@@ -48,6 +48,8 @@
             this.infoBox = new System.Windows.Forms.NumericUpDown();
             this.teamBox = new System.Windows.Forms.NumericUpDown();
             this.limitedNameBox = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.yShiftBox = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.rx0Box)).BeginInit();
@@ -55,6 +57,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.mobTimeBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.infoBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.teamBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yShiftBox)).BeginInit();
             this.SuspendLayout();
             // 
             // pathLabel
@@ -251,7 +254,7 @@
             // hideBox
             // 
             this.hideBox.AutoSize = true;
-            this.hideBox.Location = new System.Drawing.Point(49, 157);
+            this.hideBox.Location = new System.Drawing.Point(131, 153);
             this.hideBox.Name = "hideBox";
             this.hideBox.Size = new System.Drawing.Size(48, 17);
             this.hideBox.TabIndex = 4;
@@ -301,11 +304,39 @@
             this.limitedNameBox.Size = new System.Drawing.Size(63, 20);
             this.limitedNameBox.TabIndex = 8;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(4, 159);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(38, 13);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "Height";
+            // 
+            // yShiftBox
+            // 
+            this.yShiftBox.Location = new System.Drawing.Point(49, 157);
+            this.yShiftBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.yShiftBox.Minimum = new decimal(new int[] {
+            -2147483648,
+            0,
+            0,
+            -2147483648});
+            this.yShiftBox.Name = "yShiftBox";
+            this.yShiftBox.Size = new System.Drawing.Size(50, 20);
+            this.yShiftBox.TabIndex = 20;
+            // 
             // LifeInstanceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(308, 233);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.yShiftBox);
             this.Controls.Add(this.limitedNameBox);
             this.Controls.Add(this.teamBox);
             this.Controls.Add(this.infoBox);
@@ -342,6 +373,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.mobTimeBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.infoBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.teamBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yShiftBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -369,5 +401,7 @@
         private System.Windows.Forms.NumericUpDown infoBox;
         private System.Windows.Forms.NumericUpDown teamBox;
         private System.Windows.Forms.TextBox limitedNameBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown yShiftBox;
     }
 }

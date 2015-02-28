@@ -44,14 +44,10 @@ namespace HaCreator.MapSimulator
         private ContentManager contentMan;
         public List<MapItem>[] mapObjects = CreateLayersArray();
         public List<BackgroundItem> backgrounds = new List<BackgroundItem>();
-        public static Hashtable footholds;
-        //public Character character;
         private Rectangle vr;
         private Texture2D minimap;
-        //private bool debug = true;
         private Texture2D pixel;
         private WzMp3Streamer audio;
-        private bool usePhysics = false;
 
         private static List<MapItem>[] CreateLayersArray()
         {
@@ -91,14 +87,6 @@ namespace HaCreator.MapSimulator
             pParams.DeviceWindowHandle = Handle;
             pParams.IsFullScreen = false;
 #endif
-/*            try
-            {
-                DxDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, DeviceType.Hardware, Handle, pParams);
-            }
-            catch
-            {
-                DxDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, DeviceType.NullReference, Handle, pParams);
-            }*/
             try
             {
                 GraphicsProfile profile = GraphicsProfile.Reach;
@@ -119,11 +107,8 @@ namespace HaCreator.MapSimulator
             bmp.SetPixel(0, 0, System.Drawing.Color.White);
             pixel = BoardItem.TextureFromBitmap(DxDevice, bmp);
 
-            //pixel = BoardItem.TextureFromBitmap(DxDevice, new System.Drawing.Bitmap(1, 1));
             contentMan = new ContentManager(this);
             sprite = new SpriteBatch(DxDevice);
-            //character = new Character(400 + mapCenter.X, 300 + mapCenter.Y);
-            //character.DoFly();
         }
 
         public new object GetService(Type serviceType)
@@ -136,11 +121,9 @@ namespace HaCreator.MapSimulator
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            //if (WindowState == FormWindowState.Minimized) { if (usePhysics) character.ProcessPhysics(); return; }
             base.OnPaint(e);
             DxDevice.Clear(ClearOptions.Target, Color.Black, 1.0f, 0); // Clear the window to black
             sprite.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
-            //sprite.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
             foreach (BackgroundItem bg in backgrounds)
                 if (!bg.Front)
                     bg.Draw(sprite, mapShiftX, mapShiftY, mapCenter.X, mapCenter.Y, width, height);
@@ -148,30 +131,10 @@ namespace HaCreator.MapSimulator
             {
                 foreach (MapItem item in mapObjects[i])
                     item.Draw(sprite, mapShiftX, mapShiftY, mapCenter.X, mapCenter.Y, width, height);
-                /*if (i == character.Layer)
-                    character.Draw(sprite,pixel);*/
             }
             foreach (BackgroundItem bg in backgrounds)
                 if (bg.Front)
                     bg.Draw(sprite, mapShiftX, mapShiftY, mapCenter.X, mapCenter.Y, width, height);
-            /*            if (debug)
-                        {
-                            foreach (DictionaryEntry fhEntry in footholds)
-                            {
-                                Foothold fh = (Foothold)fhEntry.Value;
-                                int x1 = fh.x1 + mapCenter.X - mapShiftX - 3;
-                                int x2 = fh.x2 + mapCenter.X - mapShiftX - 3;
-                                int y1 = fh.y1 + mapCenter.Y - mapShiftY - 3;
-                                int y2 = fh.y2 + mapCenter.Y - mapShiftY - 3;
-                                FillRectangle(sprite, new Rectangle(x1, y1, 6, 6), Color.Red);
-                                FillRectangle(sprite, new Rectangle(x2, y2, 6, 6), Color.Red);
-                                DrawLine(sprite, new Vector2(x1, y1), new Vector2(x2, y2), Color.Red);
-                                sprite.DrawString(defaultFont, fh.prev.ToString(), new Vector2(x1, y1 - 20), Color.Black);
-                                sprite.DrawString(defaultFont, fh.next.ToString(), new Vector2(x2, y2 + 20), Color.Black);
-                            }
-                            sprite.DrawString(defaultFont, character.X.ToString(), new Vector2(), Color.Black);
-                            sprite.DrawString(defaultFont, character.Y.ToString(), new Vector2(0,50), Color.Black);
-                        }*/
 
             if (minimap != null)
             {
@@ -199,7 +162,6 @@ namespace HaCreator.MapSimulator
             {
             }
             HandleKeyPresses();
-            //if (usePhysics) character.ProcessPhysics();
             System.Threading.Thread.Sleep(10);
             Invalidate();
         }
@@ -209,10 +171,8 @@ namespace HaCreator.MapSimulator
             pParams.BackBufferHeight = Height;
             pParams.BackBufferWidth = Width;
             pParams.BackBufferFormat = SurfaceFormat.Color;
-            //pParams.EnableAutoDepthStencil = true;
             pParams.DepthStencilFormat = DepthFormat.Depth24;
             pParams.DeviceWindowHandle = Handle;
-            //pParams.AutoDepthStencilFormat = DepthFormat.Depth24;
             DxDevice.Reset(DxDevice.PresentationParameters);
         }
 
@@ -232,18 +192,7 @@ namespace HaCreator.MapSimulator
 
         void HandleKeyPresses()
         {
-            if (usePhysics)
-            {
-            }
             KeyboardState state = Keyboard.GetState();
-            /*            if (state[Microsoft.Xna.Framework.Input.Keys.F5] == KeyState.Down && Environment.TickCount - lastHotKeyPressTime > 500)
-                        {
-                            usePhysics = !usePhysics;
-                            lastHotKeyPressTime = Environment.TickCount;
-                            character.ResetLastProcessTime();
-                        }*/
-            /*if (!usePhysics)
-            {*/
             int offset = (state[Microsoft.Xna.Framework.Input.Keys.LeftShift] == KeyState.Down || state[Microsoft.Xna.Framework.Input.Keys.RightShift] == KeyState.Down) ? 100 : 10;
             if (state[Microsoft.Xna.Framework.Input.Keys.Left] == KeyState.Down)
                 mapShiftX = Math.Max(vr.Left, mapShiftX - offset);
@@ -258,33 +207,6 @@ namespace HaCreator.MapSimulator
                 DxDevice.Dispose();
                 Close();
             }
-            /*character.X = mapShiftX + 400;
-            character.Y = mapShiftY + 300;*/
-            /*}
-            else
-            {
-                mapShiftX = character.X - 400;
-                mapShiftY = character.Y - 300;
-                bool prone = true;
-                if (state[Microsoft.Xna.Framework.Input.Keys.Left] == KeyState.Down)
-                {
-                    character.DoWalk(-1);
-                    prone = false;
-                }
-                if (state[Microsoft.Xna.Framework.Input.Keys.Right] == KeyState.Down)
-                {
-                    character.DoWalk(1);
-                    prone = false;
-                }
-                if (state[Microsoft.Xna.Framework.Input.Keys.Space] == KeyState.Down)
-                {
-                    character.DoJump();
-                    prone = false;
-                }
-                if (state[Microsoft.Xna.Framework.Input.Keys.Escape] == KeyState.Down)
-                    Close();
-                if (prone) character.DoProne();
-            }*/
         }
 
         private static MapItem CreateMapItemFromProperty(WzImageProperty source, int x, int y, int mapCenterX, int mapCenterY, GraphicsDevice device, ref List<WzObject> usedProps, bool flip)
@@ -370,7 +292,7 @@ namespace HaCreator.MapSimulator
         }
 
 
-        #region Warning - I am not responsible for death caused by excessive wtfing or a blown mind after reading this code
+/*        #region Warning - I am not responsible for death caused by excessive wtfing or a blown mind after reading this code
         public static Hashtable ConvertToMapleFootholds2(List<FootholdLine> footholds, List<FootholdAnchor> anchors)
         {
             Hashtable fhListByPoint = new Hashtable();
@@ -512,7 +434,7 @@ namespace HaCreator.MapSimulator
             oldFhConnectAnchor = GetBottomAnchor(oldFh);
             otherAnchor = oldFhConnectAnchor == currFh.FirstDot ? (FootholdAnchor)currFh.SecondDot : (FootholdAnchor)currFh.FirstDot;
             return !((otherAnchor.X > oldFhConnectAnchor.X) ^ (fh.FirstDot.Y < fh.SecondDot.Y));
-        }
+        }*/
 
         public static MapSimulator CreateMapSimulator(Board mapBoard)
         {
@@ -529,8 +451,6 @@ namespace HaCreator.MapSimulator
             foreach (BackgroundInstance background in mapBoard.BoardItems.FrontBackgrounds)
                 result.backgrounds.Add(CreateBackgroundFromProperty((WzImageProperty)background.BaseInfo.ParentObject, background.BaseX, background.BaseY, background.rx, background.ry, background.cx, background.cy, background.a, background.type, background.front, mapBoard.CenterPoint.X, mapBoard.CenterPoint.Y, result.DxDevice, ref usedProps, background.Flip));
             foreach (WzObject obj in usedProps) obj.MSTag = null;
-            Hashtable fhs = ConvertToMapleFootholds2(mapBoard.BoardItems.FootholdLines, mapBoard.BoardItems.FHAnchors);
-            MapSimulator.footholds = fhs;
             usedProps.Clear();
             GC.Collect();
             GC.WaitForPendingFinalizers();

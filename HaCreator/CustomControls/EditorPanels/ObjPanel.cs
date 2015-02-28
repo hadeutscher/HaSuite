@@ -77,6 +77,8 @@ namespace HaCreator.CustomControls.EditorPanels
                 item.Tag = l2Prop.HCTag;
                 item.MouseDown += new MouseEventHandler(objItem_Click);
                 item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                item.MaxHeight = UserSettings.ImageViewerHeight;
+                item.MaxWidth = UserSettings.ImageViewerWidth;
             }
         }
 

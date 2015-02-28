@@ -52,6 +52,8 @@ namespace HaCreator.CustomControls.EditorPanels
                     aniItem.Tag = aniBgProp.HCTag;
                     aniItem.MouseDown += new MouseEventHandler(bgItem_Click);
                     aniItem.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                    aniItem.MaxHeight = UserSettings.ImageViewerHeight;
+                    aniItem.MaxWidth = UserSettings.ImageViewerWidth;
                 }
             }
             else
@@ -61,10 +63,12 @@ namespace HaCreator.CustomControls.EditorPanels
                 {
                     if (backBg.HCTag == null)
                         backBg.HCTag = BackgroundInfo.Load(backBg, (string)bgSetListBox.SelectedItem, false, backBg.Name);
-                    ImageViewer aniItem = bgImageContainer.Add(((BackgroundInfo)backBg.HCTag).Image, backBg.Name, true);
-                    aniItem.Tag = backBg.HCTag;
-                    aniItem.MouseDown += new MouseEventHandler(bgItem_Click);
-                    aniItem.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                    ImageViewer item = bgImageContainer.Add(((BackgroundInfo)backBg.HCTag).Image, backBg.Name, true);
+                    item.Tag = backBg.HCTag;
+                    item.MouseDown += new MouseEventHandler(bgItem_Click);
+                    item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                    item.MaxHeight = UserSettings.ImageViewerHeight;
+                    item.MaxWidth = UserSettings.ImageViewerWidth;
                 }
             }
         }

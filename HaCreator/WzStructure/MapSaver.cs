@@ -36,20 +36,79 @@ namespace HaCreator.WzStructure
                     break;
                 case MapType.MapLogin:
                 case MapType.CashShopPreview:
-                    name = board.MapInfo.strMapName;
+                    name = WzInfoTools.AddLeadingZeros(board.MapInfo.id.ToString(), 9);
                     break;
                 default:
                     throw new Exception("Unknown map type");
             }
             this.image = new WzImage(name + ".img");
-            this.image.Changed = true;
+        }
+
+        private void InsertImage()
+        {
+            string cat = "Map" + image.Name.Substring(0, 1);
+            WzDirectory mapDir = (WzDirectory)Program.WzManager["map"]["Map"];
+            WzDirectory catDir = (WzDirectory)mapDir[cat];
+            if (catDir == null)
+            {
+                catDir = new WzDirectory(cat);
+                mapDir.AddDirectory(catDir);
+            }
+            WzImage mapImg = (WzImage)mapDir[image.Name];
+            if (mapImg != null)
+            {
+                mapImg.Remove();
+            }
+            mapDir.AddImage(image);
+            Program.WzManager.SetUpdated("map", image);
         }
 
         private void SaveMapInfo()
         {
-            // We are not saving string.wz's mapName and streetName here, this will be handled later
-            // Note - we also need to save the tooltip text in string.wz
             board.MapInfo.Save(image);
+            if (board.MapInfo.mapType == MapType.RegularMap)
+            {
+                WzImage strMapImg = (WzImage)Program.WzManager.String["Map.img"];
+                WzSubProperty strCatProp = (WzSubProperty)strMapImg[board.MapInfo.strCategoryName];
+                if (strCatProp == null)
+                {
+                    strCatProp = new WzSubProperty();
+                    strMapImg[board.MapInfo.strCategoryName] = strCatProp;
+                    Program.WzManager.SetUpdated("string", strMapImg);
+                }
+                WzSubProperty strMapProp = (WzSubProperty)strCatProp[board.MapInfo.id.ToString()];
+                if (strMapProp == null)
+                {
+                    strMapProp = new WzSubProperty();
+                    strCatProp[board.MapInfo.id.ToString()] = strMapProp;
+                    Program.WzManager.SetUpdated("string", strMapImg);
+                }
+                WzStringProperty strMapName = (WzStringProperty)strMapProp["mapName"];
+                if (strMapName == null)
+                {
+                    strMapName = new WzStringProperty();
+                    strMapProp["mapName"] = strMapName;
+                    Program.WzManager.SetUpdated("string", strMapImg);
+                }
+                WzStringProperty strStreetName = (WzStringProperty)strMapProp["streetName"];
+                if (strStreetName == null)
+                {
+                    strStreetName = new WzStringProperty();
+                    strMapProp["streetName"] = strStreetName;
+                    Program.WzManager.SetUpdated("string", strMapImg);
+                }
+                UpdateString(strMapName, board.MapInfo.strMapName, strMapImg);
+                UpdateString(strStreetName, board.MapInfo.strStreetName, strMapImg);
+            }
+        }
+
+        private void UpdateString(WzStringProperty strProp, string val, WzImage img)
+        {
+            if (strProp.Value != val)
+            {
+                strProp.Value = val;
+                Program.WzManager.SetUpdated("string", img);
+            }
         }
 
         private void SaveMiniMap()
@@ -256,21 +315,156 @@ namespace HaCreator.WzStructure
             {
                 return;
             }
+            bool retainTooltipStrings = true;
             WzSubProperty tooltipParent = new WzSubProperty();
+            WzImage strTooltipImg = (WzImage)Program.WzManager.String["ToolTipHelp.img"];
+            WzSubProperty strTooltipCat = (WzSubProperty)strTooltipImg["Mapobject"];
+            WzSubProperty strTooltipParent = (WzSubProperty)strTooltipCat[board.MapInfo.id.ToString()];
+            if (strTooltipParent == null)
+            {
+                strTooltipParent = new WzSubProperty();
+                strTooltipCat[board.MapInfo.id.ToString()] = strTooltipParent;
+                Program.WzManager.SetUpdated("string", strTooltipImg);
+                retainTooltipStrings = false;
+            }
+
+            // Check if the tooltip match their original numbers
+            if (retainTooltipStrings)
+            {
+                board.BoardItems.ToolTips.Sort((a, b) => a.OriginalNumber.CompareTo(b.OriginalNumber));
+                for (int i = 0; i < board.BoardItems.ToolTips.Count; i++)
+                {
+                    if (board.BoardItems.ToolTips[i].OriginalNumber != i)
+                    {
+                        retainTooltipStrings = false;
+                        break;
+                    }
+                }
+            }
+
+            // If they do not, we need to update string.wz and rebuild the string tooltip props
+            if (!retainTooltipStrings)
+            {
+                Program.WzManager.SetUpdated("string", strTooltipImg);
+                strTooltipParent.ClearProperties();
+            }
+
+            for (int i = 0; i < board.BoardItems.ToolTips.Count; i++)
+            {
+                ToolTip ttInst = board.BoardItems.ToolTips[i];
+                tooltipParent[i.ToString()] = PackRectangle(ttInst);
+                if (ttInst.CharacterToolTip != null)
+                {
+                    tooltipParent[i.ToString() + "char"] = PackRectangle(ttInst.CharacterToolTip);
+                }
+
+                if (retainTooltipStrings)
+                {
+                    // This prop must exist if we are retaining, otherwise the map would not load
+                    WzSubProperty strTooltipProp = (WzSubProperty)strTooltipParent[i.ToString()];
+
+                    if (ttInst.Title != null)
+                    {
+                        WzStringProperty titleProp = (WzStringProperty)strTooltipProp["Title"];
+                        if (titleProp == null)
+                        {
+                            titleProp = new WzStringProperty();
+                            Program.WzManager.SetUpdated("string", strTooltipImg);
+                        }
+                        UpdateString(titleProp, ttInst.Title, strTooltipImg);
+                    } 
+                    if (ttInst.Desc != null)
+                    {
+                        WzStringProperty descProp = (WzStringProperty)strTooltipProp["Desc"];
+                        if (descProp == null)
+                        {
+                            descProp = new WzStringProperty();
+                            Program.WzManager.SetUpdated("string", strTooltipImg);
+                        }
+                        UpdateString(descProp, ttInst.Desc, strTooltipImg);
+                    }
+                }
+                else
+                {
+                    WzSubProperty strTooltipProp = new WzSubProperty();
+                    strTooltipProp["Title"] = InfoTool.SetOptionalString(ttInst.Title);
+                    strTooltipProp["Desc"] = InfoTool.SetOptionalString(ttInst.Desc);
+                    strTooltipProp[i.ToString()] = strTooltipProp;
+                }
+            }
 
             image["ToolTip"] = tooltipParent;
+        }
+
+        private static WzSubProperty PackRectangle(MapleRectangle rect)
+        {
+            WzSubProperty prop = new WzSubProperty();
+            prop["x1"] = InfoTool.SetInt(rect.Left);
+            prop["x2"] = InfoTool.SetInt(rect.Right);
+            prop["y1"] = InfoTool.SetInt(rect.Top);
+            prop["y2"] = InfoTool.SetInt(rect.Bottom);
+            return prop;
         }
 
         public void SaveBackgrounds()
         {
             WzSubProperty bgParent = new WzSubProperty();
-
+            int backCount = board.BoardItems.BackBackgrounds.Count;
+            int frontCount = board.BoardItems.FrontBackgrounds.Count;
+            for (int i = 0; i < backCount + frontCount; i++)
+            {
+                BackgroundInstance bgInst = i < backCount ? board.BoardItems.BackBackgrounds[i] : board.BoardItems.FrontBackgrounds[i - backCount];
+                BackgroundInfo bgInfo = (BackgroundInfo)bgInst.BaseInfo;
+                WzSubProperty bgProp = new WzSubProperty();
+                bgProp["x"] = InfoTool.SetInt(bgInst.X);
+                bgProp["y"] = InfoTool.SetInt(bgInst.Y);
+                bgProp["rx"] = InfoTool.SetInt(bgInst.rx);
+                bgProp["ry"] = InfoTool.SetInt(bgInst.ry);
+                bgProp["cx"] = InfoTool.SetInt(bgInst.cx);
+                bgProp["cy"] = InfoTool.SetInt(bgInst.cy);
+                bgProp["a"] = InfoTool.SetInt(bgInst.a);
+                bgProp["type"] = InfoTool.SetInt((int)bgInst.type);
+                bgProp["front"] = InfoTool.SetOptionalBool(bgInst.front);
+                bgProp["f"] = InfoTool.SetOptionalBool(bgInst.Flip);
+                bgProp["bS"] = InfoTool.SetString(bgInfo.bS);
+                bgProp["ani"] = InfoTool.SetBool(bgInfo.ani);
+                bgProp["no"] = InfoTool.SetInt(int.Parse(bgInfo.no));
+                bgParent[i.ToString()] = bgProp;
+            }
             image["back"] = bgParent;
+        }
+
+        private void SavePlatform(FootholdLine start, WzSubProperty prop)
+        {
+
         }
 
         public void SaveFootholds()
         {
             WzSubProperty fhParent = new WzSubProperty();
+            board.BoardItems.FootholdLines.ForEach(x => x.saved = false);
+            board.BoardItems.FootholdLines.Sort(FootholdLine.FHSorter);
+            for (int i = 0; i < board.BoardItems.FootholdLines.Count; i++)
+            {
+                board.BoardItems.FootholdLines[i].num = i;
+            }
+            int platformIndex = 0;
+            for (int i = 0; i < 7; i++)
+            {
+                WzSubProperty fhLayerProp = new WzSubProperty();
+                foreach (FootholdLine fhInst in board.BoardItems.FootholdLines)
+                {
+                    // Search only footholds in our layer, that weren't already saved, and are "edge" footholds (we will take care of circles soon)
+                    if (fhInst.LayerNumber != i || fhInst.saved || (fhInst.FirstDot.connectedLines.Count > 1 && fhInst.SecondDot.connectedLines.Count > 1))
+                    {
+                        continue;
+                    }
+                    WzSubProperty fhPlatProp = new WzSubProperty();
+                    SavePlatform(fhInst, fhPlatProp);
+                    fhLayerProp[platformIndex++.ToString()] = fhPlatProp;
+                }
+                fhParent[i.ToString()] = fhLayerProp;
+            }
 
             image["foothold"] = fhParent;
         }
@@ -278,12 +472,122 @@ namespace HaCreator.WzStructure
         public void SaveLife()
         {
             WzSubProperty lifeParent = new WzSubProperty();
-
+            int mobCount = board.BoardItems.Mobs.Count;
+            int npcCount = board.BoardItems.NPCs.Count;
+            for (int i = 0; i < mobCount + npcCount; i++)
+            {
+                bool mob = i < mobCount;
+                LifeInstance lifeInst = mob ? (LifeInstance)board.BoardItems.Mobs[i] : (LifeInstance)board.BoardItems.NPCs[i - mobCount];
+                WzSubProperty lifeProp = new WzSubProperty();
+                
+                lifeProp["id"] = InfoTool.SetString(mob ? ((MobInfo)lifeInst.BaseInfo).ID : ((NpcInfo)lifeInst.BaseInfo).ID);
+                lifeProp["x"] = InfoTool.SetInt(lifeInst.X);
+                lifeProp["y"] = InfoTool.SetInt(lifeInst.Y - lifeInst.yShift);
+                lifeProp["cy"] = InfoTool.SetInt(lifeInst.Y);
+                lifeProp["mobTime"] = InfoTool.SetOptionalInt(lifeInst.MobTime);
+                lifeProp["info"] = InfoTool.SetOptionalInt(lifeInst.Info);
+                lifeProp["team"] = InfoTool.SetOptionalInt(lifeInst.Team);
+                lifeProp["rx0"] = InfoTool.SetInt(lifeInst.X - lifeInst.rx0Shift);
+                lifeProp["rx1"] = InfoTool.SetInt(lifeInst.X + lifeInst.rx1Shift);
+                lifeProp["f"] = InfoTool.SetOptionalBool(lifeInst.Flip);
+                lifeProp["hide"] = InfoTool.SetOptionalBool(lifeInst.Hide);
+                lifeProp["type"] = InfoTool.SetString(mob ? "m" : "n");
+                lifeProp["limitedname"] = InfoTool.SetOptionalString(lifeInst.LimitedName);
+                lifeProp["fh"] = InfoTool.SetInt(GetFootholdBelow(lifeInst.X, lifeInst.Y));
+                lifeParent[i.ToString()] = lifeProp;
+            }
             image["life"] = lifeParent;
         }
 
         public void SaveMisc()
         {
+            WzSubProperty areaParent = new WzSubProperty();
+            WzSubProperty buffParent = new WzSubProperty();
+            WzSubProperty swimParent = new WzSubProperty();
+            foreach (BoardItem item in board.BoardItems.MiscItems)
+            {
+                if (item is Clock)
+                {
+                    Clock clock = (Clock)item;
+                    WzSubProperty clockProp = new WzSubProperty();
+                    clockProp["x"] = InfoTool.SetInt(item.Left);
+                    clockProp["y"] = InfoTool.SetInt(item.Top);
+                    clockProp["width"] = InfoTool.SetInt(item.Width);
+                    clockProp["height"] = InfoTool.SetInt(item.Height);
+                    image["clock"] = clockProp;
+                }
+                else if (item is ShipObject)
+                {
+                    ShipObject ship = (ShipObject)item;
+                    ObjectInfo shipInfo = (ObjectInfo)ship.BaseInfo;
+                    WzSubProperty shipProp = new WzSubProperty();
+                    shipProp["shipObj"] = InfoTool.SetString("Map/Obj/" + shipInfo.oS + ".img/" + shipInfo.l0 + "/" + shipInfo.l1 + "/" + shipInfo.l2);
+                    shipProp["x"] = InfoTool.SetInt(ship.X);
+                    shipProp["y"] = InfoTool.SetInt(ship.Y);
+                    shipProp["z"] = InfoTool.SetOptionalInt(ship.zValue);
+                    shipProp["x0"] = InfoTool.SetOptionalInt(ship.X0);
+                    shipProp["tMove"] = InfoTool.SetInt(ship.TimeMove);
+                    shipProp["shipKind"] = InfoTool.SetInt(ship.ShipKind);
+                    shipProp["f"] = InfoTool.SetBool(ship.Flip);
+                    image["shipObj"] = shipProp;
+                }
+                else if (item is Area)
+                {
+                    Area area = (Area)item;
+                    areaParent[area.Identifier] = PackRectangle(area);
+                }
+                else if (item is Healer)
+                {
+                    Healer healer = (Healer)item;
+                    ObjectInfo healerInfo = (ObjectInfo)healer.BaseInfo;
+                    WzSubProperty healerProp = new WzSubProperty();
+                    healerProp["healer"] = InfoTool.SetString("Map/Obj/" + healerInfo.oS + ".img/" + healerInfo.l0 + "/" + healerInfo.l1 + "/" + healerInfo.l2);
+                    healerProp["x"] = InfoTool.SetInt(healer.X);
+                    healerProp["yMin"] = InfoTool.SetInt(healer.yMin);
+                    healerProp["yMax"] = InfoTool.SetInt(healer.yMax);
+                    healerProp["healMin"] = InfoTool.SetInt(healer.healMin);
+                    healerProp["healMax"] = InfoTool.SetInt(healer.healMax);
+                    healerProp["fall"] = InfoTool.SetInt(healer.fall);
+                    healerProp["rise"] = InfoTool.SetInt(healer.rise);
+                    image["healer"] = healerProp;
+                }
+                else if (item is Pulley)
+                {
+                    Pulley pulley = (Pulley)item;
+                    ObjectInfo pulleyInfo = (ObjectInfo)pulley.BaseInfo;
+                    WzSubProperty pulleyProp = new WzSubProperty();
+                    pulleyProp["pulley"] = InfoTool.SetString("Map/Obj/" + pulleyInfo.oS + ".img/" + pulleyInfo.l0 + "/" + pulleyInfo.l1 + "/" + pulleyInfo.l2);
+                    pulleyProp["x"] = InfoTool.SetInt(pulley.X);
+                    pulleyProp["y"] = InfoTool.SetInt(pulley.Y);
+                    image["pulley"] = pulleyProp;
+                }
+                else if (item is BuffZone)
+                {
+                    BuffZone buff = (BuffZone)item;
+                    WzSubProperty buffProp = PackRectangle(buff);
+                    buffProp["ItemID"] = InfoTool.SetInt(buff.ItemID);
+                    buffProp["Interval"] = InfoTool.SetInt(buff.Interval);
+                    buffProp["Duration"] = InfoTool.SetInt(buff.Duration);
+                    buffParent[buff.ZoneName] = buffProp;
+                }
+                else if (item is SwimArea)
+                {
+                    SwimArea swim = (SwimArea)item;
+                    swimParent[swim.Identifier] = PackRectangle(swim);
+                }
+            }
+            if (areaParent.WzProperties.Count > 0)
+            {
+                image["area"] = areaParent;
+            }
+            if (buffParent.WzProperties.Count > 0)
+            {
+                image["BuffZone"] = buffParent;
+            }
+            if (swimParent.WzProperties.Count > 0)
+            {
+                image["swimArea"] = swimParent;
+            }
         }
 
         public void SaveMapImage()
@@ -301,6 +605,7 @@ namespace HaCreator.WzStructure
             SaveFootholds();
             SaveLife();
             SaveMisc();
+            InsertImage();
         }
 
         public WzImage MapImage
@@ -308,6 +613,35 @@ namespace HaCreator.WzStructure
             get { return image; }
         }
 
+        private int GetFootholdBelow(int x, int y)
+        {
+            int bestDistance = int.MaxValue;
+            int bestFoothold = -1;
+            foreach (FootholdLine fh in board.BoardItems.FootholdLines)
+            {
+                if (Math.Min(fh.FirstDot.X, fh.SecondDot.X) <= x && Math.Max(fh.FirstDot.X, fh.SecondDot.X) >= x)
+                {
+                    int fhY = fh.CalculateY(x);
+                    if (fhY >= y && (fhY - y) < bestDistance)
+                    {
+                        bestDistance = fhY - y;
+                        bestFoothold = fh.num;
+                        if (bestDistance == 0)
+                        {
+                            // Not going to find anything better than 0
+                            return bestFoothold;
+                        }
+                    }
+                }
+            }
+            if (bestFoothold == -1)
+            {
+                // 0 stands in the game for flying or nonexistant foothold; I do not know what are the results of putting an NPC there,
+                // however, if the user puts an NPC with no floor under it he should expect weird things to happen.
+                return 0;
+            }
+            return bestFoothold;
+        }
 
         public static void ConvertToMapleFootholds2(ref MapleList<FootholdLine> oldFootholds, ref MapleList<FootholdAnchor> oldAnchors)
         {
@@ -705,17 +1039,14 @@ namespace HaCreator.WzStructure
             return false;
         }
 
-        private FootholdAnchor FindOptimalContinuationAnchor(FootholdLine line)
+        private FootholdAnchor FindOptimalContinuationAnchor(int y, int x0, int x1, int layer)
         {
-            int y = line.FirstDot.Y;
-            int x0 = Math.Min(line.FirstDot.X, line.SecondDot.X);
-            int x1 = Math.Max(line.FirstDot.X, line.SecondDot.X);
             FootholdAnchor result = null;
             int distance = int.MaxValue;
             foreach (FootholdAnchor anchor in board.BoardItems.FHAnchors)
             {
                 // Find an anchor on the same layer, with 1 connected line, in the X range of our target line, whose line is not vertical
-                if (anchor.LayerNumber != line.LayerNumber || anchor.connectedLines.Count != 1 || anchor.X < x0 || anchor.X > x1 || anchor.connectedLines[0].FirstDot.X == anchor.connectedLines[0].SecondDot.X)
+                if (anchor.LayerNumber != layer || anchor.connectedLines.Count != 1 || anchor.X < x0 || anchor.X > x1 || anchor.connectedLines[0].FirstDot.X == anchor.connectedLines[0].SecondDot.X)
                 {
                     continue;
                 }
@@ -733,7 +1064,7 @@ namespace HaCreator.WzStructure
                     return result;
                 }
             }
-            return distance < 50 ? result : null;
+            return distance < 100 ? result : null;
         }
 
         private static FootholdLine GetConnectingLine(FootholdAnchor a, FootholdAnchor b)
@@ -811,27 +1142,30 @@ namespace HaCreator.WzStructure
                 TileInstance tileInst = (TileInstance)li;
                 TileInfo tileInfo = (TileInfo)li.BaseInfo;
                 // Ensure that the tile is an edU, that it was created by the user in this session, and that it doesnt have some messed up foothold structure we can't deal with
-                if (tileInfo.u == "edU" && tileInst.BoundItemsList.Count > 0 && tileInst.BoundItemsList.Count == 4)
+                if (tileInfo.u == "edU" && tileInst.BoundItemsList.Count >= 4)
                 {
-                    if (((FootholdAnchor)tileInst.BoundItemsList[1]).Y != ((FootholdAnchor)tileInst.BoundItemsList[2]).Y ||
-                        ((FootholdAnchor)tileInst.BoundItemsList[0]).Y != ((FootholdAnchor)tileInst.BoundItemsList[3]).Y)
+                    int nitems = tileInst.BoundItemsList.Count;
+                    if (tileInst.BoundItemsList[0].Y != tileInst.BoundItemsList[nitems - 1].Y ||
+                        tileInst.BoundItemsList[0].X != tileInst.BoundItemsList[1].X ||
+                        tileInst.BoundItemsList[nitems - 1].X != tileInst.BoundItemsList[nitems - 2].X)
                     {
                         continue;
                     }
 
                     // Only work with snapped edU's
-                    if (tileInst.FindSnappableTiles(0).Count == 0)
+                    if (tileInst.FindSnappableTiles(0, x => ((TileInfo)x.BaseInfo).u == "enH0" || ((TileInfo)x.BaseInfo).u == "slLU" || ((TileInfo)x.BaseInfo).u == "slRU").Count == 0)
                     {
                         continue;
                     }
 
-                    FootholdLine surfaceLine = GetConnectingLine((FootholdAnchor)tileInst.BoundItemsList[1], (FootholdAnchor)tileInst.BoundItemsList[2]);
+                    /*FootholdLine surfaceLine = GetConnectingLine((FootholdAnchor)tileInst.BoundItemsList[1], (FootholdAnchor)tileInst.BoundItemsList[2]);
                     if (surfaceLine == null)
                     {
                         continue;
-                    }
+                    }*/
 
-                    FootholdAnchor contAnchor = FindOptimalContinuationAnchor(surfaceLine);
+                    FootholdAnchor contAnchor = FindOptimalContinuationAnchor((tileInst.BoundItemsList[1].Y + tileInst.BoundItemsList[nitems - 2].Y) / 2,
+                        tileInst.BoundItemsList[1].X, tileInst.BoundItemsList[nitems - 2].X, tileInst.LayerNumber);
                     if (contAnchor == null)
                     {
                         continue;
@@ -841,23 +1175,35 @@ namespace HaCreator.WzStructure
                     FootholdLine anchorLine = (FootholdLine)contAnchor.connectedLines[0];
                     // The line is guaranteed to be non-vertical
                     Direction direction = GetOtherAnchor(anchorLine, contAnchor).X > contAnchor.X ? Direction.Right : Direction.Left;
-                    FootholdAnchor remainingAnchor;
-                    if (direction == Direction.Right)
+                    FootholdAnchor remainingAnchor = null;
+                    int remainingIndex = -1;
+
+                    // Remove the rightmost/leftmost footholds
+                    for (int i = direction == Direction.Right ? 0 : (nitems - 1);
+                        direction == Direction.Right ? i < nitems : i > 0;
+                        i += direction == Direction.Right ? 1 : -1)
                     {
-                        // Remove the rightmost footholds
-                        ((FootholdAnchor)tileInst.BoundItemsList[3]).RemoveItem(null);
-                        ((FootholdAnchor)tileInst.BoundItemsList[2]).RemoveItem(null);
-                        remainingAnchor = (FootholdAnchor)tileInst.BoundItemsList[1];
+                        FootholdAnchor anchor = (FootholdAnchor)tileInst.BoundItemsList[i];
+                        if (direction == Direction.Right ? anchor.X >= contAnchor.X : anchor.X <= contAnchor.X)
+                        {
+                            break;
+                        }
+                        remainingIndex = i;
                     }
-                    else
+                    if (remainingIndex == -1)
                     {
-                        // Remove the leftmost footholds
-                        // We keep using the index 0 because every time we remove it the list is updated accordingly, shifting the next object to index 0
-                        ((FootholdAnchor)tileInst.BoundItemsList[0]).RemoveItem(null);
-                        ((FootholdAnchor)tileInst.BoundItemsList[0]).RemoveItem(null);
-                        remainingAnchor = (FootholdAnchor)tileInst.BoundItemsList[0];
+                        continue;
                     }
-                    board.BoardItems.FootholdLines.Add(new FootholdLine(board, remainingAnchor, contAnchor, surfaceLine.ForbidFallDown, surfaceLine.CantThrough, surfaceLine.Piece, surfaceLine.Force, true));
+                    remainingAnchor = (FootholdAnchor)tileInst.BoundItemsList[remainingIndex];
+                    int deleteStart = direction == Direction.Right ? (remainingIndex + 1) : 0;
+                    int deleteEnd = direction == Direction.Right ? nitems : remainingIndex;
+
+                    for (int i = deleteStart; i < deleteEnd; i++)
+                    {
+                        ((FootholdAnchor)tileInst.BoundItemsList[deleteStart]).RemoveItem(null);
+                    }
+
+                    board.BoardItems.FootholdLines.Add(new FootholdLine(board, remainingAnchor, contAnchor, anchorLine.ForbidFallDown, anchorLine.CantThrough, anchorLine.Piece, anchorLine.Force, true));
                 }
             }
 
@@ -927,6 +1273,23 @@ namespace HaCreator.WzStructure
                     TileInstance next = sideSnaps.Item2;
                 }
             }*/
+        }
+
+        public void ChangeMapID(int newId)
+        {
+            int oldId = board.MapInfo.id;
+            if (oldId == newId)
+            {
+                return;
+            }
+            board.MapInfo.id = newId;
+            foreach (PortalInstance portalInst in board.BoardItems.Portals)
+            {
+                if (portalInst.tm == oldId)
+                {
+                    portalInst.tm = newId;
+                }
+            }
         }
     }
 

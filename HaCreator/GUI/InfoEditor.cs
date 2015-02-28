@@ -86,7 +86,7 @@ namespace HaCreator.GUI
                     IDLabel.Text = "CashShopPreview";
                     nameBox.Text = "CashShopPreview";
                     streetBox.Text = "CashShopPreview";
-                    //                    idBox.Enabled = false;
+                    categoryBox.Text = "CashShopPreview";
                     nameBox.Enabled = false;
                     streetBox.Enabled = false;
                     bgmBox.Enabled = false;
@@ -98,16 +98,16 @@ namespace HaCreator.GUI
                     IDLabel.Text = "MapLogin";
                     nameBox.Text = "MapLogin";
                     streetBox.Text = "MapLogin";
-                    //                    idBox.Enabled = false;
+                    categoryBox.Text = "MapLogin";
                     nameBox.Enabled = false;
                     streetBox.Enabled = false;
                     break;
                 case MapType.RegularMap:
                     if (info.id == -1) IDLabel.Text = "";
                     else IDLabel.Text = info.id.ToString();
-                    //LoadOptionalInt(info.id, IDLabel);
                     nameBox.Text = info.strMapName;
                     streetBox.Text = info.strStreetName;
+                    categoryBox.Text = info.strCategoryName;
                     break;
             }
             if (info.mapType != MapType.CashShopPreview) markBox.SelectedItem = info.mapMark;
@@ -357,6 +357,7 @@ namespace HaCreator.GUI
                         changeStringwz(info.id, nameBox.Text, streetBox.Text);*/
                     info.strMapName = nameBox.Text;
                     info.strStreetName = streetBox.Text;
+                    info.strCategoryName = categoryBox.Text;
                 }
                 info.returnMap = cannotReturnCBX.Checked ? info.id : (int)returnBox.Value;
                 info.forcedReturn = returnHereCBX.Checked ? 999999999 : (int)forcedRet.Value;

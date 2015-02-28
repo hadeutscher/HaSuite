@@ -52,8 +52,8 @@ namespace HaCreator
         public static int Mobrx1Offset = 200;
         public static int Npcrx0Offset = 20;
         public static int Npcrx1Offset = 20;
-        public static int defaultMobTime = 7;
-        public static int defaultReactorTime = 7;
+        public static int defaultMobTime = 0;
+        public static int defaultReactorTime = 0;
         public static float SnapDistance = 10;
         public static float SignificantDistance = 10;
         public static int ScrollDistance = 120;
@@ -66,6 +66,8 @@ namespace HaCreator
         public static int FontSize = 15;
         public static System.Drawing.FontStyle FontStyle = System.Drawing.FontStyle.Regular;
         public static int dotDescriptionBoxSize = 100;
+        public static int ImageViewerHeight = 100;
+        public static int ImageViewerWidth = 100;
 
         public static bool useMiniMap = true;
         public static bool showVR = true;

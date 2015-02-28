@@ -43,6 +43,7 @@ namespace HaCreator.MapEditor
     {
         private string baseDir;
         public MapleTable<string, WzFile> wzFiles = new MapleTable<string, WzFile>();
+        public MapleTable<WzFile, bool> wzFilesUpdated = new MapleTable<WzFile, bool>();
         public MapleTable<string, WzMainDirectory> wzDirs = new MapleTable<string, WzMainDirectory>();
         private WzMapleVersion version;
 
@@ -66,6 +67,7 @@ namespace HaCreator.MapEditor
                 wzf.ParseWzFile();
                 name = name.ToLower();
                 wzFiles[name] = wzf;
+                wzFilesUpdated[wzf] = false;
                 wzDirs[name] = new WzMainDirectory(wzf);
                 return true;
             }
@@ -84,6 +86,7 @@ namespace HaCreator.MapEditor
                 wzf.ParseWzFile();
                 name = name.ToLower();
                 wzFiles[name] = wzf;
+                wzFilesUpdated[wzf] = false;
                 wzDirs[name] = new WzMainDirectory(wzf);
                 foreach (WzDirectory mainDir in wzf.WzDirectory.WzDirectories)
                 {
@@ -96,6 +99,12 @@ namespace HaCreator.MapEditor
                 MessageBox.Show("Error initializing " + name + ".wz (" + e.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
                 return false;
             }
+        }
+
+        public void SetUpdated(string name, WzImage img)
+        {
+            img.Changed = true;
+            wzFilesUpdated[GetMainDirectoryByName(name).File] = true;
         }
 
         public WzMainDirectory GetMainDirectoryByName(string name)
@@ -116,6 +125,11 @@ namespace HaCreator.MapEditor
         public bool HasDataFile
         {
             get { return File.Exists(Path.Combine(baseDir, "Data.wz")); }
+        }
+
+        public string BaseDir
+        {
+            get { return baseDir; }
         }
 
         public void ExtractMobFile()
@@ -356,20 +370,36 @@ namespace HaCreator.MapEditor
         public static string GetMobNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzStringProperty mobName = (WzStringProperty)Program.WzManager.String["Mob.img"][id]["name"];
-            if (mobName != null) return mobName.Value;
-            else return "";
+            WzObject obj = Program.WzManager.String["Mob.img"][id];
+            if (obj == null)
+            {
+                return "";
+            }
+            WzStringProperty mobName = (WzStringProperty)obj["name"];
+            if (mobName == null)
+            {
+                return "";
+            }
+            return mobName.Value;
         }
 
         public static string GetNpcNameById(string id)
         {
             id = RemoveLeadingZeros(id);
-            WzStringProperty npcName = (WzStringProperty)Program.WzManager.String["Npc.img"][id]["name"];
-            if (npcName != null) return npcName.Value;
-            else return "";
+            WzObject obj = Program.WzManager.String["Npc.img"][id];
+            if (obj == null)
+            {
+                return "";
+            }
+            WzStringProperty npcName = (WzStringProperty)obj["name"];
+            if (npcName == null)
+            {
+                return "";
+            }
+            return npcName.Value;
         }
 
-        public static string GetMapNameById(string id)
+        public static WzSubProperty GetMapStringProp(string id)
         {
             id = RemoveLeadingZeros(id);
             WzImage mapNameParent = (WzImage)Program.WzManager.String["Map.img"];
@@ -378,27 +408,47 @@ namespace HaCreator.MapEditor
                 WzSubProperty mapNameDirectory = (WzSubProperty)mapNameCategory[id];
                 if (mapNameDirectory != null)
                 {
-                    WzStringProperty mapName = (WzStringProperty)mapNameDirectory["mapName"];
-                    if (mapName != null) return mapName.Value;
+                    return mapNameDirectory;
                 }
             }
-            return "";
+            return null;
         }
 
-        public static string GetStreetNameById(string id)
+        public static string GetMapName(WzSubProperty mapProp)
         {
-            id = RemoveLeadingZeros(id);
-            WzImage mapNameParent = (WzImage)Program.WzManager.String["Map.img"];
-            foreach (WzSubProperty mapNameCategory in mapNameParent.WzProperties)
+            if (mapProp == null)
             {
-                WzSubProperty mapNameDirectory = (WzSubProperty)mapNameCategory[id];
-                if (mapNameDirectory != null)
-                {
-                    WzStringProperty streetName = (WzStringProperty)mapNameDirectory["streetName"];
-                    if (streetName != null) return streetName.Value;
-                }
+                return "";
             }
-            return "";
+            WzStringProperty mapName = (WzStringProperty)mapProp["mapName"];
+            if (mapName == null)
+            {
+                return "";
+            }
+            return mapName.Value;
+        }
+
+        public static string GetMapStreetName(WzSubProperty mapProp)
+        {
+            if (mapProp == null)
+            {
+                return "";
+            }
+            WzStringProperty streetName = (WzStringProperty)mapProp["streetName"];
+            if (streetName == null)
+            {
+                return "";
+            }
+            return streetName.Value;
+        }
+
+        public static string GetMapCategoryName(WzSubProperty mapProp)
+        {
+            if (mapProp == null)
+            {
+                return "";
+            }
+            return mapProp.Parent.Name;
         }
 
         public static WzObject GetObjectByRelativePath(WzObject currentObject, string path)

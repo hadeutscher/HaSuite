@@ -233,8 +233,6 @@ namespace HaCreator.MapEditor
         public int timeFinish;
     }
 
-    //noSkill is an... int array? inside the class property
-
     public struct MobMassacre
     {
         public int mapDistance;
@@ -602,107 +600,25 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public class MCMob : MapleDot, INamedMisc
+    public class SwimArea : MiscRectangle
     {
-        public int? team;
+        string id;
 
-        public MCMob(Board board, int x, int y, int? team)
-            : base(board, x, y)
+        public SwimArea(Board board, Rectangle rect, string id)
+            : base(board, rect)
         {
-            this.team = team;
+            this.id = id;
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
+        public string Identifier
         {
-            return true;
+            get { return id; }
+            set { id = value; }
         }
 
-        public override void DoSnap()
+        public override string Name
         {
-        }
-
-        public override Color Color
-        {
-            get
-            {
-                return UserSettings.MiscColor;
-            }
-        }
-
-        public override Color InactiveColor
-        {
-            get { return MultiBoard.MiscInactiveColor; }
-        }
-
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.Misc; }
-        }
-
-        protected override bool RemoveConnectedLines
-        {
-            get { return true; }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return "Special: MC Mob";
-            }
-        }
-    }
-
-    public class MCGuardian : MapleDot, INamedMisc
-    {
-        public int? team;
-        public int f;
-
-        public MCGuardian(Board board, int x, int y, int? team, int f)
-            : base(board, x, y)
-        {
-            this.team = team;
-            this.f = f;
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
-        }
-
-        public override void DoSnap()
-        {
-        }
-
-        public override Color Color
-        {
-            get
-            {
-                return UserSettings.MiscColor;
-            }
-        }
-
-        public override Color InactiveColor
-        {
-            get { return MultiBoard.MiscInactiveColor; }
-        }
-
-        public override ItemTypes Type
-        {
-            get { return ItemTypes.Misc; }
-        }
-
-        protected override bool RemoveConnectedLines
-        {
-            get { return true; }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return "Special: MC Guardian";
-            }
+            get { return "SwimArea " + id; }
         }
     }
 }

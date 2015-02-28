@@ -412,10 +412,27 @@ namespace HaCreator.MapEditor
 
         void ribbon_RepackClicked()
         {
+            lock (multiBoard)
+            {
+                Repack r = new Repack();
+                r.ShowDialog();
+                if (Program.Restarting)
+                {
+                    multiBoard.Stop();
+                }
+            }
+            if (Program.Restarting && CloseRequested != null)
+            {
+                CloseRequested.Invoke();
+            }
         }
 
         void ribbon_SaveClicked()
         {
+            lock(multiBoard)
+            {
+                new Save(multiBoard.SelectedBoard).ShowDialog();
+            }
         }
 
         void ribbon_OpenClicked()

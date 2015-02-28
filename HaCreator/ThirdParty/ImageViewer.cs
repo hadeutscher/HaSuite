@@ -42,8 +42,8 @@ namespace HaCreator.ThirdParty
         private bool m_IsThumbnail;
         private bool m_IsActive;
 
-        public int MaxWidth;
-        public int MaxHeight;
+        public int maxWidth;
+        public int maxHeight;
 
         public bool IsText;
 
@@ -114,12 +114,8 @@ namespace HaCreator.ThirdParty
             tempImage.Dispose();
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        private float CalculateMP()
         {
-            Graphics g = e.Graphics;
-            if (g == null) return;
-            if (m_Image == null) return;
-
             float mp = 1;
             float dx = 0, dy = 0;
             if (MaxWidth > 0 && m_Image.Width > MaxWidth)
@@ -132,8 +128,18 @@ namespace HaCreator.ThirdParty
             }
 
             if (dx != 0 && dy == 0) mp = dx;
-            if (dy != 0 && dx == 0) mp = dy;
-            if (dx != 0 && dx != 0) mp = Math.Min(dx, dy);
+            else if (dy != 0 && dx == 0) mp = dy;
+            else if (dx != 0 && dy != 0) mp = Math.Min(dx, dy);
+            return mp;
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            if (g == null) return;
+            if (m_Image == null) return;
+
+            float mp = CalculateMP();
 
             g.Clear(Color.White);
             g.DrawImage(m_Image, 4, 4, m_Image.Width * mp, m_Image.Height * mp);
@@ -176,5 +182,26 @@ namespace HaCreator.ThirdParty
         {
             ((ImageViewer)sender).IsActive = false;
         }
+
+        public int MaxHeight
+        {
+            get { return maxHeight; }
+            set
+            {
+                maxHeight = value;
+                Height = (int)((Height - 20) * CalculateMP() + 20);
+            }
+        }
+
+        public int MaxWidth
+        {
+            get { return maxWidth; }
+            set
+            {
+                maxWidth = value;
+                Width = (int)((Width - 8) * CalculateMP() + 8);
+            }
+        }
+
     }
 }

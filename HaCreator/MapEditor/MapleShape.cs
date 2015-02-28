@@ -573,7 +573,6 @@ namespace HaCreator.MapEditor
         public bool remove = false; 
         public int prev = 0;
         public int next = 0;
-        public Foothold fh;
         public bool user;
 
         public FootholdLine prevOverride = null;
@@ -684,7 +683,40 @@ namespace HaCreator.MapEditor
         public MapleBool CantThrough { get { return _cantThrough; } set { _cantThrough = value; } }
         public int LayerNumber { get { return ((FootholdAnchor)FirstDot).LayerNumber; } set { throw new NotImplementedException(); } }
 
-        public int num; //temporary, for saving.
+        //temporary, for saving/loading.
+        public int num; 
+        public bool saved;
+
+        public static int FHSorter(FootholdLine a, FootholdLine b)
+        {
+            if (a.FirstDot.X > b.FirstDot.X)
+                return 1;
+            else if (a.FirstDot.X < b.FirstDot.X)
+                return -1;
+            else
+            {
+                if (a.FirstDot.Y > b.FirstDot.Y)
+                    return 1;
+                else if (a.FirstDot.Y < b.FirstDot.Y)
+                    return -1;
+                else
+                {
+                    if (a.SecondDot.X > b.SecondDot.X)
+                        return 1;
+                    else if (a.SecondDot.X < b.SecondDot.X)
+                        return -1;
+                    else
+                    {
+                        if (a.SecondDot.Y > b.SecondDot.Y)
+                            return 1;
+                        else if (a.SecondDot.Y < b.SecondDot.Y)
+                            return -1;
+                        else
+                            return 0;
+                    }
+                }
+            }
+        }
     }
 
     public class RopeLine : MapleLine
@@ -1087,8 +1119,9 @@ namespace HaCreator.MapEditor
         private string title;
         private string desc;
         private ToolTipChar ttc;
+        private int originalNum;
 
-        public ToolTip(Board board, Rectangle rect, string title, string desc)
+        public ToolTip(Board board, Rectangle rect, string title, string desc, int originalNum=-1)
             : base(board, rect)
         {
             lock (board.ParentControl)
@@ -1111,6 +1144,8 @@ namespace HaCreator.MapEditor
                 LineDA.xBind = true;
                 this.title = title;
                 this.desc = desc;
+                this.ttc = null;
+                this.originalNum = originalNum;
             }
         }
 
@@ -1130,6 +1165,11 @@ namespace HaCreator.MapEditor
         {
             get { return ttc; }
             set { ttc = value; }
+        }
+
+        public int OriginalNumber
+        {
+            get { return originalNum; }
         }
 
         public override Color Color
