@@ -472,7 +472,7 @@ namespace HaCreator.MapSimulator
         {
             if (audio != null)
             {
-                audio.Pause();
+                //audio.Pause();
                 audio.Dispose();
             }
         }

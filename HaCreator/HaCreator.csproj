@@ -157,6 +157,12 @@
     <Compile Include="CustomControls\ScrollablePictureBox.Designer.cs">
       <DependentUpon>ScrollablePictureBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\InstanceEditor\TileInstanceEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\InstanceEditor\TileInstanceEditor.Designer.cs">
+      <DependentUpon>TileInstanceEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\InstanceEditor\TooltipInstanceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -363,6 +369,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WzStructure\FootholdEnumerator.cs" />
     <Compile Include="WzStructure\MapLoader.cs" />
     <Compile Include="WzStructure\MapSaver.cs" />
     <EmbeddedResource Include="CustomControls\AlphaColorPicker.resx">
@@ -416,6 +423,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\InstanceEditor\BackgroundInstanceEditor.resx">
       <DependentUpon>BackgroundInstanceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\InstanceEditor\TileInstanceEditor.resx">
+      <DependentUpon>TileInstanceEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\InstanceEditor\TooltipInstanceEditor.resx">
       <DependentUpon>TooltipInstanceEditor.cs</DependentUpon>

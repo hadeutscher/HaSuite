@@ -159,10 +159,10 @@ namespace HaCreator.GUI
                 autoLieInterval.Value = ald.interval;
                 autoLieProp.Value = ald.prop;
             }
-            if (info.allowedItems != null)
+            if (info.allowedItem != null)
             {
                 allowedItemsEnable.Checked = true;
-                foreach (int id in info.allowedItems)
+                foreach (int id in info.allowedItem)
                     allowedItems.Items.Add(id.ToString());
             }
             optionsList.SetChecked(0, info.cloud);
@@ -399,9 +399,9 @@ namespace HaCreator.GUI
                         (int)autoLieProp.Value);
                 if (allowedItemsEnable.Checked)
                 {
-                    info.allowedItems = new List<int>();
+                    info.allowedItem = new List<int>();
                     foreach (string id in allowedItems.Items)
-                        info.allowedItems.Add(int.Parse(id));
+                        info.allowedItem.Add(int.Parse(id));
                 }
                 info.cloud = optionsList.Checked(0);
                 info.snow = optionsList.Checked(1);

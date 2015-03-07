@@ -36,6 +36,7 @@ namespace HaCreator.GUI.InstanceEditor
             xInput.Value = item.X;
             yInput.Value = item.Y;
             zInput.Value = item.Z;
+            zmBox.Value = item.zM;
             rBox.Checked = item.r;
             pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item, "\r\n");
             if (item.Name != null)
@@ -85,6 +86,7 @@ namespace HaCreator.GUI.InstanceEditor
                     item.Z = (int)zInput.Value;
                     item.Board.BoardItems.Sort();
                 }
+                item.zM = (int)zmBox.Value;
                 if (actions.Count > 0)
                     item.Board.UndoRedoMan.AddUndoBatch(actions);
                 item.Name = nameEnable.Checked ? nameBox.Text : null;

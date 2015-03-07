@@ -298,6 +298,18 @@ namespace HaCreator.MapEditor
             set { layer = value; }
         }
 
+        public FootholdLine GetOtherLine(FootholdLine line)
+        {
+            foreach (FootholdLine currLine in connectedLines)
+            {
+                if (line != currLine)
+                {
+                    return currLine;
+                }
+            }
+            return null;
+        }
+
         //public bool keyAnchor = false; //for foothold parsing
     }
 
@@ -716,6 +728,16 @@ namespace HaCreator.MapEditor
                     }
                 }
             }
+        }
+
+        public FootholdAnchor GetOtherAnchor(FootholdAnchor first)
+        {
+            if (FirstDot == first)
+                return (FootholdAnchor)SecondDot;
+            else if (SecondDot == first)
+                return (FootholdAnchor)FirstDot;
+            else
+                throw new Exception("GetOtherAnchor: line is not properly connected");
         }
     }
 

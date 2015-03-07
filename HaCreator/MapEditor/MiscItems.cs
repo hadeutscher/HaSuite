@@ -179,85 +179,6 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public struct UserInfo //array of these
-    {
-        public Condition? cond;
-        public Stat? stat;
-        public Look? look;
-        public int[] noitem; //can be null
-
-        public struct Condition //cond
-        {
-            public int? battleFieldTeam;
-            public int? jobCategory;
-            public int? job;
-            public int? level;
-            public MapleBool compare;
-        }
-
-        public struct Stat
-        {
-            public int? str;
-            public int? dex;
-            public int? inte; //int
-            public int? luk;
-            public int? pad;
-            public int? mad;
-            public int? acc;
-            public int? eva;
-            public int? jump;
-            public int? speed;
-            public int? speedmax;
-        }
-
-        public struct Look
-        {
-            public int? cap;
-            public int? clothes;
-            public int? pants;
-            public int? gloves;
-            public int? shoes;
-            public int? cape;
-        }
-    }
-
-    public struct BattleField
-    {
-        public string effectWin;
-        public string effectLose;
-        public int? rewardMapWinWolf;
-        public int? rewardMapWinSheep;
-        public int? rewardMapLoseWolf;
-        public int? rewardMapLoseSheep;
-        public int timeDefault;
-        public int timeFinish;
-    }
-
-    public struct MobMassacre
-    {
-        public int mapDistance;
-        public Gauge gauge;
-        public CountEffect[] countEffect;
-        public MapleBool disableSkill;
-
-        public struct Gauge
-        {
-            public int total;
-            public int decrease;
-            public int coolAdd;
-            public int missSub;
-            public int hitAdd;
-        }
-
-        public struct CountEffect
-        {
-            public int count;
-            public int? buff;
-            public MapleBool skillUse; 
-        }
-        
-    }
-
     public class ShipObject : BoardItem, IFlippable, INamedMisc
     {
         private ObjectInfo baseInfo; //shipObj
@@ -336,10 +257,19 @@ namespace HaCreator.MapEditor
             }
             set
             {
+                if (flip == value) return;
                 flip = value;
                 int xFlipShift = Width - 2 * Origin.X;
                 if (flip) X -= xFlipShift;
                 else X += xFlipShift;
+            }
+        }
+
+        public int UnflippedX
+        {
+            get
+            {
+                return flip ? (X + Width - 2 * Origin.X) : X;
             }
         }
 

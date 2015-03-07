@@ -32,16 +32,17 @@ namespace HaCreator.WzStructure
             switch (board.MapInfo.mapType)
             {
                 case MapType.RegularMap:
-                    name = board.MapInfo.id.ToString();
+                    name = WzInfoTools.AddLeadingZeros(board.MapInfo.id.ToString(), 9);
                     break;
                 case MapType.MapLogin:
                 case MapType.CashShopPreview:
-                    name = WzInfoTools.AddLeadingZeros(board.MapInfo.id.ToString(), 9);
+                    name = board.MapInfo.strMapName;
                     break;
                 default:
                     throw new Exception("Unknown map type");
             }
             this.image = new WzImage(name + ".img");
+            this.image.Parsed = true;
         }
 
         private void InsertImage()
@@ -54,12 +55,12 @@ namespace HaCreator.WzStructure
                 catDir = new WzDirectory(cat);
                 mapDir.AddDirectory(catDir);
             }
-            WzImage mapImg = (WzImage)mapDir[image.Name];
+            WzImage mapImg = (WzImage)catDir[image.Name];
             if (mapImg != null)
             {
                 mapImg.Remove();
             }
-            mapDir.AddImage(image);
+            catDir.AddImage(image);
             Program.WzManager.SetUpdated("map", image);
         }
 
@@ -131,13 +132,13 @@ namespace HaCreator.WzStructure
 
         public void SaveLayers()
         {
-            for (int i = 0; i < 7; i++)
+            for (int layer = 0; layer <= 7; layer++)
             {
                 WzSubProperty layerProp = new WzSubProperty();
                 WzSubProperty infoProp = new WzSubProperty();
                 
                 // Info
-                Layer l = board.Layers[i];
+                Layer l = board.Layers[layer];
                 if (l.tS != null) 
                 {
                     infoProp["tS"] = InfoTool.SetString(l.tS);
@@ -156,7 +157,7 @@ namespace HaCreator.WzStructure
                         ObjectInstance objInst = (ObjectInstance)item;
                         ObjectInfo objInfo = (ObjectInfo)objInst.BaseInfo;
 
-                        obj["x"] = InfoTool.SetInt(objInst.X);
+                        obj["x"] = InfoTool.SetInt(objInst.UnflippedX);
                         obj["y"] = InfoTool.SetInt(objInst.Y);
                         obj["z"] = InfoTool.SetInt(objInst.Z);
                         obj["zM"] = InfoTool.SetInt(objInst.zM);
@@ -218,7 +219,7 @@ namespace HaCreator.WzStructure
                 }
                 layerProp["tile"] = tileParent;
 
-                image[i.ToString()] = layerProp;
+                image[layer.ToString()] = layerProp;
             }
         }
 
@@ -297,7 +298,7 @@ namespace HaCreator.WzStructure
                 ReactorInstance reactorInst = board.BoardItems.Reactors[i];
                 WzSubProperty reactor = new WzSubProperty();
 
-                reactor["x"] = InfoTool.SetInt(reactorInst.X);
+                reactor["x"] = InfoTool.SetInt(reactorInst.UnflippedX);
                 reactor["y"] = InfoTool.SetInt(reactorInst.Y);
                 reactor["reactorTime"] = InfoTool.SetInt(reactorInst.ReactorTime);
                 reactor["name"] = InfoTool.SetOptionalString(reactorInst.Name);
@@ -328,13 +329,14 @@ namespace HaCreator.WzStructure
                 retainTooltipStrings = false;
             }
 
-            // Check if the tooltip match their original numbers
+            HashSet<int> caughtNumbers = new HashSet<int>();
+
+            // Check if the tooltips' original numbers can still be used
             if (retainTooltipStrings)
             {
-                board.BoardItems.ToolTips.Sort((a, b) => a.OriginalNumber.CompareTo(b.OriginalNumber));
                 for (int i = 0; i < board.BoardItems.ToolTips.Count; i++)
                 {
-                    if (board.BoardItems.ToolTips[i].OriginalNumber != i)
+                    if (board.BoardItems.ToolTips[i].OriginalNumber == -1)
                     {
                         retainTooltipStrings = false;
                         break;
@@ -352,16 +354,17 @@ namespace HaCreator.WzStructure
             for (int i = 0; i < board.BoardItems.ToolTips.Count; i++)
             {
                 ToolTip ttInst = board.BoardItems.ToolTips[i];
-                tooltipParent[i.ToString()] = PackRectangle(ttInst);
+                string tooltipPropStr = retainTooltipStrings ? ttInst.OriginalNumber.ToString() : i.ToString();
+                tooltipParent[tooltipPropStr] = PackRectangle(ttInst);
                 if (ttInst.CharacterToolTip != null)
                 {
-                    tooltipParent[i.ToString() + "char"] = PackRectangle(ttInst.CharacterToolTip);
+                    tooltipParent[tooltipPropStr + "char"] = PackRectangle(ttInst.CharacterToolTip);
                 }
 
                 if (retainTooltipStrings)
                 {
                     // This prop must exist if we are retaining, otherwise the map would not load
-                    WzSubProperty strTooltipProp = (WzSubProperty)strTooltipParent[i.ToString()];
+                    WzSubProperty strTooltipProp = (WzSubProperty)strTooltipParent[tooltipPropStr];
 
                     if (ttInst.Title != null)
                     {
@@ -389,7 +392,7 @@ namespace HaCreator.WzStructure
                     WzSubProperty strTooltipProp = new WzSubProperty();
                     strTooltipProp["Title"] = InfoTool.SetOptionalString(ttInst.Title);
                     strTooltipProp["Desc"] = InfoTool.SetOptionalString(ttInst.Desc);
-                    strTooltipProp[i.ToString()] = strTooltipProp;
+                    strTooltipParent[tooltipPropStr] = strTooltipProp;
                 }
             }
 
@@ -416,8 +419,8 @@ namespace HaCreator.WzStructure
                 BackgroundInstance bgInst = i < backCount ? board.BoardItems.BackBackgrounds[i] : board.BoardItems.FrontBackgrounds[i - backCount];
                 BackgroundInfo bgInfo = (BackgroundInfo)bgInst.BaseInfo;
                 WzSubProperty bgProp = new WzSubProperty();
-                bgProp["x"] = InfoTool.SetInt(bgInst.X);
-                bgProp["y"] = InfoTool.SetInt(bgInst.Y);
+                bgProp["x"] = InfoTool.SetInt(bgInst.UnflippedX);
+                bgProp["y"] = InfoTool.SetInt(bgInst.BaseY);
                 bgProp["rx"] = InfoTool.SetInt(bgInst.rx);
                 bgProp["ry"] = InfoTool.SetInt(bgInst.ry);
                 bgProp["cx"] = InfoTool.SetInt(bgInst.cx);
@@ -436,7 +439,223 @@ namespace HaCreator.WzStructure
 
         private void SavePlatform(FootholdLine start, WzSubProperty prop)
         {
+            // Edge foothold, map the platform in the correct direction
+            if (start.FirstDot.connectedLines.Count == 1)
+            {
+                SavePlatformWithDirection((FootholdAnchor)start.FirstDot, start, prop);
+            }
+            else if (start.SecondDot.connectedLines.Count == 1)
+            {
+                SavePlatformWithDirection((FootholdAnchor)start.SecondDot, start, prop);
+            }
+            else
+            {
+                // Non-edge foothold, map the platform in both directions
+                SavePlatformWithDirection((FootholdAnchor)start.FirstDot, start, prop);
+                SavePlatformWithDirection((FootholdAnchor)start.SecondDot, start, prop);
+            }
+        }
 
+        private void SavePlatformWithDirection(FootholdAnchor startAnchor, FootholdLine start, WzSubProperty prop)
+        {
+            foreach (FootholdLine line in new FootholdEnumerator(start, startAnchor))
+            {
+                FootholdOrientation orientation = GetFootholdOrientation(line);
+                int prev = GetFootholdPrevNext(line, orientation, FootholdDirection.Prev);
+                int next = GetFootholdPrevNext(line, orientation, FootholdDirection.Next);
+                FootholdAnchor anchor1 = (FootholdAnchor)(orientation == FootholdOrientation.PrevFirstNextSecond ? line.FirstDot : line.SecondDot);
+                FootholdAnchor anchor2 = (FootholdAnchor)(orientation == FootholdOrientation.PrevFirstNextSecond ? line.SecondDot : line.FirstDot);
+
+                WzSubProperty fhProp = new WzSubProperty();
+                fhProp["x1"] = InfoTool.SetInt(anchor1.X);
+                fhProp["y1"] = InfoTool.SetInt(anchor1.Y);
+                fhProp["x2"] = InfoTool.SetInt(anchor2.X);
+                fhProp["y2"] = InfoTool.SetInt(anchor2.Y);
+                fhProp["prev"] = InfoTool.SetInt(prev);
+                fhProp["next"] = InfoTool.SetInt(next);
+                fhProp["cantThrough"] = InfoTool.SetOptionalBool(line.CantThrough);
+                fhProp["forbidFallDown"] = InfoTool.SetOptionalBool(line.ForbidFallDown);
+                fhProp["piece"] = InfoTool.SetOptionalInt(line.Piece);
+                fhProp["force"] = InfoTool.SetOptionalInt(line.Force);
+                prop[line.num.ToString()] = fhProp;
+                
+                line.saved = true;
+            }
+        }
+
+        private FootholdOrientation GetFootholdOrientation(FootholdLine line)
+        {
+            FootholdOrientation result;
+            if (TryGetSimpleFootholdOrientation(line, out result))
+            {
+                return result;
+            }
+            else
+            {
+                // Vertical foothold, search for near nonvertical foothold as orientation reference
+                
+                // Obtain vertical orientation of the foothold
+                FootholdAnchor top, bottom;
+                if (line.FirstDot.Y < line.SecondDot.Y)
+                {
+                    top = (FootholdAnchor)line.FirstDot;
+                    bottom = (FootholdAnchor)line.SecondDot;
+                }
+                else if (line.FirstDot.Y > line.SecondDot.Y)
+                {
+                    bottom = (FootholdAnchor)line.FirstDot;
+                    top = (FootholdAnchor)line.SecondDot;
+                }
+                else
+                {
+                    throw new Exception("Zero length foothold in saving");
+                }
+
+                // For starters, we search the footholds linking downards from us.
+                // This is because we are looking for the conventional foothold U scheme:
+                //
+                // |     |
+                // |     |
+                // |_ _ _|
+                //
+                // or the Z/S schemes:
+                //_ _ _                _ _ _
+                //     |              |
+                //     |              |
+                //     |_ _ _ or _ _ _|
+                FootholdEnumerator referenceEnumerator = new FootholdEnumerator(line, top);
+                foreach (FootholdLine reference in referenceEnumerator)
+                {
+                    if (!reference.IsWall)
+                    {
+                        // We found a suiting foothold reference, find what is our orientation
+                        return GetVerticalFootholdOrientationByReference(line, top, reference, referenceEnumerator.CurrentAnchor);
+                    }
+                }
+
+                // If downard-search failed, search upwards, to resolve the n scheme:
+                //  _ _ _
+                // |     |
+                // |     |
+                // |     |
+                //
+                // Note that the order of searches is important; we MUST search downwards before upwards, to resolve schemes such as the tower scheme:
+                //
+                // |           |
+                // |           |
+                // |_ _     _ _|
+                // |           |
+                // |           |
+                // |_ _ _ _ _ _|
+                //
+                // If we searched upwards-first, the footholds between the two tower "floors" would be treated as n scheme footholds, while they should be U schemed.
+
+                referenceEnumerator = new FootholdEnumerator(line, bottom);
+                foreach (FootholdLine reference in referenceEnumerator)
+                {
+                    if (!reference.IsWall)
+                    {
+                        // We found a suiting foothold reference, find what is our orientation
+                        return GetVerticalFootholdOrientationByReference(line, bottom, reference, referenceEnumerator.CurrentAnchor);
+                    }
+                }
+
+                // If all else failed, we are dealing with a pure-wall foothold platform (i.e. a foothold graph consisting only of vertical footholds)
+                // In this case, we arbitrarily select the Normal orientation, since there's no more actual logic we can perform to know what is the correct orientation.
+                return FootholdOrientation.PrevFirstNextSecond;
+            }
+        }
+
+        private FootholdOrientation GetNonverticalFootholdOrientation(FootholdLine line)
+        {
+            if (line.FirstDot.X < line.SecondDot.X)
+            {
+                // Normal foothold orientation
+                return FootholdOrientation.PrevFirstNextSecond;
+            }
+            else // (line.FirstDot.X > line.SecondDot.X)
+            {
+                // Inverted foothold orientation
+                return FootholdOrientation.NextFirstPrevSecond;
+            }
+        }
+
+        private bool TryGetSimpleFootholdOrientation(FootholdLine line, out FootholdOrientation result)
+        {
+            if (line.prevOverride != null && line.FirstDot.connectedLines.Contains(line.prevOverride))
+            {
+                result = FootholdOrientation.PrevFirstNextSecond;
+                return true;
+            }
+            else if (line.prevOverride != null && line.SecondDot.connectedLines.Contains(line.prevOverride))
+            {
+                result = FootholdOrientation.NextFirstPrevSecond;
+                return true;
+            }
+            else if (line.nextOverride != null && line.FirstDot.connectedLines.Contains(line.nextOverride))
+            {
+                result = FootholdOrientation.NextFirstPrevSecond;
+                return true;
+            }
+            else if (line.nextOverride != null && line.SecondDot.connectedLines.Contains(line.nextOverride))
+            {
+                result = FootholdOrientation.PrevFirstNextSecond;
+                return true;
+            }
+            else if (!line.IsWall)
+            {
+                result = GetNonverticalFootholdOrientation(line);
+                return true;
+            }
+            else
+            {
+                // Result doesn't really matter here since we're returning false
+                result = FootholdOrientation.PrevFirstNextSecond;
+                return false;
+            }
+        }
+
+        private FootholdOrientation GetVerticalFootholdOrientationByReference(FootholdLine line, FootholdAnchor anchor, FootholdLine reference, FootholdAnchor referenceAnchor)
+        {
+            FootholdOrientation referenceOrientation = GetNonverticalFootholdOrientation(reference);
+            bool leadingAnchorIsFirst = referenceAnchor == reference.FirstDot;
+            bool firstIsPrev = referenceOrientation == FootholdOrientation.PrevFirstNextSecond;
+            bool startAnchorIsFirst = anchor == line.FirstDot;
+
+            // LAIF | FIP | RESULT (leadingAnchorIsPrev "LAIP")
+            //  1   |  1  |   1
+            //  1   |  0  |   0
+            //  0   |  1  |   0
+            //  0   |  0  |   1
+
+            // LAIP | SAIF | RESULT (Orientation: 0 normal, 1 inverted)
+            //  1   |  1   |   0
+            //  1   |  0   |   1
+            //  0   |  1   |   1
+            //  0   |  0   |   0
+
+            return !(leadingAnchorIsFirst ^ firstIsPrev) ^ startAnchorIsFirst ? FootholdOrientation.NextFirstPrevSecond : FootholdOrientation.PrevFirstNextSecond;
+        }
+
+        private int GetFootholdPrevNext(FootholdLine line, FootholdOrientation orientation, FootholdDirection dir)
+        {
+            FootholdLine overrideLine = dir == FootholdDirection.Prev ? line.prevOverride : line.nextOverride;
+            if (overrideLine != null && (line.FirstDot.connectedLines.Contains(overrideLine) || line.SecondDot.connectedLines.Contains(overrideLine)))
+            {
+                return overrideLine.num;
+            }
+            else
+            {
+                FootholdAnchor anchor = (FootholdAnchor)((orientation == FootholdOrientation.PrevFirstNextSecond) ^ (dir == FootholdDirection.Next) ? line.FirstDot : line.SecondDot);
+                if (anchor.connectedLines.Count < 2)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return anchor.GetOtherLine(line).num;
+                }
+            }
         }
 
         public void SaveFootholds()
@@ -444,18 +663,19 @@ namespace HaCreator.WzStructure
             WzSubProperty fhParent = new WzSubProperty();
             board.BoardItems.FootholdLines.ForEach(x => x.saved = false);
             board.BoardItems.FootholdLines.Sort(FootholdLine.FHSorter);
-            for (int i = 0; i < board.BoardItems.FootholdLines.Count; i++)
+            int fhIndex = 1;
+            foreach (FootholdLine line in board.BoardItems.FootholdLines)
             {
-                board.BoardItems.FootholdLines[i].num = i;
+                line.num = fhIndex++;
             }
             int platformIndex = 0;
-            for (int i = 0; i < 7; i++)
+            for (int layer = 0; layer <= 7; layer++)
             {
                 WzSubProperty fhLayerProp = new WzSubProperty();
                 foreach (FootholdLine fhInst in board.BoardItems.FootholdLines)
                 {
                     // Search only footholds in our layer, that weren't already saved, and are "edge" footholds (we will take care of circles soon)
-                    if (fhInst.LayerNumber != i || fhInst.saved || (fhInst.FirstDot.connectedLines.Count > 1 && fhInst.SecondDot.connectedLines.Count > 1))
+                    if (fhInst.LayerNumber != layer || fhInst.saved || (fhInst.FirstDot.connectedLines.Count > 1 && fhInst.SecondDot.connectedLines.Count > 1))
                     {
                         continue;
                     }
@@ -463,7 +683,22 @@ namespace HaCreator.WzStructure
                     SavePlatform(fhInst, fhPlatProp);
                     fhLayerProp[platformIndex++.ToString()] = fhPlatProp;
                 }
-                fhParent[i.ToString()] = fhLayerProp;
+
+                // Rerun the loop, this time processing all nonsaved footholds
+                foreach (FootholdLine fhInst in board.BoardItems.FootholdLines)
+                {
+                    if (fhInst.LayerNumber != layer || fhInst.saved)
+                    {
+                        continue;
+                    }
+                    WzSubProperty fhPlatProp = new WzSubProperty();
+                    SavePlatform(fhInst, fhPlatProp);
+                    fhLayerProp[platformIndex++.ToString()] = fhPlatProp;
+                }
+                if (fhLayerProp.WzProperties.Count > 0)
+                {
+                    fhParent[layer.ToString()] = fhLayerProp;
+                }
             }
 
             image["foothold"] = fhParent;
@@ -481,7 +716,7 @@ namespace HaCreator.WzStructure
                 WzSubProperty lifeProp = new WzSubProperty();
                 
                 lifeProp["id"] = InfoTool.SetString(mob ? ((MobInfo)lifeInst.BaseInfo).ID : ((NpcInfo)lifeInst.BaseInfo).ID);
-                lifeProp["x"] = InfoTool.SetInt(lifeInst.X);
+                lifeProp["x"] = InfoTool.SetInt(lifeInst.UnflippedX);
                 lifeProp["y"] = InfoTool.SetInt(lifeInst.Y - lifeInst.yShift);
                 lifeProp["cy"] = InfoTool.SetInt(lifeInst.Y);
                 lifeProp["mobTime"] = InfoTool.SetOptionalInt(lifeInst.MobTime);
@@ -522,7 +757,7 @@ namespace HaCreator.WzStructure
                     ObjectInfo shipInfo = (ObjectInfo)ship.BaseInfo;
                     WzSubProperty shipProp = new WzSubProperty();
                     shipProp["shipObj"] = InfoTool.SetString("Map/Obj/" + shipInfo.oS + ".img/" + shipInfo.l0 + "/" + shipInfo.l1 + "/" + shipInfo.l2);
-                    shipProp["x"] = InfoTool.SetInt(ship.X);
+                    shipProp["x"] = InfoTool.SetInt(ship.UnflippedX);
                     shipProp["y"] = InfoTool.SetInt(ship.Y);
                     shipProp["z"] = InfoTool.SetOptionalInt(ship.zValue);
                     shipProp["x0"] = InfoTool.SetOptionalInt(ship.X0);
@@ -590,6 +825,14 @@ namespace HaCreator.WzStructure
             }
         }
 
+        private void SaveAdditionals()
+        {
+            foreach (WzImageProperty prop in board.MapInfo.additionalNonInfoProps)
+            {
+                image.AddProperty(prop);
+            }
+        }
+
         public void SaveMapImage()
         {
             CreateImage();
@@ -605,6 +848,7 @@ namespace HaCreator.WzStructure
             SaveFootholds();
             SaveLife();
             SaveMisc();
+            SaveAdditionals();
             InsertImage();
         }
 
@@ -907,14 +1151,6 @@ namespace HaCreator.WzStructure
             return (FootholdAnchor)(line.FirstDot == currAnchor ? line.SecondDot : line.FirstDot);
         }*/
 
-        private static FootholdLine GetOtherLine(FootholdLine line, FootholdAnchor currAnchor)
-        {
-            foreach (FootholdLine currLine in currAnchor.connectedLines)
-                if (line != currLine)
-                    return currLine;
-            return null;
-        }
-
         /*private static double CalculateFootholdTreeLength(FootholdAnchor anchor, int lineIndex)
         {
             double length = 0;
@@ -935,8 +1171,8 @@ namespace HaCreator.WzStructure
             int length = 1;
             while (length <= max)
             {
-                anchor = GetOtherAnchor(line, anchor);
-                line = GetOtherLine(line, anchor);
+                anchor = line.GetOtherAnchor(anchor);
+                line = anchor.GetOtherLine(line);
                 if (line == null) return false;
             }
             return true;
@@ -947,7 +1183,7 @@ namespace HaCreator.WzStructure
             FootholdLine line = (FootholdLine)anchor.connectedLines[lineIndex];
             footholds.Remove(line);
             line.remove = true;
-            FootholdAnchor otherAnchor = GetOtherAnchor(line, anchor);
+            FootholdAnchor otherAnchor = line.GetOtherAnchor(anchor);
             for (int i = 0; i < otherAnchor.connectedLines.Count; i++)
                 if (otherAnchor.connectedLines[i] != line) EliminateFootholdTree(otherAnchor, i, ref footholds);
         }
@@ -1079,16 +1315,6 @@ namespace HaCreator.WzStructure
             return null;
         }
 
-        private static FootholdAnchor GetOtherAnchor(FootholdLine line, FootholdAnchor first)
-        {
-            if (line.FirstDot == first)
-                return (FootholdAnchor)line.SecondDot;
-            else if (line.SecondDot == first)
-                return (FootholdAnchor)line.FirstDot;
-            else
-                throw new Exception("GetOtherAnchor: line is not properly connected");
-        }
-
         /*private void SplitLine(FootholdLine line, FootholdAnchor anchor)
         {
             // Create first line
@@ -1174,7 +1400,7 @@ namespace HaCreator.WzStructure
                     // The anchor is guaranteed to have exactly 1 line
                     FootholdLine anchorLine = (FootholdLine)contAnchor.connectedLines[0];
                     // The line is guaranteed to be non-vertical
-                    Direction direction = GetOtherAnchor(anchorLine, contAnchor).X > contAnchor.X ? Direction.Right : Direction.Left;
+                    Direction direction = anchorLine.GetOtherAnchor(contAnchor).X > contAnchor.X ? Direction.Right : Direction.Left;
                     FootholdAnchor remainingAnchor = null;
                     int remainingIndex = -1;
 
@@ -1297,5 +1523,23 @@ namespace HaCreator.WzStructure
     {
         Left,
         Right
+    }
+
+    enum Dots
+    {
+        FirstDot,
+        SecondDot
+    }
+
+    enum FootholdDirection
+    {
+        Prev,
+        Next
+    }
+
+    enum FootholdOrientation
+    {
+        PrevFirstNextSecond = 0, // "Normal"
+        NextFirstPrevSecond = 1 // "Inverted"
     }
 }

@@ -20,6 +20,8 @@ namespace HaCreator.MapEditor
     public interface IFlippable
     {
         bool Flip { get; set; }
+
+        int UnflippedX { get; }
     }
 
 
@@ -103,10 +105,19 @@ namespace HaCreator.MapEditor
             }
             set
             {
+                if (flip == value) return;
                 flip = value;
                 int xFlipShift = Width - 2 * Origin.X;
                 if (flip) X -= xFlipShift;
                 else X += xFlipShift;
+            }
+        }
+
+        public int UnflippedX
+        {
+            get
+            {
+                return flip ? (X + Width - 2 * Origin.X) : X;
             }
         }
 
@@ -444,14 +455,19 @@ namespace HaCreator.MapEditor
             }
             set
             {
-                bool changeX = (flip == true) == value;
+                if((flip == true) == value) return;
                 flip = value;
-                if (changeX)
-                {
-                    int xFlipShift = Width - 2 * Origin.X;
-                    if (flip == true) X -= xFlipShift;
-                    else X += xFlipShift;
-                }
+                int xFlipShift = Width - 2 * Origin.X;
+                if (flip == true) X -= xFlipShift;
+                else X += xFlipShift;
+            }
+        }
+
+        public int UnflippedX
+        {
+            get
+            {
+                return flip ? (X + Width - 2 * Origin.X) : X;
             }
         }
 
@@ -846,10 +862,19 @@ namespace HaCreator.MapEditor
             }
             set
             {
+                if (flip == value) return;
                 flip = value;
                 int xFlipShift = Width - 2 * Origin.X;
                 if (flip) X -= xFlipShift;
                 else X += xFlipShift;
+            }
+        }
+
+        public int UnflippedX
+        {
+            get
+            {
+                return flip ? (X + Width - 2 * Origin.X) : X;
             }
         }
 
@@ -927,7 +952,7 @@ namespace HaCreator.MapEditor
             _type = type;
             _front = front;
             if (flip)
-                X -= Width - 2 * Origin.X;
+                BaseX -= Width - 2 * Origin.X;
         }
 
         public override ItemTypes Type
@@ -943,10 +968,19 @@ namespace HaCreator.MapEditor
             }
             set
             {
+                if (flip == value) return;
                 flip = value;
                 int xFlipShift = Width - 2 * Origin.X;
-                if (flip) X -= xFlipShift;
-                else X += xFlipShift;
+                if (flip) BaseX -= xFlipShift;
+                else BaseX += xFlipShift;
+            }
+        }
+
+        public int UnflippedX
+        {
+            get
+            {
+                return flip ? (BaseX + Width - 2 * Origin.X) : BaseX;
             }
         }
 

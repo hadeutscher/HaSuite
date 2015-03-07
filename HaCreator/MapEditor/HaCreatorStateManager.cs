@@ -130,6 +130,8 @@ namespace HaCreator.MapEditor
                     new ObjectInstanceEditor((ObjectInstance)item).ShowDialog();
                     break;
                 case "TileInstance":
+                    new TileInstanceEditor((TileInstance)item).ShowDialog();
+                    break;
                 case "Chair":
                     new GeneralInstanceEditor(item).ShowDialog();
                     break;

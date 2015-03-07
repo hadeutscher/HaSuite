@@ -130,34 +130,32 @@ namespace HaCreator.CustomControls
                 }
                 else
                 {
-                    if (!mapImage.Parsed)
+                    using (WzImageResource rsrc = new WzImageResource(mapImage))
                     {
-                        mapImage.ParseImage();
-                    }
-                    if (mapImage["info"]["link"] != null)
-                    {
-                        linkLabel.Visible = true;
-                        mapNotExist.Visible = false;
-                        minimapBox.Image = (Image)new Bitmap(1, 1);
-                        load = false;
-                    }
-                    else
-                    {
-                        linkLabel.Visible = false;
-                        mapNotExist.Visible = false;
-                        load = true;
-                        WzCanvasProperty minimap = (WzCanvasProperty)mapImage.GetFromPath("miniMap/canvas");
-                        if (minimap != null)
+                        if (mapImage["info"]["link"] != null)
                         {
-                            minimapBox.Image = (Image)minimap.PngProperty.GetPNG(false);
+                            linkLabel.Visible = true;
+                            mapNotExist.Visible = false;
+                            minimapBox.Image = (Image)new Bitmap(1, 1);
+                            load = false;
                         }
                         else
                         {
-                            minimapBox.Image = (Image)new Bitmap(1, 1);
+                            linkLabel.Visible = false;
+                            mapNotExist.Visible = false;
+                            load = true;
+                            WzCanvasProperty minimap = (WzCanvasProperty)mapImage.GetFromPath("miniMap/canvas");
+                            if (minimap != null)
+                            {
+                                minimapBox.Image = (Image)minimap.PngProperty.GetPNG(false);
+                            }
+                            else
+                            {
+                                minimapBox.Image = (Image)new Bitmap(1, 1);
+                            }
+                            load = true;
                         }
-                        load = true;
                     }
-                    mapImage.UnparseImage();
                     GC.Collect();
                 }
             }

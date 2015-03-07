@@ -54,12 +54,15 @@ namespace HaCreator.WzStructure
                     case "healer":
                     case "pulley":
                     case "BuffZone":
+                    case "swimArea":
                         continue;
                     case "coconut": // The coconut event. Prop is copied but not edit-supported, we don't need to notify the user since it has no stateful objects. (e.g. 109080002)
                     case "user": // A map prop that dresses the user with predefined items according to his job. No stateful objects. (e.g. 930000010)
                     case "noSkill": // Preset in Monster Carnival maps, can only guess by its name that it blocks skills. Nothing stateful. (e.g. 980031100)
                     case "snowMan": // I don't even know what is this for; it seems to only have 1 prop with a path to the snowman, which points to a nonexistant image. (e.g. 889100001)
                     case "weather": // This has something to do with cash weather items, and exists in some nautlius maps (e.g. 108000500)
+                    case "mobMassacre": // This is the Mu Lung Dojo header property (e.g. 926021200)
+                    case "battleField": // The sheep vs wolf event and other useless maps (e.g. 109090300, 910040100)
                         copyPropNames.Add(prop.Name);
                         continue;
                     case "snowBall": // The snowball/snowman event. It has the snowman itself, which is a stateful object (somewhat of a mob), but we do not support it.
@@ -351,9 +354,13 @@ namespace HaCreator.WzStructure
                         int num = int.Parse(fhProp.Name);
                         int next = InfoTool.GetInt(fhProp["next"]);
                         int prev = InfoTool.GetInt(fhProp["prev"]);
+                        MapleBool cantThrough = InfoTool.GetOptionalBool(fhProp["cantThrough"]);
+                        MapleBool forbidFallDown = InfoTool.GetOptionalBool(fhProp["forbidFallDown"]);
+                        int? piece = InfoTool.GetOptionalInt(fhProp["piece"]);
+                        int? force = InfoTool.GetOptionalInt(fhProp["force"]);
                         if (a.X != b.X || a.Y != b.Y)
                         {
-                            FootholdLine fh = new FootholdLine(mapBoard, a, b, false);
+                            FootholdLine fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force, false);
                             fh.num = num;
                             fh.prev = prev;
                             fh.next = next;
@@ -618,7 +625,7 @@ namespace HaCreator.WzStructure
             }
             if (swimArea != null)
             {
-                foreach (WzImageProperty prop in area.WzProperties)
+                foreach (WzImageProperty prop in swimArea.WzProperties)
                 {
                     int x1 = InfoTool.GetInt(prop["x1"]);
                     int x2 = InfoTool.GetInt(prop["x2"]);

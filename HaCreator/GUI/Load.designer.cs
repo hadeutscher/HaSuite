@@ -83,9 +83,6 @@
             // 
             // XMLBox
             // 
-            // 
-            // 
-            // 
             this.XMLBox.Enabled = false;
             this.XMLBox.Location = new System.Drawing.Point(64, 35);
             this.XMLBox.Name = "XMLBox";
@@ -161,9 +158,6 @@
             // 
             // searchBox
             // 
-            // 
-            // 
-            // 
             this.searchBox.Location = new System.Drawing.Point(64, 59);
             this.searchBox.Name = "searchBox";
             this.searchBox.Size = new System.Drawing.Size(158, 20);
@@ -218,11 +212,13 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "Load";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Load";
             this.Load += new System.EventHandler(this.Load_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Load_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.newWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.newHeight)).EndInit();
             this.ResumeLayout(false);
