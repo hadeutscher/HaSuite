@@ -342,11 +342,16 @@ namespace HaCreator.WzStructure
             FootholdAnchor a;
             FootholdAnchor b;
             MapleTable<int, FootholdLine> fhs = new MapleTable<int, FootholdLine>();
+            HashSet<int>[] existingZMs = Utils.CreateArrayWithCtor<HashSet<int>>(8);
+            List<int> allExistingZMs = new List<int>();
             foreach (WzSubProperty layerProp in footholdParent.WzProperties)
             {
                 layer = int.Parse(layerProp.Name);
                 foreach (WzSubProperty platProp in layerProp.WzProperties)
                 {
+                    int zM = int.Parse(platProp.Name);
+                    existingZMs[layer].Add(zM);
+                    allExistingZMs.Add(zM);
                     foreach (WzSubProperty fhProp in platProp.WzProperties)
                     {
                         a = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x1"]), InfoTool.GetInt(fhProp["y1"]), layer, false);
@@ -360,7 +365,7 @@ namespace HaCreator.WzStructure
                         int? force = InfoTool.GetOptionalInt(fhProp["force"]);
                         if (a.X != b.X || a.Y != b.Y)
                         {
-                            FootholdLine fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force, false);
+                            FootholdLine fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force, zM);
                             fh.num = num;
                             fh.prev = prev;
                             fh.next = next;
@@ -409,6 +414,20 @@ namespace HaCreator.WzStructure
                     mapBoard.BoardItems.FHAnchors.Add(anchor);
                 }
                 anchors.Clear();
+            }
+            
+            // generate default zM's
+            for (int i = 0; i < existingZMs.Length; i++)
+            {
+                for (int zm_cand = 0; true; zm_cand++)
+                {
+                    // Choose either a zM that is already bound to our layer, or one that is completely free
+                    if (existingZMs[i].Contains(zm_cand) || !allExistingZMs.Contains(zm_cand))
+                    {
+                        mapBoard.Layers[i].zMDefault = zm_cand;
+                        break;
+                    }
+                }
             }
         }
 

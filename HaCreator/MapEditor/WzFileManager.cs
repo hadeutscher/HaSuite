@@ -59,11 +59,23 @@ namespace HaCreator.MapEditor
             this.version = WzMapleVersion.GENERATE;
         }
 
+        private string Capitalize(string x)
+        {
+            if (x.Length > 0 && char.IsLower(x[0]))
+            {
+                return new string(new char[] { char.ToUpper(x[0]) }) + x.Substring(1);
+            }
+            else
+            {
+                return x;
+            }
+        }
+
         public bool LoadWzFile(string name)
         {
             try
             {
-                WzFile wzf = new WzFile(Path.Combine(baseDir, name + ".wz"), version);
+                WzFile wzf = new WzFile(Path.Combine(baseDir, Capitalize(name) + ".wz"), version);
                 wzf.ParseWzFile();
                 name = name.ToLower();
                 wzFiles[name] = wzf;
@@ -82,7 +94,7 @@ namespace HaCreator.MapEditor
         {
             try
             {
-                WzFile wzf = new WzFile(Path.Combine(baseDir, name + ".wz"), version);
+                WzFile wzf = new WzFile(Path.Combine(baseDir, Capitalize(name) + ".wz"), version);
                 wzf.ParseWzFile();
                 name = name.ToLower();
                 wzFiles[name] = wzf;
@@ -543,6 +555,19 @@ namespace HaCreator.MapEditor
         public static System.Drawing.Color XNAToDrawingColor(Microsoft.Xna.Framework.Color c)
         {
             return Color.FromArgb(c.A, c.R, c.G, c.B);
+        }
+    }
+
+    public static class Utils
+    {
+        public static T[] CreateArrayWithCtor<T>(int size) where T : new()
+        {
+            T[] result = new T[size];
+            for (int i =0; i< size; i++)
+            {
+                result[i] = new T();
+            }
+            return result;
         }
     }
 }

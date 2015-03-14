@@ -55,6 +55,7 @@ namespace HaCreator.MapEditor
             this.ribbon.RegenerateMinimapClicked += ribbon_RegenerateMinimapClicked;
             this.ribbon.SnappingToggled += ribbon_SnappingToggled;
             this.ribbon.RandomTilesToggled += ribbon_RandomTilesToggled;
+            this.ribbon.InfoModeToggled += ribbon_InfoModeToggled;
             this.ribbon.HaRepackerClicked += ribbon_HaRepackerClicked;
             this.ribbon.FinalizeClicked += ribbon_FinalizeClicked;
 
@@ -307,6 +308,11 @@ namespace HaCreator.MapEditor
             UserSettings.useSnapping = pressed;
         }
 
+        void ribbon_InfoModeToggled(bool pressed)
+        {
+            ApplicationSettings.InfoMode = pressed;
+        }
+
         void ribbon_RegenerateMinimapClicked()
         {
             if (multiBoard.SelectedBoard.RegenerateMinimap())
@@ -449,7 +455,7 @@ namespace HaCreator.MapEditor
                 if (!multiBoard.DeviceReady)
                 {
                     ribbon.SetEnabled(true);
-                    ribbon.SetOptions(UserSettings.showVR, UserSettings.useMiniMap, UserSettings.emulateParallax, UserSettings.useSnapping, ApplicationSettings.randomTiles);
+                    ribbon.SetOptions(UserSettings.showVR, UserSettings.useMiniMap, UserSettings.emulateParallax, UserSettings.useSnapping, ApplicationSettings.randomTiles, ApplicationSettings.InfoMode);
                     if (FirstMapLoaded != null)
                         FirstMapLoaded.Invoke();
                     multiBoard.Start();

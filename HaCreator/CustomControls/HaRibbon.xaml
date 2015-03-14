@@ -26,6 +26,7 @@
                 <CommandBinding Command="ns:HaRibbon.RegenMinimap"  CanExecute="AlwaysExecute" Executed="RegenMinimap_Executed" />
                 <CommandBinding Command="ns:HaRibbon.Snapping"  CanExecute="AlwaysExecute" Executed="Snapping_Executed" />
                 <CommandBinding Command="ns:HaRibbon.Random"  CanExecute="AlwaysExecute" Executed="Random_Executed" />
+                <CommandBinding Command="ns:HaRibbon.InfoMode"  CanExecute="AlwaysExecute" Executed="InfoMode_Executed" />
                 <CommandBinding Command="ns:HaRibbon.HaRepacker"  CanExecute="AlwaysExecute" Executed="HaRepacker_Executed" />
             </Ribbon.CommandBindings>
 
@@ -92,13 +93,9 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <ComboBox x:Name="layerBox" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" SelectionChanged="layerBox_SelectionChanged" Focusable="False">
-                            <ComboBox.Items>
-                                <sys:String>asdf</sys:String>
-                                <sys:String>qwer</sys:String>
-                            </ComboBox.Items>
-                        </ComboBox>
+                        <ComboBox x:Name="layerBox" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" SelectionChanged="layerBox_SelectionChanged" Focusable="False" />
                         <CheckBox x:Name="layerCheckbox" Grid.Row="1" Content="Show All" HorizontalAlignment="Center" VerticalAlignment="Center" Command="ns:HaRibbon.AllLayerView" Focusable="False" />
                     </Grid>
                 </RibbonGroup>
@@ -111,6 +108,7 @@
                     <RibbonButton Label="Finalize Footholds" LargeImageSource="pack://application:,,,/HaCreator;component/Images/Foothold.png" Command="ns:HaRibbon.Finalize" Focusable="False"/>
                     <RibbonToggleButton x:Name="snapBtn" Label="Snapping" LargeImageSource="pack://application:,,,/HaCreator;component/Images/magnet_32.png" Command="ns:HaRibbon.Snapping" Focusable="False"/>
                     <RibbonToggleButton x:Name="randomBtn" Label="Random Tiles" LargeImageSource="pack://application:,,,/HaCreator;component/Images/Untitled1.png" Command="ns:HaRibbon.Random" Focusable="False"/>
+                    <RibbonToggleButton x:Name="infomodeBtn" Label="Info Mode" LargeImageSource="pack://application:,,,/HaCreator;component/Images/About.png" Command="ns:HaRibbon.InfoMode" Focusable="False"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="statTab" Header="Stats" KeyTip="S">

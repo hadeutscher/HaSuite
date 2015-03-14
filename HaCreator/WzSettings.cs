@@ -96,6 +96,7 @@ namespace HaCreator
         public static int lastRadioIndex = 3;
         public static bool newTab = true;
         public static bool randomTiles = true;
+        public static bool InfoMode = false;
         public static int lastDefaultLayer = -1;
         public static string AuthorEmail = new string(Encoding.ASCII.GetChars(new byte[] { 
                                             0x68,0x61,0x68,0x61,0x30,0x31,0x68,0x61,0x68,0x61,0x30,0x31,0x40,0x67,0x6d,0x61,0x69,0x6c,0x2e,0x63,0x6f,0x6d 

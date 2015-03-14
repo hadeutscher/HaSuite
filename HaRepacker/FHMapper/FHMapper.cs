@@ -19,6 +19,7 @@ namespace HaRepacker.FHMapper
     {
         public List<Object> settings = new List<object>();
         private HaRepackerMainPanel MainPanel;
+        private TreeNode node;
 
         public FHMapper(HaRepackerMainPanel MainPanel)
         {
@@ -27,7 +28,8 @@ namespace HaRepacker.FHMapper
 
         public void SaveMap(WzImage img, double zoom)
         {
-            WzFile wzFile = (WzFile)((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
+            node = MainPanel.DataTree.SelectedNode;
+            WzFile wzFile = (WzFile)((WzObject)node.Tag).WzFileParent;
             // Spawnpoint foothold and portal lists
             List<SpawnPoint.Spawnpoint> MSPs = new List<SpawnPoint.Spawnpoint>();
             List<FootHold.Foothold> FHs = new List<FootHold.Foothold>();
@@ -292,7 +294,7 @@ namespace HaRepacker.FHMapper
             {
 
                 showMap.scale = zoom;
-                showMap.ShowDialog();
+                showMap.Show();
             }
             catch (FormatException)
             {
@@ -309,7 +311,7 @@ namespace HaRepacker.FHMapper
 
         private void DisplayMapClosed(object sender, FormClosedEventArgs e)
         {
-            ((WzNode)MainPanel.DataTree.SelectedNode).Reparse();
+            ((WzNode)node).Reparse();
         }
 
         internal void ParseSettings()

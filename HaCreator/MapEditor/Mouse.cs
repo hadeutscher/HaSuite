@@ -183,12 +183,12 @@ namespace HaCreator.MapEditor
                 Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(fhAnchor) });
                 if (connectedLines.Count == 0)
                 {
-                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, true));
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, Board.SelectedLayer.zMDefault));
                 }
                 else
                 {
                     connectedLines[0].ConnectSecondDot(fhAnchor);
-                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, true));
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, Board.SelectedLayer.zMDefault));
                 }
             }
         }
@@ -215,13 +215,13 @@ namespace HaCreator.MapEditor
                                 Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.LineAdded(connectedLines[0], connectedLines[0].FirstDot, anchor) });
                                 connectedLines[0].ConnectSecondDot(anchor);
                                 // Now that we finished the previous foothold, create a new one between the anchor and the mouse
-                                FootholdLine fh = new FootholdLine(Board, anchor, true);
+                                FootholdLine fh = new FootholdLine(Board, anchor, Board.SelectedLayer.zMDefault);
                                 Board.BoardItems.FootholdLines.Add(fh);
                             }
                         }
                         else // Construct a footholdline between the anchor and the mouse
                         {
-                            Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor, true));
+                            Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor, Board.SelectedLayer.zMDefault));
                         }
                     }
                 }

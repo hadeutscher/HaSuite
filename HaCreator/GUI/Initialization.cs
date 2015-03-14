@@ -63,7 +63,15 @@ namespace HaCreator.GUI
             if (versionBox.SelectedIndex == 3)
             {
                 string testFile = File.Exists(Path.Combine(wzPath, "Data.wz")) ? "Data.wz" : "Item.wz";
-                fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, testFile), out version);
+                try
+                {
+                    fileVersion = WzTool.DetectMapleVersion(Path.Combine(wzPath, testFile), out version);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error initializing " + testFile + " (" + ex.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
+                    return;
+                }
             }
             else
                 fileVersion = (WzMapleVersion)versionBox.SelectedIndex;

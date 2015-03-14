@@ -24,6 +24,10 @@ namespace HaCreator.MapEditor
         int UnflippedX { get; }
     }
 
+    public interface IHasZM
+    {
+        int zM { get; set; }
+    }
 
     public struct ObjectInstanceQuest
     {
@@ -42,7 +46,7 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public class ObjectInstance : LayeredItem, IFlippable
+    public class ObjectInstance : LayeredItem, IFlippable, IHasZM
     {
         private ObjectInfo baseInfo;
         private bool flip;
@@ -56,9 +60,6 @@ namespace HaCreator.MapEditor
         private string _tags;
         private List<ObjectInstanceQuest> questInfo;
         
-
-        //private int zM;
-
         public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, int zM, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip)
             : base(board, layer, x, y, z)
         {
@@ -172,7 +173,7 @@ namespace HaCreator.MapEditor
         public List<ObjectInstanceQuest> QuestInfo { get { return questInfo; } set { questInfo = value; } }
     }
 
-    public class TileInstance : LayeredItem, ISnappable
+    public class TileInstance : LayeredItem, ISnappable, IHasZM
     {
         private TileInfo baseInfo;
 
@@ -267,73 +268,6 @@ namespace HaCreator.MapEditor
                 item.SnapMove(item.Parent.X + parentOffs.X - snapOffs.X, item.Parent.Y + parentOffs.Y - snapOffs.Y);
             }
             this.SnapMove(closestTile.X - closestInfo.x * mag, closestTile.Y - closestInfo.y * mag);
-        }
-
-        public Tuple<TileInstance, TileInstance> FindExactSideSnaps()
-        {
-            var candidates = FindSnappableTiles(0); // Find exact snaps only
-            List<TileInstance> prevSnaps = new List<TileInstance>();
-            List<TileInstance> nextSnaps = new List<TileInstance>();
-
-            foreach (var candidate in candidates)
-            {
-                TileInstance tile = candidate.Item2;
-                MapTileDesignPotential snap = candidate.Item3;
-                bool prev = false;
-                if (tile.BoundItems.Count == 0)
-                    continue;
-                switch (this.baseInfo.u) 
-                {
-                    case "enH0":
-                    case "slRU":
-                    case "slLU":
-                        // These are all pretty simple, they can only snap on left and right.
-                        prev = tile.X < this.X;
-                        break;
-                    case "enV0":
-                        // Left bound: If the other tile is below us, it is prev
-                        prev = tile.Y > this.Y;
-                        break;
-                    case "enV1":
-                        // Right bound: If the other tile is above us, it is prev
-                        prev = tile.Y < this.Y;
-                        break;
-                    case "edU":
-                        // edU can snap to sl*U, enV* and enH0 tiles
-                        switch (tile.baseInfo.u)
-                        {
-                            case "enH0":
-                            case "slRU":
-                            case "slLU":
-                                // Snap on our left and right
-                                prev = tile.X < this.X;
-                                break;
-                            case "enV0":
-                                // Left bound: always a prev snap
-                                prev = true;
-                                break;
-                            case "enV1":
-                                // Right bound: always a next snap
-                                prev = false;
-                                break;
-                            default:
-                                continue; // Illegal state, drop the tile
-                        }
-                        break;
-                    default:
-                        continue; // Illegal state, drop the tile
-                }
-                if (prev)
-                {
-                    prevSnaps.Add(tile);
-                }
-                else
-                {
-                    nextSnaps.Add(tile);
-                }
-            }
-
-            return new Tuple<TileInstance, TileInstance>(prevSnaps.Count == 1 ? prevSnaps[0] : null, nextSnaps.Count == 1 ? nextSnaps[0] : null);
         }
 
         public override ItemTypes Type

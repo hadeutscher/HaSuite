@@ -566,78 +566,66 @@ namespace HaCreator.MapEditor
             else return InactiveColor;
         }
 
-        public void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
+        public virtual void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
         {
             board.ParentControl.DrawLine(sprite, new Vector2(firstDot.X + xShift, firstDot.Y + yShift), new Vector2(secondDot.X + xShift, secondDot.Y + yShift), color);
         }
     }
 
-    public class FootholdLine : MapleLine, IContainsLayerInfo
+    public class FootholdLine : MapleLine, IContainsLayerInfo, IHasZM
     {
+        private int _zM;
         private MapleBool _cantThrough;
         private MapleBool _forbidFallDown;
         private int? _piece;
         private int? _force;
 
-        //temporary variables:
-        public FootholdLine cloneLine = null;
-        //faster to remove all lines at once by flagging them instead of using .RemoveAt or .Remove
-        public bool remove = false; 
+        // internal use variables
         public int prev = 0;
         public int next = 0;
-        public bool user;
-
         public FootholdLine prevOverride = null;
         public FootholdLine nextOverride = null;
+        public int num;
+        public bool saved;
 
-        internal FootholdLine() : base() { }
-        public static FootholdLine CreateCustomFootholdLine(Board board, MapleDot firstDot, MapleDot secondDot)
-        {
-            FootholdLine result = new FootholdLine();
-            result.Board = board;
-            result.FirstDot = firstDot;
-            result.SecondDot = secondDot;
-            return result;
-        }
-
-        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, bool user)
+        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, int zM)
             : base(board, firstDot, secondDot)
         {
             _cantThrough = null;
             _forbidFallDown = null;
             _piece = null;
             _force = null;
-            this.user = user;
+            _zM = zM;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, bool user)
+        public FootholdLine(Board board, MapleDot firstDot, int zM)
             : base(board, firstDot)
         {
             _cantThrough = null;
             _forbidFallDown = null;
             _piece = null;
             _force = null;
-            this.user = user;
+            _zM = zM;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, bool user)
+        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, int zM)
             : base(board, firstDot, secondDot)
         {
             this._cantThrough = cantThrough;
             this._forbidFallDown = forbidFallDown;
             this._piece = piece;
             this._force = force;
-            this.user = user;
+            this._zM = zM;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, bool user)
+        public FootholdLine(Board board, MapleDot firstDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, int zM)
             : base(board, firstDot)
         {
             this._cantThrough = cantThrough;
             this._forbidFallDown = forbidFallDown;
             this._piece = piece;
             this._force = force;
-            this.user = user;
+            this._zM = zM;
         }
 
         public override Color Color
@@ -694,10 +682,7 @@ namespace HaCreator.MapEditor
         public MapleBool ForbidFallDown { get { return _forbidFallDown; } set { _forbidFallDown = value; } }
         public MapleBool CantThrough { get { return _cantThrough; } set { _cantThrough = value; } }
         public int LayerNumber { get { return ((FootholdAnchor)FirstDot).LayerNumber; } set { throw new NotImplementedException(); } }
-
-        //temporary, for saving/loading.
-        public int num; 
-        public bool saved;
+        public int zM { get { return _zM; } set { _zM = value; } }
 
         public static int FHSorter(FootholdLine a, FootholdLine b)
         {

@@ -28,6 +28,7 @@ namespace HaCreator.MapEditor
         private int num;
         private Board board;
         private string _tS = null;
+        private int zM_default = -1;
 
         public Layer(Board board)
         {
@@ -115,6 +116,8 @@ namespace HaCreator.MapEditor
                 }
             tS = null;
         }
+
+        public int zMDefault { get { return zM_default; } set { zM_default = value; } }
     }
 
     public abstract class LayeredItem : BoardItem, IContainsLayerInfo

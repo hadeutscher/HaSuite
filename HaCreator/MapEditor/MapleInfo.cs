@@ -218,11 +218,11 @@ namespace HaCreator.MapEditor
             objToReload = Load((WzSubProperty)objToReload.ParentObject, objToReload.oS,objToReload.l0,objToReload.l1,objToReload.l2);
         }
 
-        private void CreateFootholdsFromAnchorList(Board board, List<FootholdAnchor> anchors)
+        private void CreateFootholdsFromAnchorList(Board board, List<FootholdAnchor> anchors, int zM)
         {
             for (int i = 0; i < anchors.Count - 1; i++)
             {
-                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], true);
+                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], zM);
                 board.BoardItems.FootholdLines.Add(fh);
             }
         }
@@ -242,7 +242,7 @@ namespace HaCreator.MapEditor
                         instance.BindItem(anchor, foothold);
                         anchors.Add(anchor);
                     }
-                    CreateFootholdsFromAnchorList(board, anchors);
+                    CreateFootholdsFromAnchorList(board, anchors, layer.zMDefault);
                 }
                 else
                 {
@@ -255,7 +255,7 @@ namespace HaCreator.MapEditor
                             instance.BindItem(anchor, foothold);
                             anchors.Add(anchor);
                         }
-                        CreateFootholdsFromAnchorList(board, anchors);
+                        CreateFootholdsFromAnchorList(board, anchors, layer.zMDefault);
                         anchors.Clear();
                     }
                 }
@@ -276,7 +276,7 @@ namespace HaCreator.MapEditor
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
-            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, 0, false, false, false, false, null, null, null, null, null, null, null, flip);
+            ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, layer.zMDefault, false, false, false, false, null, null, null, null, null, null, null, flip);
             ParseOffsets(instance, layer, board, x, y);
             return instance;
         }
@@ -477,14 +477,14 @@ namespace HaCreator.MapEditor
             }
             for (int i = 0; i < anchors.Count - 1; i++)
             {
-                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], true);
+                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], layer.zMDefault);
                 board.BoardItems.FootholdLines.Add(fh);
             }
         }
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
-            TileInstance instance = new TileInstance(this, layer, board, x, y, z, 0);
+            TileInstance instance = new TileInstance(this, layer, board, x, y, z, layer.zMDefault);
             ParseOffsets(instance, board, layer, x, y);
             return instance;
         }

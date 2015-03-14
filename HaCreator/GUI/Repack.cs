@@ -21,7 +21,7 @@ namespace HaCreator.GUI
         {
             InitializeComponent();
             infoLabel.Text = "Files to repack:\r\n";
-            foreach (WzFile wzf in Program.WzManager.wzFiles)
+            foreach (WzFile wzf in Program.WzManager.wzFiles.Values)
             {
                 if (Program.WzManager.wzFilesUpdated[wzf])
                 {
@@ -33,6 +33,8 @@ namespace HaCreator.GUI
 
         private void button1_Click(object sender, EventArgs e)
         {
+            button1.Enabled = false;
+
             Thread t = new Thread(new ThreadStart(RepackerThread));
             t.Start();
         }
@@ -58,6 +60,8 @@ namespace HaCreator.GUI
         {
             Invoke((Action)delegate { ChangeRepackState("Deleting old backups..."); });
             string backupDir = Path.Combine(Program.WzManager.BaseDir, "HaCreator");
+            if (!Directory.Exists(backupDir))
+                Directory.CreateDirectory(backupDir);
             foreach (FileInfo fi in new DirectoryInfo(backupDir).GetFiles())
             {
                 fi.Delete();
@@ -76,12 +80,24 @@ namespace HaCreator.GUI
                 }
                 catch (Exception e)
                 {
-                    Invoke((Action)delegate { ChangeRepackState("ERROR While saving " + wzf.Name + ", aborted."); });
-                    Invoke((Action)delegate { ShowErrorMessage(e.Message + "\r\n" + e.StackTrace); });
+                    Invoke((Action)delegate 
+                    { 
+                        ChangeRepackState("ERROR While saving " + wzf.Name + ", aborted.");
+                        button1.Enabled = true;
+                        ShowErrorMessage(e.Message + "\r\n" + e.StackTrace);
+                    });
                     return;
                 }
             }
-            Invoke((Action)delegate { ChangeRepackState("Finished"); });
+            Invoke((Action)delegate { ChangeRepackState("Finished"); FinishSuccess();});
+        }
+
+        private void Repack_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!button1.Enabled && !Program.Restarting)
+            { //Do not let the user close the form while saving
+                e.Cancel = true;
+            }
         }
     }
 }

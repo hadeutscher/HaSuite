@@ -97,6 +97,7 @@
             this.Name = "Repack";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Repack";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Repack_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

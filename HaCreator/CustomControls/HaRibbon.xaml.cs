@@ -82,6 +82,8 @@ namespace HaCreator.CustomControls
             new InputGestureCollection() { });
         public static readonly RoutedUICommand Random = new RoutedUICommand("Random", "Random", typeof(HaRibbon),
             new InputGestureCollection() { });
+        public static readonly RoutedUICommand InfoMode = new RoutedUICommand("InfoMode", "InfoMode", typeof(HaRibbon),
+            new InputGestureCollection() { });
         public static readonly RoutedUICommand HaRepacker = new RoutedUICommand("HaRepacker", "HaRepacker", typeof(HaRibbon),
             new InputGestureCollection() { });
 
@@ -199,6 +201,12 @@ namespace HaCreator.CustomControls
                 RandomTilesToggled.Invoke(((RibbonToggleButton)e.OriginalSource).IsChecked.Value);
         }
 
+        private void InfoMode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (InfoModeToggled != null)
+                InfoModeToggled.Invoke(((RibbonToggleButton)e.OriginalSource).IsChecked.Value);
+        }
+
         private void HaRepacker_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if (HaRepackerClicked != null)
@@ -243,6 +251,7 @@ namespace HaCreator.CustomControls
         public event EmptyEvent RegenerateMinimapClicked;
         public event ToggleEvent SnappingToggled;
         public event ToggleEvent RandomTilesToggled;
+        public event ToggleEvent InfoModeToggled;
         public event EmptyEvent HaRepackerClicked;
 
 
@@ -325,13 +334,14 @@ namespace HaCreator.CustomControls
             resetLayerBoxIfNeeded();
         }
 
-        public void SetOptions(bool vr, bool minimap, bool parallax, bool snap, bool random)
+        public void SetOptions(bool vr, bool minimap, bool parallax, bool snap, bool random, bool infomode)
         {
             showvrBtn.IsChecked = vr;
             minimapBtn.IsChecked = minimap;
             parallaxBtn.IsChecked = parallax;
             snapBtn.IsChecked = snap;
             randomBtn.IsChecked = random;
+            infomodeBtn.IsChecked = infomode;
         }
 
         public void SetMousePos(int virtualX, int virtualY, int physicalX, int physicalY)
