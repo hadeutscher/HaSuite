@@ -286,53 +286,12 @@ namespace HaCreator.MapEditor
                         return;
                     if (!rightClickTarget.Selected)
                         ClearSelectedItems(selectedBoard);
-                    ContextMenuStrip menuStrip = new ContextMenuStrip();
-                    menuStrip.Tag = rightClickTarget;
                     rightClickTarget.Selected = true;
-                    ToolStripMenuItem editInstance = new ToolStripMenuItem("Edit this instance...");
-                    editInstance.Tag = rightClickTarget;
-                    editInstance.Click += new EventHandler(editInstance_Click);
-                    editInstance.Font = new System.Drawing.Font(editInstance.Font, System.Drawing.FontStyle.Bold);
-                    menuStrip.Items.Add(editInstance);
-                    ToolStripMenuItem baseInfo = new ToolStripMenuItem("Edit base info...");
-                    baseInfo.Tag = rightClickTarget;
-                    baseInfo.Click += new EventHandler(baseInfo_Click);
-                    menuStrip.Items.Add(baseInfo);
-                    if (rightClickTarget is BackgroundInstance || rightClickTarget is LayeredItem)
-                    {
-                        ToolStripMenuItem bringToFront = new ToolStripMenuItem("Bring to Front");
-                        bringToFront.Tag = rightClickTarget;
-                        bringToFront.Click += new EventHandler(bringToFront_Click);
-                        menuStrip.Items.Add(bringToFront);
-                        ToolStripMenuItem sendToBack = new ToolStripMenuItem("Send to Back");
-                        sendToBack.Tag = rightClickTarget;
-                        sendToBack.Click += new EventHandler(sendToBack_Click);
-                        menuStrip.Items.Add(sendToBack);
-                    }
-                    menuStrip.Show(parentBoard.PointToScreen(new System.Drawing.Point(realPosition.X, realPosition.Y)));
+                    BoardItemContextMenu bicm = new BoardItemContextMenu(parentBoard, selectedBoard, rightClickTarget);
+                    bicm.Menu.Show(parentBoard.PointToScreen(new System.Drawing.Point(realPosition.X, realPosition.Y)));
                 }
                 else parentBoard.InvokeReturnToSelectionState();
             }
-        }
-
-        void sendToBack_Click(object sender, EventArgs e)
-        {
-            parentBoard.SendToBackClicked((BoardItem)((ToolStripMenuItem)sender).Tag);
-        }
-
-        void bringToFront_Click(object sender, EventArgs e)
-        {
-            parentBoard.BringToFrontClicked((BoardItem)((ToolStripMenuItem)sender).Tag);
-        }
-
-        private void baseInfo_Click(object sender, EventArgs e)
-        {
-            parentBoard.EditBaseClicked((BoardItem)((ToolStripMenuItem)sender).Tag);
-        }
-
-        private void editInstance_Click(object sender, EventArgs e)
-        {
-            parentBoard.EditInstanceClicked((BoardItem)((ToolStripMenuItem)sender).Tag);
         }
 
         private void parentBoard_LeftMouseUp(Board selectedBoard, BoardItem target, BoardItem selectedTarget, Point realPosition, Point virtualPosition, bool selectedItemHigher)
@@ -377,7 +336,7 @@ namespace HaCreator.MapEditor
             {
                 if (ClickOnMinimap(selectedBoard, realPosition) && selectedBoard.Mouse.State == MouseState.Selection)
                 {
-                    ClearSelectedItems(selectedBoard);
+                    //ClearSelectedItems(selectedBoard);
                     selectedBoard.Mouse.MinimapBrowseOngoing = true;
                     HandleMinimapBrowse(selectedBoard, realPosition);
                 }

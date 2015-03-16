@@ -157,6 +157,12 @@
     <Compile Include="CustomControls\ScrollablePictureBox.Designer.cs">
       <DependentUpon>ScrollablePictureBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\InstanceEditor\MassZmEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\InstanceEditor\MassZmEditor.Designer.cs">
+      <DependentUpon>MassZmEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\InstanceEditor\TileInstanceEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -187,6 +193,7 @@
     <Compile Include="GUI\Save.Designer.cs">
       <DependentUpon>Save.cs</DependentUpon>
     </Compile>
+    <Compile Include="MapEditor\BoardItemContextMenu.cs" />
     <Compile Include="MapEditor\TilesDesign\bsc.cs" />
     <Compile Include="MapEditor\TilesDesign\edD.cs" />
     <Compile Include="MapEditor\TilesDesign\edU.cs" />
@@ -424,6 +431,9 @@
     <EmbeddedResource Include="GUI\InstanceEditor\BackgroundInstanceEditor.resx">
       <DependentUpon>BackgroundInstanceEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\InstanceEditor\MassZmEditor.resx">
+      <DependentUpon>MassZmEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\InstanceEditor\TileInstanceEditor.resx">
       <DependentUpon>TileInstanceEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -604,6 +614,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Foothold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\arrow_down.png" />
+    <Resource Include="Images\arrow_up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

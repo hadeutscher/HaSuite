@@ -110,4 +110,85 @@ namespace HaCreator.WzStructure
             get { return currAnchor; }
         }
     }
+
+    public class AnchorEnumerator : IEnumerable, IEnumerator
+    {
+        private bool started = false;
+        private FootholdAnchor first;
+        private FootholdAnchor curr;
+        private HashSet<FootholdAnchor> visited = new HashSet<FootholdAnchor>();
+        private Stack<FootholdAnchor> toVisit = new Stack<FootholdAnchor>();
+
+
+        public AnchorEnumerator(FootholdAnchor start)
+        {
+            first = start;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return this;
+        }
+
+        public bool MoveNext()
+        {
+            if (!started)
+            {
+                curr = first;
+                started = true;
+                return true;
+            }
+            List<FootholdAnchor> anchors = new List<FootholdAnchor>();
+            foreach (FootholdLine line in curr.connectedLines)
+            {
+                FootholdAnchor anchor = line.GetOtherAnchor(curr);
+                if (!visited.Contains(anchor))
+                {
+                    anchors.Add(anchor);
+                }
+            }
+            if (anchors.Count == 0)
+            {
+                if (toVisit.Count == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    curr = toVisit.Pop();
+                }
+            }
+            else if (anchors.Count == 1)
+            {
+                curr = anchors[0];
+                visited.Add(curr);
+            }
+            else
+            {
+                foreach (FootholdAnchor anchor in anchors)
+                {
+                    visited.Add(anchor);
+                    toVisit.Push(anchor);
+                }
+                curr = toVisit.Pop();
+            }
+            return true;
+        }
+
+        public void Reset()
+        {
+            started = false;
+            visited.Clear();
+            toVisit.Clear();
+        }
+
+        public void Dispose()
+        {
+        }
+
+        public object Current
+        {
+            get { return curr; }
+        }
+    }
 }

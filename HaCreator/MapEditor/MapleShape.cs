@@ -591,21 +591,21 @@ namespace HaCreator.MapEditor
         public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, int zM)
             : base(board, firstDot, secondDot)
         {
-            _cantThrough = null;
-            _forbidFallDown = null;
-            _piece = null;
-            _force = null;
-            _zM = zM;
+            this._cantThrough = null;
+            this._forbidFallDown = null;
+            this._piece = null;
+            this._force = null;
+            this._zM = zM;
         }
 
         public FootholdLine(Board board, MapleDot firstDot, int zM)
             : base(board, firstDot)
         {
-            _cantThrough = null;
-            _forbidFallDown = null;
-            _piece = null;
-            _force = null;
-            _zM = zM;
+            this._cantThrough = null;
+            this._forbidFallDown = null;
+            this._piece = null;
+            this._force = null;
+            this._zM = zM;
         }
 
         public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, int zM)

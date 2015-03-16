@@ -18,7 +18,7 @@ namespace HaCreator.MapEditor
     public class Board
     {
         private Point mapSize;
-        private Point maxMapSize;
+        //private Point maxMapSize;
         private Point centerPoint;
         private BoardItemsManager boardItems;
         private List<Layer> layers = new List<Layer>();
@@ -47,7 +47,7 @@ namespace HaCreator.MapEditor
             this.visibleTypes = visibleTypes;
             this.editedTypes = editedTypes;
 
-            this.maxMapSize = mapSize;
+            //this.maxMapSize = mapSize;
             
             boardItems = new BoardItemsManager(this);
             undoRedoMan = new UndoRedoManager(this);
@@ -208,12 +208,12 @@ namespace HaCreator.MapEditor
                 lock (parent) 
                 { 
                     mapInfo = value; 
-                    if (mapInfo.VR.HasValue) 
+                    /*if (mapInfo.VR.HasValue) 
                     {
                         int offsX = (mapInfo.VR.Value.Left - 100 + centerPoint.X) > 0 ? mapInfo.VR.Value.Left - 100 + centerPoint.X : 0;
                         int offsY = (mapInfo.VR.Value.Top - 100 + centerPoint.Y) > 0 ? mapInfo.VR.Value.Top - 100 + centerPoint.Y : 0;
                         maxMapSize = new Point(Math.Max(mapSize.X, mapInfo.VR.Value.Width + 100 - offsX), Math.Max(mapSize.Y, mapInfo.VR.Value.Height + 100 - offsY));
-                    }
+                    }*/
                 } 
             }
         }
@@ -278,7 +278,8 @@ namespace HaCreator.MapEditor
         {
             get
             {
-                return maxMapSize;
+                //return maxMapSize;
+                return mapSize;
             }
         }
 

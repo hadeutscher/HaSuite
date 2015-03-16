@@ -28,6 +28,8 @@
                 <CommandBinding Command="ns:HaRibbon.Random"  CanExecute="AlwaysExecute" Executed="Random_Executed" />
                 <CommandBinding Command="ns:HaRibbon.InfoMode"  CanExecute="AlwaysExecute" Executed="InfoMode_Executed" />
                 <CommandBinding Command="ns:HaRibbon.HaRepacker"  CanExecute="AlwaysExecute" Executed="HaRepacker_Executed" />
+                <CommandBinding Command="ns:HaRibbon.LayerUp"  CanExecute="AlwaysExecute" Executed="LayerUp_Executed" />
+                <CommandBinding Command="ns:HaRibbon.LayerDown"  CanExecute="AlwaysExecute" Executed="LayerDown_Executed" />
             </Ribbon.CommandBindings>
 
             <Ribbon.ApplicationMenu>
@@ -97,7 +99,16 @@
                         </Grid.RowDefinitions>
                         <ComboBox x:Name="layerBox" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" SelectionChanged="layerBox_SelectionChanged" Focusable="False" />
                         <CheckBox x:Name="layerCheckbox" Grid.Row="1" Content="Show All" HorizontalAlignment="Center" VerticalAlignment="Center" Command="ns:HaRibbon.AllLayerView" Focusable="False" />
+                        <Grid Grid.Row="2" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <RibbonButton x:Name="layerUpBtn" SmallImageSource="pack://application:,,,/HaCreator;component/Images/arrow_up.png" Command="ns:HaRibbon.LayerUp" Grid.Column="0" Focusable="False"/>
+                            <RibbonButton x:Name="layerDownBtn" SmallImageSource="pack://application:,,,/HaCreator;component/Images/arrow_down.png" Command="ns:HaRibbon.LayerDown" Grid.Column="1" Focusable="False"/>
+                        </Grid>
                     </Grid>
+                    
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="toolsTab" Header="Tools" KeyTip="T">

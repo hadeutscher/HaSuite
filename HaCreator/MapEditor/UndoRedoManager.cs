@@ -121,6 +121,16 @@ namespace HaCreator.MapEditor
         {
             return new UndoRedoAction(item, UndoRedoType.ItemZChanged, oldZ, newZ);
         }
+
+        public static UndoRedoAction LayerTSChanged(Layer layer, string oldTS, string newTS)
+        {
+            return new UndoRedoAction(null, UndoRedoType.LayerTSChanged, oldTS, newTS, layer);
+        }
+
+        public static UndoRedoAction zMChanged(IHasZM target, int oldZM, int newZM)
+        {
+            return new UndoRedoAction(null, UndoRedoType.zMChanged, oldZM, newZM, target);
+        }
         #endregion
 
         public void Undo()
@@ -278,6 +288,12 @@ namespace HaCreator.MapEditor
                     Layer l = (Layer)ParamC;
                     l.ReplaceTS(ts_old);
                     break;
+                case UndoRedoType.zMChanged:
+                    int zm_old = (int)ParamA;
+                    int zm_new = (int)ParamB;
+                    IHasZM target = (IHasZM)ParamC;
+                    target.zM = zm_old;
+                    break;
             }
         }
 
@@ -323,6 +339,7 @@ namespace HaCreator.MapEditor
                 case UndoRedoType.ItemZChanged:
                 case UndoRedoType.VRChanged:
                 case UndoRedoType.LayerTSChanged:
+                case UndoRedoType.zMChanged:
                     object ParamBTemp = ParamB;
                     object ParamATemp = ParamA;
                     ParamA = ParamBTemp;
@@ -353,6 +370,7 @@ namespace HaCreator.MapEditor
         ItemZChanged,
         VRChanged,
         MapCenterChanged,
-        LayerTSChanged
+        LayerTSChanged,
+        zMChanged
     }
 }

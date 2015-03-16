@@ -86,6 +86,10 @@ namespace HaCreator.CustomControls
             new InputGestureCollection() { });
         public static readonly RoutedUICommand HaRepacker = new RoutedUICommand("HaRepacker", "HaRepacker", typeof(HaRibbon),
             new InputGestureCollection() { });
+        public static readonly RoutedUICommand LayerUp = new RoutedUICommand("LayerUp", "LayerUp", typeof(HaRibbon),
+            new InputGestureCollection() { new KeyGesture(Key.OemPlus, ModifierKeys.Control) });
+        public static readonly RoutedUICommand LayerDown = new RoutedUICommand("LayerDown", "LayerDown", typeof(HaRibbon),
+            new InputGestureCollection() { new KeyGesture(Key.OemMinus, ModifierKeys.Control) });
 
         private void AlwaysExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -168,7 +172,8 @@ namespace HaCreator.CustomControls
 
         private void AllLayerView_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            layerBox.IsEnabled = !layerCheckbox.IsChecked.Value;
+            layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = !layerCheckbox.IsChecked.Value;
+            
             if (layerBox.SelectedIndex == -1)
             {
                 layerBox.SelectedIndex = actualLayerIndex;
@@ -211,6 +216,22 @@ namespace HaCreator.CustomControls
         {
             if (HaRepackerClicked != null)
                 HaRepackerClicked.Invoke();
+        }
+
+        private void LayerUp_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (layerBox.IsEnabled && layerBox.SelectedIndex != (layerBox.Items.Count - 1))
+            {
+                layerBox.SelectedIndex++;
+            }
+        }
+
+        private void LayerDown_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (layerBox.IsEnabled && layerBox.SelectedIndex != 0)
+            {
+                layerBox.SelectedIndex--;
+            }
         }
 
         private void layerBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -260,12 +281,12 @@ namespace HaCreator.CustomControls
             if (layer == -1)
             {
                 layerCheckbox.IsChecked = true;
-                layerBox.IsEnabled = false;
+                layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = false;
             }
             else
             {
                 layerCheckbox.IsChecked = false;
-                layerBox.IsEnabled = true;
+                layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = true;
                 layerBox.SelectedIndex = layer;
             }
         }

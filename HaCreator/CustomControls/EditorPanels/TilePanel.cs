@@ -121,7 +121,7 @@ namespace HaCreator.CustomControls.EditorPanels
                     if (MessageBox.Show("This action will change the layer's tS. Proceed?", "Layer tS Change", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
                         return;
                     List<UndoRedoAction> actions = new List<UndoRedoAction>();
-                    actions.Add(new UndoRedoAction(null, UndoRedoType.LayerTSChanged, layer.tS, infoToAdd.tS, layer));
+                    actions.Add(UndoRedoManager.LayerTSChanged(layer, layer.tS, infoToAdd.tS));
                     layer.ReplaceTS(infoToAdd.tS);
                     hcsm.MultiBoard.SelectedBoard.UndoRedoMan.AddUndoBatch(actions);
                 }
