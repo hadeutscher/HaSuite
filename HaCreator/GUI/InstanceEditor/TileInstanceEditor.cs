@@ -27,7 +27,6 @@ namespace HaCreator.GUI.InstanceEditor
             xInput.Value = item.X;
             yInput.Value = item.Y;
             zInput.Value = item.Z;
-            zmBox.Value = item.zM;
             pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item, "\r\n");
         }
 
@@ -54,8 +53,6 @@ namespace HaCreator.GUI.InstanceEditor
                 }
                 if (actions.Count > 0)
                     item.Board.UndoRedoMan.AddUndoBatch(actions);
-
-                item.zM = (int)zmBox.Value;
             }
             Close();
         }

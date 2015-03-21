@@ -20,15 +20,16 @@ namespace HaCreator.MapEditor
     public interface IContainsLayerInfo
     {
         int LayerNumber { get; set; }
+        int PlatformNumber { get; set; }
     }
 
     public class Layer
     {
         private List<LayeredItem> items = new List<LayeredItem>(); //needed?
+        private SortedSet<int> zms = new SortedSet<int>();
         private int num;
         private Board board;
         private string _tS = null;
-        private int zM_default = -1;
 
         public Layer(Board board)
         {
@@ -68,7 +69,10 @@ namespace HaCreator.MapEditor
                     if (_tS != value)
                     {
                         _tS = value;
-                        board.ParentControl.LayerTSChanged(this);
+                        if (!board.Loading)
+                        {
+                            board.ParentControl.LayerTSChanged(this);
+                        }
                     }
                 }
             }
@@ -117,18 +121,22 @@ namespace HaCreator.MapEditor
             tS = null;
         }
 
-        public int zMDefault { get { return zM_default; } set { zM_default = value; } }
+        public int zMDefault { get { return board.SelectedPlatform == -1 ? zMList.ElementAt(0) : board.SelectedPlatform; } }
+
+        public SortedSet<int> zMList { get { return zms; } }
     }
 
     public abstract class LayeredItem : BoardItem, IContainsLayerInfo
     {
         private Layer layer;
+        private int zm;
 
-        public LayeredItem(Board board, Layer layer, int x, int y, int z)
+        public LayeredItem(Board board, Layer layer, int zm, int x, int y, int z)
             : base(board, x, y, z)
         {
             this.layer = layer;
             layer.Items.Add(this);
+            this.zm = zm;
         }
 
         public override void RemoveItem(List<UndoRedoAction> undoPipe)
@@ -178,5 +186,12 @@ namespace HaCreator.MapEditor
                 }
             }
         }
+
+        public override bool CheckIfLayerSelected(SelectionInfo sel)
+        {
+            return (sel.selectedLayer == -1 || Layer.LayerNumber == sel.selectedLayer) && (sel.selectedPlatform == -1 || PlatformNumber == sel.selectedPlatform);
+        }
+
+        public int PlatformNumber { get { return zm; } set { zm = value; } }
     }
 }

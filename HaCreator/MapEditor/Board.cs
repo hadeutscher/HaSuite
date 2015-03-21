@@ -29,12 +29,14 @@ namespace HaCreator.MapEditor
         private System.Drawing.Bitmap miniMap;
         private Texture2D miniMapTexture;
         private int selectedLayerIndex = ApplicationSettings.lastDefaultLayer;
+        private int selectedPlatform = -1;
         private int _hScroll = 0;
         private int _vScroll = 0;
         private int _mag = 16;
         private UndoRedoManager undoRedoMan;
         ItemTypes visibleTypes;
         ItemTypes editedTypes;
+        private bool loading = false;
 
         public ItemTypes VisibleTypes { get { return visibleTypes; } set { visibleTypes = value; } }
         public ItemTypes EditedTypes { get { return editedTypes; } set { editedTypes = value; } }
@@ -57,12 +59,13 @@ namespace HaCreator.MapEditor
 
         public void RenderList(IMapleList list, SpriteBatch sprite, int xShift, int yShift)
         {
+            SelectionInfo sel = GetUserSelectionInfo();
             if (list.ListType == ItemTypes.None)
             {
                 foreach (BoardItem item in list)
                 {
                     if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X, yShift - item.Origin.Y) && ((visibleTypes & item.Type) == item.Type))
-                        item.Draw(sprite, item.GetColor(editedTypes, selectedLayerIndex, item.Selected), xShift, yShift);
+                        item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
                 }
             }
             else if ((visibleTypes & list.ListType) == list.ListType)
@@ -72,7 +75,7 @@ namespace HaCreator.MapEditor
                     foreach (BoardItem item in list)
                     {
                         if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X, yShift - item.Origin.Y))
-                            item.Draw(sprite, item.GetColor(editedTypes, selectedLayerIndex, item.Selected), xShift, yShift);
+                            item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
                     }
                 }
                 else
@@ -80,7 +83,7 @@ namespace HaCreator.MapEditor
                     foreach (MapleLine line in list)
                     {
                         if (parent.IsItemInRange(line.FirstDot.X, line.FirstDot.Y, Math.Abs(line.FirstDot.X - line.SecondDot.X), Math.Abs(line.FirstDot.Y - line.SecondDot.Y), xShift, yShift))
-                            line.Draw(sprite, line.GetColor(editedTypes, selectedLayerIndex), xShift, yShift);
+                            line.Draw(sprite, line.GetColor(sel), xShift, yShift);
                     }
                 }
             }
@@ -334,7 +337,20 @@ namespace HaCreator.MapEditor
         {
             get { return SelectedLayerIndex == -1 ? null : Layers[SelectedLayerIndex]; }
         }
+
+        public int SelectedPlatform
+        {
+            get { return selectedPlatform; }
+            set { selectedPlatform = value; }
+        }
+
+        public SelectionInfo GetUserSelectionInfo()
+        {
+            return new SelectionInfo(selectedLayerIndex, selectedPlatform, visibleTypes, editedTypes);
+        }
         #endregion
+
+        public bool Loading { get { return loading; } set { loading = value; } }
     }
 
     public abstract class BoardItem
@@ -472,10 +488,14 @@ namespace HaCreator.MapEditor
         }
 
         public abstract void Draw(SpriteBatch sprite, Color color, int xShift, int yShift);
-        public abstract bool CheckIfLayerSelected(int selectedLayer);
-        public virtual Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        public virtual bool CheckIfLayerSelected(SelectionInfo sel)
         {
-            if (((editedTypes & Type) == Type && (selectedLayer == -1 || CheckIfLayerSelected(selectedLayer))))
+            // By default, item is nonlayered
+            return true;
+        }
+        public virtual Color GetColor(SelectionInfo sel, bool selected)
+        {
+            if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel))
                 return selected ? UserSettings.SelectedColor : Color.White;
             else return MultiBoard.InactiveColor;
         }

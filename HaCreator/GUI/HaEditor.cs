@@ -40,6 +40,12 @@ namespace HaCreator.GUI
             RedockControls();
         }
 
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            multiBoard.TriggerMouseWheel(e);
+        }
+
         private void InitializeComponentCustom()
         {
             // make dockPanel everyone's parent

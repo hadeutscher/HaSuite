@@ -21,9 +21,13 @@ using System.Collections;
 
 namespace HaCreator.WzStructure
 {
-    public static class MapLoader
+    public class MapLoader
     {
-        public static List<string> VerifyMapPropsKnown(WzImage mapImage, bool userless)
+        public MapLoader()
+        {
+        }
+
+        public List<string> VerifyMapPropsKnown(WzImage mapImage, bool userless)
         {
             List<string> copyPropNames = new List<string>();
             foreach (WzImageProperty prop in mapImage.WzProperties)
@@ -84,7 +88,7 @@ namespace HaCreator.WzStructure
             return copyPropNames;
         }
 
-        public static MapType GetMapType(WzImage mapImage)
+        public MapType GetMapType(WzImage mapImage)
         {
             switch (mapImage.Name)
             {
@@ -98,7 +102,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static bool GetMapVR(WzImage mapImage, ref System.Drawing.Rectangle? VR)
+        private bool GetMapVR(WzImage mapImage, ref System.Drawing.Rectangle? VR)
         {
             WzSubProperty fhParent = (WzSubProperty)mapImage["foothold"];
             if (fhParent == null) { VR = null; return false; }
@@ -136,7 +140,7 @@ namespace HaCreator.WzStructure
             return true;
         }
 
-        public static void LoadLayers(WzImage mapImage, Board mapBoard)
+        public void LoadLayers(WzImage mapImage, Board mapBoard)
         {
             for (int layer = 0; layer <= 7; layer++)
             {
@@ -174,12 +178,13 @@ namespace HaCreator.WzStructure
                     if (objInfoProp.HCTag == null)
                         objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
                     ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
-                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)objInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, z, zM, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, false));
+                    Layer l = mapBoard.Layers[layer];
+                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)objInfo.CreateInstance(l, mapBoard, x, y, z, zM, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, false));
+                    l.zMList.Add(zM);
                 }
                 WzImageProperty tileParent = layerProp["tile"];
-                for (int i = 0; i < tileParent.WzProperties.Count; i++)
+                foreach (WzImageProperty tile in tileParent.WzProperties)
                 {
-                    WzImageProperty tile = tileParent.WzProperties[i];
                     int x = InfoTool.GetInt(tile["x"]);
                     int y = InfoTool.GetInt(tile["y"]);
                     int zM = InfoTool.GetInt(tile["zM"]);
@@ -190,12 +195,14 @@ namespace HaCreator.WzStructure
                     if (tileInfoProp.HCTag == null)
                         tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no.ToString(), mag);
                     TileInfo tileInfo = (TileInfo)tileInfoProp.HCTag;
-                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(mapBoard.Layers[layer], mapBoard, x, y, i, zM, false, false));
+                    Layer l = mapBoard.Layers[layer];
+                    mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(l, mapBoard, x, y, int.Parse(tile.Name), zM, false, false));
+                    l.zMList.Add(zM);
                 }
             }
         }
 
-        public static void LoadLife(WzImage mapImage, Board mapBoard)
+        public void LoadLife(WzImage mapImage, Board mapBoard)
         {
             WzImageProperty lifeParent = mapImage["life"];
             if (lifeParent == null) return;
@@ -239,7 +246,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        public static void LoadReactors(WzImage mapImage, Board mapBoard)
+        public void LoadReactors(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty reactorParent = (WzSubProperty)mapImage["reactor"];
             if (reactorParent == null) return;
@@ -255,7 +262,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static void LoadChairs(WzImage mapImage, Board mapBoard)
+        private void LoadChairs(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty chairParent = (WzSubProperty)mapImage["seat"];
             if (chairParent != null)
@@ -299,7 +306,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        public static void LoadRopes(WzImage mapImage, Board mapBoard)
+        public void LoadRopes(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty ropeParent = (WzSubProperty)mapImage["ladderRope"];
             foreach (WzSubProperty rope in ropeParent.WzProperties)
@@ -314,7 +321,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private static bool IsAnchorPrevOfFoothold(FootholdAnchor a, FootholdLine x)
+        private bool IsAnchorPrevOfFoothold(FootholdAnchor a, FootholdLine x)
         {
             int prevnum = x.prev;
             int nextnum = x.next;
@@ -334,7 +341,7 @@ namespace HaCreator.WzStructure
             throw new Exception("Could not match anchor to foothold");
         }
 
-        public static void LoadFootholds(WzImage mapImage, Board mapBoard)
+        public void LoadFootholds(WzImage mapImage, Board mapBoard)
         {
             List<FootholdAnchor> anchors = new List<FootholdAnchor>();
             WzSubProperty footholdParent = (WzSubProperty)mapImage["foothold"];
@@ -342,20 +349,18 @@ namespace HaCreator.WzStructure
             FootholdAnchor a;
             FootholdAnchor b;
             MapleTable<int, FootholdLine> fhs = new MapleTable<int, FootholdLine>();
-            HashSet<int>[] existingZMs = Utils.CreateArrayWithCtor<HashSet<int>>(8);
-            List<int> allExistingZMs = new List<int>();
             foreach (WzSubProperty layerProp in footholdParent.WzProperties)
             {
                 layer = int.Parse(layerProp.Name);
+                Layer l = mapBoard.Layers[layer];
                 foreach (WzSubProperty platProp in layerProp.WzProperties)
                 {
                     int zM = int.Parse(platProp.Name);
-                    existingZMs[layer].Add(zM);
-                    allExistingZMs.Add(zM);
+                    l.zMList.Add(zM);
                     foreach (WzSubProperty fhProp in platProp.WzProperties)
                     {
-                        a = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x1"]), InfoTool.GetInt(fhProp["y1"]), layer, false);
-                        b = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x2"]), InfoTool.GetInt(fhProp["y2"]), layer, false);
+                        a = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x1"]), InfoTool.GetInt(fhProp["y1"]), layer, zM, false);
+                        b = new FootholdAnchor(mapBoard, InfoTool.GetInt(fhProp["x2"]), InfoTool.GetInt(fhProp["y2"]), layer, zM, false);
                         int num = int.Parse(fhProp.Name);
                         int next = InfoTool.GetInt(fhProp["next"]);
                         int prev = InfoTool.GetInt(fhProp["prev"]);
@@ -365,7 +370,7 @@ namespace HaCreator.WzStructure
                         int? force = InfoTool.GetOptionalInt(fhProp["force"]);
                         if (a.X != b.X || a.Y != b.Y)
                         {
-                            FootholdLine fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force, zM);
+                            FootholdLine fh = new FootholdLine(mapBoard, a, b, forbidFallDown, cantThrough, piece, force);
                             fh.num = num;
                             fh.prev = prev;
                             fh.next = next;
@@ -417,21 +422,25 @@ namespace HaCreator.WzStructure
             }
             
             // generate default zM's
-            for (int i = 0; i < existingZMs.Length; i++)
+            HashSet<int> allExistingZMs = new HashSet<int>();
+            mapBoard.Layers.ForEach(x => x.zMList.ToList().ForEach(y => allExistingZMs.Add(y)));
+            
+            for (int i = 0; i < mapBoard.Layers.Count; i++)
             {
-                for (int zm_cand = 0; true; zm_cand++)
+                for (int zm_cand = 0; mapBoard.Layers[i].zMList.Count == 0; zm_cand++)
                 {
-                    // Choose either a zM that is already bound to our layer, or one that is completely free
-                    if (existingZMs[i].Contains(zm_cand) || !allExistingZMs.Contains(zm_cand))
+                    // Choose a zM that is free
+                    if (!allExistingZMs.Contains(zm_cand))
                     {
-                        mapBoard.Layers[i].zMDefault = zm_cand;
+                        mapBoard.Layers[i].zMList.Add(zm_cand);
+                        allExistingZMs.Add(zm_cand);
                         break;
                     }
                 }
             }
         }
 
-        public static void LoadPortals(WzImage mapImage, Board mapBoard)
+        public void LoadPortals(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty portalParent = (WzSubProperty)mapImage["portal"];
             foreach (WzSubProperty portal in portalParent.WzProperties)
@@ -455,7 +464,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        public static void LoadToolTips(WzImage mapImage, Board mapBoard)
+        public void LoadToolTips(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty tooltipsParent = (WzSubProperty)mapImage["ToolTip"];
             if (tooltipsParent == null)
@@ -505,7 +514,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        public static void LoadBackgrounds(WzImage mapImage, Board mapBoard)
+        public void LoadBackgrounds(WzImage mapImage, Board mapBoard)
         {
             WzSubProperty bgParent = (WzSubProperty)mapImage["back"];
             WzSubProperty bgProp;
@@ -537,7 +546,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        public static void LoadMisc(WzImage mapImage, Board mapBoard)
+        public void LoadMisc(WzImage mapImage, Board mapBoard)
         {
             // All of the following properties are extremely esoteric features that only appear in a handful of maps. 
             // They are implemented here for the sake of completeness, and being able to repack their maps without corruption.
@@ -657,14 +666,14 @@ namespace HaCreator.WzStructure
             // Some misc items are not implemented here; these are copied byte-to-byte from the original. See VerifyMapPropsKnown for details.
         }
 
-        public static ContextMenuStrip CreateStandardMapMenu(EventHandler rightClickHandler)
+        public ContextMenuStrip CreateStandardMapMenu(EventHandler rightClickHandler)
         {
             ContextMenuStrip result = new ContextMenuStrip();
             result.Items.Add(new ToolStripMenuItem("Edit map info...", Properties.Resources.mapEditMenu, rightClickHandler));
             return result;
         }
 
-        public static void CreateMapFromImage(WzImage mapImage, string mapName, string streetName, string categoryName, WzSubProperty strMapProp, PageCollection Tabs, MultiBoard multiBoard, EventHandler rightClickHandler)
+        public void CreateMapFromImage(WzImage mapImage, string mapName, string streetName, string categoryName, WzSubProperty strMapProp, PageCollection Tabs, MultiBoard multiBoard, EventHandler rightClickHandler)
         {
             if (!mapImage.Parsed) mapImage.ParseImage();
             List<string> copyPropNames = VerifyMapPropsKnown(mapImage, false);
@@ -707,6 +716,7 @@ namespace HaCreator.WzStructure
             {
                 CreateMap(mapName, WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)), CreateStandardMapMenu(rightClickHandler), size, center, 8, Tabs, multiBoard);
                 Board mapBoard = multiBoard.SelectedBoard;
+                mapBoard.Loading = true; // prevents TS Change callbacks
                 mapBoard.MapInfo = info;
                 if (mapImage["miniMap"] != null)
                     mapBoard.MiniMap = ((WzCanvasProperty)mapImage["miniMap"]["canvas"]).PngProperty.GetPNG(false);
@@ -721,6 +731,7 @@ namespace HaCreator.WzStructure
                 LoadBackgrounds(mapImage, mapBoard);
                 LoadMisc(mapImage, mapBoard);
                 mapBoard.BoardItems.Sort();
+                mapBoard.Loading = false;
             }
             if (ErrorLogger.ErrorsPresent())
             {
@@ -733,7 +744,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        public static void CreateMap(string text, string tooltip, ContextMenuStrip menu, Point size, Point center, int layers, HaCreator.ThirdParty.TabPages.PageCollection Tabs, MultiBoard multiBoard)
+        public void CreateMap(string text, string tooltip, ContextMenuStrip menu, Point size, Point center, int layers, HaCreator.ThirdParty.TabPages.PageCollection Tabs, MultiBoard multiBoard)
         {
             lock (multiBoard)
             {

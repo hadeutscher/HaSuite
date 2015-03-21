@@ -76,7 +76,7 @@ namespace HaCreator.MapEditor
                     if (state == MouseState.StaticObjectAdding)
                         currAddedObj = currAddedInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false);
                     else
-                        currAddedObj = tileRandomList[NextInt32(tileRandomList.Length)].CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, Board.SelectedLayer.zMDefault, false, true);
+                        currAddedObj = tileRandomList[NextInt32(tileRandomList.Length)].CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2, 50, false);
                     Board.BoardItems.Add(currAddedObj, false);
                     BindItem(currAddedObj, new Microsoft.Xna.Framework.Point(currAddedInfo.Origin.X - currAddedInfo.Image.Width / 2, currAddedInfo.Origin.Y - currAddedInfo.Image.Height / 2));
                 }
@@ -178,17 +178,17 @@ namespace HaCreator.MapEditor
         {
             lock (Board.ParentControl)
             {
-                FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex, true);
+                FootholdAnchor fhAnchor = new FootholdAnchor(Board, X, Y, Board.SelectedLayerIndex, Board.SelectedPlatform, true);
                 Board.BoardItems.FHAnchors.Add(fhAnchor);
                 Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(fhAnchor) });
                 if (connectedLines.Count == 0)
                 {
-                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, Board.SelectedLayer.zMDefault));
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
                 }
                 else
                 {
                     connectedLines[0].ConnectSecondDot(fhAnchor);
-                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor, Board.SelectedLayer.zMDefault));
+                    Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, fhAnchor));
                 }
             }
         }
@@ -198,9 +198,10 @@ namespace HaCreator.MapEditor
             lock (Board.ParentControl)
             {
                 Xna.Point pos = new Xna.Point(X, Y);
+                SelectionInfo sel = board.GetUserSelectionInfo();
                 foreach (FootholdAnchor anchor in Board.BoardItems.FHAnchors)
                 {
-                    if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom) && anchor.LayerNumber == board.SelectedLayerIndex)
+                    if (MultiBoard.IsPointInsideRectangle(pos, anchor.Left, anchor.Top, anchor.Right, anchor.Bottom) && anchor.CheckIfLayerSelected(sel))
                     {
                         if (anchor.connectedLines.Count > 1)
                         {
@@ -215,13 +216,13 @@ namespace HaCreator.MapEditor
                                 Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.LineAdded(connectedLines[0], connectedLines[0].FirstDot, anchor) });
                                 connectedLines[0].ConnectSecondDot(anchor);
                                 // Now that we finished the previous foothold, create a new one between the anchor and the mouse
-                                FootholdLine fh = new FootholdLine(Board, anchor, Board.SelectedLayer.zMDefault);
+                                FootholdLine fh = new FootholdLine(Board, anchor);
                                 Board.BoardItems.FootholdLines.Add(fh);
                             }
                         }
                         else // Construct a footholdline between the anchor and the mouse
                         {
-                            Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor, Board.SelectedLayer.zMDefault));
+                            Board.BoardItems.FootholdLines.Add(new FootholdLine(Board, anchor));
                         }
                     }
                 }
@@ -421,11 +422,6 @@ namespace HaCreator.MapEditor
 
         public override void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch sprite, Microsoft.Xna.Framework.Color color, int xShift, int yShift)
         {
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
         }
 
         public override System.Drawing.Bitmap Image

@@ -77,7 +77,7 @@ namespace HaCreator.CustomControls.EditorPanels
                     TileInfo[] randomInfos = new TileInfo[tCat.WzProperties.Count];
                     for (int i = 0; i < randomInfos.Length; i++)
                     {
-                        WzCanvasProperty tile = (WzCanvasProperty)tCat.WzProperties[i];
+                        WzCanvasProperty tile = (WzCanvasProperty)tCat.WzProperties[i]; // NOTE - accessing WzProperties on purpose because the prop's name doesn't matter
                         if (tile.HCTag == null)
                             tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
                         randomInfos[i] = (TileInfo)tile.HCTag;

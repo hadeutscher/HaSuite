@@ -218,16 +218,16 @@ namespace HaCreator.MapEditor
             objToReload = Load((WzSubProperty)objToReload.ParentObject, objToReload.oS,objToReload.l0,objToReload.l1,objToReload.l2);
         }
 
-        private void CreateFootholdsFromAnchorList(Board board, List<FootholdAnchor> anchors, int zM)
+        private void CreateFootholdsFromAnchorList(Board board, List<FootholdAnchor> anchors)
         {
             for (int i = 0; i < anchors.Count - 1; i++)
             {
-                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], zM);
+                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1]);
                 board.BoardItems.FootholdLines.Add(fh);
             }
         }
 
-        public void ParseOffsets(ObjectInstance instance, Layer layer, Board board, int x, int y)
+        public void ParseOffsets(ObjectInstance instance, Board board, int x, int y)
         {
             List<FootholdAnchor> anchors = new List<FootholdAnchor>();
             bool ladder = l0 == "ladder";
@@ -237,12 +237,12 @@ namespace HaCreator.MapEditor
                 {
                     foreach (XNA.Point foothold in footholdOffsets)
                     {
-                        FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, true);
+                        FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, instance.LayerNumber, instance.PlatformNumber, true);
                         board.BoardItems.FHAnchors.Add(anchor);
                         instance.BindItem(anchor, foothold);
                         anchors.Add(anchor);
                     }
-                    CreateFootholdsFromAnchorList(board, anchors, layer.zMDefault);
+                    CreateFootholdsFromAnchorList(board, anchors);
                 }
                 else
                 {
@@ -250,12 +250,12 @@ namespace HaCreator.MapEditor
                     {
                         foreach (XNA.Point foothold in anchorList)
                         {
-                            FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, true);
+                            FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, instance.LayerNumber, instance.PlatformNumber, true);
                             board.BoardItems.FHAnchors.Add(anchor);
                             instance.BindItem(anchor, foothold);
                             anchors.Add(anchor);
                         }
-                        CreateFootholdsFromAnchorList(board, anchors, layer.zMDefault);
+                        CreateFootholdsFromAnchorList(board, anchors);
                         anchors.Clear();
                     }
                 }
@@ -277,14 +277,14 @@ namespace HaCreator.MapEditor
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, layer.zMDefault, false, false, false, false, null, null, null, null, null, null, null, flip);
-            ParseOffsets(instance, layer, board, x, y);
+            ParseOffsets(instance, board, x, y);
             return instance;
         }
 
         public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, int zM, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip, bool parseOffsets)
         {
             ObjectInstance instance = new ObjectInstance(this, layer, board, x, y, z, zM, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip);
-            if (parseOffsets) ParseOffsets(instance, layer, board, x, y);
+            if (parseOffsets) ParseOffsets(instance, board, x, y);
             return instance;
         }
 
@@ -367,15 +367,17 @@ namespace HaCreator.MapEditor
         private string _u;
         private string _no;
         private int _mag;
+        private int _z;
         private List<XNA.Point> footholdOffsets = new List<XNA.Point>();
 
-        public TileInfo(Bitmap image, System.Drawing.Point origin, string tS, string u, string no, int mag, WzObject parentObject)
+        public TileInfo(Bitmap image, System.Drawing.Point origin, string tS, string u, string no, int mag, int z, WzObject parentObject)
             : base(image, origin, parentObject)
         {
             this._tS = tS;
             this._u = u;
             this._no = no;
             this._mag = mag;
+            this._z = z;
         }
 
         public static TileInfo Load(WzCanvasProperty parentObject, WzSubProperty infoObject)
@@ -387,7 +389,7 @@ namespace HaCreator.MapEditor
 
         public static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no, int? mag)
         {
-            TileInfo result = new TileInfo(parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), tS, u, no, mag.HasValue ? mag.Value : 1, parentObject);
+            TileInfo result = new TileInfo(parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), tS, u, no, mag.HasValue ? mag.Value : 1, InfoTool.GetInt(parentObject["z"]), parentObject);
             WzConvexProperty footholds = (WzConvexProperty)parentObject["foothold"];
             if (footholds != null)
                 foreach (WzVectorProperty foothold in footholds.WzProperties)
@@ -465,19 +467,19 @@ namespace HaCreator.MapEditor
             objToReload = Load((WzCanvasProperty)objToReload.ParentObject, objToReload.tS, objToReload.u, objToReload.no, objToReload.mag);
         }
 
-        public void ParseOffsets(TileInstance instance, Board board, Layer layer, int x, int y)
+        public void ParseOffsets(TileInstance instance, Board board, int x, int y)
         {
             List<FootholdAnchor> anchors = new List<FootholdAnchor>();
             foreach (XNA.Point foothold in footholdOffsets)
             {
-                FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, layer.LayerNumber, true);
+                FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, instance.LayerNumber, instance.PlatformNumber, true);
                 anchors.Add(anchor);
                 board.BoardItems.FHAnchors.Add(anchor);
                 instance.BindItem(anchor, foothold);
             }
             for (int i = 0; i < anchors.Count - 1; i++)
             {
-                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1], layer.zMDefault);
+                FootholdLine fh = new FootholdLine(board, anchors[i], anchors[i + 1]);
                 board.BoardItems.FootholdLines.Add(fh);
             }
         }
@@ -485,14 +487,14 @@ namespace HaCreator.MapEditor
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             TileInstance instance = new TileInstance(this, layer, board, x, y, z, layer.zMDefault);
-            ParseOffsets(instance, board, layer, x, y);
+            ParseOffsets(instance, board, x, y);
             return instance;
         }
 
         public BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, int zM, bool flip, bool parseOffsets)
         {
             TileInstance instance = new TileInstance(this, layer, board, x, y, z, zM);
-            if (parseOffsets) ParseOffsets(instance, board, layer, x, y);
+            if (parseOffsets) ParseOffsets(instance, board, x, y);
             return instance;
         }
 
@@ -545,6 +547,8 @@ namespace HaCreator.MapEditor
                 return footholdOffsets;
             }
         }
+
+        public int z { get { return _z; } set { _z = value; } }
     }
 
     public class MobInfo : MapleExtractableInfo

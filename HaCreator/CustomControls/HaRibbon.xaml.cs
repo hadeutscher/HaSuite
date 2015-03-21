@@ -32,11 +32,27 @@ namespace HaCreator.CustomControls
         public HaRibbon()
         {
             InitializeComponent();
+            this.PreviewMouseWheel += HaRibbon_PreviewMouseWheel;
+        }
+
+        void HaRibbon_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+            if (ribbon.IsMouseOver)
+            {
+                HaList platformBox = (HaList)FindName("platformBox");
+                if (platformBox.IsMouseOver)
+                    platformBox.Scroll(e.Delta);
+                else if (layerBox.IsMouseOver)
+                    layerBox.Scroll(e.Delta);
+            }
         }
 
         public int reducedHeight = 0;
         private int actualLayerIndex = 0;
+        private int actualPlatform = 0;
         private int changingIndexCnt = 0;
+        private List<Layer> layers = null;
 
         private void Ribbon_Loaded(object sender, RoutedEventArgs e)
         {
@@ -90,6 +106,14 @@ namespace HaCreator.CustomControls
             new InputGestureCollection() { new KeyGesture(Key.OemPlus, ModifierKeys.Control) });
         public static readonly RoutedUICommand LayerDown = new RoutedUICommand("LayerDown", "LayerDown", typeof(HaRibbon),
             new InputGestureCollection() { new KeyGesture(Key.OemMinus, ModifierKeys.Control) });
+        public static readonly RoutedUICommand AllPlatformView = new RoutedUICommand("AllPlatformView", "AllPlatformView", typeof(HaRibbon),
+            new InputGestureCollection() { });
+        public static readonly RoutedUICommand PlatformUp = new RoutedUICommand("PlatformUp", "PlatformUp", typeof(HaRibbon),
+            new InputGestureCollection() { });
+        public static readonly RoutedUICommand PlatformDown = new RoutedUICommand("PlatformDown", "PlatformDown", typeof(HaRibbon),
+            new InputGestureCollection() { });
+        public static readonly RoutedUICommand NewPlatform = new RoutedUICommand("NewPlatform", "NewPlatform", typeof(HaRibbon),
+            new InputGestureCollection() { });
 
         private void AlwaysExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -170,18 +194,6 @@ namespace HaCreator.CustomControls
                 FinalizeClicked.Invoke();
         }
 
-        private void AllLayerView_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = !layerCheckbox.IsChecked.Value;
-            
-            if (layerBox.SelectedIndex == -1)
-            {
-                layerBox.SelectedIndex = actualLayerIndex;
-            }
-            if (AllLayerToggled != null)
-                AllLayerToggled.Invoke(layerCheckbox.IsChecked.Value ? -1 : actualLayerIndex);
-        }
-
         private void MapSim_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if (MapSimulationClicked != null)
@@ -218,9 +230,14 @@ namespace HaCreator.CustomControls
                 HaRepackerClicked.Invoke();
         }
 
+        #region Layer UI
         private void LayerUp_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (layerBox.IsEnabled && layerBox.SelectedIndex != (layerBox.Items.Count - 1))
+            if (UserSettings.InverseUpDown && sender != null)
+            {
+                LayerDown_Executed(null, null);
+            }
+            else if (layerBox.IsEnabled && layerBox.SelectedIndex != (layerBox.Items.Count - 1))
             {
                 layerBox.SelectedIndex++;
             }
@@ -228,31 +245,212 @@ namespace HaCreator.CustomControls
 
         private void LayerDown_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (layerBox.IsEnabled && layerBox.SelectedIndex != 0)
+            if (UserSettings.InverseUpDown && sender != null)
+            {
+                LayerUp_Executed(null, null);
+            }
+            else if (layerBox.IsEnabled && layerBox.SelectedIndex != 0)
             {
                 layerBox.SelectedIndex--;
             }
         }
 
+        private void PlatformUp_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (UserSettings.InverseUpDown && sender != null)
+            {
+                PlatformDown_Executed(null, null);
+            }
+            else if (platformBox.IsEnabled && platformBox.SelectedIndex != (platformBox.Items.Count - 1))
+            {
+                platformBox.SelectedIndex++;
+            }
+        }
+
+        private void PlatformDown_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (UserSettings.InverseUpDown && sender != null)
+            {
+                PlatformUp_Executed(null, null);
+            }
+            else if (platformBox.IsEnabled && platformBox.SelectedIndex != 0)
+            {
+                platformBox.SelectedIndex--;
+            }
+        }
+
+        private void NewPlatform_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (NewPlatformClicked != null)
+                NewPlatformClicked();
+        }
+
+        private void beginInternalEditing()
+        {
+            changingIndexCnt++;
+        }
+
+        private void endInternalEditing()
+        {
+            changingIndexCnt--;
+        }
+
+        private bool isInternal
+        {
+            get
+            {
+                return changingIndexCnt > 0;
+            }
+        }
+
+        private void SetLayerUsability()
+        {
+            layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = !layerCheckbox.IsChecked.Value;
+        }
+
+        private void SetPlatformUsability()
+        {
+            platformUpBtn.IsEnabled = platformDownBtn.IsEnabled = platformBox.IsEnabled = !platformCheckbox.IsChecked.Value && !layerCheckbox.IsChecked.Value;
+            platformCheckbox.IsEnabled = !layerCheckbox.IsChecked.Value;
+        }
+
+        private void UpdateLocalLayerInfo()
+        {
+            actualLayerIndex = layerBox.SelectedIndex;
+            actualPlatform = (int)platformBox.SelectedItem;
+        }
+
+        private void UpdateRemoteLayerInfo()
+        {
+            if (LayerViewChanged != null)
+                LayerViewChanged.Invoke(layerCheckbox.IsChecked.Value ? -1 : actualLayerIndex, (layerCheckbox.IsChecked.Value || platformCheckbox.IsChecked.Value) ? -1 : actualPlatform);
+        }
+
+        private void AllLayerView_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SetLayerUsability();
+            SetPlatformUsability();
+            UpdateRemoteLayerInfo();
+        }
+
+        private void AllPlatformView_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SetPlatformUsability();
+            UpdateRemoteLayerInfo();
+        }
+
+        private void LoadPlatformsForLayer(SortedSet<int> zms)
+        {
+            beginInternalEditing();
+
+            platformBox.ClearItems();
+            foreach (int zm in zms)
+            {
+                platformBox.Items.Add(new HaListItem(zm.ToString(), zm));
+            }
+            platformBox.SelectedIndex = 0;
+
+            endInternalEditing();
+        }
+
         private void layerBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (changingIndexCnt > 0)
+            if (!isInternal)
             {
-                // Allows changing for internal purposes
-                return;
+                LoadPlatformsForLayer(layers[layerBox.SelectedIndex].zMList);
+                UpdateLocalLayerInfo();
+                UpdateRemoteLayerInfo();
             }
-            if (layerBox.SelectedIndex != -1)
-            {
-                actualLayerIndex = layerBox.SelectedIndex;
-            }
-            if (LayerViewChanged != null)
-                LayerViewChanged.Invoke(layerCheckbox.IsChecked.Value ? -1 : actualLayerIndex);
         }
+
+        private void platformBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!isInternal)
+            {
+                UpdateLocalLayerInfo();
+                UpdateRemoteLayerInfo();
+            }
+        }
+
+        public void SetSelectedLayer(int layer, int platform)
+        {
+            beginInternalEditing();
+
+            if (layer == -1)
+            {
+                if (layerBox.SelectedIndex == -1)
+                {
+                    layerBox.SelectedIndex = 0;
+                }
+                layerCheckbox.IsChecked = true;
+            }
+            else
+            {
+                layerCheckbox.IsChecked = false;
+                layerBox.SelectedIndex = layer;
+            }
+
+            LoadPlatformsForLayer(layers[layer].zMList);
+
+            if (platform == -1)
+            {
+                if (platformBox.SelectedIndex == -1)
+                {
+                    platformBox.SelectedIndex = 0;
+                }
+                platformCheckbox.IsChecked = true;
+            }
+            else
+            {
+                platformCheckbox.IsChecked = false;
+                platformBox.SelectedIndex = layers[layer].zMList.ToList().IndexOf(platform);
+                actualPlatform = platform;
+            }
+
+            SetLayerUsability();
+            SetPlatformUsability();
+            UpdateLocalLayerInfo();
+
+            endInternalEditing();
+        }
+
+        private string GetLayerString(Layer layer)
+        {
+            return layer.LayerNumber.ToString() + (layer.tS != null ? (" - " + layer.tS) : "");
+        }
+
+        public void SetLayers(List<Layer> layers)
+        {
+            beginInternalEditing();
+
+            this.layers = layers;
+            layerBox.ClearItems();
+            for (int i = 0; i < layers.Count; i++)
+            {
+                layerBox.Items.Add(new HaListItem(GetLayerString(layers[i]), i));
+            }
+
+            endInternalEditing();
+        }
+
+        public void SetLayer(Layer layer)
+        {
+            beginInternalEditing();
+
+            int oldIdx = layerBox.SelectedIndex;
+            int i = layer.LayerNumber;
+            layerBox.Items[i].Text = GetLayerString(layer);
+            layerBox.SelectedIndex = oldIdx;
+
+            endInternalEditing();
+        }
+
+        #endregion
 
         public delegate void EmptyEvent();
         public delegate void ViewToggleEvent(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc);
         public delegate void ToggleEvent(bool pressed);
-        public delegate void LayerViewChangedEvent(int layer);
+        public delegate void LayerViewChangedEvent(int layer, int platform);
 
         public event EmptyEvent OpenClicked;
         public event EmptyEvent SaveClicked;
@@ -267,55 +465,13 @@ namespace HaCreator.CustomControls
         public event ToggleEvent ShowMinimapToggled;
         public event ToggleEvent ParallaxToggled;
         public event LayerViewChangedEvent LayerViewChanged;
-        public event LayerViewChangedEvent AllLayerToggled;
         public event EmptyEvent MapSimulationClicked;
         public event EmptyEvent RegenerateMinimapClicked;
         public event ToggleEvent SnappingToggled;
         public event ToggleEvent RandomTilesToggled;
         public event ToggleEvent InfoModeToggled;
         public event EmptyEvent HaRepackerClicked;
-
-
-        public void SetSelectedLayer(int layer)
-        {
-            if (layer == -1)
-            {
-                layerCheckbox.IsChecked = true;
-                layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = false;
-            }
-            else
-            {
-                layerCheckbox.IsChecked = false;
-                layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = true;
-                layerBox.SelectedIndex = layer;
-            }
-        }
-
-        public void SetLayers(List<Layer> layers)
-        {
-            changingIndexCnt++;
-            object[] arr = new object[layers.Count];
-            for (int i = 0; i < layers.Count; i++) 
-            {
-                arr[i] = i.ToString() + (layers[i].tS != null ? (" - " + layers[i].tS) : "");
-            }
-            layerBox.Items.Clear();
-            foreach (object o in arr)
-            {
-                layerBox.Items.Add(o);
-            }
-            resetLayerBoxIfNeeded();
-            changingIndexCnt--;
-        }
-
-        public void SetLayer(Layer layer)
-        {
-            changingIndexCnt++;
-            int i = layer.LayerNumber;
-            layerBox.Items[i] = i.ToString() + (layer.tS != null ? (" - " + layer.tS) : "");
-            resetLayerBoxIfNeeded();
-            changingIndexCnt--;
-        }
+        public event EmptyEvent NewPlatformClicked;
 
         public void SetVisibilityCheckboxes(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc)
         {
@@ -333,26 +489,11 @@ namespace HaCreator.CustomControls
             miscCheck.IsChecked = misc;
         }
 
-        private void changeLayerBoxIndexInternal(int newIndex)
-        {
-            changingIndexCnt++;
-            layerBox.SelectedIndex = newIndex;
-            changingIndexCnt--;
-        }
-
-        private void resetLayerBoxIfNeeded()
-        {
-            if (layerBox.SelectedIndex == -1)
-            {
-                changeLayerBoxIndexInternal(actualLayerIndex);
-            }
-        }
-
         public void SetEnabled(bool enabled)
         {
             viewTab.IsEnabled = enabled;
             toolsTab.IsEnabled = enabled;
-            resetLayerBoxIfNeeded();
+            //resetLayerBoxIfNeeded();
         }
 
         public void SetOptions(bool vr, bool minimap, bool parallax, bool snap, bool random, bool infomode)

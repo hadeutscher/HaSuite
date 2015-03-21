@@ -160,7 +160,7 @@ namespace HaCreator.WzStructure
                         obj["x"] = InfoTool.SetInt(objInst.UnflippedX);
                         obj["y"] = InfoTool.SetInt(objInst.Y);
                         obj["z"] = InfoTool.SetInt(objInst.Z);
-                        obj["zM"] = InfoTool.SetInt(objInst.zM);
+                        obj["zM"] = InfoTool.SetInt(objInst.PlatformNumber);
                         obj["oS"] = InfoTool.SetString(objInfo.oS);
                         obj["l0"] = InfoTool.SetString(objInfo.l0);
                         obj["l1"] = InfoTool.SetString(objInfo.l1);
@@ -211,7 +211,7 @@ namespace HaCreator.WzStructure
 
                     tile["x"] = InfoTool.SetInt(tileInst.X);
                     tile["y"] = InfoTool.SetInt(tileInst.Y);
-                    tile["zM"] = InfoTool.SetInt(tileInst.zM);
+                    tile["zM"] = InfoTool.SetInt(tileInst.PlatformNumber);
                     tile["u"] = InfoTool.SetString(tileInfo.u);
                     tile["no"] = InfoTool.SetInt(int.Parse(tileInfo.no));
 
@@ -442,7 +442,7 @@ namespace HaCreator.WzStructure
             foreach (FootholdLine line in board.BoardItems.FootholdLines)
             {
                 // Save all footholds in the platform (same layer and zM)
-                if (line.LayerNumber != layer || line.zM != zM)
+                if (line.LayerNumber != layer || line.PlatformNumber != zM)
                 {
                     continue;
                 }
@@ -665,7 +665,7 @@ namespace HaCreator.WzStructure
                     {
                         continue;
                     }
-                    int zM = fhInst.zM;
+                    int zM = fhInst.PlatformNumber;
                     WzSubProperty fhPlatProp = new WzSubProperty();
                     SavePlatform(layer, zM, fhPlatProp);
                     fhLayerProp[zM.ToString()] = fhPlatProp;
@@ -984,7 +984,7 @@ namespace HaCreator.WzStructure
                         ((FootholdAnchor)tileInst.BoundItemsList[deleteStart]).RemoveItem(null);
                     }
 
-                    board.BoardItems.FootholdLines.Add(new FootholdLine(board, remainingAnchor, contAnchor, anchorLine.ForbidFallDown, anchorLine.CantThrough, anchorLine.Piece, anchorLine.Force, anchorLine.zM));
+                    board.BoardItems.FootholdLines.Add(new FootholdLine(board, remainingAnchor, contAnchor, anchorLine.ForbidFallDown, anchorLine.CantThrough, anchorLine.Piece, anchorLine.Force));
                 }
             }
 

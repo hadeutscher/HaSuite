@@ -310,13 +310,14 @@ namespace HaCreator.MapEditor
         private void GetObjsUnderPointFromList(IMapleList list, Point locationVirtualPos, ref BoardItem itemUnderPoint, ref BoardItem selectedUnderPoint, ref bool selectedItemHigher)
         {
             if (!list.Selectable) return;
+            SelectionInfo sel = selectedBoard.GetUserSelectionInfo();
             if (list.ListType == ItemTypes.None)
             {
                 for (int i = 0; i < list.Count; i++)
                 {
                     BoardItem item = (BoardItem)list[i];
                     if ((selectedBoard.EditedTypes & item.Type) != item.Type) continue;
-                    if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && !(item is Mouse) && (selectedBoard.SelectedLayerIndex == -1 || item.CheckIfLayerSelected(selectedBoard.SelectedLayerIndex)) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
+                    if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && !(item is Mouse) && item.CheckIfLayerSelected(sel) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
                     {
                         if (item.Selected)
                         {
@@ -336,7 +337,7 @@ namespace HaCreator.MapEditor
                 for (int i = 0; i < list.Count; i++)
                 {
                     BoardItem item = (BoardItem)list[i];
-                    if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && !(item is Mouse) && !(item is Mouse) && (selectedBoard.SelectedLayerIndex == -1 || item.CheckIfLayerSelected(selectedBoard.SelectedLayerIndex)) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
+                    if (IsPointInsideRectangle(locationVirtualPos, item.Left, item.Top, item.Right, item.Bottom) && !(item is Mouse) && !(item is Mouse) && item.CheckIfLayerSelected(sel) && !item.IsPixelTransparent(locationVirtualPos.X - item.Left, locationVirtualPos.Y - item.Top))
                     {
                         if (item.Selected)
                         {
@@ -506,7 +507,8 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Event Handlers
-        protected override void OnMouseWheel(MouseEventArgs e)
+        //protected override void OnMouseWheel(MouseEventArgs e)
+        public void TriggerMouseWheel(MouseEventArgs e) // Were not overriding OnMouseWheel anymore because it's better to override it in mainform
         {
             lock (this)
             {

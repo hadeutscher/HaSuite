@@ -73,9 +73,9 @@ namespace HaCreator.MapEditor
             get { return UserSettings.DotWidth * 2; }
         }
 
-        public override Color GetColor(ItemTypes EditedTypes, int selectedLayer, bool selected)
+        public override Color GetColor(SelectionInfo sel, bool selected)
         {
-            if (((EditedTypes & Type) == Type && (selectedLayer == -1 || CheckIfLayerSelected(selectedLayer))))
+            if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel))
                 return selected ? UserSettings.SelectedColor : Color;
             else return InactiveColor;
         }
@@ -183,20 +183,22 @@ namespace HaCreator.MapEditor
     public class FootholdAnchor : MapleDot, IContainsLayerInfo
     {
         private int layer;
+        private int zm;
 
-        public bool removed;
         public bool user;
+        public bool removed;
 
-        public FootholdAnchor(Board board, int x, int y, int layer, bool user)
+        public FootholdAnchor(Board board, int x, int y, int layer, int zm, bool user)
             : base(board, x, y)
         {
             this.layer = layer;
+            this.zm = zm;
             this.user = user;
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
+        public override bool CheckIfLayerSelected(SelectionInfo sel)
         {
-            return selectedLayer == layer;
+            return (sel.selectedLayer == -1 || sel.selectedLayer == layer) && (sel.selectedPlatform == -1 || sel.selectedPlatform == zm);
         }
 
         public override Color Color
@@ -242,11 +244,11 @@ namespace HaCreator.MapEditor
                         return -1;
                     else
                     {
-                        if (c.user && !d.user)
+                        if (c.PlatformNumber > d.PlatformNumber)
                             return 1;
-                        else if (!c.user && d.user)
+                        else if (c.PlatformNumber < d.PlatformNumber)
                             return -1;
-                        else 
+                        else
                             return 0;
                     }
                 }
@@ -298,6 +300,12 @@ namespace HaCreator.MapEditor
             set { layer = value; }
         }
 
+        public int PlatformNumber
+        {
+            get { return zm; }
+            set { zm = value; }
+        }
+
         public FootholdLine GetOtherLine(FootholdLine line)
         {
             foreach (FootholdLine currLine in connectedLines)
@@ -324,9 +332,10 @@ namespace HaCreator.MapEditor
             this.parentRope = parentRope;
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
+        public override bool CheckIfLayerSelected(SelectionInfo sel)
         {
-            return selectedLayer == parentRope.LayerNumber;
+            // Ropes have no zM
+            return (sel.selectedLayer == -1 || sel.selectedLayer == parentRope.LayerNumber);
         }
 
         public override Color Color
@@ -352,6 +361,7 @@ namespace HaCreator.MapEditor
             get { return parentRope.LayerNumber; }
             set { parentRope.LayerNumber = value; }
         }
+        public int PlatformNumber { get { return -1; } set { return; } }
 
         protected override bool RemoveConnectedLines
         {
@@ -390,7 +400,7 @@ namespace HaCreator.MapEditor
         {
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
+        public override bool CheckIfLayerSelected(SelectionInfo sel)
         {
             return true;
         }
@@ -559,9 +569,9 @@ namespace HaCreator.MapEditor
                 firstDot.MoveSilent(firstDot.X, secondDot.Y);
         }
 
-        public Color GetColor(ItemTypes EditedTypes, int selectedLayer)
+        public Color GetColor(SelectionInfo sel)
         {
-            if (((EditedTypes & Type) == Type && (selectedLayer == -1 || firstDot.CheckIfLayerSelected(selectedLayer))))
+            if ((sel.editedTypes & Type) == Type && firstDot.CheckIfLayerSelected(sel))
                 return Color;
             else return InactiveColor;
         }
@@ -572,9 +582,8 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public class FootholdLine : MapleLine, IContainsLayerInfo, IHasZM
+    public class FootholdLine : MapleLine, IContainsLayerInfo
     {
-        private int _zM;
         private MapleBool _cantThrough;
         private MapleBool _forbidFallDown;
         private int? _piece;
@@ -588,44 +597,40 @@ namespace HaCreator.MapEditor
         public int num;
         public bool saved;
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, int zM)
+        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot)
             : base(board, firstDot, secondDot)
         {
             this._cantThrough = null;
             this._forbidFallDown = null;
             this._piece = null;
             this._force = null;
-            this._zM = zM;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, int zM)
+        public FootholdLine(Board board, MapleDot firstDot)
             : base(board, firstDot)
         {
             this._cantThrough = null;
             this._forbidFallDown = null;
             this._piece = null;
             this._force = null;
-            this._zM = zM;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, int zM)
+        public FootholdLine(Board board, MapleDot firstDot, MapleDot secondDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force)
             : base(board, firstDot, secondDot)
         {
             this._cantThrough = cantThrough;
             this._forbidFallDown = forbidFallDown;
             this._piece = piece;
             this._force = force;
-            this._zM = zM;
         }
 
-        public FootholdLine(Board board, MapleDot firstDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force, int zM)
+        public FootholdLine(Board board, MapleDot firstDot, MapleBool forbidFallDown, MapleBool cantThrough, int? piece, int? force)
             : base(board, firstDot)
         {
             this._cantThrough = cantThrough;
             this._forbidFallDown = forbidFallDown;
             this._piece = piece;
             this._force = force;
-            this._zM = zM;
         }
 
         public override Color Color
@@ -682,7 +687,7 @@ namespace HaCreator.MapEditor
         public MapleBool ForbidFallDown { get { return _forbidFallDown; } set { _forbidFallDown = value; } }
         public MapleBool CantThrough { get { return _cantThrough; } set { _cantThrough = value; } }
         public int LayerNumber { get { return ((FootholdAnchor)FirstDot).LayerNumber; } set { throw new NotImplementedException(); } }
-        public int zM { get { return _zM; } set { _zM = value; } }
+        public int PlatformNumber { get { return ((FootholdAnchor)FirstDot).PlatformNumber; } set { throw new NotImplementedException(); } }
 
         public static int FHSorter(FootholdLine a, FootholdLine b)
         {
@@ -819,6 +824,7 @@ namespace HaCreator.MapEditor
         }
 
         public int LayerNumber { get { return _page; } set { _page = value; } }
+        public int PlatformNumber { get { return -1; } set { return; } }
         public bool ladder { get { return _ladder; } set { _ladder = value; } }
         public bool uf { get { return _uf; } set { _uf = value; } }
 
@@ -834,11 +840,6 @@ namespace HaCreator.MapEditor
             : base(board, x, y)
         {
             this.parentTooltip = parentTooltip;
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
         }
 
         public override Color Color
@@ -968,7 +969,7 @@ namespace HaCreator.MapEditor
             set { da = value; }
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
+        public override bool CheckIfLayerSelected(SelectionInfo sel)
         {
             return true;
         }

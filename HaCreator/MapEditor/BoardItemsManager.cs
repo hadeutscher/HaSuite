@@ -236,7 +236,25 @@ namespace HaCreator.MapEditor
                                 return -1;
                             else
                             {
-                                if ((a is TileInstance && b is TileInstance) || (a is ObjectInstance && b is ObjectInstance))
+                                if (a is TileInstance && b is TileInstance)
+                                {
+                                    TileInfo ai = (TileInfo)a.BaseInfo;
+                                    TileInfo bi = (TileInfo)b.BaseInfo;
+                                    if (ai.z > bi.z)
+                                        return 1;
+                                    else if (ai.z < bi.z)
+                                        return -1;
+                                    else
+                                    {
+                                        if (a.Z > b.Z)
+                                            return 1;
+                                        else if (a.Z < b.Z)
+                                            return -1;
+                                        else
+                                            return 0;
+                                    }
+                                }
+                                if (a is ObjectInstance && b is ObjectInstance)
                                 {
                                     if (a.Z > b.Z)
                                         return 1;

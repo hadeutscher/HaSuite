@@ -70,6 +70,7 @@
             this.label38 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.fixFh = new System.Windows.Forms.CheckBox();
             this.clipBox = new System.Windows.Forms.CheckBox();
             this.errorsCheckBox = new System.Windows.Forms.CheckBox();
             this.xgaResolutionCheckbox = new System.Windows.Forms.CheckBox();
@@ -110,7 +111,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.fixFh = new System.Windows.Forms.CheckBox();
+            this.invertUpDownBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
@@ -642,6 +643,7 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.invertUpDownBox);
             this.tabPage1.Controls.Add(this.fixFh);
             this.tabPage1.Controls.Add(this.clipBox);
             this.tabPage1.Controls.Add(this.errorsCheckBox);
@@ -658,6 +660,15 @@
             this.tabPage1.Size = new System.Drawing.Size(537, 447);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
+            // 
+            // fixFh
+            // 
+            this.fixFh.AutoSize = true;
+            this.fixFh.Location = new System.Drawing.Point(165, 268);
+            this.fixFh.Name = "fixFh";
+            this.fixFh.Size = new System.Drawing.Size(148, 17);
+            this.fixFh.TabIndex = 62;
+            this.fixFh.Text = "Fix Footholds Mispositions";
             // 
             // clipBox
             // 
@@ -1159,14 +1170,14 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // fixFh
+            // invertUpDownBox
             // 
-            this.fixFh.AutoSize = true;
-            this.fixFh.Location = new System.Drawing.Point(165, 268);
-            this.fixFh.Name = "fixFh";
-            this.fixFh.Size = new System.Drawing.Size(148, 17);
-            this.fixFh.TabIndex = 62;
-            this.fixFh.Text = "Fix Footholds Mispositions";
+            this.invertUpDownBox.AutoSize = true;
+            this.invertUpDownBox.Location = new System.Drawing.Point(165, 291);
+            this.invertUpDownBox.Name = "invertUpDownBox";
+            this.invertUpDownBox.Size = new System.Drawing.Size(163, 17);
+            this.invertUpDownBox.TabIndex = 63;
+            this.invertUpDownBox.Text = "Invert Up/Down in Layer box";
             // 
             // UserSettingsForm
             // 
@@ -1295,5 +1306,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown movementBox;
         private System.Windows.Forms.CheckBox fixFh;
+        private System.Windows.Forms.CheckBox invertUpDownBox;
     }
 }

@@ -66,7 +66,7 @@ namespace HaCreator.MapEditor
                 selectPlat.Click += selectPlat_Click;
                 platformCategory.Add(selectPlat);
             }
-            if (target is IHasZM || (target is FootholdAnchor && getZmOfSelectedFoothold() != -1))
+            if (target is IContainsLayerInfo || (target is FootholdAnchor && getZmOfSelectedFoothold() != -1))
             {
                 ToolStripMenuItem selectZm = new ToolStripMenuItem("Select Platform");
                 selectZm.Click += selectZm_Click;
@@ -99,7 +99,7 @@ namespace HaCreator.MapEditor
             {
                 if (line.Selected)
                 {
-                    return line.zM;
+                    return line.PlatformNumber;
                 }
             }
             return -1;
@@ -120,17 +120,17 @@ namespace HaCreator.MapEditor
         {
             lock (multiboard)
             {
-                int zm = target is IHasZM ? ((IHasZM)target).zM : getZmOfSelectedFoothold();
+                int zm = target is IContainsLayerInfo ? ((IContainsLayerInfo)target).PlatformNumber : getZmOfSelectedFoothold();
                 foreach (BoardItem item in target.Board.BoardItems)
                 {
-                    if (item is IHasZM && ((IHasZM)item).zM == zm)
+                    if (item is IContainsLayerInfo && ((IContainsLayerInfo)item).PlatformNumber == zm)
                     {
                         ((BoardItem)item).Selected = true;
                     }
                 }
                 foreach (FootholdLine line in target.Board.BoardItems.FootholdLines)
                 {
-                    if (line.zM == zm)
+                    if (line.PlatformNumber == zm)
                     {
                         ((FootholdLine)line).FirstDot.Selected = true;
                         ((FootholdLine)line).SecondDot.Selected = true;
@@ -143,12 +143,12 @@ namespace HaCreator.MapEditor
         {
             lock (multiboard)
             {
-                List<IHasZM> items = new List<IHasZM>();
+                List<IContainsLayerInfo> items = new List<IContainsLayerInfo>();
                 foreach (BoardItem item in board.SelectedItems)
                 {
-                    if (item is IHasZM)
+                    if (item is IContainsLayerInfo)
                     {
-                        items.Add((IHasZM)item);
+                        items.Add((IContainsLayerInfo)item);
                     }
                     else if (item is FootholdAnchor)
                     {
@@ -161,7 +161,7 @@ namespace HaCreator.MapEditor
                         }
                     }
                 }
-                new MassZmEditor(items.ToArray(), board, ((IHasZM)target).zM).ShowDialog();
+                new MassZmEditor(items.ToArray(), board, ((IContainsLayerInfo)target).PlatformNumber).ShowDialog();
             }
         }
 

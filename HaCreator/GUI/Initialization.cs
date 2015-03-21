@@ -190,6 +190,7 @@ namespace HaCreator.GUI
 
             foreach (string mapid in Program.InfoManager.Maps.Keys)
             {
+                MapLoader loader = new MapLoader();
                 string mapcat = "Map" + mapid.Substring(0, 1);
                 WzImage mapImage = (WzImage)Program.WzManager["map"]["Map"][mapcat][mapid + ".img"];
                 if (mapImage == null)
@@ -202,9 +203,9 @@ namespace HaCreator.GUI
                     mapImage.UnparseImage();
                     continue;
                 }
-                MapLoader.VerifyMapPropsKnown(mapImage, true);
+                loader.VerifyMapPropsKnown(mapImage, true);
                 MapInfo info = new MapInfo(mapImage, null, null, null);
-                MapLoader.LoadMisc(mapImage, b);
+                loader.LoadMisc(mapImage, b);
                 if (ErrorLogger.ErrorsPresent())
                 {
                     ErrorLogger.SaveToFile("debug_errors.txt");

@@ -24,9 +24,20 @@ namespace HaCreator.MapEditor
         int UnflippedX { get; }
     }
 
-    public interface IHasZM
+    public struct SelectionInfo
     {
-        int zM { get; set; }
+        public SelectionInfo(int selectedLayer, int selectedPlatform, ItemTypes visibleTypes, ItemTypes editedTypes)
+        {
+            this.selectedLayer = selectedLayer;
+            this.selectedPlatform = selectedPlatform;
+            this.visibleTypes = visibleTypes;
+            this.editedTypes = editedTypes;
+        }
+
+        public int selectedLayer;
+        public int selectedPlatform;
+        public ItemTypes visibleTypes;
+        public ItemTypes editedTypes;
     }
 
     public struct ObjectInstanceQuest
@@ -46,7 +57,7 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public class ObjectInstance : LayeredItem, IFlippable, IHasZM
+    public class ObjectInstance : LayeredItem, IFlippable
     {
         private ObjectInfo baseInfo;
         private bool flip;
@@ -56,12 +67,11 @@ namespace HaCreator.MapEditor
         private MapleBool _reactor;
         private MapleBool _flow;
         private int? _rx, _ry, _cx, _cy;
-        private int _zM;
         private string _tags;
         private List<ObjectInstanceQuest> questInfo;
         
         public ObjectInstance(ObjectInfo baseInfo, Layer layer, Board board, int x, int y, int z, int zM, MapleBool r, MapleBool hide, MapleBool reactor, MapleBool flow, int? rx, int? ry, int? cx, int? cy, string name, string tags, List<ObjectInstanceQuest> questInfo, bool flip)
-            : base(board, layer, x, y, z)
+            : base(board, layer, zM, x, y, z)
         {
             this.baseInfo = baseInfo;
             this.flip = flip;
@@ -76,7 +86,6 @@ namespace HaCreator.MapEditor
             this._cy = cy;
             this._tags = tags;
             this.questInfo = questInfo;
-            this._zM = zM;
             if (flip)
                 X -= Width - 2 * Origin.X;
         }
@@ -91,9 +100,9 @@ namespace HaCreator.MapEditor
             get { return baseInfo; }
         }
 
-        public override Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        public override Color GetColor(SelectionInfo sel, bool selected)
         {
-            Color c = base.GetColor(editedTypes, selectedLayer, selected);
+            Color c = base.GetColor(sel, selected);
             if (_hide) c.R = (byte)UserSettings.HiddenLifeR;
             return c;
         }
@@ -126,11 +135,6 @@ namespace HaCreator.MapEditor
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return Layer.LayerNumber == selectedLayer;
         }
 
         public override System.Drawing.Bitmap Image
@@ -169,22 +173,18 @@ namespace HaCreator.MapEditor
         public int? ry { get { return _ry; } set { _ry = value; } }
         public int? cx { get { return _cx; } set { _cx = value; } }
         public int? cy { get { return _cy; } set { _cy = value; } }
-        public int zM { get { return _zM; } set { _zM = value; } }
         public List<ObjectInstanceQuest> QuestInfo { get { return questInfo; } set { questInfo = value; } }
     }
 
-    public class TileInstance : LayeredItem, ISnappable, IHasZM
+    public class TileInstance : LayeredItem, ISnappable
     {
         private TileInfo baseInfo;
 
-        private int _zM;
-
         public TileInstance(TileInfo baseInfo, Layer layer, Board board, int x, int y, int z, int zM)
-            : base(board, layer, x, y, z)
+            : base(board, layer, zM, x, y, z)
         {
             this.baseInfo = baseInfo;
             AttachToLayer(layer);
-            this._zM = zM;
         }
 
         public void AttachToLayer(Layer layer)
@@ -305,11 +305,6 @@ namespace HaCreator.MapEditor
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), /*Flip ? SpriteEffects.FlipHorizontally : */SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return Layer.LayerNumber == selectedLayer;
-        }
-
         // Only to be used by layer TS changing, do not use this for ANYTHING else.
         public void SetBaseInfo(TileInfo newInfo)
         {
@@ -341,8 +336,6 @@ namespace HaCreator.MapEditor
                 return baseInfo.Origin;
             }
         }
-
-        public int zM { get { return _zM; } set { _zM = value; } }
     }
 
     public abstract class LifeInstance : BoardItem, IFlippable
@@ -411,9 +404,9 @@ namespace HaCreator.MapEditor
             set { limitedname = value; }
         }
 
-        public override Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        public override Color GetColor(SelectionInfo sel, bool selected)
         {
-            Color c = base.GetColor(editedTypes, selectedLayer, selected);
+            Color c = base.GetColor(sel, selected);
             if (hide == true) c.R = (byte)UserSettings.HiddenLifeR;
             return c;
         }
@@ -427,11 +420,6 @@ namespace HaCreator.MapEditor
         public override MapleDrawableInfo BaseInfo
         {
             get { return baseInfo; }
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
         }
 
         public override System.Drawing.Bitmap Image
@@ -575,11 +563,6 @@ namespace HaCreator.MapEditor
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), SpriteEffects.None, 1f);
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
         }
 
         public override MapleDrawableInfo BaseInfo
@@ -812,11 +795,6 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
-        }
-
         public override ItemTypes Type
         {
             get { return ItemTypes.Reactors; }
@@ -930,11 +908,6 @@ namespace HaCreator.MapEditor
         public override MapleDrawableInfo BaseInfo
         {
             get { return baseInfo; }
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
         }
 
         public override System.Drawing.Bitmap Image

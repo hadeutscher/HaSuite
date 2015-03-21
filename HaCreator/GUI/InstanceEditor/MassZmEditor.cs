@@ -18,10 +18,10 @@ namespace HaCreator.GUI.InstanceEditor
 {
     public partial class MassZmEditor : EditorBase
     {
-        public IHasZM[] items;
+        public IContainsLayerInfo[] items;
         private Board board;
 
-        public MassZmEditor(IHasZM[] items, Board board, int zm)
+        public MassZmEditor(IContainsLayerInfo[] items, Board board, int zm)
         {
             InitializeComponent();
             this.items = items;
@@ -40,10 +40,10 @@ namespace HaCreator.GUI.InstanceEditor
             {
                 int newZM = (int)zmInput.Value;
                 List<UndoRedoAction> actions = new List<UndoRedoAction>();
-                foreach (IHasZM item in items)
+                foreach (IContainsLayerInfo item in items)
                 {
-                    actions.Add(UndoRedoManager.zMChanged(item, item.zM, newZM));
-                    item.zM = newZM;
+                    actions.Add(UndoRedoManager.zMChanged(item, item.PlatformNumber, newZM));
+                    item.PlatformNumber = newZM;
                 }
                 if (actions.Count > 0)
                     board.UndoRedoMan.AddUndoBatch(actions);

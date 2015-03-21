@@ -127,7 +127,7 @@ namespace HaCreator.MapEditor
             return new UndoRedoAction(null, UndoRedoType.LayerTSChanged, oldTS, newTS, layer);
         }
 
-        public static UndoRedoAction zMChanged(IHasZM target, int oldZM, int newZM)
+        public static UndoRedoAction zMChanged(IContainsLayerInfo target, int oldZM, int newZM)
         {
             return new UndoRedoAction(null, UndoRedoType.zMChanged, oldZM, newZM, target);
         }
@@ -291,8 +291,8 @@ namespace HaCreator.MapEditor
                 case UndoRedoType.zMChanged:
                     int zm_old = (int)ParamA;
                     int zm_new = (int)ParamB;
-                    IHasZM target = (IHasZM)ParamC;
-                    target.zM = zm_old;
+                    IContainsLayerInfo target = (IContainsLayerInfo)ParamC;
+                    target.PlatformNumber = zm_old;
                     break;
             }
         }

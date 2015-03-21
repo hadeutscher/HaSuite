@@ -28,6 +28,7 @@ namespace HaCreator.GUI
             xgaResolutionCheckbox.Checked = UserSettings.XGAResolution;
             clipBox.Checked = UserSettings.ClipText;
             fixFh.Checked = UserSettings.FixFootholdMispositions;
+            invertUpDownBox.Checked = UserSettings.InverseUpDown;
 
             tabColorPicker.Color = UserSettings.TabColor;
             dragColorPicker.Color = XNAToSystemColor(UserSettings.SelectSquare);
@@ -88,6 +89,7 @@ namespace HaCreator.GUI
             UserSettings.XGAResolution = xgaResolutionCheckbox.Checked;
             UserSettings.ClipText = clipBox.Checked;
             UserSettings.FixFootholdMispositions = fixFh.Checked;
+            UserSettings.InverseUpDown = invertUpDownBox.Checked;
 
             UserSettings.TabColor = tabColorPicker.Color;
             UserSettings.SelectSquare = SystemToXNAColor(dragColorPicker.Color);

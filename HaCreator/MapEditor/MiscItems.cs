@@ -30,11 +30,6 @@ namespace HaCreator.MapEditor
             this.parentItem = parentItem;
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
-        }
-
         public override Color Color
         {
             get { return UserSettings.MiscColor; }
@@ -243,9 +238,9 @@ namespace HaCreator.MapEditor
             get { return baseInfo; }
         }
 
-        public override Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        public override Color GetColor(SelectionInfo sel, bool selected)
         {
-            Color c = base.GetColor(editedTypes, selectedLayer, selected);
+            Color c = base.GetColor(sel, selected);
             return c;
         }
 
@@ -277,11 +272,6 @@ namespace HaCreator.MapEditor
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
         }
 
         public override System.Drawing.Bitmap Image
@@ -371,9 +361,9 @@ namespace HaCreator.MapEditor
             get { return baseInfo; }
         }
 
-        public override Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        public override Color GetColor(SelectionInfo sel, bool selected)
         {
-            Color c = base.GetColor(editedTypes, selectedLayer, selected);
+            Color c = base.GetColor(sel, selected);
             return c;
         }
 
@@ -383,7 +373,7 @@ namespace HaCreator.MapEditor
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), SpriteEffects.None, 0);
         }
 
-        public override bool CheckIfLayerSelected(int selectedLayer)
+        public override bool CheckIfLayerSelected(SelectionInfo sel)
         {
             return true;
         }
@@ -443,9 +433,9 @@ namespace HaCreator.MapEditor
             get { return baseInfo; }
         }
 
-        public override Color GetColor(ItemTypes editedTypes, int selectedLayer, bool selected)
+        public override Color GetColor(SelectionInfo sel, bool selected)
         {
-            Color c = base.GetColor(editedTypes, selectedLayer, selected);
+            Color c = base.GetColor(sel, selected);
             return c;
         }
 
@@ -453,11 +443,6 @@ namespace HaCreator.MapEditor
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), SpriteEffects.None, 0);
-        }
-
-        public override bool CheckIfLayerSelected(int selectedLayer)
-        {
-            return true;
         }
 
         public override System.Drawing.Bitmap Image

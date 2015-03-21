@@ -124,6 +124,7 @@ namespace HaCreator.GUI
 
         private void loadButton_Click(object sender, EventArgs e)
         {
+            MapLoader loader = new MapLoader();
             if (newTab.Checked && multiBoard.Boards.Count != 0)
                 ApplicationSettings.newTab = true;
             else if (!newTab.Checked)
@@ -139,7 +140,7 @@ namespace HaCreator.GUI
             if (NewSelect.Checked)
             {
                 ApplicationSettings.lastRadioIndex = 0;
-                MapLoader.CreateMap("<Untitled>", "<Untitled>", MapLoader.CreateStandardMapMenu(rightClickHandler), new XNA.Point(int.Parse(newWidth.Text), int.Parse(newHeight.Text)), new XNA.Point(int.Parse(newWidth.Text) / 2, int.Parse(newHeight.Text) / 2), 8, Tabs, multiBoard);
+                loader.CreateMap("<Untitled>", "<Untitled>", loader.CreateStandardMapMenu(rightClickHandler), new XNA.Point(int.Parse(newWidth.Text), int.Parse(newHeight.Text)), new XNA.Point(int.Parse(newWidth.Text) / 2, int.Parse(newHeight.Text) / 2), 8, Tabs, multiBoard);
                 DialogResult = DialogResult.OK;
                 Close();
                 return;
@@ -186,7 +187,7 @@ namespace HaCreator.GUI
                     categoryName = WzInfoTools.GetMapCategoryName(strMapProp);
                 }
             }
-            MapLoader.CreateMapFromImage(mapImage, mapName, streetName, categoryName, strMapProp, Tabs, multiBoard, rightClickHandler);
+            loader.CreateMapFromImage(mapImage, mapName, streetName, categoryName, strMapProp, Tabs, multiBoard, rightClickHandler);
             DialogResult = DialogResult.OK;
             Close();
         }
