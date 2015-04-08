@@ -184,6 +184,12 @@
     <Compile Include="GUI\EditorBase.Designer.cs">
       <DependentUpon>EditorBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\LayerChange.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\LayerChange.Designer.cs">
+      <DependentUpon>LayerChange.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\NewPlatform.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -481,6 +487,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\InstanceEditor\ObjectInstanceEditor.resx">
       <DependentUpon>ObjectInstanceEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\LayerChange.resx">
+      <DependentUpon>LayerChange.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Load.resx">
       <DependentUpon>Load.cs</DependentUpon>

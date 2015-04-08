@@ -494,59 +494,10 @@ namespace HaCreator.MapEditor
             ApplicationSettings.lastDefaultLayer = currentLayer;
         }
 
-        private bool LayeredItemsSelected(out int layer)
-        {
-            foreach (BoardItem item in multiBoard.SelectedBoard.SelectedItems)
-                if (item is LayeredItem)
-                {
-                    layer = ((LayeredItem)item).Layer.LayerNumber;
-                    return true;
-                }
-            layer = 0;
-            return false;
-        }
-        private bool LayerCapableOfHoldingSelectedItems(Layer layer)
-        {
-            if (layer.tS == null) return true;
-            foreach (BoardItem item in multiBoard.SelectedBoard.SelectedItems)
-                if (item is TileInstance && ((TileInfo)item.BaseInfo).tS != layer.tS) return false;
-            return true;
-        }
-
         void ribbon_LayerViewChanged(int layer, int platform)
         {
             if (multiBoard.SelectedBoard == null)
                 return;
-            /*int oldLayer;
-            if (multiBoard.SelectedBoard.SelectedItems.Count > 0 && LayeredItemsSelected(out oldLayer))
-            {
-                if (UserSettings.suppressWarnings || MessageBox.Show("Are you sure you want to move these items from layer " + oldLayer.ToString() + " to " + layer.ToString() + "?\r\n", "Cross-Layer Operation", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) != System.Windows.Forms.DialogResult.Yes)
-                {
-                    InputHandler.ClearSelectedItems(multiBoard.SelectedBoard);
-                    SetLayer(layer);
-                    return;
-                }
-                Layer targetLayer = multiBoard.SelectedBoard.Layers[layer];
-                if (!LayerCapableOfHoldingSelectedItems(targetLayer))
-                {
-                    MessageBox.Show("Error: Target layer cannot hold the selected items because they contain tiles with a tS different from the layer's", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                List<IContainsLayerInfo> items = new List<IContainsLayerInfo>();
-                lock (multiBoard)
-                {
-                    foreach (BoardItem item in multiBoard.SelectedBoard.SelectedItems)
-                    {
-                        if (!(item is IContainsLayerInfo)) continue;
-                        ((IContainsLayerInfo)item).LayerNumber = targetLayer.LayerNumber;
-                        items.Add((IContainsLayerInfo)item);
-                    }
-                }
-                if (items.Count > 0)
-                    multiBoard.SelectedBoard.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction>() { UndoRedoManager.ItemsLayerChanged(items, oldLayer, targetLayer.LayerNumber) });
-                multiBoard.SelectedBoard.Layers[oldLayer].RecheckTileSet();
-                targetLayer.RecheckTileSet();
-            }*/
             SetLayer(layer, platform);
             InputHandler.ClearSelectedItems(multiBoard.SelectedBoard);
 

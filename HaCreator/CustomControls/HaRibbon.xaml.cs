@@ -414,11 +414,6 @@ namespace HaCreator.CustomControls
             endInternalEditing();
         }
 
-        private string GetLayerString(Layer layer)
-        {
-            return layer.LayerNumber.ToString() + (layer.tS != null ? (" - " + layer.tS) : "");
-        }
-
         public void SetLayers(List<Layer> layers)
         {
             beginInternalEditing();
@@ -427,7 +422,7 @@ namespace HaCreator.CustomControls
             layerBox.ClearItems();
             for (int i = 0; i < layers.Count; i++)
             {
-                layerBox.Items.Add(new HaListItem(GetLayerString(layers[i]), i));
+                layerBox.Items.Add(new HaListItem(layers[i].ToString(), i));
             }
 
             endInternalEditing();
@@ -439,7 +434,7 @@ namespace HaCreator.CustomControls
 
             int oldIdx = layerBox.SelectedIndex;
             int i = layer.LayerNumber;
-            layerBox.Items[i].Text = GetLayerString(layer);
+            layerBox.Items[i].Text = layer.ToString();
             layerBox.SelectedIndex = oldIdx;
 
             endInternalEditing();

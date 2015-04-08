@@ -124,6 +124,11 @@ namespace HaCreator.MapEditor
         public int zMDefault { get { return board.SelectedPlatform == -1 ? zMList.ElementAt(0) : board.SelectedPlatform; } }
 
         public SortedSet<int> zMList { get { return zms; } }
+
+        public override string ToString()
+        {
+            return LayerNumber.ToString() + (tS != null ? (" - " + tS) : "");
+        }
     }
 
     public abstract class LayeredItem : BoardItem, IContainsLayerInfo

@@ -1,4 +1,5 @@
-﻿using HaCreator.GUI.InstanceEditor;
+﻿using HaCreator.GUI;
+using HaCreator.GUI.InstanceEditor;
 using HaCreator.WzStructure;
 using System;
 using System.Collections.Generic;
@@ -66,14 +67,20 @@ namespace HaCreator.MapEditor
                 selectPlat.Click += selectPlat_Click;
                 platformCategory.Add(selectPlat);
             }
+            if (target is IContainsLayerInfo)
+            {
+                ToolStripMenuItem moveLayer = new ToolStripMenuItem("Change Layer/Platform...");
+                moveLayer.Click += moveLayer_Click;
+                platformCategory.Add(moveLayer);
+            }
             if (target is IContainsLayerInfo || (target is FootholdAnchor && getZmOfSelectedFoothold() != -1))
             {
                 ToolStripMenuItem selectZm = new ToolStripMenuItem("Select Platform");
                 selectZm.Click += selectZm_Click;
                 platformCategory.Add(selectZm);
-                ToolStripMenuItem editZm = new ToolStripMenuItem("Edit ZM...");
+                /*ToolStripMenuItem editZm = new ToolStripMenuItem("Edit ZM...");
                 editZm.Click += editZm_Click;
-                platformCategory.Add(editZm);
+                platformCategory.Add(editZm);*/
             }
 
 
@@ -89,6 +96,24 @@ namespace HaCreator.MapEditor
                     cms.Items.AddRange(currList.ToArray());
                     hasItems = true;
                 }
+            }
+        }
+
+        void moveLayer_Click(object sender, EventArgs e)
+        {
+            lock (multiboard)
+            {
+                for (int i = 0; i < board.SelectedItems.Count; i++)
+                {
+                    if (board.SelectedItems[i] is FootholdAnchor)
+                    {
+                        foreach (FootholdAnchor x in new AnchorEnumerator((FootholdAnchor)board.SelectedItems[i]))
+                        {
+                            x.Selected = true;
+                        }
+                    }
+                }
+                new LayerChange(board.SelectedItems, board).ShowDialog();
             }
         }
 

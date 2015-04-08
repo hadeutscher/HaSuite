@@ -107,6 +107,11 @@ namespace HaCreator.MapEditor
             return new UndoRedoAction(null, UndoRedoType.ItemsLayerChanged, oldLayerIndex, newLayerIndex, items);
         }
 
+        public static UndoRedoAction ItemLayerPlatChanged(IContainsLayerInfo item, Tuple<int, int> oldLayerPlat, Tuple<int, int> newLayerPlat)
+        {
+            return new UndoRedoAction(null, UndoRedoType.ItemLayerPlatChanged, oldLayerPlat, newLayerPlat, item);
+        }
+
         public static UndoRedoAction RopeRemoved(Rope rope)
         {
             return new UndoRedoAction(null, UndoRedoType.RopeRemoved, rope, null);
@@ -138,7 +143,7 @@ namespace HaCreator.MapEditor
             lock (parentBoard.ParentControl)
             {
                 UndoRedoBatch action = UndoList[UndoList.Count - 1];
-                action.UndoRedo();
+                action.UndoRedo(parentBoard);
                 action.SwitchActions();
                 UndoList.RemoveAt(UndoList.Count - 1);
                 RedoList.Add(action);
@@ -152,7 +157,7 @@ namespace HaCreator.MapEditor
             lock (parentBoard.ParentControl)
             {
                 UndoRedoBatch action = RedoList[RedoList.Count - 1];
-                action.UndoRedo();
+                action.UndoRedo(parentBoard);
                 action.SwitchActions();
                 RedoList.RemoveAt(RedoList.Count - 1);
                 UndoList.Add(action);
@@ -166,11 +171,12 @@ namespace HaCreator.MapEditor
     {
         public List<UndoRedoAction> Actions = new List<UndoRedoAction>();
 
-        public void UndoRedo()
+        public void UndoRedo(Board board)
         {
-            Board boardToSort = null;
-            foreach (UndoRedoAction action in Actions) action.UndoRedo(out boardToSort);
-            if (boardToSort != null) boardToSort.BoardItems.Sort();
+            HashSet<int> layersToRecheck = new HashSet<int>();
+            foreach (UndoRedoAction action in Actions) 
+                action.UndoRedo(layersToRecheck);
+            layersToRecheck.ToList().ForEach(x => board.Layers[x].RecheckTileSet());
         }
 
         public void SwitchActions()
@@ -201,9 +207,8 @@ namespace HaCreator.MapEditor
             this.ParamC = ParamC;
         }
 
-        public void UndoRedo(out Board boardToSort)
+        public void UndoRedo(HashSet<int> layersToRecheck)
         {
-            boardToSort = null;
             Board board;
             switch (type)
             {
@@ -265,6 +270,15 @@ namespace HaCreator.MapEditor
                         layerInfoItem.LayerNumber = (int)ParamA;
                     ((BoardItem)((List<IContainsLayerInfo>)ParamC)[0]).Board.Layers[(int)ParamA].RecheckTileSet();
                     ((BoardItem)((List<IContainsLayerInfo>)ParamC)[0]).Board.Layers[(int)ParamB].RecheckTileSet();
+                    break;
+                case UndoRedoType.ItemLayerPlatChanged:
+                    Tuple<int, int> oldLayerPlat = (Tuple<int, int>)ParamA;
+                    Tuple<int, int> newLayerPlat = (Tuple<int, int>)ParamB;
+                    IContainsLayerInfo li = (IContainsLayerInfo)ParamC;
+                    li.LayerNumber = oldLayerPlat.Item1;
+                    li.PlatformNumber = oldLayerPlat.Item2;
+                    layersToRecheck.Add(oldLayerPlat.Item1);
+                    layersToRecheck.Add(newLayerPlat.Item1);
                     break;
                 case UndoRedoType.RopeAdded:
                     ((Rope)ParamA).Remove(null);
@@ -333,6 +347,7 @@ namespace HaCreator.MapEditor
                     type = UndoRedoType.RopeAdded;
                     break;
                 case UndoRedoType.ItemsLayerChanged:
+                case UndoRedoType.ItemLayerPlatChanged:
                 case UndoRedoType.BackgroundMoved:
                 case UndoRedoType.ItemMoved:
                 case UndoRedoType.MapCenterChanged:
@@ -365,6 +380,7 @@ namespace HaCreator.MapEditor
         ItemsUnlinked,
         ItemsLinked,
         ItemsLayerChanged,
+        ItemLayerPlatChanged,
         RopeRemoved,
         RopeAdded,
         ItemZChanged,
