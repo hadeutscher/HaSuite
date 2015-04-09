@@ -69,12 +69,20 @@ namespace HaCreator.MapEditor
             this.multiBoard.ReturnToSelectionState += multiBoard_ReturnToSelectionState;
             this.multiBoard.SelectedItemChanged += multiBoard_SelectedItemChanged;
             this.multiBoard.MouseMoved += multiBoard_MouseMoved;
+            this.multiBoard.ImageDropped += multiBoard_ImageDropped;
 
             multiBoard.Visible = false;
             ribbon.SetEnabled(false);
         }
 
+
         #region MultiBoard Events
+        void multiBoard_ImageDropped(Board selectedBoard, System.Drawing.Bitmap bmp, Microsoft.Xna.Framework.Point pos)
+        {
+            ObjectInfo oi = new ObjectInfo(bmp, new System.Drawing.Point(bmp.Width / 2, bmp.Height / 2), "", "", "", "", null);
+            selectedBoard.BoardItems.Add(oi.CreateInstance(selectedBoard.SelectedLayer, selectedBoard, pos.X, pos.Y, 0, true), true);
+        }
+
         void multiBoard_MouseMoved(Board selectedBoard, Microsoft.Xna.Framework.Point oldPos, Microsoft.Xna.Framework.Point newPos, Microsoft.Xna.Framework.Point currPhysicalPos)
         {
             ribbon.SetMousePos(newPos.X, newPos.Y, currPhysicalPos.X, currPhysicalPos.Y);

@@ -405,6 +405,9 @@ namespace HaCreator.MapEditor
         public delegate void MouseMovedDelegate(Board selectedBoard, Point oldPos, Point newPos, Point currPhysicalPos);
         public event MouseMovedDelegate MouseMoved;
 
+        public delegate void ImageDroppedDelegate(Board selectedBoard, System.Drawing.Bitmap bmp, Point pos);
+        public event ImageDroppedDelegate ImageDropped;
+
         private void DxContainer_MouseClick(object sender, MouseEventArgs e)
         {
             // We only handle right click here because left click is handled more thoroughly by up-down handlers
@@ -501,6 +504,45 @@ namespace HaCreator.MapEditor
                     selectedBoard.Mouse.Move(newPos.X, newPos.Y);
                     if (MouseMoved != null)
                         MouseMoved.Invoke(selectedBoard, oldPos, newPos, new Point(mouse.X, mouse.Y));
+                }
+            }
+        }
+
+        private void DxContainer_DragEnter(object sender, DragEventArgs e)
+        {
+            lock (this)
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    e.Effect = DragDropEffects.Copy;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void DxContainer_DragDrop(object sender, DragEventArgs e)
+        {
+            lock (this)
+            {
+                if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    return;
+                }
+
+                string[] data = (string[])e.Data.GetData(DataFormats.FileDrop);
+                System.Drawing.Point p = PointToClient(new System.Drawing.Point(e.X, e.Y));
+                foreach (string file in data)
+                {
+                    System.Drawing.Bitmap bmp;
+                    try
+                    {
+                        bmp = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(file);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    if (ImageDropped != null)
+                        ImageDropped.Invoke(selectedBoard, bmp, new Point(PhysicalToVirtual(p.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(p.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
                 }
             }
         }

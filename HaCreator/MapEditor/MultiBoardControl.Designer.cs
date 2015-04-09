@@ -53,10 +53,13 @@
             // 
             // DxContainer
             // 
+            this.DxContainer.AllowDrop = true;
             this.DxContainer.Location = new System.Drawing.Point(3, 3);
             this.DxContainer.Name = "DxContainer";
             this.DxContainer.Size = new System.Drawing.Size(105, 100);
             this.DxContainer.TabIndex = 0;
+            this.DxContainer.DragDrop += new System.Windows.Forms.DragEventHandler(this.DxContainer_DragDrop);
+            this.DxContainer.DragEnter += new System.Windows.Forms.DragEventHandler(this.DxContainer_DragEnter);
             this.DxContainer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DxContainer_KeyDown);
             this.DxContainer.MouseClick += new System.Windows.Forms.MouseEventHandler(this.DxContainer_MouseClick);
             this.DxContainer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.DxContainer_MouseDoubleClick);
