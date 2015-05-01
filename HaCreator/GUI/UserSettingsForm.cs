@@ -44,6 +44,10 @@ namespace HaCreator.GUI
             ttcColorPicker.Color = XNAToSystemColor(UserSettings.ToolTipCharFill);
             ttcSelectColorPicker.Color = XNAToSystemColor(UserSettings.ToolTipCharSelectedFill);
             ttLineColorPicker.Color = XNAToSystemColor(UserSettings.ToolTipBindingLine);
+            miscColorPicker.Color = XNAToSystemColor(UserSettings.MiscColor);
+            miscFillColorPicker.Color = XNAToSystemColor(UserSettings.MiscFill);
+            miscSelectedColorPicker.Color = XNAToSystemColor(UserSettings.MiscSelectedFill);
+            originColorPicker.Color = XNAToSystemColor(UserSettings.OriginColor);
             rInput.Value = UserSettings.HiddenLifeR;
             fontName.Text = UserSettings.FontName;
             fontSize.Value = UserSettings.FontSize;
@@ -105,8 +109,12 @@ namespace HaCreator.GUI
             UserSettings.ToolTipCharFill = SystemToXNAColor(ttcColorPicker.Color);
             UserSettings.ToolTipCharSelectedFill = SystemToXNAColor(ttcSelectColorPicker.Color);
             UserSettings.ToolTipBindingLine = SystemToXNAColor(ttLineColorPicker.Color);
+            UserSettings.MiscColor = SystemToXNAColor(miscColorPicker.Color);
+            UserSettings.MiscFill = SystemToXNAColor(miscFillColorPicker.Color);
+            UserSettings.MiscSelectedFill = SystemToXNAColor(miscSelectedColorPicker.Color);
+            UserSettings.OriginColor = SystemToXNAColor(originColorPicker.Color);
+            
             UserSettings.HiddenLifeR = (int)rInput.Value;
-
             UserSettings.Mobrx0Offset = (int)mobrx0Box.Value;
             UserSettings.Mobrx1Offset = (int)mobrx1Box.Value;
             UserSettings.Npcrx0Offset = (int)npcrx0Box.Value;

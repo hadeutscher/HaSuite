@@ -169,6 +169,11 @@
             0,
             0,
             0});
+            this.timeBox.Minimum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            -2147483648});
             this.timeBox.Name = "timeBox";
             this.timeBox.Size = new System.Drawing.Size(93, 20);
             this.timeBox.TabIndex = 6;

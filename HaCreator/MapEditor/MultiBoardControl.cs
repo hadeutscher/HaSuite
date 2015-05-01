@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MapleLib.WzLib.WzStructure.Data;
 using System.Threading;
+using System.IO;
 
 namespace HaCreator.MapEditor
 {
@@ -34,6 +35,7 @@ namespace HaCreator.MapEditor
         private Thread renderer;
         private bool needsReset = false;
         private IntPtr dxHandle;
+        private UserObjectsManager userObjs;
 
         private void RenderLoop()
         {
@@ -59,6 +61,7 @@ namespace HaCreator.MapEditor
         {
             InitializeComponent();
             this.dxHandle = DxContainer.Handle;
+            this.userObjs = new UserObjectsManager(this);
             ResetDock();
         }
 
@@ -266,6 +269,24 @@ namespace HaCreator.MapEditor
                 return selectedBoard.MapSize;
             }
         }
+
+        public UserObjectsManager UserObjects
+        {
+            get
+            {
+                return userObjs;
+            }
+        }
+
+        public bool AssertLayerSelected()
+        {
+            if (SelectedBoard.SelectedLayerIndex == -1)
+            {
+                MessageBox.Show("Select a real layer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
+        }
         #endregion
 
         #region Human I\O Handling
@@ -405,7 +426,7 @@ namespace HaCreator.MapEditor
         public delegate void MouseMovedDelegate(Board selectedBoard, Point oldPos, Point newPos, Point currPhysicalPos);
         public event MouseMovedDelegate MouseMoved;
 
-        public delegate void ImageDroppedDelegate(Board selectedBoard, System.Drawing.Bitmap bmp, Point pos);
+        public delegate void ImageDroppedDelegate(Board selectedBoard, System.Drawing.Bitmap bmp, string name, Point pos);
         public event ImageDroppedDelegate ImageDropped;
 
         private void DxContainer_MouseClick(object sender, MouseEventArgs e)
@@ -527,7 +548,8 @@ namespace HaCreator.MapEditor
                 {
                     return;
                 }
-
+                if (!AssertLayerSelected())
+                    return;
                 string[] data = (string[])e.Data.GetData(DataFormats.FileDrop);
                 System.Drawing.Point p = PointToClient(new System.Drawing.Point(e.X, e.Y));
                 foreach (string file in data)
@@ -542,7 +564,7 @@ namespace HaCreator.MapEditor
                         continue;
                     }
                     if (ImageDropped != null)
-                        ImageDropped.Invoke(selectedBoard, bmp, new Point(PhysicalToVirtual(p.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(p.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
+                        ImageDropped.Invoke(selectedBoard, bmp, Path.GetFileNameWithoutExtension(file), new Point(PhysicalToVirtual(p.X, selectedBoard.CenterPoint.X, selectedBoard.hScroll, 0), PhysicalToVirtual(p.Y, selectedBoard.CenterPoint.Y, selectedBoard.vScroll, 0)));
                 }
             }
         }

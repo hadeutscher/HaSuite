@@ -141,11 +141,11 @@ namespace HaCreator.MapEditor
         private string _l1;
         private string _l2;
         private List<XNA.Point> footholdOffsets = null;
-        //private List<XNA.Point> ropeOffsets = new List<XNA.Point>();
+        private List<XNA.Point> ropeOffsets = null;
         private List<XNA.Point> chairOffsets = null;
         private List<List<XNA.Point>> footholdFullOffsets = null;
         private bool fullFootholdInfo = false;
-
+        private bool connect;
 
         public ObjectInfo(Bitmap image, System.Drawing.Point origin, string oS, string l0, string l1, string l2, WzObject parentObject)
             : base(image, origin, parentObject)
@@ -154,6 +154,7 @@ namespace HaCreator.MapEditor
             this._l0 = l0;
             this._l1 = l1;
             this._l2 = l2;
+            this.connect = oS.StartsWith("connect");
         }
 
         public static ObjectInfo Load(WzSubProperty parentObject)
@@ -166,8 +167,10 @@ namespace HaCreator.MapEditor
         {
             WzCanvasProperty frame1 = (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject["0"]);
             ObjectInfo result = new ObjectInfo(frame1.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)frame1["origin"]),oS,l0,l1,l2, parentObject);
-            WzSubProperty chairs = (WzSubProperty)parentObject["seat"];
-            WzImageProperty footholds = (WzImageProperty)frame1["foothold"];
+            WzImageProperty chairs = parentObject["seat"];
+            WzImageProperty ropes = frame1["rope"];
+            WzImageProperty ladders = frame1["ladder"];
+            WzImageProperty footholds = frame1["foothold"];
             if (footholds != null)
             {
                 if (footholds is WzConvexProperty)
@@ -175,7 +178,9 @@ namespace HaCreator.MapEditor
                     result.fullFootholdInfo = false;
                     result.footholdOffsets = new List<XNA.Point>();
                     foreach (WzVectorProperty fhAnchor in footholds.WzProperties)
+                    {
                         result.footholdOffsets.Add(WzInfoTools.VectorToXNAPoint(fhAnchor));
+                    }
                 }
                 else
                 {
@@ -185,37 +190,41 @@ namespace HaCreator.MapEditor
                     foreach (WzConvexProperty fh in footholds.WzProperties)
                     {
                         foreach (WzVectorProperty fhAnchor in fh.WzProperties)
+                        {
                             fhAnchorList.Add(WzInfoTools.VectorToXNAPoint(fhAnchor));
+                        }
                         result.footholdFullOffsets.Add(fhAnchorList);
                         fhAnchorList = new List<XNA.Point>();
                     }
                 }
             }
-            //IWzImageProperty ropes = (IWzImageProperty)frame1["ladder"];
             if (chairs != null)
             {
                 result.chairOffsets = new List<XNA.Point>();
                 foreach (WzVectorProperty chair in chairs.WzProperties)
+                {
                     result.chairOffsets.Add(WzInfoTools.VectorToXNAPoint(chair));
+                }
             }
-            /*if (footholds != null)
-                foreach (WzVectorProperty foothold in footholds.WzProperties)
-                    result.footholdOffsets.Add(WzInfoTools.VectorToXNAPoint(foothold));*/
-            /*if (ropes != null && ropes.WzProperties.Count > 0)
-                if (ropes.WzProperties[0] is WzVectorProperty)
+            if (ropes != null || ladders != null)
+            {
+                result.ropeOffsets = new List<XNA.Point>();
+                if (ropes != null)
+                {
                     foreach (WzVectorProperty rope in ropes.WzProperties)
+                    {
                         result.ropeOffsets.Add(WzInfoTools.VectorToXNAPoint(rope));
-                else if (ropes.WzProperties[0] is WzConvexProperty)
-                    foreach (WzConvexProperty convex in ropes.WzProperties)
-                        foreach (WzVectorProperty rope in convex.WzProperties)
-                            result.ropeOffsets.Add(WzInfoTools.VectorToXNAPoint(rope));
-                else throw new Exception("wrong rope anchor type at ObjectInfo Load");*/
+                    }
+                }
+                if (ladders != null)
+                {
+                    foreach (WzVectorProperty ladder in ladders.WzProperties)
+                    {
+                        result.ropeOffsets.Add(WzInfoTools.VectorToXNAPoint(ladder));
+                    }
+                }
+            }
             return result;
-        }
-
-        public static void Reload(ObjectInfo objToReload)
-        {
-            objToReload = Load((WzSubProperty)objToReload.ParentObject, objToReload.oS,objToReload.l0,objToReload.l1,objToReload.l2);
         }
 
         private void CreateFootholdsFromAnchorList(Board board, List<FootholdAnchor> anchors)
@@ -352,13 +361,15 @@ namespace HaCreator.MapEditor
             }
         }
 
-/*        public List<XNA.Point> RopeOffsets
+        public List<XNA.Point> RopeOffsets
         {
             get
             {
                 return ropeOffsets;
             }
-        }*/
+        }
+
+        public bool Connect { get { return connect; } }
     }
 
     public class TileInfo : MapleDrawableInfo
@@ -389,7 +400,9 @@ namespace HaCreator.MapEditor
 
         public static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no, int? mag)
         {
-            TileInfo result = new TileInfo(parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), tS, u, no, mag.HasValue ? mag.Value : 1, InfoTool.GetInt(parentObject["z"]), parentObject);
+            WzImageProperty zProp = parentObject["z"];
+            int z = zProp == null ? 0 : InfoTool.GetInt(zProp);
+            TileInfo result = new TileInfo(parentObject.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)parentObject["origin"]), tS, u, no, mag.HasValue ? mag.Value : 1, z, parentObject);
             WzConvexProperty footholds = (WzConvexProperty)parentObject["foothold"];
             if (footholds != null)
                 foreach (WzVectorProperty foothold in footholds.WzProperties)
@@ -460,11 +473,6 @@ namespace HaCreator.MapEditor
             {
                 result.footholdOffsets[idx] = new XNA.Point(x, result.footholdOffsets[idx].Y);
             }
-        }
-
-        public static void Reload(TileInfo objToReload)
-        {
-            objToReload = Load((WzCanvasProperty)objToReload.ParentObject, objToReload.tS, objToReload.u, objToReload.no, objToReload.mag);
         }
 
         public void ParseOffsets(TileInstance instance, Board board, int x, int y)
@@ -618,17 +626,6 @@ namespace HaCreator.MapEditor
             return new MobInfo(null, new System.Drawing.Point(), id, WzInfoTools.GetMobNameById(id), parentObject);
         }
 
-        public static void Reload(MobInfo objToReload)
-        {
-            if (objToReload.Image == null)
-                objToReload = Load((WzImage)objToReload.ParentObject);
-            else
-            {
-                objToReload = Load((WzImage)objToReload.ParentObject);
-                objToReload.ParseImage();
-            }
-        }
-
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             if (Image == null) ParseImage();
@@ -701,17 +698,6 @@ namespace HaCreator.MapEditor
         {
             string id = /*WzInfoTools.RemoveLeadingZeros(*/WzInfoTools.RemoveExtension(parentObject.Name)/*)*/;
             return new NpcInfo(null, new System.Drawing.Point(), id, WzInfoTools.GetNpcNameById(id), parentObject);
-        }
-
-        public static void Reload(NpcInfo objToReload)
-        {
-            if (objToReload.Image == null)
-                objToReload = Load((WzImage)objToReload.ParentObject);
-            else
-            {
-                objToReload = Load((WzImage)objToReload.ParentObject);
-                objToReload.ParseImage();
-            }
         }
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
@@ -856,17 +842,6 @@ namespace HaCreator.MapEditor
             return new ReactorInfo(null, new System.Drawing.Point(), /*WzInfoTools.RemoveLeadingZeros(*/WzInfoTools.RemoveExtension(parentObject.Name)/*)*/, parentObject);
         }
 
-        public static void Reload(ReactorInfo objToReload)
-        {
-            if (objToReload.Image == null)
-                objToReload = Load((WzImage)objToReload.ParentObject);
-            else
-            {
-                objToReload = Load((WzImage)objToReload.ParentObject);
-                objToReload.ParseImage();
-            }
-        }
-
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
         {
             if (Image == null) ParseImage();
@@ -916,11 +891,6 @@ namespace HaCreator.MapEditor
         {
             WzCanvasProperty frame0 = ani ?(WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject["0"]) : (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject);
             return new BackgroundInfo(frame0.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)frame0["origin"]), bS, ani, no, parentObject);
-        }
-
-        public static void Reload(BackgroundInfo objToReload)
-        {
-                objToReload = Load((WzImageProperty)objToReload.ParentObject,objToReload.bS,objToReload.ani,objToReload.no);
         }
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)

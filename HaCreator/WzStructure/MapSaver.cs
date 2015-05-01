@@ -834,13 +834,13 @@ namespace HaCreator.WzStructure
 
         private int GetFootholdBelow(int x, int y)
         {
-            int bestDistance = int.MaxValue;
+            double bestDistance = double.MaxValue;
             int bestFoothold = -1;
             foreach (FootholdLine fh in board.BoardItems.FootholdLines)
             {
                 if (Math.Min(fh.FirstDot.X, fh.SecondDot.X) <= x && Math.Max(fh.FirstDot.X, fh.SecondDot.X) >= x)
                 {
-                    int fhY = fh.CalculateY(x);
+                    double fhY = fh.CalculateY(x);
                     if (fhY >= y && (fhY - y) < bestDistance)
                     {
                         bestDistance = fhY - y;
@@ -1071,6 +1071,11 @@ namespace HaCreator.WzStructure
                     portalInst.tm = newId;
                 }
             }
+        }
+
+        public void UpdateMapLists()
+        {
+            Program.InfoManager.Maps[WzInfoTools.AddLeadingZeros(board.MapInfo.id.ToString(), 9)] = board.MapInfo.strMapName;
         }
     }
 

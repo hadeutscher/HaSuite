@@ -160,6 +160,12 @@
     <Compile Include="CustomControls\ScrollablePictureBox.Designer.cs">
       <DependentUpon>ScrollablePictureBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\CancelableWaitWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\CancelableWaitWindow.Designer.cs">
+      <DependentUpon>CancelableWaitWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\InstanceEditor\MassZmEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -190,6 +196,12 @@
     <Compile Include="GUI\LayerChange.Designer.cs">
       <DependentUpon>LayerChange.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\ManageUserObjects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\ManageUserObjects.Designer.cs">
+      <DependentUpon>ManageUserObjects.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI\NewPlatform.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -208,6 +220,12 @@
     <Compile Include="GUI\Save.Designer.cs">
       <DependentUpon>Save.cs</DependentUpon>
     </Compile>
+    <Compile Include="GUI\WaitWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\WaitWindow.Designer.cs">
+      <DependentUpon>WaitWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="MapEditor\BoardItemContextMenu.cs" />
     <Compile Include="MapEditor\TilesDesign\bsc.cs" />
     <Compile Include="MapEditor\TilesDesign\edD.cs" />
@@ -222,6 +240,7 @@
     <Compile Include="MapEditor\TilesDesign\slLU.cs" />
     <Compile Include="MapEditor\TilesDesign\slRD.cs" />
     <Compile Include="MapEditor\TilesDesign\slRU.cs" />
+    <Compile Include="MapEditor\UserObjectsManager.cs" />
     <Compile Include="ThirdParty\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
     </Compile>
@@ -428,6 +447,9 @@
       <DependentUpon>About.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\CancelableWaitWindow.resx">
+      <DependentUpon>CancelableWaitWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\ExceptionHandler.resx">
       <DependentUpon>ExceptionHandler.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -495,6 +517,9 @@
       <DependentUpon>Load.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ManageUserObjects.resx">
+      <DependentUpon>ManageUserObjects.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\NewPlatform.resx">
       <DependentUpon>NewPlatform.cs</DependentUpon>
     </EmbeddedResource>
@@ -506,6 +531,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\UserSettingsForm.resx">
       <DependentUpon>UserSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\WaitWindow.resx">
+      <DependentUpon>WaitWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MapEditor\MultiBoardControl.resx">
       <DependentUpon>MultiBoardControl.cs</DependentUpon>

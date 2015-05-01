@@ -33,6 +33,7 @@
                 <CommandBinding Command="ns:HaRibbon.PlatformUp"  CanExecute="AlwaysExecute" Executed="PlatformUp_Executed" />
                 <CommandBinding Command="ns:HaRibbon.PlatformDown"  CanExecute="AlwaysExecute" Executed="PlatformDown_Executed" />
                 <CommandBinding Command="ns:HaRibbon.NewPlatform"  CanExecute="AlwaysExecute" Executed="NewPlatform_Executed" />
+                <CommandBinding Command="ns:HaRibbon.UserObjs"  CanExecute="AlwaysExecute" Executed="UserObjs_Executed" />
             </Ribbon.CommandBindings>
 
             <Ribbon.ApplicationMenu>
@@ -152,6 +153,7 @@
                     <RibbonButton Label="Map Simulation" LargeImageSource="pack://application:,,,/HaCreator;component/Images/Play.png" Command="ns:HaRibbon.MapSim" Focusable="True"/>
                     <RibbonButton Label="Regenerate Minimap" LargeImageSource="pack://application:,,,/HaCreator;component/Images/RegenMinimap.png" Command="ns:HaRibbon.RegenMinimap" Focusable="True"/>
                     <RibbonButton Label="Finalize Footholds" LargeImageSource="pack://application:,,,/HaCreator;component/Images/Foothold.png" Command="ns:HaRibbon.Finalize" Focusable="True"/>
+                    <RibbonButton Label="Manage User Objects" LargeImageSource="pack://application:,,,/HaCreator;component/Images/Foothold.png" Command="ns:HaRibbon.UserObjs" Focusable="True"/>
                     <RibbonToggleButton x:Name="snapBtn" Label="Snapping" LargeImageSource="pack://application:,,,/HaCreator;component/Images/magnet_32.png" Command="ns:HaRibbon.Snapping" Focusable="True"/>
                     <RibbonToggleButton x:Name="randomBtn" Label="Random Tiles" LargeImageSource="pack://application:,,,/HaCreator;component/Images/Untitled1.png" Command="ns:HaRibbon.Random" Focusable="True"/>
                     <RibbonToggleButton x:Name="infomodeBtn" Label="Info Mode" LargeImageSource="pack://application:,,,/HaCreator;component/Images/About.png" Command="ns:HaRibbon.InfoMode" Focusable="True"/>

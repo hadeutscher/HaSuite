@@ -59,7 +59,7 @@ namespace HaCreator.CustomControls.EditorPanels
             switch (item.Name)
             {
                 case "Foothold":
-                    if (!hcsm.AssertLayerSelected())
+                    if (!hcsm.MultiBoard.AssertLayerSelected())
                     {
                         return;
                     }
@@ -68,7 +68,7 @@ namespace HaCreator.CustomControls.EditorPanels
                     hcsm.MultiBoard.Focus();
                     break;
                 case "Rope":
-                    if (!hcsm.AssertLayerSelected())
+                    if (!hcsm.MultiBoard.AssertLayerSelected())
                     {
                         return;
                     }

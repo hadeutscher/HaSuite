@@ -39,6 +39,18 @@ namespace HaCreator.MapEditor
             get { return null; }
         }
 
+        public override void OnItemPlaced(List<UndoRedoAction> undoPipe)
+        {
+            lock (board.ParentControl)
+            {
+                base.OnItemPlaced(undoPipe);
+                foreach (MapleLine line in connectedLines)
+                {
+                    line.OnPlaced(undoPipe);
+                }
+            }
+        }
+
         protected abstract bool RemoveConnectedLines { get; }
 
         public override void RemoveItem(List<UndoRedoAction> undoPipe)
@@ -58,7 +70,7 @@ namespace HaCreator.MapEditor
 
         public static System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(UserSettings.DotWidth * 2, UserSettings.DotWidth * 2);
 
-        public override System.Drawing.Bitmap Image //yes I know that this is kind of lame to do it like that
+        public override System.Drawing.Bitmap Image
         {
             get { return bmp; }
         }
@@ -377,17 +389,53 @@ namespace HaCreator.MapEditor
         public override void DoSnap()
         {
             FootholdLine closestLine = null;
-            int closestDistance = int.MaxValue;
+            double closestDistanceLine = double.MaxValue;
             foreach (FootholdLine fh in Board.BoardItems.FootholdLines)
             {
                 if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int)UserSettings.SnapDistance) && BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int)UserSettings.SnapDistance))
                 {
-                    int targetY = fh.CalculateY(X) + 2;
-                    int distance = Math.Abs(targetY - Y);
-                    if (closestDistance > distance) { closestDistance = distance; closestLine = fh; }
+                    double targetY = fh.CalculateY(X) + 2;
+                    double distance = Math.Abs(targetY - Y);
+                    if (closestDistanceLine > distance) 
+                    { 
+                        closestDistanceLine = distance; 
+                        closestLine = fh; 
+                    }
                 }
             }
-            if (closestLine != null) this.Y = closestLine.CalculateY(X) + 2;
+            Point? closestRopeHint = null;
+            double closestDistanceRope = double.MaxValue;
+            foreach (LayeredItem li in Board.BoardItems.TileObjs)
+            {
+                if (!(li is ObjectInstance))
+                    continue;
+                ObjectInstance objInst = (ObjectInstance)li;
+                ObjectInfo objInfo = (ObjectInfo)objInst.BaseInfo;
+                if (objInfo.RopeOffsets == null)
+                    continue;
+                foreach (Point rope in objInfo.RopeOffsets)
+                {
+                    int dx = objInst.X + rope.X - X;
+                    int dy = objInst.Y + rope.Y - Y;
+                    if (Math.Abs(dx) > UserSettings.SnapDistance || Math.Abs(dy) > UserSettings.SnapDistance)
+                        continue;
+                    double distance = InputHandler.Distance(dx, dy);
+                    if (distance > UserSettings.SnapDistance)
+                        continue;
+                    if (closestDistanceRope > distance)
+                    {
+                        closestDistanceRope = distance;
+                        closestRopeHint = new Point(objInst.X + rope.X, objInst.Y + rope.Y);
+                    }
+                }
+            }
+            if (closestDistanceRope >= closestDistanceLine && closestLine != null) 
+                this.Y = (int)closestLine.CalculateY(X) + 2;
+            else if (closestDistanceRope <= closestDistanceLine && closestRopeHint.HasValue)
+            {
+                this.X = closestRopeHint.Value.X;
+                this.Y = closestRopeHint.Value.Y;
+            }
         }
 
         public Rope ParentRope { get { return parentRope; } }
@@ -408,17 +456,17 @@ namespace HaCreator.MapEditor
         public override void DoSnap()
         {
             FootholdLine closestLine = null;
-            int closestDistance = int.MaxValue;
+            double closestDistance = double.MaxValue;
             foreach (FootholdLine fh in Board.BoardItems.FootholdLines)
             {
                 if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int)UserSettings.SnapDistance) && BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int)UserSettings.SnapDistance))
                 {
-                    int targetY = fh.CalculateY(X) - 1;
-                    int distance = Math.Abs(targetY - Y);
+                    double targetY = fh.CalculateY(X) - 1;
+                    double distance = Math.Abs(targetY - Y);
                     if (closestDistance > distance) { closestDistance = distance; closestLine = fh; }
                 }
             }
-            if (closestLine != null) this.Y = closestLine.CalculateY(X) - 1;
+            if (closestLine != null) this.Y = (int)closestLine.CalculateY(X) - 1;
         }
 
         public override Color Color
@@ -491,6 +539,14 @@ namespace HaCreator.MapEditor
             secondDot.PointMoved += new MapleDot.OnPointMovedDelegate(OnSecondDotMoved);
         }
 
+        public virtual void OnPlaced(List<UndoRedoAction> undoPipe)
+        {
+            lock (board.ParentControl)
+            {
+                undoPipe.Add(UndoRedoManager.LineAdded(this, firstDot, secondDot));
+            }
+        }
+
         public virtual void Remove(bool removeDots, List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)
@@ -514,9 +570,9 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public int CalculateY(int x)
+        public double CalculateY(int x)
         {
-            return ((FirstDot.Y - SecondDot.Y) / (FirstDot.X - SecondDot.X)) * (x - FirstDot.X) + FirstDot.Y; // y-y1=m(x-x1) => y=(d/dx)(x-x1)+y1
+            return ((double)(FirstDot.Y - SecondDot.Y) / (double)(FirstDot.X - SecondDot.X)) * (double)(x - FirstDot.X) + FirstDot.Y; // y-y1=m(x-x1) => y=(d/dx)(x-x1)+y1
         }
 
         public bool Selected { get { return firstDot != null && firstDot.Selected && secondDot != null && secondDot.Selected; } }

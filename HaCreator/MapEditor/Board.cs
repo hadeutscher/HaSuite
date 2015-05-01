@@ -381,13 +381,37 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public virtual void OnItemPlaced(List<UndoRedoAction> undoPipe)
+        {
+            lock (Board.ParentControl)
+            {
+                object[] keys = new object[boundItems.Keys.Count];
+                boundItems.Keys.CopyTo(keys, 0);
+                foreach (object key in keys)
+                    ((BoardItem)key).OnItemPlaced(undoPipe);
+
+                if (undoPipe != null)
+                {
+                    undoPipe.Add(UndoRedoManager.ItemAdded(this));
+                }
+                if (parent != null)
+                {
+                    if (!(parent is Mouse) && undoPipe != null)
+                    {
+                        undoPipe.Add(UndoRedoManager.ItemsLinked(parent, this, (Microsoft.Xna.Framework.Point)parent.boundItems[this]));
+                    }
+                }
+            }
+        }
+
         public virtual void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (Board.ParentControl)
             {
                 object[] keys = new object[boundItems.Keys.Count];
                 boundItems.Keys.CopyTo(keys, 0);
-                foreach (object key in keys) ((BoardItem)key).RemoveItem(undoPipe);
+                foreach (object key in keys) 
+                    ((BoardItem)key).RemoveItem(undoPipe);
 
                 if (undoPipe != null)
                 {
@@ -487,7 +511,14 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public abstract void Draw(SpriteBatch sprite, Color color, int xShift, int yShift);
+        public virtual void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
+        {
+            if (ApplicationSettings.InfoMode)
+            {
+                Board.ParentControl.FillRectangle(sprite, new Rectangle(this.X - UserSettings.DotWidth + xShift, this.Y - UserSettings.DotWidth + yShift, UserSettings.DotWidth * 2, UserSettings.DotWidth * 2), UserSettings.OriginColor);
+            }
+        }
+
         public virtual bool CheckIfLayerSelected(SelectionInfo sel)
         {
             // By default, item is nonlayered

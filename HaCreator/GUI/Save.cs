@@ -57,10 +57,15 @@ namespace HaCreator.GUI
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            // Flush the UserObjects cache because the map we are saving might use of those images
+            if (MessageBox.Show("You have unsaved user objects (images from your computer that you added to the editor). If you proceed, the following images will be written to the WZ file:\r\n\r\n" + board.ParentControl.UserObjects.NewObjects.Select(x => x.l2).Aggregate((x, y) => x + "\r\n" + y) + "\r\n\r\nIf you want to remove some or all of them, exit the saving dialog and remove them first.\r\nProceed?", "Unsaved Objects", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+                return;
+            board.ParentControl.UserObjects.Flush();
             MapSaver saver = new MapSaver(board);
             int newId = int.Parse(idBox.Text);
             saver.ChangeMapID(newId);
             saver.SaveMapImage();
+            saver.UpdateMapLists();
             MessageBox.Show("Saved map with ID: " + newId.ToString());
             Close();
         }

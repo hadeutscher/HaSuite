@@ -30,6 +30,7 @@ namespace HaCreator.CustomControls.EditorPanels
         public ObjPanel(HaCreatorStateManager hcsm)
         {
             this.hcsm = hcsm;
+            hcsm.SetObjPanel(this);
             InitializeComponent();
 
             List<string> sortedObjSets = new List<string>();
@@ -82,8 +83,18 @@ namespace HaCreator.CustomControls.EditorPanels
             }
         }
 
+        public void OnL1Changed(string l1)
+        {
+            if ((string)objL1ListBox.SelectedItem == l1)
+                objL1ListBox_SelectedIndexChanged(null, null);
+        }
+
         private void objItem_Click(object sender, MouseEventArgs e)
         {
+            if (!hcsm.MultiBoard.AssertLayerSelected())
+            {
+                return;
+            }
             hcsm.EnterEditMode(ItemTypes.Objects);
             hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((ObjectInfo)((ImageViewer)sender).Tag);
             hcsm.MultiBoard.Focus();

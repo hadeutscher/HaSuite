@@ -44,6 +44,11 @@ namespace HaCreator.MapEditor
         {
             return 0 != (GetAsyncKeyState(vKey) & 0x8000);
         }
+
+        public static double Distance(double x, double y)
+        {
+            return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
+        }
         
         private void parentBoard_MouseMoved(Board selectedBoard, Point oldPos, Point newPos, Point currPhysicalPos)
         {
@@ -70,7 +75,7 @@ namespace HaCreator.MapEditor
                         item.Selected = false;
                     toRemove.Clear();
                 }
-                else if (selectedBoard.Mouse.SingleSelectStarting && Math.Sqrt(Math.Pow(Math.Abs(newPos.X - selectedBoard.Mouse.SingleSelectStart.X), 2) + Math.Pow(Math.Abs(newPos.Y - selectedBoard.Mouse.SingleSelectStart.Y), 2)) > UserSettings.SignificantDistance)
+                else if (selectedBoard.Mouse.SingleSelectStarting && Distance(newPos.X - selectedBoard.Mouse.SingleSelectStart.X, newPos.Y - selectedBoard.Mouse.SingleSelectStart.Y) > UserSettings.SignificantDistance)
                 {
                     BindAllSelectedItems(selectedBoard, selectedBoard.Mouse.SingleSelectStart);
                     selectedBoard.Mouse.SingleSelectStarting = false;

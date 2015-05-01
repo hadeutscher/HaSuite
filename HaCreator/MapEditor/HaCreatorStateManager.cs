@@ -31,6 +31,7 @@ namespace HaCreator.MapEditor
         HaRibbon ribbon;
         PageCollection tabs;
         TilePanel tilePanel;
+        ObjPanel objPanel;
 
         public HaCreatorStateManager(MultiBoard multiBoard, HaRibbon ribbon, PageCollection tabs)
         {
@@ -58,6 +59,7 @@ namespace HaCreator.MapEditor
             this.ribbon.HaRepackerClicked += ribbon_HaRepackerClicked;
             this.ribbon.FinalizeClicked += ribbon_FinalizeClicked;
             this.ribbon.NewPlatformClicked += ribbon_NewPlatformClicked;
+            this.ribbon.UserObjsClicked += ribbon_UserObjsClicked;
 
             this.tabs.CurrentPageChanged += tabs_CurrentPageChanged;
 
@@ -75,12 +77,28 @@ namespace HaCreator.MapEditor
             ribbon.SetEnabled(false);
         }
 
-
         #region MultiBoard Events
-        void multiBoard_ImageDropped(Board selectedBoard, System.Drawing.Bitmap bmp, Microsoft.Xna.Framework.Point pos)
+        void multiBoard_ImageDropped(Board selectedBoard, System.Drawing.Bitmap bmp, string name, Microsoft.Xna.Framework.Point pos)
         {
-            ObjectInfo oi = new ObjectInfo(bmp, new System.Drawing.Point(bmp.Width / 2, bmp.Height / 2), "", "", "", "", null);
-            selectedBoard.BoardItems.Add(oi.CreateInstance(selectedBoard.SelectedLayer, selectedBoard, pos.X, pos.Y, 0, true), true);
+            WaitWindow ww = new WaitWindow("Processing \"" + name + "\"...");
+            ww.Show();
+            Application.DoEvents();
+            ObjectInfo oi = null;
+            try
+            {
+                oi = multiBoard.UserObjects.Add(bmp, name);
+            }
+            catch (NameAlreadyUsedException)
+            {
+                MessageBox.Show("\"" + name + "\" could not be added because an object with the same name already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            finally
+            {
+                ww.EndWait();
+            }
+            selectedBoard.BoardItems.Add(oi.CreateInstance(selectedBoard.SelectedLayer, selectedBoard, pos.X, pos.Y, 0, false), true);
+            objPanel.OnL1Changed(UserObjectsManager.l1);
         }
 
         void multiBoard_MouseMoved(Board selectedBoard, Microsoft.Xna.Framework.Point oldPos, Microsoft.Xna.Framework.Point newPos, Microsoft.Xna.Framework.Point currPhysicalPos)
@@ -242,6 +260,15 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Ribbon Handlers
+        void ribbon_UserObjsClicked()
+        {
+            lock (multiBoard)
+            {
+                new ManageUserObjects(multiBoard.UserObjects).ShowDialog();
+                objPanel.OnL1Changed(UserObjectsManager.l1);
+            }
+        }
+
         void ribbon_FinalizeClicked()
         {
             if (MessageBox.Show("This will finalize all footholds, removing their Tile bindings and clearing the Undo/Redo list in the process.\r\nContinue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
@@ -255,6 +282,9 @@ namespace HaCreator.MapEditor
 
         void ribbon_HaRepackerClicked()
         {
+            WaitWindow ww = new WaitWindow("Opening HaRepacker...");
+            ww.Show();
+            Application.DoEvents();
             HaRepacker.Program.WzMan = new HaRepackerLib.WzFileManager();
             bool firstRun = HaRepacker.Program.PrepareApplication(false);
             HaRepacker.GUI.MainForm mf = new HaRepacker.GUI.MainForm(null, false, firstRun);
@@ -262,9 +292,9 @@ namespace HaCreator.MapEditor
             mf.reloadAllToolStripMenuItem.Visible = false;
             foreach (DictionaryEntry entry in Program.WzManager.wzFiles)
                 mf.Interop_AddLoadedWzFileToManager((WzFile)entry.Value);
+            ww.EndWait();
             lock (multiBoard)
             {
-
                 mf.ShowDialog();
             }
             HaRepacker.Program.EndApplication(false, false);
@@ -482,7 +512,7 @@ namespace HaCreator.MapEditor
         {
             lock (multiBoard)
             {
-                NewPlatform dlg = new NewPlatform(multiBoard.SelectedBoard.SelectedLayer.zMList);
+                NewPlatform dlg = new NewPlatform(new SortedSet<int>(multiBoard.SelectedBoard.Layers.Select(x => (IEnumerable<int>)x.zMList).Aggregate((x,y) => Enumerable.Concat(x, y))));
                 if (dlg.ShowDialog() != DialogResult.OK)
                     return;
                 int zm = dlg.result;
@@ -562,6 +592,11 @@ namespace HaCreator.MapEditor
             this.tilePanel = tp;
         }
 
+        public void SetObjPanel(ObjPanel op)
+        {
+            this.objPanel = op;
+        }
+
         public void EnterEditMode(ItemTypes type)
         {
             multiBoard.SelectedBoard.EditedTypes = type;
@@ -572,16 +607,6 @@ namespace HaCreator.MapEditor
         {
             multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
             ribbon.SetEnabled(true);
-        }
-
-        public bool AssertLayerSelected()
-        {
-            if (multiBoard.SelectedBoard.SelectedLayerIndex == -1)
-            {
-                MessageBox.Show("Select a real layer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-            return true;
         }
 
         public MultiBoard MultiBoard

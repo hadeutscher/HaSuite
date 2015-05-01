@@ -221,16 +221,22 @@ namespace HaCreator.MapEditor
             WzImage mapStringsParent = (WzImage)String["Map.img"];
             if (!mapStringsParent.Parsed) mapStringsParent.ParseImage();
             foreach (WzSubProperty mapCat in mapStringsParent.WzProperties)
+            {
                 foreach (WzSubProperty map in mapCat.WzProperties)
                 {
                     WzStringProperty mapName = (WzStringProperty)map["mapName"];
                     string id;
-                    if (map.Name.Length == 9) id = map.Name;
-                    else id = WzInfoTools.AddLeadingZeros(map.Name, 9);
+                    if (map.Name.Length == 9) 
+                        id = map.Name;
+                    else 
+                        id = WzInfoTools.AddLeadingZeros(map.Name, 9);
 
-                    if (mapName == null) Program.InfoManager.Maps[id] = "";
-                    else Program.InfoManager.Maps[id] = mapName.Value;
+                    if (mapName == null) 
+                        Program.InfoManager.Maps[id] = "";
+                    else 
+                        Program.InfoManager.Maps[id] = mapName.Value;
                 }
+            }
         }
 
         public void ExtractPortals()

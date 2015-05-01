@@ -104,7 +104,7 @@ namespace HaCreator.CustomControls.EditorPanels
         void tileItem_Click(object sender, MouseEventArgs e)
         {
             ImageViewer item = (ImageViewer)sender;
-            if (!hcsm.AssertLayerSelected())
+            if (!hcsm.MultiBoard.AssertLayerSelected())
             {
                 return;
             }

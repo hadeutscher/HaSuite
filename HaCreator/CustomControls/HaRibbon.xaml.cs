@@ -114,6 +114,8 @@ namespace HaCreator.CustomControls
             new InputGestureCollection() { });
         public static readonly RoutedUICommand NewPlatform = new RoutedUICommand("NewPlatform", "NewPlatform", typeof(HaRibbon),
             new InputGestureCollection() { });
+        public static readonly RoutedUICommand UserObjs = new RoutedUICommand("UserObjs", "UserObjs", typeof(HaRibbon),
+            new InputGestureCollection() { });
 
         private void AlwaysExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -285,6 +287,12 @@ namespace HaCreator.CustomControls
                 NewPlatformClicked();
         }
 
+        private void UserObjs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (UserObjsClicked != null)
+                UserObjsClicked();
+        }
+
         private void beginInternalEditing()
         {
             changingIndexCnt++;
@@ -317,7 +325,7 @@ namespace HaCreator.CustomControls
         private void UpdateLocalLayerInfo()
         {
             actualLayerIndex = layerBox.SelectedIndex;
-            actualPlatform = (int)platformBox.SelectedItem;
+            actualPlatform = platformBox.SelectedItem == null ? -1 : (int)platformBox.SelectedItem;
         }
 
         private void UpdateRemoteLayerInfo()
@@ -378,6 +386,7 @@ namespace HaCreator.CustomControls
 
             if (layer == -1)
             {
+                layer = 0;
                 if (layerBox.SelectedIndex == -1)
                 {
                     layerBox.SelectedIndex = 0;
@@ -467,6 +476,7 @@ namespace HaCreator.CustomControls
         public event ToggleEvent InfoModeToggled;
         public event EmptyEvent HaRepackerClicked;
         public event EmptyEvent NewPlatformClicked;
+        public event EmptyEvent UserObjsClicked;
 
         public void SetVisibilityCheckboxes(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc)
         {

@@ -57,7 +57,7 @@ namespace HaCreator.MapEditor
         }
     }
 
-    public class ObjectInstance : LayeredItem, IFlippable
+    public class ObjectInstance : LayeredItem, IFlippable, ISnappable
     {
         private ObjectInfo baseInfo;
         private bool flip;
@@ -135,6 +135,7 @@ namespace HaCreator.MapEditor
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0, 0), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
+            base.Draw(sprite, color, xShift, yShift);
         }
 
         public override System.Drawing.Bitmap Image
@@ -163,6 +164,42 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public void DoSnap()
+        {
+            if (!baseInfo.Connect)
+                return;
+            Point? closestDestPoint = null;
+            double closestDistance = double.MaxValue;
+            foreach (LayeredItem li in Board.BoardItems.TileObjs)
+            {
+                if (!(li is ObjectInstance))
+                    continue;
+                ObjectInstance objInst = (ObjectInstance)li;
+                ObjectInfo objInfo = (ObjectInfo)objInst.BaseInfo;
+                if (!objInfo.Connect)
+                    continue;
+                Point snapPoint = new Point(objInst.X, objInst.Y - objInst.Origin.Y + objInst.Height + this.Origin.Y);
+                double dx = snapPoint.X - X;
+                double dy = snapPoint.Y - Y;
+                if (dx > UserSettings.SnapDistance || dy > UserSettings.SnapDistance)
+                    continue;
+                double distance = InputHandler.Distance(dx, dy);
+                if (distance > UserSettings.SnapDistance)
+                    continue;
+                if (closestDistance > distance)
+                {
+                    closestDistance = distance;
+                    closestDestPoint = snapPoint;
+                }
+            }
+
+            if (closestDestPoint.HasValue)
+            {
+                X = closestDestPoint.Value.X;
+                Y = closestDestPoint.Value.Y;
+            }
+        }
+
         public string Name { get { return name; } set { name = value; } }
         public string tags { get { return _tags; } set { _tags = value; } }
         public MapleBool r { get { return _r; } set { _r = value; } }
@@ -173,7 +210,7 @@ namespace HaCreator.MapEditor
         public int? ry { get { return _ry; } set { _ry = value; } }
         public int? cx { get { return _cx; } set { _cx = value; } }
         public int? cy { get { return _cy; } set { _cy = value; } }
-        public List<ObjectInstanceQuest> QuestInfo { get { return questInfo; } set { questInfo = value; } }
+        public List<ObjectInstanceQuest> QuestInfo { get { return questInfo; } set { questInfo = value; } } 
     }
 
     public class TileInstance : LayeredItem, ISnappable
@@ -220,14 +257,14 @@ namespace HaCreator.MapEditor
                     // first verification to save time
                     // Note that we are first checking dx and dy alone; although this is already covered by the following distance calculation,
                     // it is significantly faster and will likely weed out most of the candidates before calculating their actual distance.
-                    if (dx > first_threshold || dy > first_threshold || Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2)) > first_threshold)
+                    if (dx > first_threshold || dy > first_threshold || InputHandler.Distance(dx, dy) > first_threshold)
                         continue;
                     if (pred != null && !pred.Invoke(tile))
                         continue;
                     foreach (MapTileDesignPotential snapInfo in tilegroup.potentials)
                     {
                         if (snapInfo.type != tile.baseInfo.u) continue;
-                        double distance = Math.Sqrt(Math.Pow(this.X - tile.X + snapInfo.x * mag, 2) + Math.Pow(this.Y - tile.Y + snapInfo.y * mag, 2));
+                        double distance = InputHandler.Distance(this.X - tile.X + snapInfo.x * mag, this.Y - tile.Y + snapInfo.y * mag);
                         if (distance > threshold) continue;
                         result.Add(new Tuple<double, TileInstance, MapTileDesignPotential>(distance, tile, snapInfo));
                     }
@@ -303,6 +340,7 @@ namespace HaCreator.MapEditor
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), /*Flip ? SpriteEffects.FlipHorizontally : */SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
+            base.Draw(sprite, color, xShift, yShift);
         }
 
         // Only to be used by layer TS changing, do not use this for ANYTHING else.
@@ -372,6 +410,7 @@ namespace HaCreator.MapEditor
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
+            base.Draw(sprite, color, xShift, yShift);
         }
 
         public bool Flip
@@ -563,6 +602,7 @@ namespace HaCreator.MapEditor
         {
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), SpriteEffects.None, 1f);
+            base.Draw(sprite, color, xShift, yShift);
         }
 
         public override MapleDrawableInfo BaseInfo
@@ -764,6 +804,7 @@ namespace HaCreator.MapEditor
             Rectangle destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
+            base.Draw(sprite, color, xShift, yShift);
         }
 
         public override MapleDrawableInfo BaseInfo
@@ -903,6 +944,7 @@ namespace HaCreator.MapEditor
                 destinationRectangle = new Rectangle((int)X - Origin.X, (int)Y - Origin.Y, Width, Height);
             else */destinationRectangle = new Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new Vector2(0f, 0f), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
+            base.Draw(sprite, color, xShift, yShift);
         }
 
         public override MapleDrawableInfo BaseInfo

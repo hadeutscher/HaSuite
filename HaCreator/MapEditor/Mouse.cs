@@ -62,8 +62,9 @@ namespace HaCreator.MapEditor
             {
                 if (state == MouseState.StaticObjectAdding || state == MouseState.RandomTiles)
                 {
-                    Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(currAddedObj) });
-                    //Board.BoardItems.Add(currAddedObj.CreateInstance(Board.Layers[Board.SelectedLayerIndex], Board, x, y, 50, false, false));
+                    List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
+                    currAddedObj.OnItemPlaced(undoPipe);
+                    Board.UndoRedoMan.AddUndoBatch(undoPipe);
                     ReleaseItem(currAddedObj);
                     if (currAddedObj is LayeredItem)
                     {
