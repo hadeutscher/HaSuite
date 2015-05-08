@@ -66,7 +66,7 @@ namespace HaCreator.WzStructure
 
         private void SaveMapInfo()
         {
-            board.MapInfo.Save(image);
+            board.MapInfo.Save(image, board.MinimapRectangle == null ? (System.Drawing.Rectangle?)null : new System.Drawing.Rectangle(board.MinimapRectangle.X, board.MinimapRectangle.Y, board.MinimapRectangle.Width, board.MinimapRectangle.Height));
             if (board.MapInfo.mapType == MapType.RegularMap)
             {
                 WzImage strMapImg = (WzImage)Program.WzManager.String["Map.img"];
@@ -114,17 +114,17 @@ namespace HaCreator.WzStructure
 
         private void SaveMiniMap()
         {
-            if (board.MiniMap != null)
+            if (board.MiniMap != null && board.MinimapRectangle != null)
             {
                 WzSubProperty miniMap = new WzSubProperty();
                 WzCanvasProperty canvas = new WzCanvasProperty();
                 canvas.PngProperty = new WzPngProperty();
                 canvas.PngProperty.SetPNG(board.MiniMap);
                 miniMap["canvas"] = canvas;
-                miniMap["width"] = InfoTool.SetInt(board.MiniMapSize.X);
-                miniMap["height"] = InfoTool.SetInt(board.MiniMapSize.Y);
-                miniMap["centerX"] = InfoTool.SetInt(board.CenterPoint.X);
-                miniMap["centerY"] = InfoTool.SetInt(board.CenterPoint.Y);
+                miniMap["width"] = InfoTool.SetInt(board.MinimapRectangle.Width);
+                miniMap["height"] = InfoTool.SetInt(board.MinimapRectangle.Height);
+                miniMap["centerX"] = InfoTool.SetInt(board.MinimapPosition.X);
+                miniMap["centerY"] = InfoTool.SetInt(board.MinimapPosition.Y);
                 miniMap["mag"] = InfoTool.SetInt(4);
                 image["miniMap"] = miniMap;
             }

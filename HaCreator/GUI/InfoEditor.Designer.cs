@@ -50,10 +50,13 @@
             this.unknownProps = new System.Windows.Forms.TreeView();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.categoryBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.returnHereCBX = new System.Windows.Forms.CheckBox();
             this.cannotReturnCBX = new System.Windows.Forms.CheckBox();
             this.mobRate = new System.Windows.Forms.NumericUpDown();
+            this.IDLabel = new System.Windows.Forms.Label();
             this.soundPlayer = new HaRepackerLib.Controls.SoundPlayer();
             this.returnBox = new System.Windows.Forms.NumericUpDown();
             this.forcedRet = new System.Windows.Forms.NumericUpDown();
@@ -136,9 +139,9 @@
             this.label123 = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
-            this.categoryBox = new System.Windows.Forms.TextBox();
-            this.IDLabel = new System.Windows.Forms.Label();
+            this.xBox = new System.Windows.Forms.NumericUpDown();
+            this.label20 = new System.Windows.Forms.Label();
+            this.yBox = new System.Windows.Forms.NumericUpDown();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mobRate)).BeginInit();
@@ -168,6 +171,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.timedMobEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.timedMobStart)).BeginInit();
             this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yBox)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -356,6 +361,9 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.yBox);
+            this.tabPage1.Controls.Add(this.label20);
+            this.tabPage1.Controls.Add(this.xBox);
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.categoryBox);
             this.tabPage1.Controls.Add(this.label7);
@@ -384,6 +392,22 @@
             this.tabPage1.Size = new System.Drawing.Size(772, 499);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Essential Settings";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(32, 66);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(52, 13);
+            this.label8.TabIndex = 153;
+            this.label8.Text = "Category:";
+            // 
+            // categoryBox
+            // 
+            this.categoryBox.Location = new System.Drawing.Point(87, 63);
+            this.categoryBox.Name = "categoryBox";
+            this.categoryBox.Size = new System.Drawing.Size(159, 20);
+            this.categoryBox.TabIndex = 154;
             // 
             // label7
             // 
@@ -426,6 +450,15 @@
             this.mobRate.Name = "mobRate";
             this.mobRate.Size = new System.Drawing.Size(159, 20);
             this.mobRate.TabIndex = 54;
+            // 
+            // IDLabel
+            // 
+            this.IDLabel.AutoSize = true;
+            this.IDLabel.Location = new System.Drawing.Point(87, 168);
+            this.IDLabel.Name = "IDLabel";
+            this.IDLabel.Size = new System.Drawing.Size(31, 13);
+            this.IDLabel.TabIndex = 53;
+            this.IDLabel.Text = "1234";
             // 
             // soundPlayer
             // 
@@ -1464,30 +1497,38 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // label8
+            // xBox
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(32, 66);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(52, 13);
-            this.label8.TabIndex = 153;
-            this.label8.Text = "Category:";
+            this.xBox.Location = new System.Drawing.Point(87, 304);
+            this.xBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.xBox.Name = "xBox";
+            this.xBox.Size = new System.Drawing.Size(63, 20);
+            this.xBox.TabIndex = 155;
             // 
-            // categoryBox
+            // label20
             // 
-            this.categoryBox.Location = new System.Drawing.Point(87, 63);
-            this.categoryBox.Name = "categoryBox";
-            this.categoryBox.Size = new System.Drawing.Size(159, 20);
-            this.categoryBox.TabIndex = 154;
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(19, 306);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(64, 13);
+            this.label20.TabIndex = 156;
+            this.label20.Text = "Dimensions:";
             // 
-            // IDLabel
+            // yBox
             // 
-            this.IDLabel.AutoSize = true;
-            this.IDLabel.Location = new System.Drawing.Point(87, 168);
-            this.IDLabel.Name = "IDLabel";
-            this.IDLabel.Size = new System.Drawing.Size(31, 13);
-            this.IDLabel.TabIndex = 53;
-            this.IDLabel.Text = "1234";
+            this.yBox.Location = new System.Drawing.Point(156, 304);
+            this.yBox.Maximum = new decimal(new int[] {
+            2147483647,
+            0,
+            0,
+            0});
+            this.yBox.Name = "yBox";
+            this.yBox.Size = new System.Drawing.Size(63, 20);
+            this.yBox.TabIndex = 157;
             // 
             // InfoEditor
             // 
@@ -1537,6 +1578,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.timedMobStart)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.yBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1654,5 +1697,8 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox categoryBox;
         private System.Windows.Forms.Label IDLabel;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.NumericUpDown xBox;
+        private System.Windows.Forms.NumericUpDown yBox;
     }
 }

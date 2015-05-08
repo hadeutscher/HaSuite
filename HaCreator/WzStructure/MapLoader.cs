@@ -102,7 +102,7 @@ namespace HaCreator.WzStructure
             }
         }
 
-        private bool GetMapVR(WzImage mapImage, ref System.Drawing.Rectangle? VR)
+        private static bool GetMapVR(WzImage mapImage, ref System.Drawing.Rectangle? VR)
         {
             WzSubProperty fhParent = (WzSubProperty)mapImage["foothold"];
             if (fhParent == null) { VR = null; return false; }
@@ -420,11 +420,14 @@ namespace HaCreator.WzStructure
                 }
                 anchors.Clear();
             }
-            
+        }
+
+        public void GenerateDefaultZms(Board mapBoard)
+        {
             // generate default zM's
             HashSet<int> allExistingZMs = new HashSet<int>();
             mapBoard.Layers.ForEach(x => x.zMList.ToList().ForEach(y => allExistingZMs.Add(y)));
-            
+
             for (int i = 0; i < mapBoard.Layers.Count; i++)
             {
                 for (int zm_cand = 0; mapBoard.Layers[i].zMList.Count == 0; zm_cand++)
@@ -666,14 +669,74 @@ namespace HaCreator.WzStructure
             // Some misc items are not implemented here; these are copied byte-to-byte from the original. See VerifyMapPropsKnown for details.
         }
 
-        public ContextMenuStrip CreateStandardMapMenu(EventHandler rightClickHandler)
+        public ContextMenuStrip CreateStandardMapMenu(EventHandler[] rightClickHandler)
         {
             ContextMenuStrip result = new ContextMenuStrip();
-            result.Items.Add(new ToolStripMenuItem("Edit map info...", Properties.Resources.mapEditMenu, rightClickHandler));
+            result.Items.Add(new ToolStripMenuItem("Edit map info...", Properties.Resources.mapEditMenu, rightClickHandler[0]));
+            result.Items.Add(new ToolStripMenuItem("Add VR", Properties.Resources.mapEditMenu, rightClickHandler[1]));
+            result.Items.Add(new ToolStripMenuItem("Add Minimap", Properties.Resources.mapEditMenu, rightClickHandler[2]));
             return result;
         }
 
-        public void CreateMapFromImage(WzImage mapImage, string mapName, string streetName, string categoryName, WzSubProperty strMapProp, PageCollection Tabs, MultiBoard multiBoard, EventHandler rightClickHandler)
+        public static void GetMapDimensions(WzImage mapImage, out Rectangle VR, out Point mapCenter, out Point mapSize, out Point minimapCenter, out Point minimapSize, out bool hasVR, out bool hasMinimap)
+        {
+            System.Drawing.Rectangle? vr = MapInfo.GetVR(mapImage);
+            hasVR = vr.HasValue;
+            hasMinimap = mapImage["miniMap"] != null;
+            if (!hasMinimap)
+            {
+                // No minimap, generate sizes from VR
+                if (vr == null)
+                {
+                    // No minimap and no VR, our only chance of getting sizes is by generating a VR, if that fails we're screwed
+                    if (!GetMapVR(mapImage, ref vr))
+                    {
+                        throw new NoVRException();
+                    }
+                }
+                minimapSize = new Point(vr.Value.Width + 10, vr.Value.Height + 10); //leave 5 pixels on each side
+                minimapCenter = new Point(5 - vr.Value.Left, 5 - vr.Value.Top);
+                mapSize = new Point(minimapSize.X, minimapSize.Y);
+                mapCenter = new Point(minimapCenter.X, minimapCenter.Y);
+            }
+            else
+            {
+                WzImageProperty miniMap = mapImage["miniMap"];
+                minimapSize = new Point(InfoTool.GetInt(miniMap["width"]), InfoTool.GetInt(miniMap["height"]));
+                minimapCenter = new Point(InfoTool.GetInt(miniMap["centerX"]), InfoTool.GetInt(miniMap["centerY"]));
+                int topOffs = 0, botOffs = 0, leftOffs = 0, rightOffs = 0;
+                int leftTarget = 69 - minimapCenter.X, topTarget = 86 - minimapCenter.Y, rightTarget = minimapSize.X - 69 - 69, botTarget = minimapSize.Y - 86 - 86;
+                if (vr == null)
+                {
+                    // We have no VR info, so set all VRs according to their target
+                    vr = new System.Drawing.Rectangle(leftTarget, topTarget, rightTarget, botTarget);
+                }
+                else
+                {
+                    if (vr.Value.Left < leftTarget)
+                    {
+                        leftOffs = leftTarget - vr.Value.Left;
+                    }
+                    if (vr.Value.Top < topTarget)
+                    {
+                        topOffs = topTarget - vr.Value.Top;
+                    }
+                    if (vr.Value.Right > rightTarget)
+                    {
+                        rightOffs = vr.Value.Right - rightTarget;
+                    }
+                    if (vr.Value.Bottom > botTarget)
+                    {
+                        botOffs = vr.Value.Bottom - botTarget;
+                    }
+                }
+                mapSize = new Point(minimapSize.X + leftOffs + rightOffs, minimapSize.Y + topOffs + botOffs);
+                mapCenter = new Point(minimapCenter.X + leftOffs, minimapCenter.Y + topOffs);
+            }
+            VR = new Rectangle(vr.Value.X, vr.Value.Y, vr.Value.Width, vr.Value.Height);
+        }
+
+        public void CreateMapFromImage(WzImage mapImage, string mapName, string streetName, string categoryName, WzSubProperty strMapProp, PageCollection Tabs, MultiBoard multiBoard, EventHandler[] rightClickHandler)
         {
             if (!mapImage.Parsed) mapImage.ParseImage();
             List<string> copyPropNames = VerifyMapPropsKnown(mapImage, false);
@@ -686,43 +749,47 @@ namespace HaCreator.WzStructure
             if (type == MapType.RegularMap)
                 info.id = int.Parse(WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)));
             info.mapType = type;
+
+            Rectangle VR = new Rectangle();
             Point center = new Point();
             Point size = new Point();
-            if (mapImage["miniMap"] == null)
+            Point minimapSize = new Point();
+            Point minimapCenter = new Point();
+            bool hasMinimap = false;
+            bool hasVR = false;
+
+            try
             {
-                if (info.VR == null)
-                {
-                    if (!GetMapVR(mapImage, ref info.VR))
-                    {
-                        MessageBox.Show("Error - map does not contain size information and HaCreator was unable to generate it. An error has been logged.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        ErrorLogger.Log(ErrorLevel.IncorrectStructure, "no size @map " + info.id.ToString());
-                        return;
-                    }
-                }
-                size = new Point(info.VR.Value.Width + 10, info.VR.Value.Height + 10); //leave 5 pixels on each side
-                center = new Point(5 - info.VR.Value.Left, 5 - info.VR.Value.Top);
+                GetMapDimensions(mapImage, out VR, out center, out size, out minimapCenter, out minimapSize, out hasVR, out hasMinimap);
             }
-            else
+            catch (NoVRException)
             {
-                WzImageProperty miniMap = mapImage["miniMap"];
-                size = new Point(InfoTool.GetInt(miniMap["width"]), InfoTool.GetInt(miniMap["height"]));
-                center = new Point(InfoTool.GetInt(miniMap["centerX"]), InfoTool.GetInt(miniMap["centerY"]));
-                if (info.VR == null)
-                {
-                    info.VR = new System.Drawing.Rectangle(69 - center.X, 86 - center.Y, size.X - 69 - 69, size.Y - 86 - 86);
-                }
+                MessageBox.Show("Error - map does not contain size information and HaCreator was unable to generate it. An error has been logged.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorLogger.Log(ErrorLevel.IncorrectStructure, "no size @map " + info.id.ToString());
+                return;
             }
+            
             lock (multiBoard)
             {
                 CreateMap(mapName, WzInfoTools.RemoveLeadingZeros(WzInfoTools.RemoveExtension(mapImage.Name)), CreateStandardMapMenu(rightClickHandler), size, center, 8, Tabs, multiBoard);
                 Board mapBoard = multiBoard.SelectedBoard;
                 mapBoard.Loading = true; // prevents TS Change callbacks
                 mapBoard.MapInfo = info;
-                if (mapImage["miniMap"] != null)
+                if (hasMinimap)
+                {
                     mapBoard.MiniMap = ((WzCanvasProperty)mapImage["miniMap"]["canvas"]).PngProperty.GetPNG(false);
+                    System.Drawing.Point mmPos = new System.Drawing.Point(-minimapCenter.X, -minimapCenter.Y);
+                    mapBoard.MinimapPosition = mmPos;
+                    mapBoard.MinimapRectangle = new MinimapRectangle(mapBoard, new Rectangle(mmPos.X, mmPos.Y, minimapSize.X, minimapSize.Y));
+                }
+                if (hasVR)
+                {
+                    mapBoard.VRRectangle = new VRRectangle(mapBoard, VR);
+                }
                 LoadLayers(mapImage, mapBoard);
                 LoadLife(mapImage, mapBoard);
                 LoadFootholds(mapImage, mapBoard);
+                GenerateDefaultZms(mapBoard);
                 LoadRopes(mapImage, mapBoard);
                 LoadChairs(mapImage, mapBoard);
                 LoadPortals(mapImage, mapBoard);
@@ -730,6 +797,7 @@ namespace HaCreator.WzStructure
                 LoadToolTips(mapImage, mapBoard);
                 LoadBackgrounds(mapImage, mapBoard);
                 LoadMisc(mapImage, mapBoard);
+
                 mapBoard.BoardItems.Sort();
                 mapBoard.Loading = false;
             }
@@ -748,7 +816,8 @@ namespace HaCreator.WzStructure
         {
             lock (multiBoard)
             {
-                Board newBoard = multiBoard.CreateBoard(size, center, layers);
+                Board newBoard = multiBoard.CreateBoard(size, center, layers, menu);
+                GenerateDefaultZms(newBoard);
                 HaCreator.ThirdParty.TabPages.TabPage page = new HaCreator.ThirdParty.TabPages.TabPage(text, multiBoard, tooltip, menu);
                 page.Tag = newBoard;
                 Tabs.Add(page);
@@ -759,5 +828,9 @@ namespace HaCreator.WzStructure
                     item.Tag = newBoard;
             }
         }
+    }
+
+    public class NoVRException : Exception
+    {
     }
 }

@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using HaCreator.ThirdParty.TabPages;
 using MapleLib.WzLib;
 using HaCreator.WzStructure;
+using MapleLib.WzLib.WzStructure;
 
 namespace HaCreator.MapEditor
 {
@@ -237,7 +238,53 @@ namespace HaCreator.MapEditor
         private void mapEditInfo(object sender, EventArgs e)
         {
             Board selectedBoard = (Board)((ToolStripMenuItem)sender).Tag;
-            new InfoEditor(selectedBoard.MapInfo, multiBoard).ShowDialog();
+            lock (selectedBoard.ParentControl)
+            {
+                new InfoEditor(selectedBoard, selectedBoard.MapInfo, multiBoard).ShowDialog();
+                if (selectedBoard.ParentControl.SelectedBoard == selectedBoard)
+                    selectedBoard.ParentControl.AdjustScrollBars();
+            }
+        }
+
+        private void mapAddVR(object sender, EventArgs e)
+        {
+            Board selectedBoard = (Board)((ToolStripMenuItem)sender).Tag;
+            lock (selectedBoard.ParentControl)
+            {
+                if (selectedBoard.MapInfo.Image != null)
+                {
+                    Microsoft.Xna.Framework.Rectangle VR;
+                    Microsoft.Xna.Framework.Point mapCenter, mapSize, minimapCenter, minimapSize;
+                    bool hasVR, hasMinimap;
+                    MapLoader.GetMapDimensions(selectedBoard.MapInfo.Image, out VR, out mapCenter, out mapSize, out minimapCenter, out minimapSize, out hasVR, out hasMinimap);
+                    selectedBoard.VRRectangle = new VRRectangle(selectedBoard, VR);
+                }
+                else
+                {
+                    selectedBoard.VRRectangle = new VRRectangle(selectedBoard, new Microsoft.Xna.Framework.Rectangle(-selectedBoard.CenterPoint.X + 100, -selectedBoard.CenterPoint.Y + 100, selectedBoard.MapSize.X - 200, selectedBoard.MapSize.Y - 200));
+                }
+            }
+        }
+
+        private void mapAddMinimap(object sender, EventArgs e)
+        {
+            Board selectedBoard = (Board)((ToolStripMenuItem)sender).Tag;
+            lock (selectedBoard.ParentControl)
+            {
+                if (selectedBoard.MapInfo.Image != null)
+                {
+                    Microsoft.Xna.Framework.Rectangle VR;
+                    Microsoft.Xna.Framework.Point mapCenter, mapSize, minimapCenter, minimapSize;
+                    bool hasVR, hasMinimap;
+                    MapLoader.GetMapDimensions(selectedBoard.MapInfo.Image, out VR, out mapCenter, out mapSize, out minimapCenter, out minimapSize, out hasVR, out hasMinimap);
+                    selectedBoard.MinimapRectangle = new MinimapRectangle(selectedBoard, new Microsoft.Xna.Framework.Rectangle(-minimapCenter.X, -minimapCenter.Y, minimapSize.X, minimapSize.Y));
+                }
+                else
+                {
+                    selectedBoard.MinimapRectangle = new MinimapRectangle(selectedBoard, new Microsoft.Xna.Framework.Rectangle(-selectedBoard.CenterPoint.X + 100, -selectedBoard.CenterPoint.Y + 100, selectedBoard.MapSize.X - 200, selectedBoard.MapSize.Y - 200));
+                }
+                selectedBoard.RegenerateMinimap();
+            }
         }
 
         void tabs_CurrentPageChanged(HaCreator.ThirdParty.TabPages.TabPage currentPage, HaCreator.ThirdParty.TabPages.TabPage previousPage)
@@ -488,7 +535,7 @@ namespace HaCreator.MapEditor
 
         public void LoadMap()
         {
-            if (new Load(multiBoard, tabs, new EventHandler(mapEditInfo)).ShowDialog() == DialogResult.OK)
+            if (new Load(multiBoard, tabs, new EventHandler[] { new EventHandler(mapEditInfo), new EventHandler(mapAddVR), new EventHandler(mapAddMinimap) }).ShowDialog() == DialogResult.OK)
             {
                 if (!multiBoard.DeviceReady)
                 {

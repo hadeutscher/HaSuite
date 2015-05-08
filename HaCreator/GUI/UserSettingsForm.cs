@@ -48,6 +48,7 @@ namespace HaCreator.GUI
             miscFillColorPicker.Color = XNAToSystemColor(UserSettings.MiscFill);
             miscSelectedColorPicker.Color = XNAToSystemColor(UserSettings.MiscSelectedFill);
             originColorPicker.Color = XNAToSystemColor(UserSettings.OriginColor);
+            minimapColorPicker.Color = XNAToSystemColor(UserSettings.MinimapBoundColor);
             rInput.Value = UserSettings.HiddenLifeR;
             fontName.Text = UserSettings.FontName;
             fontSize.Value = UserSettings.FontSize;
@@ -113,6 +114,7 @@ namespace HaCreator.GUI
             UserSettings.MiscFill = SystemToXNAColor(miscFillColorPicker.Color);
             UserSettings.MiscSelectedFill = SystemToXNAColor(miscSelectedColorPicker.Color);
             UserSettings.OriginColor = SystemToXNAColor(originColorPicker.Color);
+            UserSettings.MinimapBoundColor = SystemToXNAColor(minimapColorPicker.Color);
             
             UserSettings.HiddenLifeR = (int)rInput.Value;
             UserSettings.Mobrx0Offset = (int)mobrx0Box.Value;

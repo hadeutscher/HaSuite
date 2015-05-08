@@ -12,12 +12,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure;
+using System.Windows.Forms;
 
 namespace HaCreator.MapEditor
 {
     public class Board
     {
         private Point mapSize;
+        private Rectangle minimapArea;
         //private Point maxMapSize;
         private Point centerPoint;
         private BoardItemsManager boardItems;
@@ -27,6 +29,7 @@ namespace HaCreator.MapEditor
         private Mouse mouse;
         private MapInfo mapInfo = new MapInfo();
         private System.Drawing.Bitmap miniMap;
+        private System.Drawing.Point miniMapPos;
         private Texture2D miniMapTexture;
         private int selectedLayerIndex = ApplicationSettings.lastDefaultLayer;
         private int selectedPlatform = -1;
@@ -37,20 +40,22 @@ namespace HaCreator.MapEditor
         ItemTypes visibleTypes;
         ItemTypes editedTypes;
         private bool loading = false;
+        private VRRectangle vrRect = null;
+        private MinimapRectangle mmRect = null;
+        private ContextMenuStrip menu = null;
 
         public ItemTypes VisibleTypes { get { return visibleTypes; } set { visibleTypes = value; } }
         public ItemTypes EditedTypes { get { return editedTypes; } set { editedTypes = value; } }
 
-        public Board(Point mapSize, Point centerPoint, MultiBoard parent, ItemTypes visibleTypes, ItemTypes editedTypes)
+        public Board(Point mapSize, Point centerPoint, MultiBoard parent, ContextMenuStrip menu, ItemTypes visibleTypes, ItemTypes editedTypes)
         {
-            this.mapSize = mapSize;
+            this.MapSize = mapSize;
             this.centerPoint = centerPoint;
             this.parent = parent;
             this.visibleTypes = visibleTypes;
             this.editedTypes = editedTypes;
+            this.menu = menu;
 
-            //this.maxMapSize = mapSize;
-            
             boardItems = new BoardItemsManager(this);
             undoRedoMan = new UndoRedoManager(this);
             parent.Boards.Add(this);
@@ -89,27 +94,19 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public static System.Drawing.Bitmap ResizeImage(System.Drawing.Bitmap FullsizeImage, int NewWidth, int MaxHeight, bool OnlyResizeIfWider)
+        public static System.Drawing.Bitmap ResizeImage(System.Drawing.Bitmap FullsizeImage, float coeff)
         {
-            FullsizeImage.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipNone);
-            FullsizeImage.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipNone);
+            return (System.Drawing.Bitmap)FullsizeImage.GetThumbnailImage((int)Math.Round(FullsizeImage.Width / coeff), (int)Math.Round(FullsizeImage.Height / coeff), null, IntPtr.Zero);
+        }
 
-            if (OnlyResizeIfWider)
+        public static System.Drawing.Bitmap CropImage(System.Drawing.Bitmap img, System.Drawing.Rectangle selection)
+        {
+            System.Drawing.Bitmap result = new System.Drawing.Bitmap(selection.Width, selection.Height);
+            using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(result))
             {
-                if (FullsizeImage.Width <= NewWidth)
-                {
-                    NewWidth = FullsizeImage.Width;
-                }
+                g.DrawImage(img, new System.Drawing.Rectangle(0, 0, selection.Width, selection.Height), selection, System.Drawing.GraphicsUnit.Pixel);
             }
-
-            int NewHeight = FullsizeImage.Height * NewWidth / FullsizeImage.Width;
-            if (NewHeight > MaxHeight)
-            {
-                NewWidth = FullsizeImage.Width * MaxHeight / FullsizeImage.Height;
-                NewHeight = MaxHeight;
-            }
-            System.Drawing.Bitmap NewImage = (System.Drawing.Bitmap)FullsizeImage.GetThumbnailImage(NewWidth, NewHeight, null, IntPtr.Zero);
-            return NewImage;
+            return result;
         }
 
 
@@ -119,13 +116,20 @@ namespace HaCreator.MapEditor
             {
                 lock (parent)
                 {
-                    System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
-                    System.Drawing.Graphics processor = System.Drawing.Graphics.FromImage(bmp);
-                    foreach (BoardItem item in BoardItems.TileObjs)
-                        processor.DrawImage(item.Image, new System.Drawing.Point(item.X + centerPoint.X - item.Origin.X, item.Y + centerPoint.Y - item.Origin.Y));
-                    System.Drawing.Bitmap minimap = null;
-                    minimap = ResizeImage(bmp, bmp.Width / 16, bmp.Height, false);
-                    MiniMap = minimap;
+                    if (MinimapRectangle == null)
+                    {
+                        MiniMap = null;
+                    }
+                    else
+                    {
+                        System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(mapSize.X, mapSize.Y);
+                        System.Drawing.Graphics processor = System.Drawing.Graphics.FromImage(bmp);
+                        foreach (BoardItem item in BoardItems.TileObjs)
+                            processor.DrawImage(item.Image, new System.Drawing.Point(item.X + centerPoint.X - item.Origin.X, item.Y + centerPoint.Y - item.Origin.Y));
+                        bmp = CropImage(bmp, new System.Drawing.Rectangle(MinimapRectangle.X + centerPoint.X, MinimapRectangle.Y + centerPoint.Y, MinimapRectangle.Width, MinimapRectangle.Height));
+                        MiniMap = ResizeImage(bmp, (float)_mag);
+                        MinimapPosition = new System.Drawing.Point(MinimapRectangle.X, MinimapRectangle.Y);
+                    }
                 }
                 return true;
             }
@@ -137,13 +141,16 @@ namespace HaCreator.MapEditor
 
         public void RenderBoard(SpriteBatch sprite)
         {
-            if (mapInfo == null) return;
+            if (mapInfo == null) 
+                return;
             int xShift = centerPoint.X - hScroll;
             int yShift = centerPoint.Y - vScroll;
 
+            // Render the object lists
             for (int i = 0; i < boardItems.AllItemLists.Length; i++)
                 RenderList(boardItems.AllItemLists[i], sprite, xShift, yShift);
 
+            // Render the user's selection square
             if (mouse.MultiSelectOngoing)
             {
                 Rectangle selectionRect = InputHandler.CreateRectangle(
@@ -156,21 +163,41 @@ namespace HaCreator.MapEditor
                 selectionRect.Height--;
                 parent.FillRectangle(sprite, selectionRect, UserSettings.SelectSquareFill);
             }
-            if (UserSettings.showVR && mapInfo.VR != null)
-                parent.DrawRectangle(sprite, new Rectangle(
-                    MultiBoard.VirtualToPhysical(mapInfo.VR.Value.X, centerPoint.X, hScroll, 0),
-                    MultiBoard.VirtualToPhysical(mapInfo.VR.Value.Y, centerPoint.Y, vScroll, 0),
-                    mapInfo.VR.Value.Width, mapInfo.VR.Value.Height), UserSettings.VRColor);
-            if (miniMap != null && UserSettings.useMiniMap) //here comes the cool part ^_^
+            
+            // Render VR if it exists
+            if (VRRectangle != null)
             {
-                parent.FillRectangle(sprite, new Rectangle(0, 0, miniMap.Width, miniMap.Height), Color.Gray);
-                if (miniMapTexture == null) miniMapTexture = BoardItem.TextureFromBitmap(parent.Device, miniMap);
-                sprite.Draw(miniMapTexture, new Rectangle(0, 0, miniMap.Width, miniMap.Height), null, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0.99999f);
-                int x = hScroll / 16;
-                int y = vScroll / 16;
-                parent.DrawRectangle(sprite, new Rectangle(x, y, parent.Width / _mag, parent.Height / _mag), Color.Blue);
-                parent.DrawLine(sprite, new Vector2(miniMap.Width + 1, 0), new Vector2(miniMap.Width + 1, miniMap.Height), Color.Black);
-                parent.DrawLine(sprite, new Vector2(0, miniMap.Height), new Vector2(miniMap.Width + 1, miniMap.Height), Color.Black);
+                VRRectangle.Draw(sprite, xShift, yShift);
+            }
+            // Render minimap rectangle
+            if (MinimapRectangle != null)
+            {
+                MinimapRectangle.Draw(sprite, xShift, yShift);
+            }
+
+            // Render the minimap itself
+            if (miniMap != null && UserSettings.useMiniMap)
+            {
+                // Area for the image itself
+                Rectangle minimapImageArea = new Rectangle((miniMapPos.X + centerPoint.X) / _mag, (miniMapPos.Y + centerPoint.Y) / _mag, miniMap.Width, miniMap.Height);
+
+                // Render gray area
+                parent.FillRectangle(sprite, minimapArea, Color.Gray);
+                // Render minimap
+                if (miniMapTexture == null) 
+                    miniMapTexture = BoardItem.TextureFromBitmap(parent.Device, miniMap);
+                sprite.Draw(miniMapTexture, minimapImageArea, null, Color.White, 0, new Vector2(0, 0), SpriteEffects.None, 0.99999f);
+                // Render current location on minimap
+                parent.DrawRectangle(sprite, new Rectangle(hScroll / _mag, vScroll / _mag, parent.Width / _mag, parent.Height / _mag), Color.Blue);
+                
+                // Render minimap borders
+                parent.DrawRectangle(sprite, minimapImageArea, Color.Black);
+            }
+            
+            // Render center point if InfoMode on
+            if (ApplicationSettings.InfoMode)
+            {
+                parent.FillRectangle(sprite, new Rectangle(MultiBoard.VirtualToPhysical(-5, centerPoint.X, hScroll, 0), MultiBoard.VirtualToPhysical(-5 , centerPoint.Y, vScroll, 0), 10, 10), Color.DarkRed);
             }
         }
 
@@ -211,12 +238,6 @@ namespace HaCreator.MapEditor
                 lock (parent) 
                 { 
                     mapInfo = value; 
-                    /*if (mapInfo.VR.HasValue) 
-                    {
-                        int offsX = (mapInfo.VR.Value.Left - 100 + centerPoint.X) > 0 ? mapInfo.VR.Value.Left - 100 + centerPoint.X : 0;
-                        int offsY = (mapInfo.VR.Value.Top - 100 + centerPoint.Y) > 0 ? mapInfo.VR.Value.Top - 100 + centerPoint.Y : 0;
-                        maxMapSize = new Point(Math.Max(mapSize.X, mapInfo.VR.Value.Width + 100 - offsX), Math.Max(mapSize.Y, mapInfo.VR.Value.Height + 100 - offsY));
-                    }*/
                 } 
             }
         }
@@ -225,6 +246,12 @@ namespace HaCreator.MapEditor
         {
             get { return miniMap; }
             set { lock (parent) { miniMap = value; miniMapTexture = null; } }
+        }
+
+        public System.Drawing.Point MinimapPosition
+        {
+            get { return miniMapPos; }
+            set { miniMapPos = value; }
         }
 
         public int hScroll
@@ -281,16 +308,37 @@ namespace HaCreator.MapEditor
         {
             get
             {
-                //return maxMapSize;
                 return mapSize;
+            }
+            set
+            {
+                mapSize = value;
+                minimapArea = new Rectangle(0, 0, mapSize.X / _mag, mapSize.Y / _mag);
             }
         }
 
-        public Point MiniMapSize
+        public Rectangle MinimapArea
         {
-            get
-            {
-                return mapSize;
+            get { return minimapArea; }
+        }
+
+        public VRRectangle VRRectangle
+        {
+            get { return vrRect; }
+            set 
+            { 
+                vrRect = value;
+                menu.Items[1].Enabled = value == null;
+            }
+        }
+
+        public MinimapRectangle MinimapRectangle
+        {
+            get { return mmRect; }
+            set 
+            { 
+                mmRect = value;
+                menu.Items[2].Enabled = value == null;
             }
         }
 
@@ -331,6 +379,11 @@ namespace HaCreator.MapEditor
                     selectedLayerIndex = value;
                 }
             }
+        }
+
+        public ContextMenuStrip Menu
+        {
+            get { return menu; }
         }
 
         public Layer SelectedLayer

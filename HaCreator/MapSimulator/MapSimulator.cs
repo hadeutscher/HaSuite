@@ -34,6 +34,7 @@ namespace HaCreator.MapSimulator
         public int mapShiftX = 0;
         public int mapShiftY = 0;
         public Point mapCenter;
+        public Point minimapPos;
         public int width;
         public int height;
 
@@ -65,8 +66,9 @@ namespace HaCreator.MapSimulator
                 audio = new WzMp3Streamer(bgm, true);
             }
             mapCenter = mapBoard.CenterPoint;
-            if (mapBoard.MapInfo.VR == null) vr = new Rectangle(0, 0, mapBoard.MapSize.X, mapBoard.MapSize.Y);
-            else vr = new Rectangle(mapBoard.MapInfo.VR.Value.X + mapCenter.X, mapBoard.MapInfo.VR.Value.Y + mapCenter.Y, mapBoard.MapInfo.VR.Value.Width, mapBoard.MapInfo.VR.Value.Height);
+            minimapPos = new Point((int)Math.Round((mapBoard.MinimapPosition.X + mapCenter.X) / (double)mapBoard.mag), (int)Math.Round((mapBoard.MinimapPosition.Y + mapCenter.Y) / (double)mapBoard.mag));
+            if (mapBoard.VRRectangle == null) vr = new Rectangle(0, 0, mapBoard.MapSize.X, mapBoard.MapSize.Y);
+            else vr = new Rectangle(mapBoard.VRRectangle.X + mapCenter.X, mapBoard.VRRectangle.Y + mapCenter.Y, mapBoard.VRRectangle.Width, mapBoard.VRRectangle.Height);
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque, true);
             InitializeComponent();
             width = UserSettings.XGAResolution ? 1024 : 800;
@@ -138,7 +140,7 @@ namespace HaCreator.MapSimulator
 
             if (minimap != null)
             {
-                sprite.Draw(minimap, new Rectangle(0, 0, minimap.Width, minimap.Height), Color.White);
+                sprite.Draw(minimap, new Rectangle(minimapPos.X, minimapPos.Y, minimap.Width, minimap.Height), Color.White);
                 int minimapPosX = (mapShiftX + 400) / 16;
                 int minimapPosY = (mapShiftY + 300) / 16;
                 FillRectangle(sprite, new Rectangle(minimapPosX - 4, minimapPosY - 4, 4, 4), Color.Yellow);

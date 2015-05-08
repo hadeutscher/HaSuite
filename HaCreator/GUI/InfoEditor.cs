@@ -25,11 +25,13 @@ namespace HaCreator.GUI
     {
         public MapInfo info;
         private MultiBoard multiBoard;
+        private Board board;
 
-        public InfoEditor(MapInfo info, MultiBoard multiBoard)
+        public InfoEditor(Board board, MapInfo info, MultiBoard multiBoard)
         {
             InitializeComponent();
 
+            this.board = board;
             this.multiBoard = multiBoard;
 
             timeLimitEnable.Tag = timeLimit;
@@ -61,6 +63,9 @@ namespace HaCreator.GUI
 
             this.info = info;
             this.fieldType.SelectedIndex = 0;
+
+            xBox.Value = board.MapSize.X;
+            yBox.Value = board.MapSize.Y;
 
             if (info.mapType != MapType.CashShopPreview)
             {
@@ -467,6 +472,11 @@ namespace HaCreator.GUI
                             info.fieldType = FieldType.FIELDTYPE_CRIMSONWOODPQ;
                             break;
                     }
+                }
+
+                if (board.MapSize.X != (int)xBox.Value || board.MapSize.Y != (int)yBox.Value)
+                {
+                    board.MapSize = new Microsoft.Xna.Framework.Point((int)xBox.Value, (int)yBox.Value);
                 }
             }
             Close();

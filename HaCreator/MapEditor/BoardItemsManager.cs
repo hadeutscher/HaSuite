@@ -112,6 +112,7 @@ namespace HaCreator.MapEditor
         public MapleList<ToolTipDot> ToolTipDots = new MapleList<ToolTipDot>(ItemTypes.ToolTips, true);
         public MapleList<BoardItem> MiscItems = new MapleList<BoardItem>(ItemTypes.Misc, true);
         public MapleList<MiscDot> MiscDots = new MapleList<MiscDot>(ItemTypes.Misc, true);
+        public MapleList<MapleDot> SpecialDots = new MapleList<MapleDot>(ItemTypes.Misc, true);
 
         public List<Rope> Ropes = new List<Rope>();
         public IMapleList[] AllItemLists;
@@ -125,7 +126,7 @@ namespace HaCreator.MapEditor
 
         public BoardItemsManager(Board board)
         {
-            AllItemLists = new IMapleList[] { BackBackgrounds, TileObjs, Mobs, NPCs, Reactors, Portals, FrontBackgrounds, FootholdLines, RopeLines, FHAnchors, RopeAnchors, Chairs, CharacterToolTips, ToolTips, ToolTipDots, MiscItems };
+            AllItemLists = new IMapleList[] { BackBackgrounds, TileObjs, Mobs, NPCs, Reactors, Portals, FrontBackgrounds, FootholdLines, RopeLines, FHAnchors, RopeAnchors, Chairs, CharacterToolTips, ToolTips, ToolTipDots, MiscItems, SpecialDots };
             this.board = board;
         }
 
@@ -153,7 +154,10 @@ namespace HaCreator.MapEditor
                 }
                 else if (item.Type == ItemTypes.Misc)
                 {
-                    MiscItems.Remove(item);
+                    if (item is VRDot || item is MinimapDot)
+                        SpecialDots.Remove((MapleDot)item);
+                    else
+                        MiscItems.Remove(item);
                 }
                 else
                 {

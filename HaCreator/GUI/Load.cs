@@ -38,9 +38,9 @@ namespace HaCreator.GUI
         public int bufferzone = 100;
         private MultiBoard multiBoard;
         private HaCreator.ThirdParty.TabPages.PageCollection Tabs;
-        private EventHandler rightClickHandler;
+        private EventHandler[] rightClickHandler;
 
-        public Load(MultiBoard board, HaCreator.ThirdParty.TabPages.PageCollection Tabs, EventHandler rightClickHandler)
+        public Load(MultiBoard board, HaCreator.ThirdParty.TabPages.PageCollection Tabs, EventHandler[] rightClickHandler)
         {
             InitializeComponent();
             DialogResult = DialogResult.Cancel;

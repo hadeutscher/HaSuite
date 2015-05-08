@@ -48,6 +48,7 @@ namespace HaCreator
         public static Color MiscFill = new Color(150, 75, 0, 100);
         public static Color MiscSelectedFill = new Color(150, 75, 0, 150);
         public static Color OriginColor = Color.LightGreen;
+        public static Color MinimapBoundColor = Color.DarkOrange;
         public static int NonActiveAlpha = 63;
         public static int Mobrx0Offset = 200;
         public static int Mobrx1Offset = 200;

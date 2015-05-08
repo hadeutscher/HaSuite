@@ -123,11 +123,11 @@ namespace HaCreator.MapEditor
             return BoardItem.TextureFromBitmap(DxDevice, bmp);
         }
 
-        public Board CreateBoard(Point mapSize, Point centerPoint, int layers)
+        public Board CreateBoard(Point mapSize, Point centerPoint, int layers, ContextMenuStrip menu)
         {
             lock (this)
             {
-                Board newBoard = new Board(mapSize, centerPoint, this, ApplicationSettings.theoreticalVisibleTypes, ApplicationSettings.theoreticalEditedTypes);
+                Board newBoard = new Board(mapSize, centerPoint, this, menu, ApplicationSettings.theoreticalVisibleTypes, ApplicationSettings.theoreticalEditedTypes);
                 newBoard.CreateLayers(layers);
                 return newBoard;
             }
@@ -600,7 +600,7 @@ namespace HaCreator.MapEditor
                 AdjustScrollBars();
         }
 
-        private void AdjustScrollBars()
+        public void AdjustScrollBars()
         {
             lock (this)
             {
@@ -779,7 +779,8 @@ namespace HaCreator.MapEditor
         public static Color ChairInactiveColor;
         public static Color ToolTipInactiveColor;
         public static Color MiscInactiveColor;
-        public static Color BackgroundCopyColor;
+        public static Color VRInactiveColor;
+        public static Color MinimapBoundInactiveColor;
 
         static MultiBoard()
         {
@@ -801,7 +802,8 @@ namespace HaCreator.MapEditor
             ChairInactiveColor = CreateTransparency(UserSettings.ChairColor, alpha);
             ToolTipInactiveColor = CreateTransparency(UserSettings.ToolTipColor, alpha);
             MiscInactiveColor = CreateTransparency(UserSettings.MiscColor, alpha);
-            BackgroundCopyColor = CreateTransparency(Color.White, alpha / 2);
+            VRInactiveColor = CreateTransparency(UserSettings.VRColor, alpha);
+            MinimapBoundInactiveColor = CreateTransparency(UserSettings.MinimapBoundColor, alpha);
         }
         #endregion
     }

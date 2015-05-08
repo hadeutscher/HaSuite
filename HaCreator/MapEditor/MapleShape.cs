@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure;
+using System.Windows.Forms;
 
 namespace HaCreator.MapEditor
 {
@@ -44,9 +45,12 @@ namespace HaCreator.MapEditor
             lock (board.ParentControl)
             {
                 base.OnItemPlaced(undoPipe);
-                foreach (MapleLine line in connectedLines)
+                if (RemoveConnectedLines)
                 {
-                    line.OnPlaced(undoPipe);
+                    foreach (MapleLine line in connectedLines)
+                    {
+                        line.OnPlaced(undoPipe);
+                    }
                 }
             }
         }
@@ -956,9 +960,131 @@ namespace HaCreator.MapEditor
         }
     }
 
+    public class VRDot : MapleDot
+    {
+        MapleEmptyRectangle rect;
+
+        public VRDot(MapleEmptyRectangle rect, Board board, int x, int y)
+            : base(board, x, y)
+        {
+            this.rect = rect;
+        }
+
+        public override Color Color
+        {
+            get
+            {
+                return UserSettings.VRColor;
+            }
+        }
+
+        public override Color InactiveColor
+        {
+            get { return MultiBoard.VRInactiveColor; }
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        protected override bool RemoveConnectedLines
+        {
+            get { return false; }
+        }
+    }
+
+    public class VRLine : MapleLine
+    {
+        public VRLine(Board board, MapleDot firstDot, MapleDot secondDot)
+            : base(board, firstDot, secondDot)
+        {
+        }
+
+        public override Color Color
+        {
+            get { return UserSettings.VRColor; }
+        }
+
+        public override Color InactiveColor
+        {
+            get { return MultiBoard.VRInactiveColor; }
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        public override void Remove(bool removeDots, List<UndoRedoAction> undoPipe)
+        {
+
+        }
+    }
+    public class MinimapDot : MapleDot
+    {
+        MapleEmptyRectangle rect;
+
+        public MinimapDot(MapleEmptyRectangle rect, Board board, int x, int y)
+            : base(board, x, y)
+        {
+            this.rect = rect;
+        }
+
+        public override Color Color
+        {
+            get
+            {
+                return UserSettings.MinimapBoundColor;
+            }
+        }
+
+        public override Color InactiveColor
+        {
+            get { return MultiBoard.MinimapBoundInactiveColor; }
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        protected override bool RemoveConnectedLines
+        {
+            get { return false; }
+        }
+    }
+
+    public class MinimapLine : MapleLine
+    {
+        public MinimapLine(Board board, MapleDot firstDot, MapleDot secondDot)
+            : base(board, firstDot, secondDot)
+        {
+        }
+
+        public override Color Color
+        {
+            get { return UserSettings.MinimapBoundColor; }
+        }
+
+        public override Color InactiveColor
+        {
+            get { return MultiBoard.MinimapBoundInactiveColor; }
+        }
+
+        public override ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        public override void Remove(bool removeDots, List<UndoRedoAction> undoPipe)
+        {
+
+        }
+    }
+
     public abstract class MapleRectangle : BoardItem
     {
-
         //clockwise, beginning in upper-left
         private MapleDot a;
         private MapleDot b;
@@ -1174,6 +1300,249 @@ namespace HaCreator.MapEditor
                 PointB.RemoveItem(undoPipe);
                 PointC.RemoveItem(undoPipe);
                 PointD.RemoveItem(undoPipe);
+            }
+        }
+
+        public override void OnItemPlaced(List<UndoRedoAction> undoPipe)
+        {
+            lock (board.ParentControl)
+            {
+                base.OnItemPlaced(undoPipe);
+                PointA.OnItemPlaced(undoPipe);
+                PointB.OnItemPlaced(undoPipe);
+                PointC.OnItemPlaced(undoPipe);
+                PointD.OnItemPlaced(undoPipe);
+            }
+        }
+    }
+
+    public abstract class MapleEmptyRectangle
+    {
+        //clockwise, beginning in upper-left
+        private MapleDot a;
+        private MapleDot b;
+        private MapleDot c;
+        private MapleDot d;
+
+        private MapleLine ab;
+        private MapleLine bc;
+        private MapleLine cd;
+        private MapleLine da;
+
+        protected Board board;
+
+        public MapleEmptyRectangle(Board board)
+        {
+            this.board = board;
+        }
+
+        public MapleDot PointA
+        {
+            get { return a; }
+            set { a = value; }
+        }
+
+        public MapleDot PointB
+        {
+            get { return b; }
+            set { b = value; }
+        }
+
+        public MapleDot PointC
+        {
+            get { return c; }
+            set { c = value; }
+        }
+
+        public MapleDot PointD
+        {
+            get { return d; }
+            set { d = value; }
+        }
+
+        public MapleLine LineAB
+        {
+            get { return ab; }
+            set { ab = value; }
+        }
+
+        public MapleLine LineBC
+        {
+            get { return bc; }
+            set { bc = value; }
+        }
+
+        public MapleLine LineCD
+        {
+            get { return cd; }
+            set { cd = value; }
+        }
+
+        public MapleLine LineDA
+        {
+            get { return da; }
+            set { da = value; }
+        }
+
+        public int Width
+        {
+            get
+            {
+                return a.X < b.X ? b.X - a.X : a.X - b.X;
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return b.Y < c.Y ? c.Y - b.Y : b.Y - c.Y;
+            }
+        }
+
+        public int X
+        {
+            get
+            {
+                return Math.Min(a.X, b.X);
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return Math.Min(b.Y, c.Y);
+            }
+        }
+
+        public int Left
+        {
+            get
+            {
+                return Math.Min(a.X, b.X);
+            }
+        }
+
+        public int Top
+        {
+            get
+            {
+                return Math.Min(b.Y, c.Y);
+            }
+        }
+
+        public int Bottom
+        {
+            get
+            {
+                return Math.Max(b.Y, c.Y);
+            }
+        }
+
+        public int Right
+        {
+            get
+            {
+                return Math.Max(a.X, b.X);
+            }
+        }
+
+        public virtual void RemoveItem(List<UndoRedoAction> undoPipe)
+        {
+            lock (board.ParentControl)
+            {
+                PointA.RemoveItem(undoPipe);
+                PointB.RemoveItem(undoPipe);
+                PointC.RemoveItem(undoPipe);
+                PointD.RemoveItem(undoPipe);
+            }
+        }
+
+        public virtual void Draw(SpriteBatch sprite, int xShift, int yShift)
+        {
+            Color lineColor = ab.Color;
+            int x, y;
+            if (a.X < b.X) x = a.X + xShift;
+            else x = b.X + xShift;
+            if (b.Y < c.Y) y = b.Y + yShift;
+            else y = c.Y + yShift;
+            ab.Draw(sprite, lineColor, xShift, yShift);
+            bc.Draw(sprite, lineColor, xShift, yShift);
+            cd.Draw(sprite, lineColor, xShift, yShift);
+            da.Draw(sprite, lineColor, xShift, yShift);
+        }
+    }
+
+    public class VRRectangle : MapleEmptyRectangle
+    {
+        public VRRectangle(Board board, Rectangle rect)
+            : base(board)
+        {
+            lock (board.ParentControl)
+            {
+                PointA = new VRDot(this, board, rect.Left, rect.Top);
+                PointB = new VRDot(this, board, rect.Right, rect.Top);
+                PointC = new VRDot(this, board, rect.Right, rect.Bottom);
+                PointD = new VRDot(this, board, rect.Left, rect.Bottom);
+                board.BoardItems.SpecialDots.Add((VRDot)PointA);
+                board.BoardItems.SpecialDots.Add((VRDot)PointB);
+                board.BoardItems.SpecialDots.Add((VRDot)PointC);
+                board.BoardItems.SpecialDots.Add((VRDot)PointD);
+                LineAB = new VRLine(board, PointA, PointB);
+                LineBC = new VRLine(board, PointB, PointC);
+                LineCD = new VRLine(board, PointC, PointD);
+                LineDA = new VRLine(board, PointD, PointA);
+                LineAB.yBind = true;
+                LineBC.xBind = true;
+                LineCD.yBind = true;
+                LineDA.xBind = true;
+            }
+        }
+
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
+        {
+            lock (board.ParentControl)
+            {
+                base.RemoveItem(null);
+                board.VRRectangle = null;
+            }
+        }
+    }
+
+    public class MinimapRectangle : MapleEmptyRectangle
+    {
+        public MinimapRectangle(Board board, Rectangle rect)
+            : base(board)
+        {
+            lock (board.ParentControl)
+            {
+                PointA = new MinimapDot(this, board, rect.Left, rect.Top);
+                PointB = new MinimapDot(this, board, rect.Right, rect.Top);
+                PointC = new MinimapDot(this, board, rect.Right, rect.Bottom);
+                PointD = new MinimapDot(this, board, rect.Left, rect.Bottom);
+                board.BoardItems.SpecialDots.Add((MinimapDot)PointA);
+                board.BoardItems.SpecialDots.Add((MinimapDot)PointB);
+                board.BoardItems.SpecialDots.Add((MinimapDot)PointC);
+                board.BoardItems.SpecialDots.Add((MinimapDot)PointD);
+                LineAB = new MinimapLine(board, PointA, PointB);
+                LineBC = new MinimapLine(board, PointB, PointC);
+                LineCD = new MinimapLine(board, PointC, PointD);
+                LineDA = new MinimapLine(board, PointD, PointA);
+                LineAB.yBind = true;
+                LineBC.xBind = true;
+                LineCD.yBind = true;
+                LineDA.xBind = true;
+            }
+        }
+
+        public override void RemoveItem(List<UndoRedoAction> undoPipe)
+        {
+            lock (board.ParentControl)
+            {
+                base.RemoveItem(null);
+                board.MinimapRectangle = null;
+                board.RegenerateMinimap();
             }
         }
     }

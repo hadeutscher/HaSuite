@@ -75,7 +75,7 @@ namespace HaCreator.MapEditor
                         item.Selected = false;
                     toRemove.Clear();
                 }
-                else if (selectedBoard.Mouse.SingleSelectStarting && Distance(newPos.X - selectedBoard.Mouse.SingleSelectStart.X, newPos.Y - selectedBoard.Mouse.SingleSelectStart.Y) > UserSettings.SignificantDistance)
+                else if (selectedBoard.Mouse.SingleSelectStarting && (Distance(newPos.X - selectedBoard.Mouse.SingleSelectStart.X, newPos.Y - selectedBoard.Mouse.SingleSelectStart.Y) > UserSettings.SignificantDistance || IsKeyPushedDown(Keys.Menu)))
                 {
                     BindAllSelectedItems(selectedBoard, selectedBoard.Mouse.SingleSelectStart);
                     selectedBoard.Mouse.SingleSelectStarting = false;
@@ -178,8 +178,14 @@ namespace HaCreator.MapEditor
                                 while (selectedBoard.SelectedItems.Count > selectedItemIndex)
                                 {
                                     BoardItem item = selectedBoard.SelectedItems[selectedItemIndex];
-                                    if (item is ToolTipDot) selectedItemIndex++;
-                                    else item.RemoveItem(actions);
+                                    if (item is ToolTipDot || item is MiscDot)
+                                        selectedItemIndex++;
+                                    else if (item is VRDot && MessageBox.Show("This will remove the map's VR. This is not undoable, you must re-add VR from the map's main menu. Continue?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                                        selectedBoard.VRRectangle.RemoveItem(null);
+                                    else if (item is MinimapDot && MessageBox.Show("This will remove the map's minimap. This is not undoable, you must re-add the minimap from the map's main menu. Continue?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                                        selectedBoard.MinimapRectangle.RemoveItem(null);
+                                    else
+                                        item.RemoveItem(actions);
                                 }
                                 break;
                             case MouseState.RandomTiles:
@@ -222,9 +228,25 @@ namespace HaCreator.MapEditor
                         selectedBoard.BoardItems.Sort();
                         break;
                     case Keys.A:
-                        if (ctrl) foreach (BoardItem item in selectedBoard.BoardItems)
+                        if (ctrl)
+                        {
+                            foreach (BoardItem item in selectedBoard.BoardItems)
+                            {
                                 if ((selectedBoard.EditedTypes & item.Type) == item.Type)
-                                    item.Selected = true;
+                                {
+                                    if (item is LayeredItem)
+                                    {
+                                        LayeredItem li = (LayeredItem)item;
+                                        if (li.CheckIfLayerSelected(selectedBoard.GetUserSelectionInfo()))
+                                        {
+                                            item.Selected = true;
+                                        }
+                                    }
+                                    else
+                                        item.Selected = true;
+                                }
+                            }
+                        }
                         clearRedo = false;
                         break;
                     case Keys.Z:
@@ -261,7 +283,7 @@ namespace HaCreator.MapEditor
         private bool ClickOnMinimap(Board selectedBoard, Point position)
         {
             if (selectedBoard.MiniMap == null || !UserSettings.useMiniMap) return false;
-            return position.X > 0 && position.X < selectedBoard.MiniMap.Width && position.Y > 0 && position.Y < selectedBoard.MiniMap.Height;
+            return position.X > 0 && position.X < selectedBoard.MinimapArea.Width && position.Y > 0 && position.Y < selectedBoard.MinimapArea.Height;
 
         }
 

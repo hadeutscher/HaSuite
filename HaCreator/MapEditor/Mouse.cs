@@ -111,7 +111,9 @@ namespace HaCreator.MapEditor
                     ReleaseItem(dot);
                     if (count == 1)
                     {
-                        Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(dot.ParentTooltip) });
+                        List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
+                        dot.ParentTooltip.OnItemPlaced(undoPipe);
+                        Board.UndoRedoMan.AddUndoBatch(undoPipe);
                         CreateTooltip();
                     }
                 }
@@ -132,7 +134,9 @@ namespace HaCreator.MapEditor
                     {
                         ReleaseItem((BoardItem)keys[i]);
                     }
-                    Board.UndoRedoMan.AddUndoBatch(new List<UndoRedoAction> { UndoRedoManager.ItemAdded(c) });
+                    List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
+                    c.OnItemPlaced(undoPipe);
+                    Board.UndoRedoMan.AddUndoBatch(undoPipe);
                     CreateClock();
                 }
             }

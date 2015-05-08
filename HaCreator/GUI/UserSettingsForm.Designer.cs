@@ -78,6 +78,14 @@
             this.showMousePosCheckbox = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label43 = new System.Windows.Forms.Label();
+            this.originColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
+            this.label24 = new System.Windows.Forms.Label();
+            this.label41 = new System.Windows.Forms.Label();
+            this.label42 = new System.Windows.Forms.Label();
+            this.miscSelectedColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
+            this.miscFillColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
+            this.miscColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.label40 = new System.Windows.Forms.Label();
             this.fontSize = new System.Windows.Forms.NumericUpDown();
             this.fontName = new System.Windows.Forms.TextBox();
@@ -112,14 +120,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label41 = new System.Windows.Forms.Label();
-            this.label42 = new System.Windows.Forms.Label();
-            this.miscSelectedColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
-            this.miscFillColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
-            this.miscColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
-            this.label43 = new System.Windows.Forms.Label();
-            this.originColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
+            this.label44 = new System.Windows.Forms.Label();
+            this.minimapColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
@@ -735,6 +737,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage2.Controls.Add(this.label44);
+            this.tabPage2.Controls.Add(this.minimapColorPicker);
             this.tabPage2.Controls.Add(this.label43);
             this.tabPage2.Controls.Add(this.originColorPicker);
             this.tabPage2.Controls.Add(this.label24);
@@ -786,6 +790,82 @@
             this.tabPage2.Size = new System.Drawing.Size(537, 447);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graphics";
+            // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(10, 384);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(34, 13);
+            this.label43.TabIndex = 71;
+            this.label43.Text = "Origin";
+            // 
+            // originColorPicker
+            // 
+            this.originColorPicker.Color = System.Drawing.Color.White;
+            this.originColorPicker.Location = new System.Drawing.Point(127, 383);
+            this.originColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.originColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.originColorPicker.Name = "originColorPicker";
+            this.originColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.originColorPicker.TabIndex = 72;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(10, 362);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(74, 13);
+            this.label24.TabIndex = 67;
+            this.label24.Text = "Misc Selected";
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(10, 318);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(29, 13);
+            this.label41.TabIndex = 65;
+            this.label41.Text = "Misc";
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(10, 340);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(44, 13);
+            this.label42.TabIndex = 66;
+            this.label42.Text = "Misc Fill";
+            // 
+            // miscSelectedColorPicker
+            // 
+            this.miscSelectedColorPicker.Color = System.Drawing.Color.White;
+            this.miscSelectedColorPicker.Location = new System.Drawing.Point(127, 361);
+            this.miscSelectedColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.miscSelectedColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.miscSelectedColorPicker.Name = "miscSelectedColorPicker";
+            this.miscSelectedColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.miscSelectedColorPicker.TabIndex = 70;
+            // 
+            // miscFillColorPicker
+            // 
+            this.miscFillColorPicker.Color = System.Drawing.Color.White;
+            this.miscFillColorPicker.Location = new System.Drawing.Point(127, 339);
+            this.miscFillColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.miscFillColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.miscFillColorPicker.Name = "miscFillColorPicker";
+            this.miscFillColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.miscFillColorPicker.TabIndex = 69;
+            // 
+            // miscColorPicker
+            // 
+            this.miscColorPicker.Color = System.Drawing.Color.White;
+            this.miscColorPicker.Location = new System.Drawing.Point(127, 317);
+            this.miscColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.miscColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.miscColorPicker.Name = "miscColorPicker";
+            this.miscColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.miscColorPicker.TabIndex = 68;
             // 
             // label40
             // 
@@ -1195,81 +1275,24 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // label24
+            // label44
             // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(10, 362);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(74, 13);
-            this.label24.TabIndex = 67;
-            this.label24.Text = "Misc Selected";
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(10, 406);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(80, 13);
+            this.label44.TabIndex = 73;
+            this.label44.Text = "Minimap Bound";
             // 
-            // label41
+            // minimapColorPicker
             // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(10, 318);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(29, 13);
-            this.label41.TabIndex = 65;
-            this.label41.Text = "Misc";
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(10, 340);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(44, 13);
-            this.label42.TabIndex = 66;
-            this.label42.Text = "Misc Fill";
-            // 
-            // miscSelectedColorPicker
-            // 
-            this.miscSelectedColorPicker.Color = System.Drawing.Color.White;
-            this.miscSelectedColorPicker.Location = new System.Drawing.Point(127, 361);
-            this.miscSelectedColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
-            this.miscSelectedColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
-            this.miscSelectedColorPicker.Name = "miscSelectedColorPicker";
-            this.miscSelectedColorPicker.Size = new System.Drawing.Size(16, 16);
-            this.miscSelectedColorPicker.TabIndex = 70;
-            // 
-            // miscFillColorPicker
-            // 
-            this.miscFillColorPicker.Color = System.Drawing.Color.White;
-            this.miscFillColorPicker.Location = new System.Drawing.Point(127, 339);
-            this.miscFillColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
-            this.miscFillColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
-            this.miscFillColorPicker.Name = "miscFillColorPicker";
-            this.miscFillColorPicker.Size = new System.Drawing.Size(16, 16);
-            this.miscFillColorPicker.TabIndex = 69;
-            // 
-            // miscColorPicker
-            // 
-            this.miscColorPicker.Color = System.Drawing.Color.White;
-            this.miscColorPicker.Location = new System.Drawing.Point(127, 317);
-            this.miscColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
-            this.miscColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
-            this.miscColorPicker.Name = "miscColorPicker";
-            this.miscColorPicker.Size = new System.Drawing.Size(16, 16);
-            this.miscColorPicker.TabIndex = 68;
-            // 
-            // label43
-            // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(10, 384);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(34, 13);
-            this.label43.TabIndex = 71;
-            this.label43.Text = "Origin";
-            // 
-            // originColorPicker
-            // 
-            this.originColorPicker.Color = System.Drawing.Color.White;
-            this.originColorPicker.Location = new System.Drawing.Point(127, 383);
-            this.originColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
-            this.originColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
-            this.originColorPicker.Name = "originColorPicker";
-            this.originColorPicker.Size = new System.Drawing.Size(16, 16);
-            this.originColorPicker.TabIndex = 72;
+            this.minimapColorPicker.Color = System.Drawing.Color.White;
+            this.minimapColorPicker.Location = new System.Drawing.Point(127, 405);
+            this.minimapColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.minimapColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.minimapColorPicker.Name = "minimapColorPicker";
+            this.minimapColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.minimapColorPicker.TabIndex = 74;
             // 
             // UserSettingsForm
             // 
@@ -1407,5 +1430,7 @@
         private CustomControls.AlphaColorPicker miscColorPicker;
         private System.Windows.Forms.Label label43;
         private CustomControls.AlphaColorPicker originColorPicker;
+        private System.Windows.Forms.Label label44;
+        private CustomControls.AlphaColorPicker minimapColorPicker;
     }
 }

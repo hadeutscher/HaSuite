@@ -244,7 +244,8 @@ namespace HaCreator.MapEditor
                         board.BoardItems.FootholdLines.Remove((FootholdLine)ParamC);
                     else if (ParamC is RopeLine)
                         board.BoardItems.RopeLines.Remove((RopeLine)ParamC);
-                    else throw new Exception("wrong type at undoredo, lineadded");
+                    else 
+                        throw new Exception("wrong type at undoredo, lineadded");
                     ((MapleLine)ParamC).Remove(false, null);
                     break;
                 case UndoRedoType.ToolTipLinked:
