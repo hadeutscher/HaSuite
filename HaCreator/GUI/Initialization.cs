@@ -31,21 +31,6 @@ namespace HaCreator.GUI
             }
         }
 
-        public static bool XNASelfCheck(ref string exceptionResult)
-        {
-            try
-            {
-                Microsoft.Xna.Framework.Point foo = new Microsoft.Xna.Framework.Point();
-                foo.X = 1337; //to shut VS up;
-                return true;
-            }
-            catch (Exception e)
-            {
-                exceptionResult = e.Message;
-                return false;
-            }
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             ApplicationSettings.MapleVersionIndex = versionBox.SelectedIndex;
