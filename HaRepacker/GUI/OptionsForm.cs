@@ -57,7 +57,7 @@ namespace HaRepacker.GUI
 
         private void browse_Click(object sender, EventArgs e)
         {
-            SavedFolderBrowser.Show("Select default XML folder");
+            defXmlFolderBox.Text = SavedFolderBrowser.Show("Select default XML folder");
         }
 
         private void defXmlFolderEnable_CheckedChanged(object sender, EventArgs e)

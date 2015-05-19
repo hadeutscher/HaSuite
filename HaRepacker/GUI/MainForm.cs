@@ -259,6 +259,8 @@ namespace HaRepacker.GUI
 
         private void renderMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (MainPanel.DataTree.SelectedNode == null) 
+                return;
             mapper = new FHMapper.FHMapper(MainPanel);
             mapper.ParseSettings();
             if (MainPanel.DataTree.SelectedNode.Tag is WzImage)
@@ -272,6 +274,8 @@ namespace HaRepacker.GUI
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (mapper == null) 
+                return;
             mapper.ParseSettings();
             Settings settingsDialog = new Settings();
             settingsDialog.settings = mapper.settings;
