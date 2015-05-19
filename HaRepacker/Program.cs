@@ -70,14 +70,14 @@ namespace HaRepacker
                 }
                 else
                 {
-                    Warning.Error("Could not load settings file, make sure it is not in use. If it is not, delete it and try again.");
+                    Warning.Error("無法讀取設置檔案, 請確認它未被使用. 若還是不行, 請刪除並重試.");
                     return true;
                 }
             }
             bool firstRun = ApplicationSettings.FirstRun;
             if (ApplicationSettings.FirstRun)
             {
-                //new FirstRunForm().ShowDialog();
+                new FirstRunForm().ShowDialog();
                 ApplicationSettings.FirstRun = false;
                 SettingsManager.Save();
             }

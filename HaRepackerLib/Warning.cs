@@ -16,12 +16,12 @@ namespace HaRepackerLib
     {
         public static bool Warn(string text)
         {
-            return UserSettings.SuppressWarnings || MessageBox.Show(text, "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+            return UserSettings.SuppressWarnings || MessageBox.Show(text, "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
         }
 
         public static void Error(string text)
         {
-            MessageBox.Show(text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(text, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

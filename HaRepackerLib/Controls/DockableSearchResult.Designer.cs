@@ -49,7 +49,7 @@
             this.Controls.Add(this.searchResultsBox);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.Name = "DockableSearchResult";
-            this.Text = "Search Results";
+            this.Text = "搜尋結果";
             this.ResumeLayout(false);
 
         }

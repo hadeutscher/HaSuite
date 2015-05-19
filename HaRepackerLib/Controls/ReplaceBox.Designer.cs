@@ -49,7 +49,7 @@
             this.btnYes.Name = "btnYes";
             this.btnYes.Size = new System.Drawing.Size(80, 29);
             this.btnYes.TabIndex = 1;
-            this.btnYes.Text = "Yes";
+            this.btnYes.Text = "確認";
             this.btnYes.UseVisualStyleBackColor = true;
             this.btnYes.Click += new System.EventHandler(this.btnYes_Click);
             // 
@@ -59,7 +59,7 @@
             this.btnNo.Name = "btnNo";
             this.btnNo.Size = new System.Drawing.Size(80, 29);
             this.btnNo.TabIndex = 2;
-            this.btnNo.Text = "No";
+            this.btnNo.Text = "取消";
             this.btnNo.UseVisualStyleBackColor = true;
             this.btnNo.Click += new System.EventHandler(this.btnNo_Click);
             // 
@@ -69,7 +69,7 @@
             this.btnYestoall.Name = "btnYestoall";
             this.btnYestoall.Size = new System.Drawing.Size(80, 29);
             this.btnYestoall.TabIndex = 3;
-            this.btnYestoall.Text = "Yes to all";
+            this.btnYestoall.Text = "確認全部";
             this.btnYestoall.UseVisualStyleBackColor = true;
             this.btnYestoall.Click += new System.EventHandler(this.btnYestoall_Click);
             // 
@@ -79,7 +79,7 @@
             this.btnNotoall.Name = "btnNotoall";
             this.btnNotoall.Size = new System.Drawing.Size(80, 29);
             this.btnNotoall.TabIndex = 4;
-            this.btnNotoall.Text = "No to all";
+            this.btnNotoall.Text = "取消全部";
             this.btnNotoall.UseVisualStyleBackColor = true;
             this.btnNotoall.Click += new System.EventHandler(this.btnNotoall_Click);
             // 
@@ -96,7 +96,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ReplaceBox";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Replace";
+            this.Text = "取代";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ReplaceBox_FormClosing);
             this.ResumeLayout(false);
 

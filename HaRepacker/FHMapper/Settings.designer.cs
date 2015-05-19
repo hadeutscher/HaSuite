@@ -73,7 +73,7 @@ namespace HaRepacker
             this.SettingsTab.Location = new System.Drawing.Point(0, 0);
             this.SettingsTab.Name = "SettingsTab";
             this.SettingsTab.SelectedIndex = 0;
-            this.SettingsTab.Size = new System.Drawing.Size(177, 114);
+            this.SettingsTab.Size = new System.Drawing.Size(177, 105);
             this.SettingsTab.TabIndex = 0;
             // 
             // FootholdTPage
@@ -90,15 +90,15 @@ namespace HaRepacker
             this.FootholdTPage.Location = new System.Drawing.Point(4, 22);
             this.FootholdTPage.Name = "FootholdTPage";
             this.FootholdTPage.Padding = new System.Windows.Forms.Padding(3);
-            this.FootholdTPage.Size = new System.Drawing.Size(169, 88);
+            this.FootholdTPage.Size = new System.Drawing.Size(169, 79);
             this.FootholdTPage.TabIndex = 0;
-            this.FootholdTPage.Text = "Footholds";
+            this.FootholdTPage.Text = "立足處";
             this.FootholdTPage.UseVisualStyleBackColor = true;
             // 
             // ForceCBox
             // 
             this.ForceCBox.AutoSize = true;
-            this.ForceCBox.Location = new System.Drawing.Point(150, 58);
+            this.ForceCBox.Location = new System.Drawing.Point(150, 54);
             this.ForceCBox.Name = "ForceCBox";
             this.ForceCBox.Size = new System.Drawing.Size(15, 14);
             this.ForceCBox.TabIndex = 8;
@@ -106,25 +106,25 @@ namespace HaRepacker
             // 
             // ForceTBox
             // 
-            this.ForceTBox.Location = new System.Drawing.Point(106, 55);
+            this.ForceTBox.Location = new System.Drawing.Point(106, 51);
             this.ForceTBox.Name = "ForceTBox";
-            this.ForceTBox.Size = new System.Drawing.Size(38, 20);
+            this.ForceTBox.Size = new System.Drawing.Size(38, 21);
             this.ForceTBox.TabIndex = 7;
             this.ForceTBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ForceTBox_KeyPress);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 58);
+            this.label3.Location = new System.Drawing.Point(3, 54);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 13);
+            this.label3.Size = new System.Drawing.Size(77, 12);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Default force value:";
+            this.label3.Text = "默認force值:";
             // 
             // NextCBox
             // 
             this.NextCBox.AutoSize = true;
-            this.NextCBox.Location = new System.Drawing.Point(150, 35);
+            this.NextCBox.Location = new System.Drawing.Point(150, 32);
             this.NextCBox.Name = "NextCBox";
             this.NextCBox.Size = new System.Drawing.Size(15, 14);
             this.NextCBox.TabIndex = 5;
@@ -133,7 +133,7 @@ namespace HaRepacker
             // PrevCBox
             // 
             this.PrevCBox.AutoSize = true;
-            this.PrevCBox.Location = new System.Drawing.Point(150, 12);
+            this.PrevCBox.Location = new System.Drawing.Point(150, 11);
             this.PrevCBox.Name = "PrevCBox";
             this.PrevCBox.Size = new System.Drawing.Size(15, 14);
             this.PrevCBox.TabIndex = 4;
@@ -141,37 +141,37 @@ namespace HaRepacker
             // 
             // NextTBox
             // 
-            this.NextTBox.Location = new System.Drawing.Point(106, 33);
+            this.NextTBox.Location = new System.Drawing.Point(106, 30);
             this.NextTBox.Name = "NextTBox";
-            this.NextTBox.Size = new System.Drawing.Size(38, 20);
+            this.NextTBox.Size = new System.Drawing.Size(38, 21);
             this.NextTBox.TabIndex = 3;
             this.NextTBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NextTBox_KeyPress);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 36);
+            this.label2.Location = new System.Drawing.Point(3, 33);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(96, 13);
+            this.label2.Size = new System.Drawing.Size(71, 12);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Default next value:";
+            this.label2.Text = "默認next值:";
             // 
             // PrevTBox
             // 
-            this.PrevTBox.Location = new System.Drawing.Point(106, 9);
+            this.PrevTBox.Location = new System.Drawing.Point(106, 8);
             this.PrevTBox.Name = "PrevTBox";
-            this.PrevTBox.Size = new System.Drawing.Size(38, 20);
+            this.PrevTBox.Size = new System.Drawing.Size(38, 21);
             this.PrevTBox.TabIndex = 1;
             this.PrevTBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PrevTBox_KeyPress);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 12);
+            this.label1.Location = new System.Drawing.Point(3, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(97, 13);
+            this.label1.Size = new System.Drawing.Size(71, 12);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Default prev value:";
+            this.label1.Text = "默認prev值:";
             // 
             // PortalTPage
             // 
@@ -187,15 +187,15 @@ namespace HaRepacker
             this.PortalTPage.Location = new System.Drawing.Point(4, 22);
             this.PortalTPage.Name = "PortalTPage";
             this.PortalTPage.Padding = new System.Windows.Forms.Padding(3);
-            this.PortalTPage.Size = new System.Drawing.Size(169, 88);
+            this.PortalTPage.Size = new System.Drawing.Size(169, 79);
             this.PortalTPage.TabIndex = 1;
-            this.PortalTPage.Text = "Portals";
+            this.PortalTPage.Text = "傳送點";
             this.PortalTPage.UseVisualStyleBackColor = true;
             // 
             // TypeCBox
             // 
             this.TypeCBox.AutoSize = true;
-            this.TypeCBox.Location = new System.Drawing.Point(141, 57);
+            this.TypeCBox.Location = new System.Drawing.Point(141, 53);
             this.TypeCBox.Name = "TypeCBox";
             this.TypeCBox.Size = new System.Drawing.Size(15, 14);
             this.TypeCBox.TabIndex = 8;
@@ -204,7 +204,7 @@ namespace HaRepacker
             // YCBox
             // 
             this.YCBox.AutoSize = true;
-            this.YCBox.Location = new System.Drawing.Point(141, 35);
+            this.YCBox.Location = new System.Drawing.Point(141, 32);
             this.YCBox.Name = "YCBox";
             this.YCBox.Size = new System.Drawing.Size(15, 14);
             this.YCBox.TabIndex = 7;
@@ -213,7 +213,7 @@ namespace HaRepacker
             // XCBox
             // 
             this.XCBox.AutoSize = true;
-            this.XCBox.Location = new System.Drawing.Point(141, 12);
+            this.XCBox.Location = new System.Drawing.Point(141, 11);
             this.XCBox.Name = "XCBox";
             this.XCBox.Size = new System.Drawing.Size(15, 14);
             this.XCBox.TabIndex = 6;
@@ -221,54 +221,54 @@ namespace HaRepacker
             // 
             // TypeTBox
             // 
-            this.TypeTBox.Location = new System.Drawing.Point(99, 55);
+            this.TypeTBox.Location = new System.Drawing.Point(99, 51);
             this.TypeTBox.Name = "TypeTBox";
-            this.TypeTBox.Size = new System.Drawing.Size(35, 20);
+            this.TypeTBox.Size = new System.Drawing.Size(35, 21);
             this.TypeTBox.TabIndex = 5;
             this.TypeTBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TypeTBox_KeyPress);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 58);
+            this.label6.Location = new System.Drawing.Point(3, 54);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(67, 13);
+            this.label6.Size = new System.Drawing.Size(59, 12);
             this.label6.TabIndex = 4;
-            this.label6.Text = "Default type:";
+            this.label6.Text = "默認類型:";
             // 
             // YTBox
             // 
-            this.YTBox.Location = new System.Drawing.Point(99, 32);
+            this.YTBox.Location = new System.Drawing.Point(99, 30);
             this.YTBox.Name = "YTBox";
-            this.YTBox.Size = new System.Drawing.Size(35, 20);
+            this.YTBox.Size = new System.Drawing.Size(35, 21);
             this.YTBox.TabIndex = 3;
             this.YTBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.YTBox_KeyPress);
             // 
             // XTBox
             // 
-            this.XTBox.Location = new System.Drawing.Point(99, 9);
+            this.XTBox.Location = new System.Drawing.Point(99, 8);
             this.XTBox.Name = "XTBox";
-            this.XTBox.Size = new System.Drawing.Size(35, 20);
+            this.XTBox.Size = new System.Drawing.Size(35, 21);
             this.XTBox.TabIndex = 2;
             this.XTBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.XTBox_KeyPress);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 35);
+            this.label5.Location = new System.Drawing.Point(3, 32);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(84, 13);
+            this.label5.Size = new System.Drawing.Size(65, 12);
             this.label5.TabIndex = 1;
-            this.label5.Text = "Default Y coord:";
+            this.label5.Text = "默認Y坐標:";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(3, 12);
+            this.label4.Location = new System.Drawing.Point(3, 11);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(84, 13);
+            this.label4.Size = new System.Drawing.Size(65, 12);
             this.label4.TabIndex = 0;
-            this.label4.Text = "Default X coord:";
+            this.label4.Text = "默認X坐標:";
             // 
             // GeneralTPage
             // 
@@ -282,15 +282,15 @@ namespace HaRepacker
             this.GeneralTPage.Location = new System.Drawing.Point(4, 22);
             this.GeneralTPage.Name = "GeneralTPage";
             this.GeneralTPage.Padding = new System.Windows.Forms.Padding(3);
-            this.GeneralTPage.Size = new System.Drawing.Size(169, 88);
+            this.GeneralTPage.Size = new System.Drawing.Size(169, 79);
             this.GeneralTPage.TabIndex = 2;
-            this.GeneralTPage.Text = "Other";
+            this.GeneralTPage.Text = "其他";
             this.GeneralTPage.UseVisualStyleBackColor = true;
             // 
             // SizeCBox
             // 
             this.SizeCBox.AutoSize = true;
-            this.SizeCBox.Location = new System.Drawing.Point(143, 46);
+            this.SizeCBox.Location = new System.Drawing.Point(143, 42);
             this.SizeCBox.Name = "SizeCBox";
             this.SizeCBox.Size = new System.Drawing.Size(15, 14);
             this.SizeCBox.TabIndex = 6;
@@ -298,25 +298,25 @@ namespace HaRepacker
             // 
             // SizeTBox
             // 
-            this.SizeTBox.Location = new System.Drawing.Point(113, 43);
+            this.SizeTBox.Location = new System.Drawing.Point(113, 40);
             this.SizeTBox.Name = "SizeTBox";
-            this.SizeTBox.Size = new System.Drawing.Size(24, 20);
+            this.SizeTBox.Size = new System.Drawing.Size(24, 21);
             this.SizeTBox.TabIndex = 5;
             this.SizeTBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SizeTBox_KeyPress);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(9, 46);
+            this.label8.Location = new System.Drawing.Point(9, 42);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(98, 13);
+            this.label8.Size = new System.Drawing.Size(83, 12);
             this.label8.TabIndex = 4;
-            this.label8.Text = "Default render size:";
+            this.label8.Text = "默認渲染大小:";
             // 
             // FilepathCBox
             // 
             this.FilepathCBox.AutoSize = true;
-            this.FilepathCBox.Location = new System.Drawing.Point(143, 22);
+            this.FilepathCBox.Location = new System.Drawing.Point(143, 20);
             this.FilepathCBox.Name = "FilepathCBox";
             this.FilepathCBox.Size = new System.Drawing.Size(15, 14);
             this.FilepathCBox.TabIndex = 3;
@@ -324,9 +324,9 @@ namespace HaRepacker
             // 
             // OpenFileBtn
             // 
-            this.OpenFileBtn.Location = new System.Drawing.Point(113, 17);
+            this.OpenFileBtn.Location = new System.Drawing.Point(113, 16);
             this.OpenFileBtn.Name = "OpenFileBtn";
-            this.OpenFileBtn.Size = new System.Drawing.Size(24, 23);
+            this.OpenFileBtn.Size = new System.Drawing.Size(24, 21);
             this.OpenFileBtn.TabIndex = 2;
             this.OpenFileBtn.Text = "...";
             this.OpenFileBtn.UseVisualStyleBackColor = true;
@@ -335,9 +335,9 @@ namespace HaRepacker
             // FilepathTBox
             // 
             this.FilepathTBox.Enabled = false;
-            this.FilepathTBox.Location = new System.Drawing.Point(6, 19);
+            this.FilepathTBox.Location = new System.Drawing.Point(6, 18);
             this.FilepathTBox.Name = "FilepathTBox";
-            this.FilepathTBox.Size = new System.Drawing.Size(101, 20);
+            this.FilepathTBox.Size = new System.Drawing.Size(101, 21);
             this.FilepathTBox.TabIndex = 1;
             // 
             // label7
@@ -345,35 +345,35 @@ namespace HaRepacker
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(36, 3);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(81, 13);
+            this.label7.Size = new System.Drawing.Size(83, 12);
             this.label7.TabIndex = 0;
-            this.label7.Text = "Default filepath:";
+            this.label7.Text = "默認檔案路徑:";
             // 
             // ConfirmBtn
             // 
-            this.ConfirmBtn.Location = new System.Drawing.Point(12, 116);
+            this.ConfirmBtn.Location = new System.Drawing.Point(12, 107);
             this.ConfirmBtn.Name = "ConfirmBtn";
-            this.ConfirmBtn.Size = new System.Drawing.Size(69, 23);
+            this.ConfirmBtn.Size = new System.Drawing.Size(69, 21);
             this.ConfirmBtn.TabIndex = 1;
-            this.ConfirmBtn.Text = "Confirm";
+            this.ConfirmBtn.Text = "確認";
             this.ConfirmBtn.UseVisualStyleBackColor = true;
             this.ConfirmBtn.Click += new System.EventHandler(this.ConfirmBtn_Click);
             // 
             // CancelBtn
             // 
-            this.CancelBtn.Location = new System.Drawing.Point(94, 116);
+            this.CancelBtn.Location = new System.Drawing.Point(94, 107);
             this.CancelBtn.Name = "CancelBtn";
-            this.CancelBtn.Size = new System.Drawing.Size(69, 23);
+            this.CancelBtn.Size = new System.Drawing.Size(69, 21);
             this.CancelBtn.TabIndex = 2;
-            this.CancelBtn.Text = "Cancel";
+            this.CancelBtn.Text = "取消";
             this.CancelBtn.UseVisualStyleBackColor = true;
             this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
             // 
             // Settings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(184, 144);
+            this.ClientSize = new System.Drawing.Size(184, 133);
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.ConfirmBtn);
             this.Controls.Add(this.SettingsTab);
@@ -381,7 +381,7 @@ namespace HaRepacker
             this.MinimizeBox = false;
             this.Name = "Settings";
             this.ShowIcon = false;
-            this.Text = "Settings";
+            this.Text = "設置";
             this.Load += new System.EventHandler(this.Settings_Load);
             this.SettingsTab.ResumeLayout(false);
             this.FootholdTPage.ResumeLayout(false);

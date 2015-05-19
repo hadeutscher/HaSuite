@@ -133,7 +133,7 @@ namespace HaRepackerLib
         {
             Bitmap frame = new Bitmap(frameSize.Width, frameSize.Height);
             using (Graphics g = Graphics.FromImage(frame))
-                g.DrawString("Your browser or image viewer is too OLD to view this image. Please download a newer browser such as Firefox.", System.Drawing.SystemFonts.MessageBoxFont, Brushes.Black, new Rectangle(0, 0, frame.Width, frame.Height));
+                g.DrawString("你的瀏覽器或相片檢視器不支援此格式的動畫, 請下載更新的瀏覽器比如火狐", System.Drawing.SystemFonts.MessageBoxFont, Brushes.Black, new Rectangle(0, 0, frame.Width, frame.Height));
             return frame;
         }
     }

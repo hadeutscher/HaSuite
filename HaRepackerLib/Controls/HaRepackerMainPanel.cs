@@ -17,7 +17,7 @@ namespace HaRepackerLib.Controls
 {
     public partial class HaRepackerMainPanel : UserControl
     {
-        private const string selectionTypePrefix = "Selection Type: ";
+        private const string selectionTypePrefix = "選中類型: ";
         private List<WzObject> clipboard = new List<WzObject>();
         private UndoRedoManager undoRedoMan;
 
@@ -226,7 +226,7 @@ namespace HaRepackerLib.Controls
                 nameBox.ButtonEnabled = false;
             }
             else
-                Warning.Error("A node with that name already exists. Please choose a different name");
+                Warning.Error("這個名稱的節點已存在, 請輸入一個不同的節點名稱");
 
         }
 
@@ -260,8 +260,8 @@ namespace HaRepackerLib.Controls
             {
                 float val;
                 if (!float.TryParse(textPropBox.Text,out val)) 
-                { 
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                {
+                    Warning.Error("無法將\"" + textPropBox.Text + "\"轉換成需要的類型");
                     return;
                 }
                 ((WzFloatProperty)obj).Value = val;
@@ -271,7 +271,7 @@ namespace HaRepackerLib.Controls
                 int val;
                 if (!int.TryParse(textPropBox.Text, out val))
                 {
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                    Warning.Error("無法將\"" + textPropBox.Text + "\"轉換成需要的類型");
                     return;
                 }
                 ((WzIntProperty)obj).Value = val;
@@ -281,7 +281,7 @@ namespace HaRepackerLib.Controls
                 double val;
                 if (!double.TryParse(textPropBox.Text, out val))
                 {
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                    Warning.Error("無法將\"" + textPropBox.Text + "\"轉換成需要的類型");
                     return;
                 }
                 ((WzDoubleProperty)obj).Value = val;
@@ -291,7 +291,7 @@ namespace HaRepackerLib.Controls
                 short val;
                 if (!short.TryParse(textPropBox.Text, out val))
                 {
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                    Warning.Error("無法將\"" + textPropBox.Text + "\"轉換成需要的類型");
                     return;
                 }
                 ((WzShortProperty)obj).Value = val;
@@ -313,7 +313,7 @@ namespace HaRepackerLib.Controls
                 }
                 catch
                 {
-                    Warning.Error("Could not load image");
+                    Warning.Error("無法讀取圖片");
                     return;
                 }
                 ((WzCanvasProperty)DataTree.SelectedNode.Tag).PngProperty.SetPNG(bmp);
@@ -336,7 +336,7 @@ namespace HaRepackerLib.Controls
                 }
                 catch
                 {
-                    Warning.Error("Could not load image");
+                    Warning.Error("無法讀取音樂");
                     return;
                 }
                 IPropertyContainer parent = (IPropertyContainer)((WzSoundProperty)DataTree.SelectedNode.Tag).Parent;
@@ -378,14 +378,14 @@ namespace HaRepackerLib.Controls
 
         public void DoCopy()
         {
-            if (!Warning.Warn("Copy WZ nodes to clipboard? (warning - can take a lot of time if many nodes are selected)")) return;
+            if (!Warning.Warn("要將WZ節點複製到剪切板嗎? (警告 - 如果選擇的節點較多會話比較多時間)")) return;
             clipboard.Clear();
             foreach (WzNode node in DataTree.SelectedNodes)
             {
                 WzObject clone = null;
                 if (node.Tag is WzDirectory)
                 {
-                    Warning.Error("You can't copy directories because they require too much memory");
+                    Warning.Error("無法複製目錄因為需要太多記憶體了");
                     continue;
                 }
                 else if (node.Tag is WzImage)
@@ -403,7 +403,7 @@ namespace HaRepackerLib.Controls
 
         public void DoPaste()
         {
-            if (!Warning.Warn("Paste WZ nodes from clipboard? (warning - can take a lot of time if many nodes are pasted)")) return;
+            if (!Warning.Warn("要從剪切板貼上WZ節點嗎? (警告 - 如果選擇的節點較多會話比較多時間)")) return;
             yesToAll = false;
             noToAll = false;
             WzNode parent = (WzNode)DataTree.SelectedNode;
@@ -444,7 +444,7 @@ namespace HaRepackerLib.Controls
                 case Keys.Delete:
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    if (!Warning.Warn("Are you sure you want to remove this node?")) return;
+                    if (!Warning.Warn("你確定要移除這個節點嗎?")) return;
                     RemoveSelectedNodes();
                     break;
             }
@@ -690,7 +690,7 @@ namespace HaRepackerLib.Controls
                 else SearchTV(node);
                 if (finished) break;
             }
-            if (!finished) { MessageBox.Show("Reached the end of the tree"); searchidx = 0; DataTree.SelectedNode.EnsureVisible(); }
+            if (!finished) { MessageBox.Show("已經到達結尾了"); searchidx = 0; DataTree.SelectedNode.EnsureVisible(); }
             findBox.Focus();
         }
 

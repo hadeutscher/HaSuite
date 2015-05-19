@@ -60,7 +60,7 @@
             this.LoopBox.Name = "LoopBox";
             this.LoopBox.Size = new System.Drawing.Size(58, 21);
             this.LoopBox.TabIndex = 38;
-            this.LoopBox.Text = "Loop";
+            this.LoopBox.Text = "循環";
             this.LoopBox.CheckedChanged += new System.EventHandler(this.LoopBox_CheckedChanged);
             // 
             // TimeBar

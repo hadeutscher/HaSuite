@@ -53,7 +53,7 @@ namespace Footholds
             this.Controls.Add(this.MapPBox);
             this.Name = "DisplayMap";
             this.ShowIcon = false;
-            this.Text = "Map";
+            this.Text = "µØˆD";
             this.Load += new System.EventHandler(this.DisplayMap_Load);
             this.Resize += new System.EventHandler(this.DisplayMap_Resize);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DisplayMap_MouseMove);

@@ -40,7 +40,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(93, 35);
             this.button1.TabIndex = 0;
-            this.button1.Text = "OK";
+            this.button1.Text = "確認";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -50,7 +50,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(93, 35);
             this.button2.TabIndex = 1;
-            this.button2.Text = "Cancel";
+            this.button2.Text = "取消";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -61,7 +61,7 @@
             this.parseImages.Name = "parseImages";
             this.parseImages.Size = new System.Drawing.Size(319, 17);
             this.parseImages.TabIndex = 2;
-            this.parseImages.Text = "Parse images while searching (warning - can take a lot of time)";
+            this.parseImages.Text = "搜尋的時候貼上圖片 (警告 - 會消耗很多時間)";
             this.parseImages.UseVisualStyleBackColor = true;
             // 
             // searchValues
@@ -71,7 +71,7 @@
             this.searchValues.Name = "searchValues";
             this.searchValues.Size = new System.Drawing.Size(122, 17);
             this.searchValues.TabIndex = 3;
-            this.searchValues.Text = "Search string values";
+            this.searchValues.Text = "搜尋文本值";
             this.searchValues.UseVisualStyleBackColor = true;
             // 
             // SearchOptionsForm
@@ -86,7 +86,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "SearchOptionsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Search Options";
+            this.Text = "搜尋選項";
             this.ResumeLayout(false);
             this.PerformLayout();
 

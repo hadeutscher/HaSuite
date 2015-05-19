@@ -39,7 +39,7 @@
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(44, 20);
             this.applyButton.TabIndex = 7;
-            this.applyButton.Text = "Apply";
+            this.applyButton.Text = "應用";
             this.applyButton.UseVisualStyleBackColor = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 

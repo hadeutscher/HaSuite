@@ -56,9 +56,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(34, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.Size = new System.Drawing.Size(29, 12);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Name";
+            this.label1.Text = "名稱";
             // 
             // label2
             // 
@@ -72,33 +72,33 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(38, 40);
+            this.label3.Location = new System.Drawing.Point(38, 37);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 13);
+            this.label3.Size = new System.Drawing.Size(29, 12);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Type";
+            this.label3.Text = "類型";
             // 
             // regBox
             // 
             this.regBox.AutoSize = true;
             this.regBox.Checked = true;
-            this.regBox.Location = new System.Drawing.Point(76, 38);
+            this.regBox.Location = new System.Drawing.Point(76, 35);
             this.regBox.Name = "regBox";
-            this.regBox.Size = new System.Drawing.Size(62, 17);
+            this.regBox.Size = new System.Drawing.Size(47, 16);
             this.regBox.TabIndex = 4;
             this.regBox.TabStop = true;
-            this.regBox.Text = "Regular";
+            this.regBox.Text = "常規";
             this.regBox.UseVisualStyleBackColor = true;
             this.regBox.CheckedChanged += new System.EventHandler(this.regBox_CheckedChanged);
             // 
             // listBox
             // 
             this.listBox.AutoSize = true;
-            this.listBox.Location = new System.Drawing.Point(141, 38);
+            this.listBox.Location = new System.Drawing.Point(141, 35);
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(41, 17);
+            this.listBox.Size = new System.Drawing.Size(47, 16);
             this.listBox.TabIndex = 5;
-            this.listBox.Text = "List";
+            this.listBox.Text = "列表";
             this.listBox.UseVisualStyleBackColor = true;
             // 
             // copyrightBox
@@ -114,27 +114,27 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(18, 64);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(51, 13);
+            this.label4.Size = new System.Drawing.Size(29, 12);
             this.label4.TabIndex = 7;
-            this.label4.Text = "Copyright";
+            this.label4.Text = "版權";
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(35, 140);
+            this.okButton.Location = new System.Drawing.Point(35, 139);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(103, 38);
+            this.okButton.Size = new System.Drawing.Size(103, 35);
             this.okButton.TabIndex = 8;
-            this.okButton.Text = "OK";
+            this.okButton.Text = "確認";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(144, 140);
+            this.cancelButton.Location = new System.Drawing.Point(144, 139);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(112, 38);
+            this.cancelButton.Size = new System.Drawing.Size(112, 35);
             this.cancelButton.TabIndex = 9;
-            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Text = "取消";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
@@ -143,26 +143,26 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(12, 90);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(57, 13);
+            this.label5.Size = new System.Drawing.Size(53, 12);
             this.label5.TabIndex = 10;
-            this.label5.Text = "Encryption";
+            this.label5.Text = "加密類型";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(27, 117);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(42, 13);
+            this.label6.Size = new System.Drawing.Size(29, 12);
             this.label6.TabIndex = 11;
-            this.label6.Text = "Version";
+            this.label6.Text = "版本";
             // 
             // encryptionBox
             // 
             this.encryptionBox.FormattingEnabled = true;
             this.encryptionBox.Items.AddRange(new object[] {
-            "GMS (old)",
-            "MSEA (old)",
-            "BMS\\GMS\\MSEA"});
+            "Global MapleStory (舊)",
+            "新楓之谷/冒险岛Online/메이플스토리/MapleSEA(舊)",
+            "MapleStory/MapleSEA/メイプルストーリー"});
             this.encryptionBox.Location = new System.Drawing.Point(75, 87);
             this.encryptionBox.Name = "encryptionBox";
             this.encryptionBox.Size = new System.Drawing.Size(205, 21);
@@ -197,7 +197,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.nameBox);
             this.Name = "NewForm";
-            this.Text = "New...";
+            this.Text = "新建...";
             this.ResumeLayout(false);
             this.PerformLayout();
 

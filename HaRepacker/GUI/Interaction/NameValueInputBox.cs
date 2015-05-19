@@ -45,7 +45,7 @@ namespace HaRepacker.GUI.Interaction
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            else MessageBox.Show("Please enter valid input", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else MessageBox.Show("請輸入有效的內容", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

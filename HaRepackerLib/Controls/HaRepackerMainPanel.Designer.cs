@@ -110,7 +110,7 @@
             this.saveSoundButton.Name = "saveSoundButton";
             this.saveSoundButton.Size = new System.Drawing.Size(118, 34);
             this.saveSoundButton.TabIndex = 12;
-            this.saveSoundButton.Text = "Save Sound...";
+            this.saveSoundButton.Text = "保存音樂...";
             this.saveSoundButton.UseVisualStyleBackColor = true;
             this.saveSoundButton.Visible = false;
             this.saveSoundButton.Click += new System.EventHandler(this.saveSoundButton_Click);
@@ -121,7 +121,7 @@
             this.saveImageButton.Name = "saveImageButton";
             this.saveImageButton.Size = new System.Drawing.Size(118, 34);
             this.saveImageButton.TabIndex = 11;
-            this.saveImageButton.Text = "Save Image...";
+            this.saveImageButton.Text = "保存圖片...";
             this.saveImageButton.UseVisualStyleBackColor = true;
             this.saveImageButton.Visible = false;
             this.saveImageButton.Click += new System.EventHandler(this.saveImageButton_Click);
@@ -132,7 +132,7 @@
             this.changeSoundButton.Name = "changeSoundButton";
             this.changeSoundButton.Size = new System.Drawing.Size(118, 34);
             this.changeSoundButton.TabIndex = 10;
-            this.changeSoundButton.Text = "Change Sound...";
+            this.changeSoundButton.Text = "更變音樂...";
             this.changeSoundButton.UseVisualStyleBackColor = true;
             this.changeSoundButton.Visible = false;
             this.changeSoundButton.Click += new System.EventHandler(this.changeSoundButton_Click);
@@ -143,7 +143,7 @@
             this.changeImageButton.Name = "changeImageButton";
             this.changeImageButton.Size = new System.Drawing.Size(118, 34);
             this.changeImageButton.TabIndex = 9;
-            this.changeImageButton.Text = "Change Image...";
+            this.changeImageButton.Text = "更變圖片...";
             this.changeImageButton.UseVisualStyleBackColor = true;
             this.changeImageButton.Visible = false;
             this.changeImageButton.Click += new System.EventHandler(this.changeImageButton_Click);
@@ -154,7 +154,7 @@
             this.applyChangesButton.Name = "applyChangesButton";
             this.applyChangesButton.Size = new System.Drawing.Size(118, 34);
             this.applyChangesButton.TabIndex = 8;
-            this.applyChangesButton.Text = "Apply Changed Value";
+            this.applyChangesButton.Text = "應用更變值";
             this.applyChangesButton.UseVisualStyleBackColor = true;
             this.applyChangesButton.Visible = false;
             this.applyChangesButton.Click += new System.EventHandler(this.applyChangesButton_Click);
@@ -204,7 +204,7 @@
             // 
             this.selectionLabel.Name = "selectionLabel";
             this.selectionLabel.Size = new System.Drawing.Size(119, 17);
-            this.selectionLabel.Text = "Selection Type: None";
+            this.selectionLabel.Text = "選中類型: 沒有";
             // 
             // mainProgressBar
             // 
@@ -240,7 +240,7 @@
             this.btnFindAll.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFindAll.Name = "btnFindAll";
             this.btnFindAll.Size = new System.Drawing.Size(41, 22);
-            this.btnFindAll.Text = "All";
+            this.btnFindAll.Text = "全部";
             this.btnFindAll.Click += new System.EventHandler(this.btnFindAll_Click);
             // 
             // btnFindNext
@@ -249,7 +249,7 @@
             this.btnFindNext.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnFindNext.Name = "btnFindNext";
             this.btnFindNext.Size = new System.Drawing.Size(51, 22);
-            this.btnFindNext.Text = "Next";
+            this.btnFindNext.Text = "下一個";
             this.btnFindNext.Click += new System.EventHandler(this.btnFindNext_Click);
             // 
             // findBox
@@ -268,7 +268,7 @@
             this.btnRestart.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnRestart.Name = "btnRestart";
             this.btnRestart.Size = new System.Drawing.Size(23, 22);
-            this.btnRestart.Text = "Restart";
+            this.btnRestart.Text = "從新開始";
             this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
             // 
             // btnClose
@@ -278,7 +278,7 @@
             this.btnClose.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(23, 22);
-            this.btnClose.Text = "Close";
+            this.btnClose.Text = "關閉";
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // btnOptions
@@ -288,7 +288,7 @@
             this.btnOptions.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOptions.Name = "btnOptions";
             this.btnOptions.Size = new System.Drawing.Size(53, 22);
-            this.btnOptions.Text = "Options";
+            this.btnOptions.Text = "選項";
             this.btnOptions.Click += new System.EventHandler(this.btnOptions_Click);
             // 
             // MainDockPanel

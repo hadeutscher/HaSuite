@@ -98,7 +98,7 @@ namespace HaRepacker.GUI
             }
             catch
             {
-                Warning.Error("Could not open WZ file \"" + path + "\"");
+                Warning.Error("無法打開WZ檔案 \"" + path + "\"");
             }
         }
 
@@ -193,7 +193,7 @@ namespace HaRepacker.GUI
                     ));
                 if (version <= Constants.Version)
                     return;
-                if (MessageBox.Show(notice.Replace("%URL%", url) + "\r\n\r\nClick \"Yes\" to download the new version.", "New Version", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show(notice.Replace("%URL%", url) + "\r\n\r\n點選 \"確認\" 下載新版本.", "新版本", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     Process.Start(url);
             }
             catch { }
@@ -232,7 +232,7 @@ namespace HaRepacker.GUI
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the WZ File", Filter = "WZ File(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = "選擇WZ檔案", Filter = "WZ檔案(*.wz)|*.wz", Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             foreach (string name in dialog.FileNames)
             {
@@ -247,18 +247,19 @@ namespace HaRepacker.GUI
 
         private void unloadAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Warning.Warn("Are you sure you want to unload all files?"))
+            if (Warning.Warn("你確定要關閉所有檔案嗎?"))
                 Program.WzMan.UnloadAll();
         }
 
         private void reloadAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Warning.Warn("Are you sure you want to reload all files?"))
+            if (Warning.Warn("你確定要重置所有檔案嗎?"))
                 Program.WzMan.ReloadAll(MainPanel);
         }
 
         private void renderMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (MainPanel.DataTree.SelectedNode == null) return;
             mapper = new FHMapper.FHMapper(MainPanel);
             mapper.ParseSettings();
             if (MainPanel.DataTree.SelectedNode.Tag is WzImage)
@@ -272,6 +273,7 @@ namespace HaRepacker.GUI
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (mapper == null) return;
             mapper.ParseSettings();
             Settings settingsDialog = new Settings();
             settingsDialog.settings = mapper.settings;
@@ -303,7 +305,7 @@ namespace HaRepacker.GUI
                     node = (WzNode)MainPanel.DataTree.Nodes[0];
                 else
                 {
-                    MessageBox.Show("Please select the WZ file to save", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("請選擇WZ檔案來保存", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -321,7 +323,7 @@ namespace HaRepacker.GUI
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             ApplicationSettings.Maximized = WindowState == FormWindowState.Maximized;
-            e.Cancel = !Warning.Warn("Are you sure you want to exit?");
+            e.Cancel = !Warning.Warn("你確定要離開嗎?");
         }
         #endregion
 
@@ -332,7 +334,7 @@ namespace HaRepacker.GUI
 
         private void RemoveSelectedNodes()
         {
-            if (!Warning.Warn("Are you sure you want to remove this node?")) return;
+            if (!Warning.Warn("你確定你要移除當前節點嗎?")) return;
             MainPanel.RemoveSelectedNodes();
         }
 
@@ -349,7 +351,7 @@ namespace HaRepacker.GUI
             {
                 if (WzTool.IsListFile(wzpath))
                 {
-                    Warning.Error("The file at " + wzpath + " is a List.wz file and will be skipped.");
+                    Warning.Error("這個檔案(路徑: " + wzpath + ") 是List.wz檔案, 將會被跳過");
                     continue;
                 }
                 WzFile f = new WzFile(wzpath, version);
@@ -428,9 +430,9 @@ namespace HaRepacker.GUI
 
         private void xMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Choose the files you wish to export", Filter = "WZ Files(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = "選擇匯出檔案", Filter = "WZ Files(*.wz)|*.wz", Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog() { Description = "Select where to output the files to" };
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog() { Description = "選擇輸出目錄" };
             if (folderDialog.ShowDialog() != DialogResult.OK) return;
             WzClassicXmlSerializer serializer = new WzClassicXmlSerializer(UserSettings.Indentation, UserSettings.LineBreakType, false);
             threadDone = false;
@@ -480,13 +482,13 @@ namespace HaRepacker.GUI
         private string GetOutputDirectory()
         {
             return UserSettings.DefaultXmlFolder == "" ?
-                SavedFolderBrowser.Show("Select the output directory")
+                SavedFolderBrowser.Show("選擇輸出目錄")
                 : UserSettings.DefaultXmlFolder;
         }
 
         private void rawDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Choose the files you wish to export", Filter = "WZ Files(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = "選擇匯出路徑", Filter = "WZ檔案(*.wz)|*.wz", Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             string outPath = GetOutputDirectory();
             if (outPath == "") return;
@@ -499,7 +501,7 @@ namespace HaRepacker.GUI
 
         private void imgToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Choose the files you wish to export", Filter = "WZ Files(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = "選擇匯出路徑", Filter = "WZ檔案(*.wz)|*.wz", Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             string outPath = GetOutputDirectory();
             if (outPath == "") return;
@@ -581,7 +583,7 @@ namespace HaRepacker.GUI
 
         private void newToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog() { Title = "Select where to save the XML", Filter = "eXtended Markup Language (*.xml)|*.xml" };
+            SaveFileDialog dialog = new SaveFileDialog() { Title = "選擇XML路徑", Filter = "eXtended Markup Language (*.xml)|*.xml" };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             List<WzObject> objs = new List<WzObject>();
             foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
@@ -596,7 +598,7 @@ namespace HaRepacker.GUI
 
         private void AbortButton_Click(object sender, EventArgs e)
         {
-            if (Warning.Warn("Are you sure you want to abort the current operation?"))
+            if (Warning.Warn("你確定你想終止當前操作?"))
             {
                 threadDone = true;
                 runningThread.Abort();
@@ -625,10 +627,10 @@ namespace HaRepacker.GUI
         {
             if (MainPanel.DataTree.SelectedNode == null) return;
             if (!ValidAnimation((WzObject)MainPanel.DataTree.SelectedNode.Tag))
-                Warning.Error("This item is not an animation.");
+                Warning.Error("這個項目不是動畫");
             else
             {
-                SaveFileDialog dialog = new SaveFileDialog() { Title = "Select where to save the animation", Filter = "Animated Portable Network Graphics (*.png)|*.png" };
+                SaveFileDialog dialog = new SaveFileDialog() { Title = "選擇動畫路徑", Filter = "Animated Portable Network Graphics (*.png)|*.png" };
                 if (dialog.ShowDialog() != DialogResult.OK)
                 {
                     return;
@@ -642,10 +644,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!NameInputBox.Show("Add directory", out name))
+            else if (!NameInputBox.Show("新增目錄", out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzDirectory(name), MainPanel.UndoRedoMan);
         }
@@ -655,10 +657,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!NameInputBox.Show("Add image", out name))
+            else if (!NameInputBox.Show("新增IMG", out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzImage(name) { Changed = true }, MainPanel.UndoRedoMan);
         }
@@ -669,10 +671,10 @@ namespace HaRepacker.GUI
             double? d;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!FloatingPointInputBox.Show("Add float", out name, out d))
+            else if (!FloatingPointInputBox.Show("新增浮點數", out name, out d))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzFloatProperty(name, (float)d), MainPanel.UndoRedoMan);
         }
@@ -683,10 +685,10 @@ namespace HaRepacker.GUI
             Bitmap bmp;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!BitmapInputBox.Show("Add canvas", out name, out bmp))
+            else if (!BitmapInputBox.Show("新增圖片", out name, out bmp))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzCanvasProperty(name) { PngProperty = new WzPngProperty() { PNG = bmp } }, MainPanel.UndoRedoMan);
         }
@@ -697,10 +699,10 @@ namespace HaRepacker.GUI
             int? value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!IntInputBox.Show("Add int", out name, out value))
+            else if (!IntInputBox.Show("新增整數", out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzIntProperty(name, (int)value), MainPanel.UndoRedoMan);
         }
@@ -710,10 +712,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!NameInputBox.Show("Add convex", out name))
+            else if (!NameInputBox.Show("新增convex", out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzConvexProperty(name), MainPanel.UndoRedoMan);
         }
@@ -724,10 +726,10 @@ namespace HaRepacker.GUI
             double? d;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!FloatingPointInputBox.Show("Add double", out name, out d))
+            else if (!FloatingPointInputBox.Show("新增雙精度浮點數", out name, out d))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzDoubleProperty(name, (double)d), MainPanel.UndoRedoMan);
          }
@@ -737,10 +739,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!NameInputBox.Show("Add null", out name))
+            else if (!NameInputBox.Show("新增空值", out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzNullProperty(name), MainPanel.UndoRedoMan);
         }
@@ -751,10 +753,10 @@ namespace HaRepacker.GUI
             string path;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!SoundInputBox.Show("Add sound", out name, out path))
+            else if (!SoundInputBox.Show("新增音樂", out name, out path))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzSoundProperty(name, path), MainPanel.UndoRedoMan);
         }
@@ -765,10 +767,10 @@ namespace HaRepacker.GUI
             string value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!NameValueInputBox.Show("Add string", out name, out value))
+            else if (!NameValueInputBox.Show("新增文本", out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzStringProperty(name, value), MainPanel.UndoRedoMan);
         }
@@ -778,10 +780,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!NameInputBox.Show("Add sub", out name))
+            else if (!NameInputBox.Show("新增子目錄", out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzSubProperty(name), MainPanel.UndoRedoMan);
         }
@@ -792,10 +794,10 @@ namespace HaRepacker.GUI
             int? value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!IntInputBox.Show("Add ushort", out name, out value))
+            else if (!IntInputBox.Show("新增無符號短整數", out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzShortProperty(name, (short)value), MainPanel.UndoRedoMan);
         }
@@ -806,10 +808,10 @@ namespace HaRepacker.GUI
             string value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!NameValueInputBox.Show("Add uol", out name, out value))
+            else if (!NameValueInputBox.Show("新增連結路徑", out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzUOLProperty(name, value), MainPanel.UndoRedoMan);
         }
@@ -820,10 +822,10 @@ namespace HaRepacker.GUI
             Point? pt;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error("無法插入這個類型到選中的wz節點");
                 return;
             }
-            else if (!VectorInputBox.Show("Add vector", out name, out pt))
+            else if (!VectorInputBox.Show("新增坐標", out name, out pt))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzVectorProperty(name, new WzIntProperty("X",((Point)pt).X),new WzIntProperty("Y",((Point)pt).Y)), MainPanel.UndoRedoMan);
         }
@@ -842,8 +844,8 @@ namespace HaRepacker.GUI
         {
             if (MainPanel.DataTree.SelectedNode == null ||(!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile) && !(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))) return;
              WzFile wzFile = ((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
-            if (!(wzFile is WzFile)) return;
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the XML files", Filter = "eXtended Markup Language (*.xml)|*.xml", Multiselect = true };
+             if (!(wzFile is WzFile)) return;
+             OpenFileDialog dialog = new OpenFileDialog() { Title = "選擇XML檔案", Filter = "eXtended Markup Language (*.xml)|*.xml", Multiselect = true };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             WzXmlDeserializer deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(wzFile.MapleVersion));
             yesToAll = false;
@@ -930,7 +932,7 @@ namespace HaRepacker.GUI
                 }
                 catch (Exception e)
                 {
-                    Warning.Error("The file \"" + file + "\" is invalid and will be skipped. Error: " + e.Message);
+                    Warning.Error("檔案\"" + file + "\"無效, 將跳過。 錯誤: " + e.Message);
                     UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
                     continue;
                 }
@@ -952,7 +954,7 @@ namespace HaRepacker.GUI
             if (MainPanel.DataTree.SelectedNode == null || (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile) && !(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))) return;
             WzFile wzFile = ((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
             if (!(wzFile is WzFile)) return;
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the IMG files", Filter = "WZ Image Files (*.img)|*.img", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = "選擇IMG檔案", Filter = "WZ Image Files (*.img)|*.img", Multiselect = true };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             byte[] iv = WzTool.GetIvByMapleVersion(wzFile.MapleVersion);
             WzImgDeserializer deserializer = new WzImgDeserializer(false);
@@ -977,7 +979,7 @@ namespace HaRepacker.GUI
             if (File.Exists(helpPath))
                 Help.ShowHelp(this, HelpFile);
             else
-                Warning.Error("Help could not be shown because the help file (" + HelpFile + ") was not found");
+                Warning.Error("無法顯示幫助, 因為找不到幫助檔案(" + HelpFile + ")");
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)

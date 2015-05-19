@@ -62,19 +62,19 @@
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
             this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox.Size = new System.Drawing.Size(485, 292);
+            this.textBox.Size = new System.Drawing.Size(485, 268);
             this.textBox.TabIndex = 2;
             // 
             // ListEditor
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(485, 317);
+            this.ClientSize = new System.Drawing.Size(485, 293);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ListEditor";
-            this.Text = "List.wz Editor";
+            this.Text = "List.wz編輯器";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ListEditor_FormClosing);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();

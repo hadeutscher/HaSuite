@@ -118,47 +118,47 @@
             this.unloadAllToolStripMenuItem,
             this.reloadAllToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 21);
-            this.fileToolStripMenuItem.Text = "File";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(43, 21);
+            this.fileToolStripMenuItem.Text = "檔案";
             // 
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.page_white;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
-            this.newToolStripMenuItem.Text = "New...";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem.Text = "新建...";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.folder;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
-            this.openToolStripMenuItem.Text = "Open...";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Text = "打開...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.disk;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
-            this.saveToolStripMenuItem.Text = "Save...";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Text = "保存...";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // unloadAllToolStripMenuItem
             // 
             this.unloadAllToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.delete;
             this.unloadAllToolStripMenuItem.Name = "unloadAllToolStripMenuItem";
-            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
-            this.unloadAllToolStripMenuItem.Text = "Unload All";
+            this.unloadAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.unloadAllToolStripMenuItem.Text = "關閉全部";
             this.unloadAllToolStripMenuItem.Click += new System.EventHandler(this.unloadAllToolStripMenuItem_Click);
             // 
             // reloadAllToolStripMenuItem
             // 
             this.reloadAllToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.arrow_refresh;
             this.reloadAllToolStripMenuItem.Name = "reloadAllToolStripMenuItem";
-            this.reloadAllToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
-            this.reloadAllToolStripMenuItem.Text = "Reload All";
+            this.reloadAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.reloadAllToolStripMenuItem.Text = "重載全部";
             this.reloadAllToolStripMenuItem.Click += new System.EventHandler(this.reloadAllToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
@@ -171,8 +171,8 @@
             this.expandAllToolStripMenuItem,
             this.collapseAllToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 21);
-            this.editToolStripMenuItem.Text = "Edit";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(43, 21);
+            this.editToolStripMenuItem.Text = "編輯";
             // 
             // addToolStripMenuItem
             // 
@@ -194,21 +194,21 @@
             this.wzVectorPropertyToolStripMenuItem});
             this.addToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.add;
             this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.addToolStripMenuItem.Text = "Add";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.addToolStripMenuItem.Text = "新增";
             // 
             // wzDirectoryToolStripMenuItem
             // 
             this.wzDirectoryToolStripMenuItem.Name = "wzDirectoryToolStripMenuItem";
-            this.wzDirectoryToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzDirectoryToolStripMenuItem.Text = "WzDirectory";
+            this.wzDirectoryToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzDirectoryToolStripMenuItem.Text = "目錄(WzDirectory)";
             this.wzDirectoryToolStripMenuItem.Click += new System.EventHandler(this.wzDirectoryToolStripMenuItem_Click);
             // 
             // wzImageToolStripMenuItem
             // 
             this.wzImageToolStripMenuItem.Name = "wzImageToolStripMenuItem";
-            this.wzImageToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzImageToolStripMenuItem.Text = "WzImage";
+            this.wzImageToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzImageToolStripMenuItem.Text = "IMG(WzImage)";
             this.wzImageToolStripMenuItem.Click += new System.EventHandler(this.wzImageToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
@@ -219,121 +219,121 @@
             // wzByteFloatPropertyToolStripMenuItem
             // 
             this.wzByteFloatPropertyToolStripMenuItem.Name = "wzByteFloatPropertyToolStripMenuItem";
-            this.wzByteFloatPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzByteFloatPropertyToolStripMenuItem.Text = "WzByteFloatProperty";
+            this.wzByteFloatPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzByteFloatPropertyToolStripMenuItem.Text = "浮點數(WzByteFloatProperty)";
             this.wzByteFloatPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzByteFloatPropertyToolStripMenuItem_Click);
             // 
             // wzCanvasPropertyToolStripMenuItem
             // 
             this.wzCanvasPropertyToolStripMenuItem.Name = "wzCanvasPropertyToolStripMenuItem";
-            this.wzCanvasPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzCanvasPropertyToolStripMenuItem.Text = "WzCanvasProperty";
+            this.wzCanvasPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzCanvasPropertyToolStripMenuItem.Text = "圖片(WzCanvasProperty)";
             this.wzCanvasPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzCanvasPropertyToolStripMenuItem_Click);
             // 
             // wzCompressedIntPropertyToolStripMenuItem
             // 
             this.wzCompressedIntPropertyToolStripMenuItem.Name = "wzCompressedIntPropertyToolStripMenuItem";
-            this.wzCompressedIntPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzCompressedIntPropertyToolStripMenuItem.Text = "WzCompressedIntProperty";
+            this.wzCompressedIntPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzCompressedIntPropertyToolStripMenuItem.Text = "整數(WzCompressedIntProperty)";
             this.wzCompressedIntPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzCompressedIntPropertyToolStripMenuItem_Click);
             // 
             // wzConvexPropertyToolStripMenuItem
             // 
             this.wzConvexPropertyToolStripMenuItem.Name = "wzConvexPropertyToolStripMenuItem";
-            this.wzConvexPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.wzConvexPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
             this.wzConvexPropertyToolStripMenuItem.Text = "WzConvexProperty";
             this.wzConvexPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzConvexPropertyToolStripMenuItem_Click);
             // 
             // wzDoublePropertyToolStripMenuItem
             // 
             this.wzDoublePropertyToolStripMenuItem.Name = "wzDoublePropertyToolStripMenuItem";
-            this.wzDoublePropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzDoublePropertyToolStripMenuItem.Text = "WzDoubleProperty";
+            this.wzDoublePropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzDoublePropertyToolStripMenuItem.Text = "雙精度浮點數(WzDoubleProperty)";
             this.wzDoublePropertyToolStripMenuItem.Click += new System.EventHandler(this.wzDoublePropertyToolStripMenuItem_Click);
             // 
             // wzNullPropertyToolStripMenuItem
             // 
             this.wzNullPropertyToolStripMenuItem.Name = "wzNullPropertyToolStripMenuItem";
-            this.wzNullPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzNullPropertyToolStripMenuItem.Text = "WzNullProperty";
+            this.wzNullPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzNullPropertyToolStripMenuItem.Text = "空值(WzNullProperty)";
             this.wzNullPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzNullPropertyToolStripMenuItem_Click);
             // 
             // wzSoundPropertyToolStripMenuItem
             // 
             this.wzSoundPropertyToolStripMenuItem.Name = "wzSoundPropertyToolStripMenuItem";
-            this.wzSoundPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzSoundPropertyToolStripMenuItem.Text = "WzSoundProperty";
+            this.wzSoundPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzSoundPropertyToolStripMenuItem.Text = "音樂(WzSoundProperty)";
             this.wzSoundPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzSoundPropertyToolStripMenuItem_Click);
             // 
             // wzStringPropertyToolStripMenuItem
             // 
             this.wzStringPropertyToolStripMenuItem.Name = "wzStringPropertyToolStripMenuItem";
-            this.wzStringPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzStringPropertyToolStripMenuItem.Text = "WzStringProperty";
+            this.wzStringPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzStringPropertyToolStripMenuItem.Text = "文本(WzStringProperty)";
             this.wzStringPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzStringPropertyToolStripMenuItem_Click);
             // 
             // wzSubPropertyToolStripMenuItem
             // 
             this.wzSubPropertyToolStripMenuItem.Name = "wzSubPropertyToolStripMenuItem";
-            this.wzSubPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzSubPropertyToolStripMenuItem.Text = "WzSubProperty";
+            this.wzSubPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzSubPropertyToolStripMenuItem.Text = "子目錄(WzSubProperty)";
             this.wzSubPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzSubPropertyToolStripMenuItem_Click);
             // 
             // wzUnsignedShortPropertyToolStripMenuItem
             // 
             this.wzUnsignedShortPropertyToolStripMenuItem.Name = "wzUnsignedShortPropertyToolStripMenuItem";
-            this.wzUnsignedShortPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzUnsignedShortPropertyToolStripMenuItem.Text = "WzUnsignedShortProperty";
+            this.wzUnsignedShortPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzUnsignedShortPropertyToolStripMenuItem.Text = "無符號短整數(WzUnsignedShortProperty)";
             this.wzUnsignedShortPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzUnsignedShortPropertyToolStripMenuItem_Click);
             // 
             // wzUolPropertyToolStripMenuItem
             // 
             this.wzUolPropertyToolStripMenuItem.Name = "wzUolPropertyToolStripMenuItem";
-            this.wzUolPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzUolPropertyToolStripMenuItem.Text = "WzUolProperty";
+            this.wzUolPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzUolPropertyToolStripMenuItem.Text = "連結路徑(WzUolProperty)";
             this.wzUolPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzUolPropertyToolStripMenuItem_Click);
             // 
             // wzVectorPropertyToolStripMenuItem
             // 
             this.wzVectorPropertyToolStripMenuItem.Name = "wzVectorPropertyToolStripMenuItem";
-            this.wzVectorPropertyToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-            this.wzVectorPropertyToolStripMenuItem.Text = "WzVectorProperty";
+            this.wzVectorPropertyToolStripMenuItem.Size = new System.Drawing.Size(304, 22);
+            this.wzVectorPropertyToolStripMenuItem.Text = "坐標(WzVectorProperty)";
             this.wzVectorPropertyToolStripMenuItem.Click += new System.EventHandler(this.wzVectorPropertyToolStripMenuItem_Click);
             // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.delete;
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.removeToolStripMenuItem.Text = "Remove (Del)";
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.removeToolStripMenuItem.Text = "移除(Del)";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
             // undoToolStripMenuItem
             // 
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.undoToolStripMenuItem.Text = "Undo";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.undoToolStripMenuItem.Text = "撤銷";
             this.undoToolStripMenuItem.Visible = false;
             // 
             // redoToolStripMenuItem
             // 
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.redoToolStripMenuItem.Text = "Redo";
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.redoToolStripMenuItem.Text = "重做";
             this.redoToolStripMenuItem.Visible = false;
             // 
             // expandAllToolStripMenuItem
             // 
             this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.expandAllToolStripMenuItem.Text = "Expand All";
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.expandAllToolStripMenuItem.Text = "展開全部";
             this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem_Click);
             // 
             // collapseAllToolStripMenuItem
             // 
             this.collapseAllToolStripMenuItem.Name = "collapseAllToolStripMenuItem";
-            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.collapseAllToolStripMenuItem.Text = "Collapse All";
+            this.collapseAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.collapseAllToolStripMenuItem.Text = "收起全部";
             this.collapseAllToolStripMenuItem.Click += new System.EventHandler(this.collapseAllToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
@@ -347,8 +347,8 @@
             this.copyToolStripMenuItem,
             this.pasteToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 21);
-            this.toolsToolStripMenuItem.Text = "Tools";
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(43, 21);
+            this.toolsToolStripMenuItem.Text = "工具";
             // 
             // exportFilesToXMLToolStripMenuItem
             // 
@@ -358,27 +358,27 @@
             this.imgToolStripMenuItem});
             this.exportFilesToXMLToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.folder_go;
             this.exportFilesToXMLToolStripMenuItem.Name = "exportFilesToXMLToolStripMenuItem";
-            this.exportFilesToXMLToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.exportFilesToXMLToolStripMenuItem.Text = "Export File(s) to";
+            this.exportFilesToXMLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportFilesToXMLToolStripMenuItem.Text = "匯出檔案為";
             // 
             // xMLToolStripMenuItem
             // 
             this.xMLToolStripMenuItem.Name = "xMLToolStripMenuItem";
-            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.xMLToolStripMenuItem.Text = "Private Server XML";
+            this.xMLToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.xMLToolStripMenuItem.Text = "伺服器端XML";
             this.xMLToolStripMenuItem.Click += new System.EventHandler(this.xMLToolStripMenuItem_Click);
             // 
             // rawDataToolStripMenuItem
             // 
             this.rawDataToolStripMenuItem.Name = "rawDataToolStripMenuItem";
-            this.rawDataToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.rawDataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rawDataToolStripMenuItem.Text = "PNG\\MP3";
             this.rawDataToolStripMenuItem.Click += new System.EventHandler(this.rawDataToolStripMenuItem_Click);
             // 
             // imgToolStripMenuItem
             // 
             this.imgToolStripMenuItem.Name = "imgToolStripMenuItem";
-            this.imgToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.imgToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.imgToolStripMenuItem.Text = "IMG";
             this.imgToolStripMenuItem.Click += new System.EventHandler(this.imgToolStripMenuItem_Click);
             // 
@@ -390,8 +390,8 @@
             this.imgToolStripMenuItem1});
             this.exportDataToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.page_go;
             this.exportDataToolStripMenuItem.Name = "exportDataToolStripMenuItem";
-            this.exportDataToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.exportDataToolStripMenuItem.Text = "Export Selection";
+            this.exportDataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportDataToolStripMenuItem.Text = "匯出選中";
             // 
             // xMLToolStripMenuItem1
             // 
@@ -406,21 +406,21 @@
             // privateServerToolStripMenuItem
             // 
             this.privateServerToolStripMenuItem.Name = "privateServerToolStripMenuItem";
-            this.privateServerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
-            this.privateServerToolStripMenuItem.Text = "Private server";
+            this.privateServerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.privateServerToolStripMenuItem.Text = "伺服器端";
             this.privateServerToolStripMenuItem.Click += new System.EventHandler(this.privateServerToolStripMenuItem_Click);
             // 
             // classicToolStripMenuItem
             // 
             this.classicToolStripMenuItem.Name = "classicToolStripMenuItem";
-            this.classicToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.classicToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.classicToolStripMenuItem.Text = "Classic";
             this.classicToolStripMenuItem.Click += new System.EventHandler(this.classicToolStripMenuItem_Click);
             // 
             // newToolStripMenuItem1
             // 
             this.newToolStripMenuItem1.Name = "newToolStripMenuItem1";
-            this.newToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+            this.newToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.newToolStripMenuItem1.Text = "New";
             this.newToolStripMenuItem1.Click += new System.EventHandler(this.newToolStripMenuItem1_Click);
             // 
@@ -445,20 +445,20 @@
             this.iMGToolStripMenuItem2});
             this.importToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.page_add;
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.importToolStripMenuItem.Text = "匯入";
             // 
             // xMLToolStripMenuItem2
             // 
             this.xMLToolStripMenuItem2.Name = "xMLToolStripMenuItem2";
-            this.xMLToolStripMenuItem2.Size = new System.Drawing.Size(98, 22);
+            this.xMLToolStripMenuItem2.Size = new System.Drawing.Size(100, 22);
             this.xMLToolStripMenuItem2.Text = "XML";
             this.xMLToolStripMenuItem2.Click += new System.EventHandler(this.xMLToolStripMenuItem2_Click);
             // 
             // iMGToolStripMenuItem2
             // 
             this.iMGToolStripMenuItem2.Name = "iMGToolStripMenuItem2";
-            this.iMGToolStripMenuItem2.Size = new System.Drawing.Size(98, 22);
+            this.iMGToolStripMenuItem2.Size = new System.Drawing.Size(100, 22);
             this.iMGToolStripMenuItem2.Text = "IMG";
             this.iMGToolStripMenuItem2.Click += new System.EventHandler(this.iMGToolStripMenuItem2_Click);
             // 
@@ -466,30 +466,30 @@
             // 
             this.optionsToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.cog;
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.optionsToolStripMenuItem.Text = "Options...";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.optionsToolStripMenuItem.Text = "選項...";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.find;
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.searchToolStripMenuItem.Text = "Search (Ctrl+F)";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.searchToolStripMenuItem.Text = "搜尋 (Ctrl+F)";
             this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.copyToolStripMenuItem.Text = "Copy (Ctrl+C)";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyToolStripMenuItem.Text = "複製 (Ctrl+C)";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // pasteToolStripMenuItem
             // 
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-            this.pasteToolStripMenuItem.Text = "Paste (Ctrl+V)";
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pasteToolStripMenuItem.Text = "貼上 (Ctrl+V)";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
             // extrasToolStripMenuItem
@@ -498,8 +498,8 @@
             this.fHMappingToolStripMenuItem,
             this.animateToolStripMenuItem});
             this.extrasToolStripMenuItem.Name = "extrasToolStripMenuItem";
-            this.extrasToolStripMenuItem.Size = new System.Drawing.Size(49, 21);
-            this.extrasToolStripMenuItem.Text = "Extras";
+            this.extrasToolStripMenuItem.Size = new System.Drawing.Size(43, 21);
+            this.extrasToolStripMenuItem.Text = "其他";
             // 
             // fHMappingToolStripMenuItem
             // 
@@ -508,15 +508,15 @@
             this.settingsToolStripMenuItem,
             this.zoomTextBox});
             this.fHMappingToolStripMenuItem.Name = "fHMappingToolStripMenuItem";
-            this.fHMappingToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.fHMappingToolStripMenuItem.Text = "FH Mapping";
+            this.fHMappingToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.fHMappingToolStripMenuItem.Text = "立足處繪製";
             // 
             // renderMapToolStripMenuItem
             // 
             this.renderMapToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.map;
             this.renderMapToolStripMenuItem.Name = "renderMapToolStripMenuItem";
             this.renderMapToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.renderMapToolStripMenuItem.Text = "Render Map";
+            this.renderMapToolStripMenuItem.Text = "渲染圖";
             this.renderMapToolStripMenuItem.Click += new System.EventHandler(this.renderMapToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
@@ -524,7 +524,7 @@
             this.settingsToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.cog;
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.settingsToolStripMenuItem.Text = "Settings...";
+            this.settingsToolStripMenuItem.Text = "設置...";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // zoomTextBox
@@ -538,17 +538,17 @@
             // 
             this.animateToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.lightning;
             this.animateToolStripMenuItem.Name = "animateToolStripMenuItem";
-            this.animateToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.animateToolStripMenuItem.Text = "Animate";
+            this.animateToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.animateToolStripMenuItem.Text = "動畫";
             this.animateToolStripMenuItem.Click += new System.EventHandler(this.aPNGToolStripMenuItem_Click);
             // 
             // encryptionBox
             // 
             this.encryptionBox.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.encryptionBox.Items.AddRange(new object[] {
-            "GMS (old)",
-            "MSEA (old)",
-            "BMS\\GMS\\MSEA"});
+            "Global MapleStory (舊)",
+            "新楓之谷/冒险岛Online/메이플스토리/MapleSEA(舊)",
+            "MapleStory/MapleSEA/メイプルストーリー"});
             this.encryptionBox.Name = "encryptionBox";
             this.encryptionBox.Size = new System.Drawing.Size(155, 21);
             this.encryptionBox.SelectedIndexChanged += new System.EventHandler(this.encryptionBox_SelectedIndexChanged);
@@ -559,39 +559,39 @@
             this.viewHelpToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(43, 21);
+            this.helpToolStripMenuItem.Text = "幫助";
             // 
             // viewHelpToolStripMenuItem
             // 
             this.viewHelpToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.help;
             this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
-            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.viewHelpToolStripMenuItem.Text = "View Help";
+            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.viewHelpToolStripMenuItem.Text = "查看幫助";
             this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Image = global::HaRepacker.Properties.Resources.information;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.aboutToolStripMenuItem.Text = "About HaRepacker";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.aboutToolStripMenuItem.Text = "關於HaRepacker";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 21);
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(58, 21);
             this.debugToolStripMenuItem.Text = "Debug";
             this.debugToolStripMenuItem.Visible = false;
             // 
             // AbortButton
             // 
-            this.AbortButton.Location = new System.Drawing.Point(274, 61);
+            this.AbortButton.Location = new System.Drawing.Point(274, 56);
             this.AbortButton.Name = "AbortButton";
-            this.AbortButton.Size = new System.Drawing.Size(113, 75);
+            this.AbortButton.Size = new System.Drawing.Size(113, 69);
             this.AbortButton.TabIndex = 2;
-            this.AbortButton.Text = "Abort";
+            this.AbortButton.Text = "終止";
             this.AbortButton.UseVisualStyleBackColor = true;
             this.AbortButton.Visible = false;
             this.AbortButton.Click += new System.EventHandler(this.AbortButton_Click);

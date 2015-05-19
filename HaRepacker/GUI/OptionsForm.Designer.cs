@@ -46,30 +46,30 @@
             // sortBox
             // 
             this.sortBox.AutoSize = true;
-            this.sortBox.Location = new System.Drawing.Point(12, 12);
+            this.sortBox.Location = new System.Drawing.Point(12, 11);
             this.sortBox.Name = "sortBox";
-            this.sortBox.Size = new System.Drawing.Size(93, 17);
+            this.sortBox.Size = new System.Drawing.Size(84, 16);
             this.sortBox.TabIndex = 0;
-            this.sortBox.Text = "Sort TreeView";
+            this.sortBox.Text = "排序樹視圖";
             this.sortBox.UseVisualStyleBackColor = true;
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(64, 229);
+            this.okButton.Location = new System.Drawing.Point(64, 221);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(93, 33);
+            this.okButton.Size = new System.Drawing.Size(93, 30);
             this.okButton.TabIndex = 2;
-            this.okButton.Text = "OK";
+            this.okButton.Text = "確認";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(163, 229);
+            this.cancelButton.Location = new System.Drawing.Point(163, 221);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(93, 33);
+            this.cancelButton.Size = new System.Drawing.Size(93, 30);
             this.cancelButton.TabIndex = 3;
-            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Text = "取消";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
@@ -86,15 +86,15 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 172);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
+            this.label1.Size = new System.Drawing.Size(29, 12);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Indentation";
+            this.label1.Text = "縮進";
             // 
             // lineBreakBox
             // 
             this.lineBreakBox.FormattingEnabled = true;
             this.lineBreakBox.Items.AddRange(new object[] {
-            "None",
+            "不換行",
             "Windows",
             "Unix"});
             this.lineBreakBox.Location = new System.Drawing.Point(78, 195);
@@ -107,28 +107,28 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 198);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(57, 13);
+            this.label2.Size = new System.Drawing.Size(53, 12);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Line break";
+            this.label2.Text = "換行格式";
             // 
             // apngIncompEnable
             // 
             this.apngIncompEnable.AutoSize = true;
-            this.apngIncompEnable.Location = new System.Drawing.Point(12, 35);
+            this.apngIncompEnable.Location = new System.Drawing.Point(12, 32);
             this.apngIncompEnable.Name = "apngIncompEnable";
-            this.apngIncompEnable.Size = new System.Drawing.Size(175, 17);
+            this.apngIncompEnable.Size = new System.Drawing.Size(210, 16);
             this.apngIncompEnable.TabIndex = 8;
-            this.apngIncompEnable.Text = "Use APNG incompatibility frame";
+            this.apngIncompEnable.Text = "使用APNG動畫不兼容顯示楨";
             this.apngIncompEnable.UseVisualStyleBackColor = true;
             // 
             // defXmlFolderEnable
             // 
             this.defXmlFolderEnable.AutoSize = true;
-            this.defXmlFolderEnable.Location = new System.Drawing.Point(12, 120);
+            this.defXmlFolderEnable.Location = new System.Drawing.Point(12, 111);
             this.defXmlFolderEnable.Name = "defXmlFolderEnable";
-            this.defXmlFolderEnable.Size = new System.Drawing.Size(120, 17);
+            this.defXmlFolderEnable.Size = new System.Drawing.Size(108, 16);
             this.defXmlFolderEnable.TabIndex = 9;
-            this.defXmlFolderEnable.Text = "Default XML Folder:";
+            this.defXmlFolderEnable.Text = "默認XML資料夾:";
             this.defXmlFolderEnable.UseVisualStyleBackColor = true;
             this.defXmlFolderEnable.CheckedChanged += new System.EventHandler(this.defXmlFolderEnable_CheckedChanged);
             // 
@@ -154,28 +154,28 @@
             // autoAssociateBox
             // 
             this.autoAssociateBox.AutoSize = true;
-            this.autoAssociateBox.Location = new System.Drawing.Point(12, 58);
+            this.autoAssociateBox.Location = new System.Drawing.Point(12, 54);
             this.autoAssociateBox.Name = "autoAssociateBox";
-            this.autoAssociateBox.Size = new System.Drawing.Size(264, 17);
+            this.autoAssociateBox.Size = new System.Drawing.Size(204, 16);
             this.autoAssociateBox.TabIndex = 12;
-            this.autoAssociateBox.Text = "Automatically associate WZ files with HaRepacker";
+            this.autoAssociateBox.Text = "自動關聯WZ檔案以HaRepacker打開";
             this.autoAssociateBox.UseVisualStyleBackColor = true;
             // 
             // autoUpdate
             // 
             this.autoUpdate.AutoSize = true;
-            this.autoUpdate.Location = new System.Drawing.Point(12, 81);
+            this.autoUpdate.Location = new System.Drawing.Point(12, 75);
             this.autoUpdate.Name = "autoUpdate";
-            this.autoUpdate.Size = new System.Drawing.Size(308, 17);
+            this.autoUpdate.Size = new System.Drawing.Size(180, 16);
             this.autoUpdate.TabIndex = 13;
-            this.autoUpdate.Text = "Periodically check for updates (requires internet connection)";
+            this.autoUpdate.Text = "定期檢測更新(需要連結網路)";
             this.autoUpdate.UseVisualStyleBackColor = true;
             // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(323, 274);
+            this.ClientSize = new System.Drawing.Size(323, 253);
             this.Controls.Add(this.autoUpdate);
             this.Controls.Add(this.autoAssociateBox);
             this.Controls.Add(this.browse);
@@ -191,7 +191,7 @@
             this.Controls.Add(this.sortBox);
             this.Name = "OptionsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Options";
+            this.Text = "選項";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -49,21 +49,21 @@ namespace HaRepacker
             string errorTBox = "";
             try {
                 //Can this be done better?
-                errorTBox = "prev value";
+                errorTBox = "prev值";
                 int.Parse(PrevTBox.Text);
-                errorTBox = "next value";
+                errorTBox = "next值";
                 int.Parse(NextTBox.Text);
-                errorTBox = "force value";
+                errorTBox = "force值";
                 int.Parse(ForceTBox.Text);
-                errorTBox = "X value";
+                errorTBox = "X值";
                 int.Parse(XTBox.Text);
-                errorTBox = "Y value";
+                errorTBox = "Y值";
                 int.Parse(YTBox.Text);
-                errorTBox = "portal type value";
+                errorTBox = "傳送點類型值";
                 int.Parse(TypeTBox.Text);
                 double.Parse(SizeTBox.Text);
                 }
-            catch { doOverwrite = false; MessageBox.Show("                      The " + errorTBox + " was invalid.\r\nPlease make sure all values are valid before confirming.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+            catch { doOverwrite = false; MessageBox.Show("                      " + errorTBox + "無效.\r\n請在確認前確定所有的值都有效.", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
             if (doOverwrite)
             {
                 string theSettings;

@@ -37,45 +37,45 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 15);
+            this.label1.Location = new System.Drawing.Point(12, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.Size = new System.Drawing.Size(35, 12);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Name:";
+            this.label1.Text = "名稱:";
             // 
             // nameBox
             // 
-            this.nameBox.Location = new System.Drawing.Point(56, 12);
+            this.nameBox.Location = new System.Drawing.Point(56, 11);
             this.nameBox.Name = "nameBox";
-            this.nameBox.Size = new System.Drawing.Size(132, 20);
+            this.nameBox.Size = new System.Drawing.Size(132, 21);
             this.nameBox.TabIndex = 0;
             this.nameBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.nameBox_KeyPress);
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(43, 38);
+            this.okButton.Location = new System.Drawing.Point(43, 35);
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(54, 25);
+            this.okButton.Size = new System.Drawing.Size(54, 23);
             this.okButton.TabIndex = 1;
-            this.okButton.Text = "OK";
+            this.okButton.Text = "確認";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(103, 38);
+            this.cancelButton.Location = new System.Drawing.Point(103, 35);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(54, 25);
+            this.cancelButton.Size = new System.Drawing.Size(54, 23);
             this.cancelButton.TabIndex = 2;
-            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Text = "取消";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // NameInputBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(200, 75);
+            this.ClientSize = new System.Drawing.Size(200, 69);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.nameBox);
