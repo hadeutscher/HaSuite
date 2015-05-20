@@ -498,6 +498,7 @@ namespace HaCreator.CustomControls
         {
             viewTab.IsEnabled = enabled;
             toolsTab.IsEnabled = enabled;
+            statTab.IsEnabled = enabled;
             //resetLayerBoxIfNeeded();
         }
 

@@ -12,6 +12,8 @@ using HaCreator.MapEditor;
 using System.Runtime.InteropServices;
 using MapleLib.WzLib;
 using HaCreator.GUI;
+using System.IO;
+using System.Globalization;
 
 namespace HaCreator
 {
@@ -23,6 +25,15 @@ namespace HaCreator
         public const string Version = "2.1";
         public static bool Restarting;
 
+        public static string GetLocalSettingsPath()
+        {
+            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string our_folder = Path.Combine(appdata, "HaCreator");
+            if (!Directory.Exists(our_folder))
+                Directory.CreateDirectory(our_folder);
+            return Path.Combine(our_folder, "Settings.wz");
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -33,7 +44,7 @@ namespace HaCreator
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             InfoManager = new WzInformationManager();
-            SettingsManager = new WzSettingsManager(System.IO.Path.Combine(Application.StartupPath, "HCSettings.wz"), typeof(UserSettings), typeof(ApplicationSettings), typeof(Microsoft.Xna.Framework.Color));
+            SettingsManager = new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings), typeof(Microsoft.Xna.Framework.Color));
             SettingsManager.Load();
             MultiBoard.RecalculateSettings();
             Application.EnableVisualStyles();
