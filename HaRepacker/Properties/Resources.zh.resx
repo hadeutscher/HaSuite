@@ -173,9 +173,6 @@
   <data name="ImagesFilter" xml:space="preserve">
     <value>圖片 (*.jpg;*.bmp;*.png;*.gif;*.tiff)</value>
   </data>
-  <data name="LocaleTest" xml:space="preserve">
-    <value>Chinese</value>
-  </data>
   <data name="MainAddCanvas" xml:space="preserve">
     <value>新增圖片</value>
   </data>
