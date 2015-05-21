@@ -117,15 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FootholdTPage.Text" xml:space="preserve">
-    <value>立足處</value>
-  </data>
-  <data name="PortalTPage.Text" xml:space="preserve">
-    <value>傳送點</value>
-  </data>
-  <data name="GeneralTPage.Text" xml:space="preserve">
-    <value>其他</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>70, 13</value>
@@ -145,6 +136,9 @@
   <data name="label1.Text" xml:space="preserve">
     <value>默認prev值:</value>
   </data>
+  <data name="FootholdTPage.Text" xml:space="preserve">
+    <value>立足處</value>
+  </data>
   <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
     <value>58, 13</value>
   </data>
@@ -163,6 +157,9 @@
   <data name="label4.Text" xml:space="preserve">
     <value>默認X坐標:</value>
   </data>
+  <data name="PortalTPage.Text" xml:space="preserve">
+    <value>傳送點</value>
+  </data>
   <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
     <value>82, 13</value>
   </data>
@@ -174,6 +171,9 @@
   </data>
   <data name="label7.Text" xml:space="preserve">
     <value>默認檔案路徑:</value>
+  </data>
+  <data name="GeneralTPage.Text" xml:space="preserve">
+    <value>其他</value>
   </data>
   <data name="ConfirmBtn.Text" xml:space="preserve">
     <value>確認</value>

@@ -120,10 +120,6 @@
   <data name="&gt;&gt;button1.Name" xml:space="preserve">
     <value>button1</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterScreen</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
@@ -156,14 +152,15 @@
   <data name="autoAssociateBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>264, 17</value>
   </data>
-  <data name="autoUpdate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 35</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterScreen</value>
   </data>
   <data name="autoUpdate.Text" xml:space="preserve">
     <value>Periodically check for updates (requires internet connection)</value>
   </data>
-  <data name="&gt;&gt;autoUpdate.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="autoAssociateBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 12</value>
   </data>
   <data name="autoUpdate.Size" type="System.Drawing.Size, System.Drawing">
     <value>308, 17</value>
@@ -180,6 +177,9 @@
   <data name="&gt;&gt;button1.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="autoUpdate.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 35</value>
+  </data>
   <data name="&gt;&gt;autoAssociateBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
@@ -188,6 +188,9 @@
   </data>
   <data name="button1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
+  </data>
+  <data name="&gt;&gt;autoUpdate.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;autoAssociateBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -201,11 +204,8 @@
   <data name="button1.Location" type="System.Drawing.Point, System.Drawing">
     <value>112, 58</value>
   </data>
-  <data name="&gt;&gt;autoUpdate.Name" xml:space="preserve">
-    <value>autoUpdate</value>
-  </data>
-  <data name="&gt;&gt;autoUpdate.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;autoUpdate.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>First Run</value>
@@ -213,13 +213,10 @@
   <data name="button1.Size" type="System.Drawing.Size, System.Drawing">
     <value>89, 26</value>
   </data>
-  <data name="autoAssociateBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 12</value>
+  <data name="&gt;&gt;autoUpdate.Name" xml:space="preserve">
+    <value>autoUpdate</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh</value>
   </metadata>
 </root>

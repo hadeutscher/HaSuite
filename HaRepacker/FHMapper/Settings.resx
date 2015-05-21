@@ -121,15 +121,14 @@
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 58</value>
+  </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 13</value>
   </data>
   <data name="&gt;&gt;label6.Name" xml:space="preserve">
     <value>label6</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="NextCBox.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
   </data>
   <data name="&gt;&gt;label8.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -146,6 +145,7 @@
   <data name="YCBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>15, 14</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="YCBox.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
   </data>
@@ -166,9 +166,6 @@
   </data>
   <data name="ForceTBox.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
-  </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 58</value>
   </data>
   <data name="label5.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -204,6 +201,9 @@
   <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="CancelBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
   <data name="ConfirmBtn.Text" xml:space="preserve">
     <value>Confirm</value>
   </data>
@@ -228,17 +228,23 @@
   <data name="TypeCBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="&gt;&gt;ForceCBox.Parent" xml:space="preserve">
+    <value>FootholdTPage</value>
+  </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
   <data name="label7.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;YTBox.Name" xml:space="preserve">
-    <value>YTBox</value>
+  <data name="FilepathCBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Default next value:</value>
+  <data name="FootholdTPage.Text" xml:space="preserve">
+    <value>Footholds</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>6</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Settings</value>
@@ -246,14 +252,14 @@
   <data name="SizeTBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>113, 43</value>
   </data>
+  <data name="&gt;&gt;label5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;SizeCBox.Name" xml:space="preserve">
     <value>SizeCBox</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>8</value>
-  </data>
-  <data name="XCBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>141, 12</value>
   </data>
   <data name="&gt;&gt;XTBox.ZOrder" xml:space="preserve">
     <value>6</value>
@@ -273,20 +279,23 @@
   <data name="label7.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>36, 3</value>
+  </data>
   <data name="SizeTBox.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
   <data name="NextTBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>106, 33</value>
   </data>
+  <data name="&gt;&gt;label7.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
   </data>
   <data name="&gt;&gt;FilepathTBox.Parent" xml:space="preserve">
     <value>GeneralTPage</value>
-  </data>
-  <data name="&gt;&gt;TypeCBox.Parent" xml:space="preserve">
-    <value>PortalTPage</value>
   </data>
   <data name="&gt;&gt;XCBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -321,20 +330,17 @@
   <data name="label2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;FilepathCBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="SizeTBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 20</value>
   </data>
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="&gt;&gt;ForceTBox.Parent" xml:space="preserve">
+  <data name="&gt;&gt;FootholdTPage.Name" xml:space="preserve">
     <value>FootholdTPage</value>
   </data>
-  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 13</value>
+  <data name="label6.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;label5.Parent" xml:space="preserve">
     <value>PortalTPage</value>
@@ -345,17 +351,20 @@
   <data name="FootholdTPage.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
+  <data name="&gt;&gt;SizeCBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;PrevCBox.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;GeneralTPage.Parent" xml:space="preserve">
-    <value>SettingsTab</value>
+  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
+    <value>98, 13</value>
   </data>
   <data name="XCBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="&gt;&gt;SettingsTab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;PrevTBox.Parent" xml:space="preserve">
     <value>FootholdTPage</value>
@@ -375,8 +384,14 @@
   <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
     <value>81, 13</value>
   </data>
+  <data name="PrevCBox.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
   <data name="&gt;&gt;ConfirmBtn.Name" xml:space="preserve">
     <value>ConfirmBtn</value>
+  </data>
+  <data name="&gt;&gt;NextTBox.Parent" xml:space="preserve">
+    <value>FootholdTPage</value>
   </data>
   <data name="&gt;&gt;XTBox.Name" xml:space="preserve">
     <value>XTBox</value>
@@ -384,29 +399,20 @@
   <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 12</value>
   </data>
-  <data name="&gt;&gt;FilepathCBox.Name" xml:space="preserve">
-    <value>FilepathCBox</value>
-  </data>
-  <data name="&gt;&gt;SizeTBox.Name" xml:space="preserve">
-    <value>SizeTBox</value>
-  </data>
   <data name="XTBox.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;FilepathTBox.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="PortalTPage.Text" xml:space="preserve">
+    <value>Portals</value>
   </data>
-  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>98, 13</value>
+  <data name="CancelBtn.Text" xml:space="preserve">
+    <value>Cancel</value>
   </data>
   <data name="&gt;&gt;XCBox.Parent" xml:space="preserve">
     <value>PortalTPage</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>Settings</value>
-  </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
   </data>
   <data name="&gt;&gt;YCBox.Parent" xml:space="preserve">
     <value>PortalTPage</value>
@@ -420,14 +426,11 @@
   <data name="FilepathTBox.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="TypeTBox.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+  <data name="GeneralTPage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
   </data>
   <data name="PrevCBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>150, 12</value>
-  </data>
-  <data name="&gt;&gt;YCBox.Name" xml:space="preserve">
-    <value>YCBox</value>
   </data>
   <data name="&gt;&gt;OpenFileBtn.Parent" xml:space="preserve">
     <value>GeneralTPage</value>
@@ -444,14 +447,17 @@
   <data name="PrevTBox.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
+  <data name="PortalTPage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="&gt;&gt;SettingsTab.Name" xml:space="preserve">
     <value>SettingsTab</value>
   </data>
   <data name="TypeCBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>15, 14</value>
-  </data>
-  <data name="YTBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 20</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
     <value>96, 13</value>
@@ -468,6 +474,9 @@
   <data name="OpenFileBtn.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
+  <data name="OpenFileBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 23</value>
+  </data>
   <data name="&gt;&gt;FootholdTPage.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -479,6 +488,9 @@
   </data>
   <data name="PrevCBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="&gt;&gt;CancelBtn.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;label2.Parent" xml:space="preserve">
     <value>FootholdTPage</value>
@@ -492,17 +504,11 @@
   <data name="PrevTBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>106, 9</value>
   </data>
-  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
   <data name="&gt;&gt;SizeCBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="YCBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 12</value>
   </data>
   <data name="FilepathTBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>101, 20</value>
@@ -515,9 +521,6 @@
   </data>
   <data name="PortalTPage.Size" type="System.Drawing.Size, System.Drawing">
     <value>169, 88</value>
-  </data>
-  <data name="&gt;&gt;PrevTBox.ZOrder" xml:space="preserve">
-    <value>7</value>
   </data>
   <data name="&gt;&gt;FilepathCBox.Parent" xml:space="preserve">
     <value>GeneralTPage</value>
@@ -534,8 +537,14 @@
   <data name="&gt;&gt;PrevCBox.Parent" xml:space="preserve">
     <value>FootholdTPage</value>
   </data>
+  <data name="&gt;&gt;PrevCBox.Name" xml:space="preserve">
+    <value>PrevCBox</value>
+  </data>
   <data name="&gt;&gt;PortalTPage.Name" xml:space="preserve">
     <value>PortalTPage</value>
+  </data>
+  <data name="GeneralTPage.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;NextTBox.ZOrder" xml:space="preserve">
     <value>5</value>
@@ -552,8 +561,8 @@
   <data name="ForceCBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>15, 14</value>
   </data>
-  <data name="&gt;&gt;NextTBox.Parent" xml:space="preserve">
-    <value>FootholdTPage</value>
+  <data name="NextCBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;NextCBox.Parent" xml:space="preserve">
     <value>FootholdTPage</value>
@@ -570,8 +579,8 @@
   <data name="NextCBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>15, 14</value>
   </data>
-  <data name="PortalTPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="PrevTBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>38, 20</value>
@@ -579,11 +588,14 @@
   <data name="&gt;&gt;CancelBtn.Name" xml:space="preserve">
     <value>CancelBtn</value>
   </data>
-  <data name="&gt;&gt;label7.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 58</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
+  </data>
+  <data name="&gt;&gt;FilepathTBox.Name" xml:space="preserve">
+    <value>FilepathTBox</value>
   </data>
   <data name="label6.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -597,14 +609,11 @@
   <data name="SettingsTab.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="&gt;&gt;NextCBox.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;ForceTBox.Parent" xml:space="preserve">
+    <value>FootholdTPage</value>
   </data>
-  <data name="label6.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="&gt;&gt;CancelBtn.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;YTBox.Name" xml:space="preserve">
+    <value>YTBox</value>
   </data>
   <data name="&gt;&gt;FilepathCBox.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -615,14 +624,11 @@
   <data name="&gt;&gt;GeneralTPage.Name" xml:space="preserve">
     <value>GeneralTPage</value>
   </data>
-  <data name="FilepathCBox.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="&gt;&gt;FilepathTBox.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="TypeCBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>141, 57</value>
-  </data>
-  <data name="&gt;&gt;label2.Name" xml:space="preserve">
-    <value>label2</value>
   </data>
   <data name="&gt;&gt;TypeTBox.Name" xml:space="preserve">
     <value>TypeTBox</value>
@@ -636,11 +642,14 @@
   <data name="SettingsTab.Size" type="System.Drawing.Size, System.Drawing">
     <value>177, 114</value>
   </data>
+  <data name="ForceCBox.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
   <data name="&gt;&gt;label7.Parent" xml:space="preserve">
     <value>GeneralTPage</value>
   </data>
-  <data name="FootholdTPage.Text" xml:space="preserve">
-    <value>Footholds</value>
+  <data name="XCBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>141, 12</value>
   </data>
   <data name="&gt;&gt;GeneralTPage.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -666,11 +675,8 @@
   <data name="NextTBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>38, 20</value>
   </data>
-  <data name="&gt;&gt;PrevCBox.Name" xml:space="preserve">
-    <value>PrevCBox</value>
-  </data>
-  <data name="GeneralTPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>169, 88</value>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Default next value:</value>
   </data>
   <data name="label8.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -681,11 +687,11 @@
   <data name="&gt;&gt;TypeCBox.Name" xml:space="preserve">
     <value>TypeCBox</value>
   </data>
-  <data name="&gt;&gt;label5.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;YCBox.Name" xml:space="preserve">
+    <value>YCBox</value>
   </data>
-  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>36, 3</value>
+  <data name="&gt;&gt;NextCBox.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
   <data name="&gt;&gt;label8.Name" xml:space="preserve">
     <value>label8</value>
@@ -717,6 +723,9 @@
   <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 46</value>
   </data>
+  <data name="&gt;&gt;SettingsTab.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
   <data name="label5.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -741,17 +750,14 @@
   <data name="YTBox.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
-  <data name="&gt;&gt;FilepathTBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="PortalTPage.Text" xml:space="preserve">
-    <value>Portals</value>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 13</value>
   </data>
   <data name="&gt;&gt;NextCBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;SizeCBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="TypeTBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
   </data>
   <data name="&gt;&gt;label3.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -759,8 +765,8 @@
   <data name="&gt;&gt;XTBox.Parent" xml:space="preserve">
     <value>PortalTPage</value>
   </data>
-  <data name="GeneralTPage.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="&gt;&gt;SizeTBox.Name" xml:space="preserve">
+    <value>SizeTBox</value>
   </data>
   <data name="&gt;&gt;YTBox.Parent" xml:space="preserve">
     <value>PortalTPage</value>
@@ -768,17 +774,14 @@
   <data name="FilepathCBox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="PrevCBox.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="CancelBtn.Text" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
   </data>
   <data name="XTBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>99, 9</value>
   </data>
-  <data name="&gt;&gt;FilepathTBox.Name" xml:space="preserve">
-    <value>FilepathTBox</value>
+  <data name="&gt;&gt;FilepathCBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 36</value>
@@ -786,17 +789,14 @@
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>184, 144</value>
   </data>
-  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="&gt;&gt;ConfirmBtn.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="GeneralTPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+  <data name="&gt;&gt;TypeCBox.Parent" xml:space="preserve">
+    <value>PortalTPage</value>
   </data>
-  <data name="&gt;&gt;FootholdTPage.Name" xml:space="preserve">
-    <value>FootholdTPage</value>
+  <data name="GeneralTPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 88</value>
   </data>
   <data name="&gt;&gt;label7.Name" xml:space="preserve">
     <value>label7</value>
@@ -804,29 +804,29 @@
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;SettingsTab.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="YTBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 20</value>
   </data>
   <data name="&gt;&gt;NextCBox.Name" xml:space="preserve">
     <value>NextCBox</value>
   </data>
-  <data name="CancelBtn.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="&gt;&gt;PrevTBox.ZOrder" xml:space="preserve">
+    <value>7</value>
   </data>
   <data name="NextCBox.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
-  <data name="&gt;&gt;TypeCBox.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;FilepathTBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;SettingsTab.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;FilepathCBox.Name" xml:space="preserve">
+    <value>FilepathCBox</value>
   </data>
   <data name="FilepathTBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 19</value>
   </data>
-  <data name="OpenFileBtn.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 23</value>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="CancelBtn.Size" type="System.Drawing.Size, System.Drawing">
     <value>69, 23</value>
@@ -861,22 +861,22 @@
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 13</value>
   </data>
-  <data name="&gt;&gt;ForceCBox.Parent" xml:space="preserve">
-    <value>FootholdTPage</value>
+  <data name="&gt;&gt;GeneralTPage.Parent" xml:space="preserve">
+    <value>SettingsTab</value>
   </data>
   <data name="&gt;&gt;label4.Parent" xml:space="preserve">
     <value>PortalTPage</value>
   </data>
-  <data name="ForceCBox.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 12</value>
   </data>
-  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 58</value>
+  <data name="&gt;&gt;TypeCBox.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;CancelBtn.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
@@ -890,8 +890,5 @@
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh</value>
   </metadata>
 </root>

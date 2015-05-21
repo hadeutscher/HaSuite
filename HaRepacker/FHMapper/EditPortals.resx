@@ -137,8 +137,8 @@
   <data name="&gt;&gt;label5.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label4.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+  <data name="&gt;&gt;DestLbl.ZOrder" xml:space="preserve">
+    <value>12</value>
   </data>
   <data name="&gt;&gt;label7.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -155,8 +155,8 @@
   <data name="label5.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
   </data>
-  <data name="XPosLbl.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+  <data name="label6.Text" xml:space="preserve">
+    <value>New X value:</value>
   </data>
   <data name="&gt;&gt;TypeTBox.ZOrder" xml:space="preserve">
     <value>5</value>
@@ -169,6 +169,9 @@
   </data>
   <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CancelBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
   </data>
   <data name="ConfirmBtn.Text" xml:space="preserve">
     <value>Confirm</value>
@@ -191,8 +194,11 @@
   <data name="label7.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="DestLbl.Text" xml:space="preserve">
-    <value>*</value>
+  <data name="ConfirmBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 104</value>
+  </data>
+  <data name="&gt;&gt;XTBox.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Portal</value>
@@ -200,8 +206,8 @@
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>15</value>
   </data>
-  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 13</value>
+  <data name="&gt;&gt;YTBox.Name" xml:space="preserve">
+    <value>YTBox</value>
   </data>
   <data name="&gt;&gt;XTBox.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -254,9 +260,6 @@
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="YPosLbl.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
-  </data>
   <data name="XPosLbl.Location" type="System.Drawing.Point, System.Drawing">
     <value>78, 54</value>
   </data>
@@ -271,9 +274,6 @@
   </data>
   <data name="&gt;&gt;CancelBtn.Name" xml:space="preserve">
     <value>CancelBtn</value>
-  </data>
-  <data name="ConfirmBtn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 104</value>
   </data>
   <data name="&gt;&gt;XTBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -311,8 +311,8 @@
   <data name="&gt;&gt;label4.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="TypeLbl.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="DestLbl.Text" xml:space="preserve">
+    <value>*</value>
   </data>
   <data name="XPosLbl.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -344,6 +344,9 @@
   <data name="TypeTBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>185, 6</value>
   </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
   <data name="DestLbl.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -355,9 +358,6 @@
   </data>
   <data name="CancelBtn.Text" xml:space="preserve">
     <value>Cancel</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>New X value:</value>
   </data>
   <data name="&gt;&gt;label4.Name" xml:space="preserve">
     <value>label4</value>
@@ -386,8 +386,8 @@
   <data name="label6.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
   </data>
-  <data name="&gt;&gt;YTBox.Name" xml:space="preserve">
-    <value>YTBox</value>
+  <data name="XPosLbl.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
   </data>
   <data name="XTBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>185, 51</value>
@@ -431,17 +431,20 @@
   <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;DestLbl.ZOrder" xml:space="preserve">
-    <value>12</value>
-  </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
     <value>60, 13</value>
+  </data>
+  <data name="XPosLbl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>11, 13</value>
   </data>
   <data name="label5.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Portal type:</value>
+  </data>
+  <data name="label4.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
   </data>
   <data name="&gt;&gt;ConfirmBtn.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -458,8 +461,8 @@
   <data name="&gt;&gt;label3.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;XTBox.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="TypeLbl.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;YTBox.Parent" xml:space="preserve">
     <value>$this</value>
@@ -485,20 +488,17 @@
   <data name="&gt;&gt;label7.Name" xml:space="preserve">
     <value>label7</value>
   </data>
-  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="YTBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>36, 20</value>
   </data>
-  <data name="CancelBtn.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
+  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="YPosLbl.Location" type="System.Drawing.Point, System.Drawing">
     <value>78, 75</value>
   </data>
-  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>11</value>
+  <data name="YPosLbl.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
   </data>
   <data name="CancelBtn.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
@@ -521,8 +521,8 @@
   <data name="&gt;&gt;XPosLbl.ZOrder" xml:space="preserve">
     <value>9</value>
   </data>
-  <data name="XPosLbl.Size" type="System.Drawing.Size, System.Drawing">
-    <value>11, 13</value>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 13</value>
   </data>
   <data name="&gt;&gt;label4.Parent" xml:space="preserve">
     <value>$this</value>
@@ -544,8 +544,5 @@
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh</value>
   </metadata>
 </root>

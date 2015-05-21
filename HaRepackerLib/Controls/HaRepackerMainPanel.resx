@@ -122,10 +122,10 @@
     <value>6</value>
   </data>
   <data name="&gt;&gt;MainDockPanel.Type" xml:space="preserve">
-    <value>WeifenLuo.WinFormsUI.Docking.DockPanel, WeifenLuo.WinFormsUI.Docking, Version=2.5.0.36416, Culture=neutral, PublicKeyToken=null</value>
+    <value>WeifenLuo.WinFormsUI.Docking.DockPanel, WeifenLuo.WinFormsUI.Docking, Version=2.5.0.36910, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;saveSoundButton.Parent" xml:space="preserve">
-    <value>MainSplitContainer.Panel2</value>
+  <data name="&gt;&gt;findStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;DataTree.Parent" xml:space="preserve">
     <value>MainSplitContainer.Panel1</value>
@@ -139,9 +139,6 @@
   </data>
   <data name="&gt;&gt;btnFindNext.Name" xml:space="preserve">
     <value>btnFindNext</value>
-  </data>
-  <data name="canvasPropBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>189, 118</value>
   </data>
   <data name="btnOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -164,29 +161,17 @@
   <data name="&gt;&gt;findBox.Name" xml:space="preserve">
     <value>findBox</value>
   </data>
-  <data name="&gt;&gt;pictureBoxPanel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="saveImageButton.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
   <data name="&gt;&gt;btnOptions.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="btnClose.Text" xml:space="preserve">
-    <value>Close</value>
-  </data>
   <data name="mp3Player.Location" type="System.Drawing.Point, System.Drawing">
     <value>45, 16</value>
   </data>
   <data name="&gt;&gt;DataTree.Name" xml:space="preserve">
     <value>DataTree</value>
-  </data>
-  <data name="btnClose.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
-    <value>Magenta</value>
-  </data>
-  <data name="&gt;&gt;findStrip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;findBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripTextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -236,11 +221,17 @@
   <data name="pictureBoxPanel.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="&gt;&gt;MainSplitContainer.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
   <data name="&gt;&gt;changeSoundButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="findStrip.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
+  </data>
+  <data name="btnFindNext.Text" xml:space="preserve">
+    <value>Next</value>
   </data>
   <data name="pictureBoxPanel.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -248,6 +239,9 @@
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="canvasPropBox.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
     <value>AutoSize</value>
+  </data>
+  <data name="&gt;&gt;btnClose.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="mp3Player.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>310, 86</value>
@@ -267,6 +261,9 @@
   <data name="&gt;&gt;changeImageButton.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="vectorPanel.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>90, 53</value>
+  </data>
   <data name="&gt;&gt;MainSplitContainer.Panel2.Parent" xml:space="preserve">
     <value>MainSplitContainer</value>
   </data>
@@ -281,9 +278,6 @@
   </data>
   <data name="&gt;&gt;btnRestart.Name" xml:space="preserve">
     <value>btnRestart</value>
-  </data>
-  <data name="canvasPropBox.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
   </data>
   <data name="&gt;&gt;findStrip.Parent" xml:space="preserve">
     <value>$this</value>
@@ -303,6 +297,9 @@
   <data name="textPropBox.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
+  <data name="saveImageButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 218</value>
+  </data>
   <data name="&gt;&gt;changeSoundButton.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
@@ -321,17 +318,14 @@
   <data name="changeImageButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>71, 138</value>
   </data>
-  <data name="&gt;&gt;mp3Player.Parent" xml:space="preserve">
-    <value>MainSplitContainer.Panel2</value>
-  </data>
   <data name="&gt;&gt;textPropBox.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
   <data name="MainSplitContainer.SplitterDistance" type="System.Int32, mscorlib">
     <value>218</value>
   </data>
-  <data name="btnFindNext.Text" xml:space="preserve">
-    <value>Next</value>
+  <data name="changeSoundButton.Text" xml:space="preserve">
+    <value>Change Sound...</value>
   </data>
   <data name="&gt;&gt;statusStrip.Parent" xml:space="preserve">
     <value>$this</value>
@@ -342,6 +336,9 @@
   <data name="btnOptions.Text" xml:space="preserve">
     <value>Options</value>
   </data>
+  <data name="findStrip.Text" xml:space="preserve">
+    <value>toolStrip1</value>
+  </data>
   <data name="nameBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 83</value>
   </data>
@@ -349,9 +346,6 @@
     <value>195, 108</value>
   </data>
   <data name="&gt;&gt;MainSplitContainer.Panel1.Parent" xml:space="preserve">
-    <value>MainSplitContainer</value>
-  </data>
-  <data name="&gt;&gt;MainSplitContainer.Name" xml:space="preserve">
     <value>MainSplitContainer</value>
   </data>
   <data name="vectorPanel.MinimumSize" type="System.Drawing.Size, System.Drawing">
@@ -375,14 +369,14 @@
   <data name="&gt;&gt;MainSplitContainer.Panel2.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;saveImageButton.Name" xml:space="preserve">
-    <value>saveImageButton</value>
+  <data name="nameBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>306, 20</value>
   </data>
   <data name="canvasPropBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>7, 26</value>
   </data>
-  <data name="&gt;&gt;changeImageButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="btnClose.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
   </data>
   <data name="MainDockPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>135, 349</value>
@@ -393,6 +387,9 @@
   <data name="findStrip.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 409</value>
   </data>
+  <data name="&gt;&gt;saveSoundButton.Parent" xml:space="preserve">
+    <value>MainSplitContainer.Panel2</value>
+  </data>
   <data name="&gt;&gt;vectorPanel.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
@@ -402,8 +399,8 @@
   <data name="&gt;&gt;pictureBoxPanel.Name" xml:space="preserve">
     <value>pictureBoxPanel</value>
   </data>
-  <data name="changeSoundButton.Text" xml:space="preserve">
-    <value>Change Sound...</value>
+  <data name="&gt;&gt;canvasPropBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DataTree.SelectedNodes" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
@@ -426,9 +423,6 @@
   <data name="&gt;&gt;secondaryProgressBar.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripProgressBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;MainSplitContainer.Panel1.Name" xml:space="preserve">
-    <value>MainSplitContainer.Panel1</value>
-  </data>
   <data name="&gt;&gt;textPropBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -450,17 +444,20 @@
   <data name="textPropBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>144, 124</value>
   </data>
-  <data name="&gt;&gt;MainDockPanel.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="findStrip.Size" type="System.Drawing.Size, System.Drawing">
     <value>663, 25</value>
+  </data>
+  <data name="&gt;&gt;MainSplitContainer.Panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;MainSplitContainer.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="findStrip.Text" xml:space="preserve">
-    <value>toolStrip1</value>
+  <data name="&gt;&gt;pictureBoxPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnClose.Name" xml:space="preserve">
+    <value>btnClose</value>
   </data>
   <data name="&gt;&gt;changeSoundButton.Name" xml:space="preserve">
     <value>changeSoundButton</value>
@@ -495,8 +492,8 @@
   <data name="MainSplitContainer.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;MainSplitContainer.Panel2.Name" xml:space="preserve">
-    <value>MainSplitContainer.Panel2</value>
+  <data name="&gt;&gt;changeImageButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;textPropBox.Parent" xml:space="preserve">
     <value>MainSplitContainer.Panel2</value>
@@ -564,8 +561,8 @@
   <data name="&gt;&gt;canvasPropBox.Parent" xml:space="preserve">
     <value>pictureBoxPanel</value>
   </data>
-  <data name="&gt;&gt;btnClose.Name" xml:space="preserve">
-    <value>btnClose</value>
+  <data name="btnClose.Text" xml:space="preserve">
+    <value>Close</value>
   </data>
   <data name="changeImageButton.Text" xml:space="preserve">
     <value>Change Image...</value>
@@ -582,8 +579,8 @@
   <data name="saveImageButton.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
-  <data name="&gt;&gt;MainSplitContainer.Panel1.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="canvasPropBox.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="mainProgressBar.Size" type="System.Drawing.Size, System.Drawing">
     <value>100, 16</value>
@@ -612,14 +609,14 @@
   <data name="changeSoundButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>118, 34</value>
   </data>
-  <data name="vectorPanel.MaximumSize" type="System.Drawing.Size, System.Drawing">
-    <value>90, 53</value>
+  <data name="&gt;&gt;MainSplitContainer.Panel2.Name" xml:space="preserve">
+    <value>MainSplitContainer.Panel2</value>
   </data>
   <data name="&gt;&gt;findStrip.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="nameBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>306, 20</value>
+  <data name="&gt;&gt;MainDockPanel.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="btnRestart.Text" xml:space="preserve">
     <value>Restart</value>
@@ -635,6 +632,9 @@
   </data>
   <data name="&gt;&gt;btnFindAll.Name" xml:space="preserve">
     <value>btnFindAll</value>
+  </data>
+  <data name="applyChangesButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 269</value>
   </data>
   <data name="saveImageButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>118, 34</value>
@@ -669,14 +669,14 @@
   <data name="statusStrip.Size" type="System.Drawing.Size, System.Drawing">
     <value>663, 22</value>
   </data>
-  <data name="saveImageButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 218</value>
+  <data name="&gt;&gt;MainSplitContainer.Panel1.Name" xml:space="preserve">
+    <value>MainSplitContainer.Panel1</value>
   </data>
   <data name="&gt;&gt;changeImageButton.Parent" xml:space="preserve">
     <value>MainSplitContainer.Panel2</value>
   </data>
-  <data name="&gt;&gt;btnClose.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="canvasPropBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>189, 118</value>
   </data>
   <data name="textPropBox.Multiline" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -687,20 +687,20 @@
   <data name="&gt;&gt;MainSplitContainer.Panel2.Type" xml:space="preserve">
     <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="applyChangesButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 269</value>
+  <data name="&gt;&gt;mp3Player.Parent" xml:space="preserve">
+    <value>MainSplitContainer.Panel2</value>
   </data>
   <data name="findStrip.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
   </data>
-  <data name="&gt;&gt;MainSplitContainer.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;saveImageButton.Name" xml:space="preserve">
+    <value>saveImageButton</value>
   </data>
   <data name="selectionLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>119, 17</value>
   </data>
-  <data name="&gt;&gt;canvasPropBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;MainSplitContainer.Name" xml:space="preserve">
+    <value>MainSplitContainer</value>
   </data>
   <data name="pictureBoxPanel.Size" type="System.Drawing.Size, System.Drawing">
     <value>199, 176</value>
@@ -711,9 +711,6 @@
   <data name="&gt;&gt;DataTree.Type" xml:space="preserve">
     <value>TreeViewMS.TreeViewMS, HaRepackerLib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh</value>
-  </metadata>
   <metadata name="findStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>223, 17</value>
   </metadata>

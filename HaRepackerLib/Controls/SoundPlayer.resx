@@ -117,9 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>310, 86</value>
+  <data name="&gt;&gt;LoopBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;TimeBar.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -127,17 +126,22 @@
   <data name="&gt;&gt;TimeBar.Name" xml:space="preserve">
     <value>TimeBar</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="PlayButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 3</value>
   </data>
   <data name="LoopBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>58, 21</value>
   </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>310, 86</value>
+  </data>
   <data name="&gt;&gt;AudioTimer.Type" xml:space="preserve">
     <value>System.Windows.Forms.Timer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;PauseButton.Name" xml:space="preserve">
-    <value>PauseButton</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="PauseButton.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;PauseButton.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -145,8 +149,8 @@
   <data name="&gt;&gt;TimeBar.Parent" xml:space="preserve">
     <value>containerPanel</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>SoundPlayer</value>
+  <data name="TimeBar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 36</value>
   </data>
   <data name="&gt;&gt;TimeBar.Type" xml:space="preserve">
     <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -157,18 +161,14 @@
   <data name="PauseButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>57, 27</value>
   </data>
-  <data name="TimeBar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 36</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CurrentPositionLabel.TabIndex" type="System.Int32, mscorlib">
     <value>36</value>
   </data>
-  <data name="&gt;&gt;PauseButton.Parent" xml:space="preserve">
-    <value>containerPanel</value>
-  </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 13</value>
+  </data>
+  <data name="&gt;&gt;containerPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="PlayButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>57, 27</value>
@@ -179,8 +179,8 @@
   <data name="&gt;&gt;AudioTimer.Name" xml:space="preserve">
     <value>AudioTimer</value>
   </data>
-  <data name="CurrentPositionLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>213, 36</value>
+  <data name="CurrentPositionLabel.Text" xml:space="preserve">
+    <value>00:00 /</value>
   </data>
   <data name="&gt;&gt;LoopBox.Name" xml:space="preserve">
     <value>LoopBox</value>
@@ -196,9 +196,6 @@
   </data>
   <data name="&gt;&gt;containerPanel.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="&gt;&gt;LoopBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="LengthLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -231,26 +228,26 @@
   <data name="&gt;&gt;containerPanel.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="TimeBar.TabIndex" type="System.Int32, mscorlib">
+    <value>37</value>
+  </data>
   <data name="&gt;&gt;PlayButton.Name" xml:space="preserve">
     <value>PlayButton</value>
   </data>
   <data name="&gt;&gt;containerPanel.Name" xml:space="preserve">
     <value>containerPanel</value>
   </data>
-  <data name="&gt;&gt;containerPanel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;LengthLabel.Name" xml:space="preserve">
+    <value>LengthLabel</value>
   </data>
   <data name="LengthLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>256, 36</value>
   </data>
-  <data name="LengthLabel.TabIndex" type="System.Int32, mscorlib">
-    <value>35</value>
+  <data name="&gt;&gt;PauseButton.Parent" xml:space="preserve">
+    <value>containerPanel</value>
   </data>
   <data name="&gt;&gt;PlayButton.ZOrder" xml:space="preserve">
     <value>5</value>
-  </data>
-  <data name="&gt;&gt;LengthLabel.Name" xml:space="preserve">
-    <value>LengthLabel</value>
   </data>
   <data name="LengthLabel.Text" xml:space="preserve">
     <value>00:00</value>
@@ -270,11 +267,17 @@
   <data name="CurrentPositionLabel.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>SoundPlayer</value>
+  </data>
   <data name="LengthLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>34, 13</value>
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
     <value>310, 86</value>
+  </data>
+  <data name="&gt;&gt;PauseButton.Name" xml:space="preserve">
+    <value>PauseButton</value>
   </data>
   <data name="containerPanel.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
@@ -288,9 +291,6 @@
   <data name="containerPanel.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 3</value>
   </data>
-  <data name="CurrentPositionLabel.Text" xml:space="preserve">
-    <value>00:00 /</value>
-  </data>
   <data name="&gt;&gt;PlayButton.Parent" xml:space="preserve">
     <value>containerPanel</value>
   </data>
@@ -300,26 +300,23 @@
   <data name="PauseButton.TabIndex" type="System.Int32, mscorlib">
     <value>33</value>
   </data>
+  <data name="CurrentPositionLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>213, 36</value>
+  </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;PauseButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="PauseButton.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="&gt;&gt;CurrentPositionLabel.Name" xml:space="preserve">
     <value>CurrentPositionLabel</value>
   </data>
-  <data name="TimeBar.TabIndex" type="System.Int32, mscorlib">
-    <value>37</value>
+  <data name="LengthLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>35</value>
   </data>
   <metadata name="AudioTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh</value>
   </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
