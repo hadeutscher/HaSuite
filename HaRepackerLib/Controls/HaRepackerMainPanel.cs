@@ -17,7 +17,6 @@ namespace HaRepackerLib.Controls
 {
     public partial class HaRepackerMainPanel : UserControl
     {
-        private const string selectionTypePrefix = "Selection Type: ";
         private List<WzObject> clipboard = new List<WzObject>();
         private UndoRedoManager undoRedoMan;
 
@@ -71,7 +70,7 @@ namespace HaRepackerLib.Controls
         {
             if (DataTree.SelectedNode == null) return;
             ShowObjectValue((WzObject)DataTree.SelectedNode.Tag);
-            selectionLabel.Text = selectionTypePrefix + ((WzNode)DataTree.SelectedNode).GetTypeName();
+            selectionLabel.Text = string.Format(Properties.Resources.SelectionType, ((WzNode)DataTree.SelectedNode).GetTypeName());
         }
 
         private void ShowObjectValue(WzObject obj)
@@ -226,7 +225,7 @@ namespace HaRepackerLib.Controls
                 nameBox.ButtonEnabled = false;
             }
             else
-                Warning.Error("A node with that name already exists. Please choose a different name");
+                Warning.Error(Properties.Resources.MainNodeExists);
 
         }
 
@@ -261,7 +260,7 @@ namespace HaRepackerLib.Controls
                 float val;
                 if (!float.TryParse(textPropBox.Text,out val)) 
                 { 
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                    Warning.Error(string.Format(Properties.Resources.MainConversionError, textPropBox.Text));
                     return;
                 }
                 ((WzFloatProperty)obj).Value = val;
@@ -271,7 +270,7 @@ namespace HaRepackerLib.Controls
                 int val;
                 if (!int.TryParse(textPropBox.Text, out val))
                 {
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                    Warning.Error(string.Format(Properties.Resources.MainConversionError, textPropBox.Text));
                     return;
                 }
                 ((WzIntProperty)obj).Value = val;
@@ -281,7 +280,7 @@ namespace HaRepackerLib.Controls
                 double val;
                 if (!double.TryParse(textPropBox.Text, out val))
                 {
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                    Warning.Error(string.Format(Properties.Resources.MainConversionError, textPropBox.Text));
                     return;
                 }
                 ((WzDoubleProperty)obj).Value = val;
@@ -291,7 +290,7 @@ namespace HaRepackerLib.Controls
                 short val;
                 if (!short.TryParse(textPropBox.Text, out val))
                 {
-                    Warning.Error("Could not convert \"" + textPropBox.Text + "\" to the required type");
+                    Warning.Error(string.Format(Properties.Resources.MainConversionError, textPropBox.Text));
                     return;
                 }
                 ((WzShortProperty)obj).Value = val;
@@ -313,7 +312,7 @@ namespace HaRepackerLib.Controls
                 }
                 catch
                 {
-                    Warning.Error("Could not load image");
+                    Warning.Error(Properties.Resources.MainImageLoadError);
                     return;
                 }
                 ((WzCanvasProperty)DataTree.SelectedNode.Tag).PngProperty.SetPNG(bmp);
@@ -336,7 +335,7 @@ namespace HaRepackerLib.Controls
                 }
                 catch
                 {
-                    Warning.Error("Could not load image");
+                    Warning.Error(Properties.Resources.MainImageLoadError);
                     return;
                 }
                 IPropertyContainer parent = (IPropertyContainer)((WzSoundProperty)DataTree.SelectedNode.Tag).Parent;
@@ -378,14 +377,14 @@ namespace HaRepackerLib.Controls
 
         public void DoCopy()
         {
-            if (!Warning.Warn("Copy WZ nodes to clipboard? (warning - can take a lot of time if many nodes are selected)")) return;
+            if (!Warning.Warn(Properties.Resources.MainConfirmCopy)) return;
             clipboard.Clear();
             foreach (WzNode node in DataTree.SelectedNodes)
             {
                 WzObject clone = null;
                 if (node.Tag is WzDirectory)
                 {
-                    Warning.Error("You can't copy directories because they require too much memory");
+                    Warning.Error(Properties.Resources.MainCopyDirError);
                     continue;
                 }
                 else if (node.Tag is WzImage)
@@ -403,7 +402,7 @@ namespace HaRepackerLib.Controls
 
         public void DoPaste()
         {
-            if (!Warning.Warn("Paste WZ nodes from clipboard? (warning - can take a lot of time if many nodes are pasted)")) return;
+            if (!Warning.Warn(Properties.Resources.MainConfirmPaste)) return;
             yesToAll = false;
             noToAll = false;
             WzNode parent = (WzNode)DataTree.SelectedNode;
@@ -444,7 +443,7 @@ namespace HaRepackerLib.Controls
                 case Keys.Delete:
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    if (!Warning.Warn("Are you sure you want to remove this node?")) return;
+                    if (!Warning.Warn(Properties.Resources.MainConfirmRemove)) return;
                     RemoveSelectedNodes();
                     break;
             }
@@ -567,87 +566,7 @@ namespace HaRepackerLib.Controls
                 }
                 else SearchTV(subnode);
             }
-            /*foreach (WzDirectory subdir in dir.WzDirectories)
-            {
-                if (subdir.Name.Contains(searchText))
-                {
-                    if (currentidx == searchidx)
-                    {
-                        WzNode node = (WzNode)subdir.HRTag;
-                        DataTree.SelectedNode = node;
-                        node.EnsureVisible();
-                        DataTree.Focus();
-                        finished = true;
-                        searchidx++;
-                        return;
-                    }
-                    else if (listSearchResults)
-                        searchResultsList.Add(subdir.FullPath);
-                    else
-                        currentidx++;
-                }
-                SearchTV(subdir, currentidx, searchText, extractImages);
-                if (finished)
-                    return;
-            }
-            foreach (WzImage img in dir.WzImages)
-            {
-                if (img.Name.Contains(searchText))
-                {
-                    if (currentidx == searchidx)
-                    {
-                        WzNode node = (WzNode)img.HRTag;
-                        DataTree.SelectedNode = node;
-                        node.EnsureVisible();
-                        DataTree.Focus();
-                        finished = true;
-                        searchidx++;
-                        return;
-                    }
-                    else if (listSearchResults)
-                        searchResultsList.Add(img.FullPath);
-                    else
-                        currentidx++;
-                }
-                if (img.Parsed)
-                    SearchWzProperties(img, currentidx, searchText);
-                else if (extractImages)
-                {
-                    img.ParseImage();
-                    SearchWzProperties(img, currentidx, searchText);
-                }
-                if (finished) return;
-            }*/
         }
-
-        /*private void SearchTV(Node parent, int currentidx, string searchText)
-        {
-            foreach (Node node in parent.Nodes)
-            {
-                if (node.Text.Contains(searchText))
-                {
-                    if (currentidx == searchidx)
-                    {
-                        DataTree.SelectedNode = node;
-                        node.EnsureVisible();
-                        DataTree.Focus();
-                        finished = true;
-                        searchidx++;
-                        return;
-                    }
-                    else
-                    {
-                        currentidx++;
-                    }
-                }
-                if (node.Nodes.Count != 0)
-                {
-                    SearchTV(node, currentidx, searchText);
-                    if (finished)
-                        return;
-                }
-            }
-        }*/
 
         private void btnRestart_Click(object sender, EventArgs e)
         {
@@ -690,7 +609,7 @@ namespace HaRepackerLib.Controls
                 else SearchTV(node);
                 if (finished) break;
             }
-            if (!finished) { MessageBox.Show("Reached the end of the tree"); searchidx = 0; DataTree.SelectedNode.EnsureVisible(); }
+            if (!finished) { MessageBox.Show(Properties.Resources.MainTreeEnd); searchidx = 0; DataTree.SelectedNode.EnsureVisible(); }
             findBox.Focus();
         }
 

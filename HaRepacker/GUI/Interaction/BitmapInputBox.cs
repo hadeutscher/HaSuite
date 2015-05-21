@@ -46,7 +46,7 @@ namespace HaRepacker.GUI.Interaction
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            else MessageBox.Show("Please enter valid input", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else MessageBox.Show(HaRepacker.Properties.Resources.EnterValidInput, HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -57,7 +57,7 @@ namespace HaRepacker.GUI.Interaction
 
         private void browseButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the image", Filter = "Images(*.jpg;*.bmp;*.png;*.gif;*.tiff)|*.jpg;*.bmp;*.png;*.gif;*.tiff" };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = HaRepacker.Properties.Resources.SelectImage, Filter = string.Format("{0}|*.jpg;*.bmp;*.png;*.gif;*.tiff", HaRepacker.Properties.Resources.ImagesFilter) };
             if (dialog.ShowDialog() == DialogResult.OK) pathBox.Text = dialog.FileName;
         }
 

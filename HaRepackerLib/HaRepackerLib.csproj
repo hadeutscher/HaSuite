@@ -143,12 +143,30 @@
     <EmbeddedResource Include="Controls\ChangableTextbox.resx">
       <DependentUpon>ChangableTextbox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ChangableTextbox.zh.resx">
+      <DependentUpon>ChangableTextbox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\DockableSearchResult.resx">
+      <DependentUpon>DockableSearchResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DockableSearchResult.zh.resx">
       <DependentUpon>DockableSearchResult.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HaRepackerMainPanel.resx">
       <DependentUpon>HaRepackerMainPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\HaRepackerMainPanel.zh.resx">
+      <DependentUpon>HaRepackerMainPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ReplaceBox.zh.resx">
+      <DependentUpon>ReplaceBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SearchOptionsForm.zh.resx">
+      <DependentUpon>SearchOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SoundPlayer.zh.resx">
+      <DependentUpon>SoundPlayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TreeViewMS.resx">
       <DependentUpon>TreeViewMS.cs</DependentUpon>
@@ -172,6 +190,7 @@
       <DependentUpon>XYPanel.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.zh.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Pause.png" />

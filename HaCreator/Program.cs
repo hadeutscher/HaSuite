@@ -14,6 +14,9 @@ using MapleLib.WzLib;
 using HaCreator.GUI;
 using System.IO;
 using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Reflection;
 
 namespace HaCreator
 {
@@ -43,6 +46,7 @@ namespace HaCreator
             // Startup
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+            Properties.Resources.Culture = CultureInfo.CurrentCulture;
             InfoManager = new WzInformationManager();
             SettingsManager = new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings), typeof(Microsoft.Xna.Framework.Color));
             SettingsManager.Load();

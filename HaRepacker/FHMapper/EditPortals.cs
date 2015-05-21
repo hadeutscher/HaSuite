@@ -58,7 +58,7 @@ namespace Footholds
                     portal.Data["y"].ParentImage.Changed = true;
                 }
             }
-            catch (FormatException) { MessageBox.Show("Input was invalid.\nPlease provide valid values before confirming.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+            catch (FormatException) { MessageBox.Show(HaRepacker.Properties.Resources.FHMapperInvalidInput, HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning); }
             this.Close();
 
         }

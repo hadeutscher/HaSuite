@@ -42,7 +42,7 @@ namespace HaRepacker.GUI.Interaction
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            else MessageBox.Show("Please enter valid input", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else MessageBox.Show(HaRepacker.Properties.Resources.EnterValidInput, HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

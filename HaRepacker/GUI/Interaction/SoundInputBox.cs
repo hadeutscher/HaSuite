@@ -45,7 +45,7 @@ namespace HaRepacker.GUI.Interaction
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            else MessageBox.Show("Please enter valid input", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            else MessageBox.Show(HaRepacker.Properties.Resources.EnterValidInput, HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
@@ -56,7 +56,7 @@ namespace HaRepacker.GUI.Interaction
 
         private void browseButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog { Title = "Select MP3 File", Filter = "MPEG-1 Audio Layer 3(*.mp3)|*.mp3" };
+            OpenFileDialog dialog = new OpenFileDialog { Title = HaRepacker.Properties.Resources.SelectMp3, Filter = string.Format("{0}|*.mp3", HaRepacker.Properties.Resources.Mp3Filter) };
             if (dialog.ShowDialog() == DialogResult.OK) pathBox.Text = dialog.FileName;
         }
     }

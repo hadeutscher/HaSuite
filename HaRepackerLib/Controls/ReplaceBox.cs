@@ -24,7 +24,7 @@ namespace HaRepackerLib
         public ReplaceBox(string name)
         {
             InitializeComponent();
-            label1.Text = "The node \"" + name + "\" already exists. Do you want it to be replaced?";
+            label1.Text = string.Format(Properties.Resources.ReplaceConfirm, name);
         }
 
         private void ReplaceBox_FormClosing(object sender, FormClosingEventArgs e)

@@ -28,6 +28,7 @@ namespace Footholds
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SpawnpointInfo));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.MobIDLbl = new System.Windows.Forms.Label();
@@ -41,91 +42,55 @@ namespace Footholds
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Mob ID:";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 31);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(65, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Foothold ID:";
             // 
             // MobIDLbl
             // 
-            this.MobIDLbl.AutoSize = true;
-            this.MobIDLbl.Location = new System.Drawing.Point(90, 9);
+            resources.ApplyResources(this.MobIDLbl, "MobIDLbl");
             this.MobIDLbl.Name = "MobIDLbl";
-            this.MobIDLbl.Size = new System.Drawing.Size(11, 13);
-            this.MobIDLbl.TabIndex = 2;
-            this.MobIDLbl.Text = "*";
             // 
             // FHIDLbl
             // 
-            this.FHIDLbl.AutoSize = true;
-            this.FHIDLbl.Location = new System.Drawing.Point(90, 31);
+            resources.ApplyResources(this.FHIDLbl, "FHIDLbl");
             this.FHIDLbl.Name = "FHIDLbl";
-            this.FHIDLbl.Size = new System.Drawing.Size(11, 13);
-            this.FHIDLbl.TabIndex = 3;
-            this.FHIDLbl.Text = "*";
             // 
             // OKBtn
             // 
-            this.OKBtn.Location = new System.Drawing.Point(66, 95);
+            resources.ApplyResources(this.OKBtn, "OKBtn");
             this.OKBtn.Name = "OKBtn";
-            this.OKBtn.Size = new System.Drawing.Size(48, 23);
-            this.OKBtn.TabIndex = 4;
-            this.OKBtn.Text = "OK";
             this.OKBtn.UseVisualStyleBackColor = true;
             this.OKBtn.Click += new System.EventHandler(this.OKBtn_Click);
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 53);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(47, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "X coord:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 75);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Y coord:";
             // 
             // XLbl
             // 
-            this.XLbl.AutoSize = true;
-            this.XLbl.Location = new System.Drawing.Point(90, 53);
+            resources.ApplyResources(this.XLbl, "XLbl");
             this.XLbl.Name = "XLbl";
-            this.XLbl.Size = new System.Drawing.Size(11, 13);
-            this.XLbl.TabIndex = 7;
-            this.XLbl.Text = "*";
             // 
             // YLbl
             // 
-            this.YLbl.AutoSize = true;
-            this.YLbl.Location = new System.Drawing.Point(90, 75);
+            resources.ApplyResources(this.YLbl, "YLbl");
             this.YLbl.Name = "YLbl";
-            this.YLbl.Size = new System.Drawing.Size(11, 13);
-            this.YLbl.TabIndex = 8;
-            this.YLbl.Text = "*";
             // 
             // SpawnpointInfo
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(176, 125);
             this.Controls.Add(this.YLbl);
             this.Controls.Add(this.XLbl);
             this.Controls.Add(this.label4);
@@ -139,7 +104,6 @@ namespace Footholds
             this.MinimizeBox = false;
             this.Name = "SpawnpointInfo";
             this.ShowIcon = false;
-            this.Text = "Spawnpoint";
             this.Load += new System.EventHandler(this.SpawnpointInfo_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

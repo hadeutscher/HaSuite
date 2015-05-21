@@ -35,8 +35,9 @@ namespace HaRepacker.GUI
         public MainForm(string wzToLoad, bool usingPipes, bool firstrun)
         {
             InitializeComponent();
-            /*if (firstrun)
-                new AboutForm().ShowDialog();*/
+            encryptionBox.Items.Add(HaRepacker.Properties.Resources.EncTypeGMS);
+            encryptionBox.Items.Add(HaRepacker.Properties.Resources.EncTypeMSEA);
+            encryptionBox.Items.Add(HaRepacker.Properties.Resources.EncTypeNone);
 #if DEBUG
             debugToolStripMenuItem.Visible = true;
 #endif
@@ -98,7 +99,7 @@ namespace HaRepacker.GUI
             }
             catch
             {
-                Warning.Error("Could not open WZ file \"" + path + "\"");
+                Warning.Error(string.Format(HaRepacker.Properties.Resources.MainCouldntOpenWZ, path));
             }
         }
 
@@ -193,7 +194,7 @@ namespace HaRepacker.GUI
                     ));
                 if (version <= Constants.Version)
                     return;
-                if (MessageBox.Show(notice.Replace("%URL%", url) + "\r\n\r\nClick \"Yes\" to download the new version.", "New Version", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show(string.Format(HaRepacker.Properties.Resources.MainUpdateAvailable, notice.Replace("%URL%", url)), HaRepacker.Properties.Resources.MainUpdateTitle, MessageBoxButtons.YesNo) == DialogResult.Yes)
                     Process.Start(url);
             }
             catch { }
@@ -232,7 +233,7 @@ namespace HaRepacker.GUI
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the WZ File", Filter = "WZ File(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = HaRepacker.Properties.Resources.SelectWz, Filter = string.Format("{0}|*.wz", HaRepacker.Properties.Resources.WzFilter), Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             foreach (string name in dialog.FileNames)
             {
@@ -247,13 +248,13 @@ namespace HaRepacker.GUI
 
         private void unloadAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Warning.Warn("Are you sure you want to unload all files?"))
+            if (Warning.Warn(HaRepacker.Properties.Resources.MainUnloadAll))
                 Program.WzMan.UnloadAll();
         }
 
         private void reloadAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Warning.Warn("Are you sure you want to reload all files?"))
+            if (Warning.Warn(HaRepacker.Properties.Resources.MainReloadAll))
                 Program.WzMan.ReloadAll(MainPanel);
         }
 
@@ -307,7 +308,7 @@ namespace HaRepacker.GUI
                     node = (WzNode)MainPanel.DataTree.Nodes[0];
                 else
                 {
-                    MessageBox.Show("Please select the WZ file to save", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(HaRepacker.Properties.Resources.MainSelectWzFolder, HaRepacker.Properties.Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -325,7 +326,7 @@ namespace HaRepacker.GUI
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             ApplicationSettings.Maximized = WindowState == FormWindowState.Maximized;
-            e.Cancel = !Warning.Warn("Are you sure you want to exit?");
+            e.Cancel = !Warning.Warn(HaRepacker.Properties.Resources.MainConfirmExit);
         }
         #endregion
 
@@ -336,7 +337,7 @@ namespace HaRepacker.GUI
 
         private void RemoveSelectedNodes()
         {
-            if (!Warning.Warn("Are you sure you want to remove this node?")) return;
+            if (!Warning.Warn(HaRepacker.Properties.Resources.MainConfirmRemoveNode)) return;
             MainPanel.RemoveSelectedNodes();
         }
 
@@ -353,7 +354,7 @@ namespace HaRepacker.GUI
             {
                 if (WzTool.IsListFile(wzpath))
                 {
-                    Warning.Error("The file at " + wzpath + " is a List.wz file and will be skipped.");
+                    Warning.Error(string.Format(HaRepacker.Properties.Resources.MainListWzDetected, wzpath));
                     continue;
                 }
                 WzFile f = new WzFile(wzpath, version);
@@ -432,9 +433,9 @@ namespace HaRepacker.GUI
 
         private void xMLToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Choose the files you wish to export", Filter = "WZ Files(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = HaRepacker.Properties.Resources.SelectWz, Filter = string.Format("{0}|*.wz", HaRepacker.Properties.Resources.WzFilter), Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
-            FolderBrowserDialog folderDialog = new FolderBrowserDialog() { Description = "Select where to output the files to" };
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog() { Description = HaRepacker.Properties.Resources.SelectOutDir };
             if (folderDialog.ShowDialog() != DialogResult.OK) return;
             WzClassicXmlSerializer serializer = new WzClassicXmlSerializer(UserSettings.Indentation, UserSettings.LineBreakType, false);
             threadDone = false;
@@ -484,13 +485,13 @@ namespace HaRepacker.GUI
         private string GetOutputDirectory()
         {
             return UserSettings.DefaultXmlFolder == "" ?
-                SavedFolderBrowser.Show("Select the output directory")
+                SavedFolderBrowser.Show(HaRepacker.Properties.Resources.SelectOutDir)
                 : UserSettings.DefaultXmlFolder;
         }
 
         private void rawDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Choose the files you wish to export", Filter = "WZ Files(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = HaRepacker.Properties.Resources.SelectWz, Filter = string.Format("{0}|*.wz", HaRepacker.Properties.Resources.WzFilter), Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             string outPath = GetOutputDirectory();
             if (outPath == "") return;
@@ -503,7 +504,7 @@ namespace HaRepacker.GUI
 
         private void imgToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Choose the files you wish to export", Filter = "WZ Files(*.wz)|*.wz", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = HaRepacker.Properties.Resources.SelectWz, Filter = string.Format("{0}|*.wz", HaRepacker.Properties.Resources.WzFilter), Multiselect = true };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             string outPath = GetOutputDirectory();
             if (outPath == "") return;
@@ -585,7 +586,7 @@ namespace HaRepacker.GUI
 
         private void newToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dialog = new SaveFileDialog() { Title = "Select where to save the XML", Filter = "eXtended Markup Language (*.xml)|*.xml" };
+            SaveFileDialog dialog = new SaveFileDialog() { Title = HaRepacker.Properties.Resources.SelectOutXml, Filter = string.Format("{0}|*.xml", HaRepacker.Properties.Resources.XmlFilter) };
             if (dialog.ShowDialog() != DialogResult.OK) return;
             List<WzObject> objs = new List<WzObject>();
             foreach (WzNode node in MainPanel.DataTree.SelectedNodes)
@@ -600,7 +601,7 @@ namespace HaRepacker.GUI
 
         private void AbortButton_Click(object sender, EventArgs e)
         {
-            if (Warning.Warn("Are you sure you want to abort the current operation?"))
+            if (Warning.Warn(HaRepacker.Properties.Resources.MainConfirmAbort))
             {
                 threadDone = true;
                 runningThread.Abort();
@@ -629,10 +630,10 @@ namespace HaRepacker.GUI
         {
             if (MainPanel.DataTree.SelectedNode == null) return;
             if (!ValidAnimation((WzObject)MainPanel.DataTree.SelectedNode.Tag))
-                Warning.Error("This item is not an animation.");
+                Warning.Error(HaRepacker.Properties.Resources.MainAnimationFail);
             else
             {
-                SaveFileDialog dialog = new SaveFileDialog() { Title = "Select where to save the animation", Filter = "Animated Portable Network Graphics (*.png)|*.png" };
+                SaveFileDialog dialog = new SaveFileDialog() { Title = HaRepacker.Properties.Resources.SelectOutApng, Filter = string.Format("{0}|*.png", HaRepacker.Properties.Resources.ApngFilter) };
                 if (dialog.ShowDialog() != DialogResult.OK)
                 {
                     return;
@@ -646,10 +647,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!NameInputBox.Show("Add directory", out name))
+            else if (!NameInputBox.Show(HaRepacker.Properties.Resources.MainAddDir, out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzDirectory(name), MainPanel.UndoRedoMan);
         }
@@ -659,10 +660,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!NameInputBox.Show("Add image", out name))
+            else if (!NameInputBox.Show(HaRepacker.Properties.Resources.MainAddImg, out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzImage(name) { Changed = true }, MainPanel.UndoRedoMan);
         }
@@ -673,10 +674,10 @@ namespace HaRepacker.GUI
             double? d;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!FloatingPointInputBox.Show("Add float", out name, out d))
+            else if (!FloatingPointInputBox.Show(HaRepacker.Properties.Resources.MainAddFloat, out name, out d))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzFloatProperty(name, (float)d), MainPanel.UndoRedoMan);
         }
@@ -687,10 +688,10 @@ namespace HaRepacker.GUI
             Bitmap bmp;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!BitmapInputBox.Show("Add canvas", out name, out bmp))
+            else if (!BitmapInputBox.Show(HaRepacker.Properties.Resources.MainAddCanvas, out name, out bmp))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzCanvasProperty(name) { PngProperty = new WzPngProperty() { PNG = bmp } }, MainPanel.UndoRedoMan);
         }
@@ -701,10 +702,10 @@ namespace HaRepacker.GUI
             int? value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!IntInputBox.Show("Add int", out name, out value))
+            else if (!IntInputBox.Show(HaRepacker.Properties.Resources.MainAddInt, out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzIntProperty(name, (int)value), MainPanel.UndoRedoMan);
         }
@@ -714,10 +715,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!NameInputBox.Show("Add convex", out name))
+            else if (!NameInputBox.Show(HaRepacker.Properties.Resources.MainAddConvex, out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzConvexProperty(name), MainPanel.UndoRedoMan);
         }
@@ -728,10 +729,10 @@ namespace HaRepacker.GUI
             double? d;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!FloatingPointInputBox.Show("Add double", out name, out d))
+            else if (!FloatingPointInputBox.Show(HaRepacker.Properties.Resources.MainAddDouble, out name, out d))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzDoubleProperty(name, (double)d), MainPanel.UndoRedoMan);
          }
@@ -741,10 +742,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!NameInputBox.Show("Add null", out name))
+            else if (!NameInputBox.Show(HaRepacker.Properties.Resources.MainAddNull, out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzNullProperty(name), MainPanel.UndoRedoMan);
         }
@@ -755,10 +756,10 @@ namespace HaRepacker.GUI
             string path;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!SoundInputBox.Show("Add sound", out name, out path))
+            else if (!SoundInputBox.Show(HaRepacker.Properties.Resources.MainAddSound, out name, out path))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzSoundProperty(name, path), MainPanel.UndoRedoMan);
         }
@@ -769,10 +770,10 @@ namespace HaRepacker.GUI
             string value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!NameValueInputBox.Show("Add string", out name, out value))
+            else if (!NameValueInputBox.Show(HaRepacker.Properties.Resources.MainAddString, out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzStringProperty(name, value), MainPanel.UndoRedoMan);
         }
@@ -782,10 +783,10 @@ namespace HaRepacker.GUI
             string name;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!NameInputBox.Show("Add sub", out name))
+            else if (!NameInputBox.Show(HaRepacker.Properties.Resources.MainAddSub, out name))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzSubProperty(name), MainPanel.UndoRedoMan);
         }
@@ -796,10 +797,10 @@ namespace HaRepacker.GUI
             int? value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!IntInputBox.Show("Add ushort", out name, out value))
+            else if (!IntInputBox.Show(HaRepacker.Properties.Resources.MainAddShort, out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzShortProperty(name, (short)value), MainPanel.UndoRedoMan);
         }
@@ -810,10 +811,10 @@ namespace HaRepacker.GUI
             string value;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!NameValueInputBox.Show("Add uol", out name, out value))
+            else if (!NameValueInputBox.Show(HaRepacker.Properties.Resources.MainAddLink, out name, out value))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzUOLProperty(name, value), MainPanel.UndoRedoMan);
         }
@@ -824,10 +825,10 @@ namespace HaRepacker.GUI
             Point? pt;
             if (!(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))
             {
-                Warning.Error("Cannot insert selected object into this type of wz node.");
+                Warning.Error(HaRepacker.Properties.Resources.MainCannotInsertToNode);
                 return;
             }
-            else if (!VectorInputBox.Show("Add vector", out name, out pt))
+            else if (!VectorInputBox.Show(HaRepacker.Properties.Resources.MainAddVec, out name, out pt))
                 return;
             ((WzNode)MainPanel.DataTree.SelectedNode).AddObject(new WzVectorProperty(name, new WzIntProperty("X",((Point)pt).X),new WzIntProperty("Y",((Point)pt).Y)), MainPanel.UndoRedoMan);
         }
@@ -847,7 +848,7 @@ namespace HaRepacker.GUI
             if (MainPanel.DataTree.SelectedNode == null ||(!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile) && !(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))) return;
              WzFile wzFile = ((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
             if (!(wzFile is WzFile)) return;
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the XML files", Filter = "eXtended Markup Language (*.xml)|*.xml", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = HaRepacker.Properties.Resources.SelectXml, Filter = string.Format("{0}|*.xml", HaRepacker.Properties.Resources.XmlFilter), Multiselect = true };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             WzXmlDeserializer deserializer = new WzXmlDeserializer(true, WzTool.GetIvByMapleVersion(wzFile.MapleVersion));
             yesToAll = false;
@@ -934,7 +935,7 @@ namespace HaRepacker.GUI
                 }
                 catch (Exception e)
                 {
-                    Warning.Error("The file \"" + file + "\" is invalid and will be skipped. Error: " + e.Message);
+                    Warning.Error(string.Format(HaRepacker.Properties.Resources.MainInvalidFileError, file, e.Message));
                     UpdateProgressBar(MainPanel.mainProgressBar, 1, false, false);
                     continue;
                 }
@@ -956,7 +957,7 @@ namespace HaRepacker.GUI
             if (MainPanel.DataTree.SelectedNode == null || (!(MainPanel.DataTree.SelectedNode.Tag is WzDirectory) && !(MainPanel.DataTree.SelectedNode.Tag is WzFile) && !(MainPanel.DataTree.SelectedNode.Tag is IPropertyContainer))) return;
             WzFile wzFile = ((WzObject)MainPanel.DataTree.SelectedNode.Tag).WzFileParent;
             if (!(wzFile is WzFile)) return;
-            OpenFileDialog dialog = new OpenFileDialog() { Title = "Select the IMG files", Filter = "WZ Image Files (*.img)|*.img", Multiselect = true };
+            OpenFileDialog dialog = new OpenFileDialog() { Title = HaRepacker.Properties.Resources.SelectWzImg, Filter = string.Format("{0}|*.img", HaRepacker.Properties.Resources.WzImgFilter), Multiselect = true };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             byte[] iv = WzTool.GetIvByMapleVersion(wzFile.MapleVersion);
             WzImgDeserializer deserializer = new WzImgDeserializer(false);
@@ -981,7 +982,7 @@ namespace HaRepacker.GUI
             if (File.Exists(helpPath))
                 Help.ShowHelp(this, HelpFile);
             else
-                Warning.Error("Help could not be shown because the help file (" + HelpFile + ") was not found");
+                Warning.Error(string.Format(HaRepacker.Properties.Resources.MainHelpOpenFail, HelpFile));
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)

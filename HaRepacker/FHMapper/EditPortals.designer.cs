@@ -28,6 +28,7 @@ namespace Footholds
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditPortals));
             this.label1 = new System.Windows.Forms.Label();
             this.TypeLbl = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -48,151 +49,94 @@ namespace Footholds
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Portal type:";
             // 
             // TypeLbl
             // 
-            this.TypeLbl.AutoSize = true;
-            this.TypeLbl.Location = new System.Drawing.Point(78, 9);
+            resources.ApplyResources(this.TypeLbl, "TypeLbl");
             this.TypeLbl.Name = "TypeLbl";
-            this.TypeLbl.Size = new System.Drawing.Size(11, 13);
-            this.TypeLbl.TabIndex = 1;
-            this.TypeLbl.Text = "*";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 32);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Destination:";
             // 
             // DestLbl
             // 
-            this.DestLbl.AutoSize = true;
-            this.DestLbl.Location = new System.Drawing.Point(78, 32);
+            resources.ApplyResources(this.DestLbl, "DestLbl");
             this.DestLbl.Name = "DestLbl";
-            this.DestLbl.Size = new System.Drawing.Size(11, 13);
-            this.DestLbl.TabIndex = 3;
-            this.DestLbl.Text = "*";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 54);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "X position:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 75);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(56, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Y position:";
             // 
             // XPosLbl
             // 
-            this.XPosLbl.AutoSize = true;
-            this.XPosLbl.Location = new System.Drawing.Point(78, 54);
+            resources.ApplyResources(this.XPosLbl, "XPosLbl");
             this.XPosLbl.Name = "XPosLbl";
-            this.XPosLbl.Size = new System.Drawing.Size(11, 13);
-            this.XPosLbl.TabIndex = 6;
-            this.XPosLbl.Text = "*";
             // 
             // YPosLbl
             // 
-            this.YPosLbl.AutoSize = true;
-            this.YPosLbl.Location = new System.Drawing.Point(78, 75);
+            resources.ApplyResources(this.YPosLbl, "YPosLbl");
             this.YPosLbl.Name = "YPosLbl";
-            this.YPosLbl.Size = new System.Drawing.Size(11, 13);
-            this.YPosLbl.TabIndex = 7;
-            this.YPosLbl.Text = "*";
             // 
             // ConfirmBtn
             // 
-            this.ConfirmBtn.Location = new System.Drawing.Point(15, 104);
+            resources.ApplyResources(this.ConfirmBtn, "ConfirmBtn");
             this.ConfirmBtn.Name = "ConfirmBtn";
-            this.ConfirmBtn.Size = new System.Drawing.Size(75, 23);
-            this.ConfirmBtn.TabIndex = 8;
-            this.ConfirmBtn.Text = "Confirm";
             this.ConfirmBtn.UseVisualStyleBackColor = true;
             this.ConfirmBtn.Click += new System.EventHandler(this.ConfirmBtn_Click);
             // 
             // CancelBtn
             // 
+            resources.ApplyResources(this.CancelBtn, "CancelBtn");
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(146, 104);
             this.CancelBtn.Name = "CancelBtn";
-            this.CancelBtn.Size = new System.Drawing.Size(75, 23);
-            this.CancelBtn.TabIndex = 9;
-            this.CancelBtn.Text = "Cancel";
             this.CancelBtn.UseVisualStyleBackColor = true;
             // 
             // TypeTBox
             // 
-            this.TypeTBox.Location = new System.Drawing.Point(185, 6);
+            resources.ApplyResources(this.TypeTBox, "TypeTBox");
             this.TypeTBox.Name = "TypeTBox";
-            this.TypeTBox.Size = new System.Drawing.Size(36, 20);
-            this.TypeTBox.TabIndex = 10;
             // 
             // XTBox
             // 
-            this.XTBox.Location = new System.Drawing.Point(185, 51);
+            resources.ApplyResources(this.XTBox, "XTBox");
             this.XTBox.Name = "XTBox";
-            this.XTBox.Size = new System.Drawing.Size(36, 20);
-            this.XTBox.TabIndex = 11;
             // 
             // YTBox
             // 
-            this.YTBox.Location = new System.Drawing.Point(185, 72);
+            resources.ApplyResources(this.YTBox, "YTBox");
             this.YTBox.Name = "YTBox";
-            this.YTBox.Size = new System.Drawing.Size(36, 20);
-            this.YTBox.TabIndex = 12;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(95, 9);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(84, 13);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "New type value:";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(108, 54);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(71, 13);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "New X value:";
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(108, 75);
+            resources.ApplyResources(this.label7, "label7");
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(71, 13);
-            this.label7.TabIndex = 15;
-            this.label7.Text = "New Y value:";
             // 
             // EditPortals
             // 
             this.AcceptButton = this.ConfirmBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(234, 140);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
@@ -212,7 +156,6 @@ namespace Footholds
             this.MaximizeBox = false;
             this.Name = "EditPortals";
             this.ShowIcon = false;
-            this.Text = "Portal";
             this.Load += new System.EventHandler(this.EditPortals_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

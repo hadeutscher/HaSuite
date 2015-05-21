@@ -226,6 +226,21 @@
     <Compile Include="GUI\SaveForm.designer.cs">
       <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FHMapper\DisplayMap.zh.resx">
+      <DependentUpon>DisplayMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\Edit.zh.resx">
+      <DependentUpon>Edit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\EditPortals.zh.resx">
+      <DependentUpon>EditPortals.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\Settings.zh.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\SpawnpointInfo.zh.resx">
+      <DependentUpon>SpawnpointInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -245,48 +260,90 @@
     <EmbeddedResource Include="FHMapper\SpawnpointInfo.resx">
       <DependentUpon>SpawnpointInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\AboutForm.zh.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\FirstRunForm.resx">
+      <DependentUpon>FirstRunForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FirstRunForm.zh.resx">
       <DependentUpon>FirstRunForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\BitmapInputBox.resx">
       <DependentUpon>BitmapInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\BitmapInputBox.zh.resx">
+      <DependentUpon>BitmapInputBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\FloatingPointInputBox.resx">
       <DependentUpon>FloatingPointInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\FloatingPointInputBox.zh.resx">
+      <DependentUpon>FloatingPointInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\IntInputBox.resx">
       <DependentUpon>IntInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\IntInputBox.zh.resx">
+      <DependentUpon>IntInputBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\NameInputBox.resx">
       <DependentUpon>NameInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\NameInputBox.zh.resx">
+      <DependentUpon>NameInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\NameValueInputBox.resx">
       <DependentUpon>NameValueInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\NameValueInputBox.zh.resx">
+      <DependentUpon>NameValueInputBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\SoundInputBox.resx">
       <DependentUpon>SoundInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\SoundInputBox.zh.resx">
+      <DependentUpon>SoundInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\VectorInputBox.resx">
       <DependentUpon>VectorInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\VectorInputBox.zh.resx">
+      <DependentUpon>VectorInputBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\ListEditor.resx">
+      <DependentUpon>ListEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ListEditor.zh.resx">
       <DependentUpon>ListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MainForm.zh.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GUI\NewForm.resx">
+      <DependentUpon>NewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\NewForm.zh.resx">
       <DependentUpon>NewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\OptionsForm.zh.resx">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SaveForm.zh.resx">
+      <DependentUpon>SaveForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -302,6 +359,7 @@
       <DependentUpon>SaveForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.zh.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

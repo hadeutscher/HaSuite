@@ -40,7 +40,7 @@ namespace HaRepacker.GUI
 
         private void okButton_Click(object sender, EventArgs e)
         {
-            if (indentBox.Value < 0) { Warning.Error("Indent must be above 0"); return; }
+            if (indentBox.Value < 0) { Warning.Error(HaRepacker.Properties.Resources.OptionsIndentError); return; }
             UserSettings.Sort = sortBox.Checked;
             UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
             UserSettings.AutoAssociate = autoAssociateBox.Checked;
@@ -57,7 +57,7 @@ namespace HaRepacker.GUI
 
         private void browse_Click(object sender, EventArgs e)
         {
-            defXmlFolderBox.Text = SavedFolderBrowser.Show("Select default XML folder");
+            defXmlFolderBox.Text = SavedFolderBrowser.Show(HaRepacker.Properties.Resources.SelectDefaultXmlFolder);
         }
 
         private void defXmlFolderEnable_CheckedChanged(object sender, EventArgs e)

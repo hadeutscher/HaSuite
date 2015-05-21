@@ -72,7 +72,7 @@ namespace Footholds
                 if (tempRect.IntersectsWith(new Rectangle(e.X, e.Y, 1, 1)))
                 {
                     Edit editFoothold = new Edit();
-                    editFoothold.Text = "Foothold: "+ foothold.Data.Name;
+                    editFoothold.Text = string.Format("{0}: {1}", HaRepacker.Properties.Resources.EditFoothold, foothold.Data.Name);
                     editFoothold.fh = Footholds.ToArray()[index];
                     editFoothold.settings = settings;
                     editFoothold.ShowDialog();
@@ -88,7 +88,7 @@ namespace Footholds
                 if (tempRect.IntersectsWith(new Rectangle(e.X, e.Y, 1, 1)))
                 {
                     EditPortals editPortals = new EditPortals();
-                    editPortals.Text = "Portal: " + portal.Data.Name;
+                    editPortals.Text = string.Format("{0}: {1}", HaRepacker.Properties.Resources.EditPortal, portal.Data.Name);
                     editPortals.portal = thePortals.ToArray()[index];
                     editPortals.Settings = settings;
                     editPortals.ShowDialog();
@@ -105,7 +105,7 @@ namespace Footholds
                 {
                     SpawnpointInfo spawnInfo = new SpawnpointInfo();
                     spawnInfo.spawnpoint = spawnpoint;
-                    spawnInfo.Text = "Mob spawnpoint: " + spawnpoint.Data.Name;
+                    spawnInfo.Text = string.Format("{0}: {1}", HaRepacker.Properties.Resources.EditSP, spawnpoint.Data.Name);
                     spawnInfo.ShowDialog();
                 }
                 index++;

@@ -74,7 +74,7 @@ namespace Footholds
                 }
                 this.Close();
             }
-            catch { MessageBox.Show("Input was invalid.\n Please provide valid values before confirming.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+            catch { MessageBox.Show(HaRepacker.Properties.Resources.FHMapperInvalidInput, HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning); }
         }
     }
 }

@@ -18,11 +18,13 @@ using System.Text;
 using System.Security.Permissions;
 using System.IO;
 using System.Security.Principal;
+using System.Globalization;
 
 namespace HaRepacker
 {
     public static class Program
     {
+        public const string Version = "4.2.3";
         public static WzFileManager WzMan = new HaRepackerLib.WzFileManager();
         public static WzSettingsManager SettingsManager;
         public static NamedPipeServerStream pipe;
@@ -36,6 +38,11 @@ namespace HaRepacker
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
+            CultureInfo ci = GetMainCulture(CultureInfo.CurrentCulture);
+            Properties.Resources.Culture = ci;
+            Thread.CurrentThread.CurrentCulture = ci;
+            Thread.CurrentThread.CurrentUICulture = ci;
+
             string wzToLoad = null;
             if (args.Length > 0)
                 wzToLoad = args[0];
@@ -47,19 +54,39 @@ namespace HaRepacker
             EndApplication(true, true);
         }
 
+        private static CultureInfo GetMainCulture(CultureInfo ci)
+        {
+            if (!ci.Name.Contains('-'))
+                return ci;
+            switch (ci.Name.Split("-".ToCharArray())[0])
+            {
+                case "en":
+                    return new CultureInfo("en");
+                case "zh":
+                    return new CultureInfo("zh");
+                default:
+                    return ci;
+            }
+        }
+
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) 
         {
             new ThreadExceptionDialog((Exception)e.ExceptionObject).ShowDialog();
             Environment.Exit(-1);
         }
 
-        public static string GetLocalSettingsPath()
+        public static string GetLocalFolderPath()
         {
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string our_folder = Path.Combine(appdata, "HaRepacker");
             if (!Directory.Exists(our_folder))
                 Directory.CreateDirectory(our_folder);
-            return Path.Combine(our_folder, "Settings.wz");
+            return our_folder;
+        }
+
+        public static string GetLocalSettingsPath()
+        {
+            return Path.Combine(GetLocalFolderPath(), "Settings.wz");
         }
 
         public static bool IsUserAdministrator()
@@ -99,7 +126,7 @@ namespace HaRepacker
             }
             if (!loaded)
             {
-                Warning.Error("Could not load settings file, make sure it is not in use. If it is not, delete it and try again.");
+                Warning.Error(HaRepacker.Properties.Resources.ProgramLoadSettingsError);
                 return true;
             }
             bool firstRun = ApplicationSettings.FirstRun;

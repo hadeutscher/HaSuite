@@ -71,6 +71,24 @@ namespace HaRepackerLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your browser or image viewer is too OLD to view this image. Please download a newer browser such as Firefox..
+        /// </summary>
+        internal static string AnimCompatMessage {
+            get {
+                return ResourceManager.GetString("AnimCompatMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error at animation builder, frame {0}.
+        /// </summary>
+        internal static string AnimError {
+            get {
+                return ResourceManager.GetString("AnimError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap arrow_refresh {
@@ -111,12 +129,93 @@ namespace HaRepackerLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap find {
             get {
                 object obj = ResourceManager.GetObject("find", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy WZ nodes to clipboard? (warning - can take a lot of time if many nodes are selected).
+        /// </summary>
+        internal static string MainConfirmCopy {
+            get {
+                return ResourceManager.GetString("MainConfirmCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paste WZ nodes from clipboard? (warning - can take a lot of time if many nodes are pasted).
+        /// </summary>
+        internal static string MainConfirmPaste {
+            get {
+                return ResourceManager.GetString("MainConfirmPaste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to remove this node?.
+        /// </summary>
+        internal static string MainConfirmRemove {
+            get {
+                return ResourceManager.GetString("MainConfirmRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not convert &quot;{0}&quot; to the required type.
+        /// </summary>
+        internal static string MainConversionError {
+            get {
+                return ResourceManager.GetString("MainConversionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t copy directories because they require too much memory.
+        /// </summary>
+        internal static string MainCopyDirError {
+            get {
+                return ResourceManager.GetString("MainCopyDirError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not load image.
+        /// </summary>
+        internal static string MainImageLoadError {
+            get {
+                return ResourceManager.GetString("MainImageLoadError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A node with that name already exists. Please choose a different name.
+        /// </summary>
+        internal static string MainNodeExists {
+            get {
+                return ResourceManager.GetString("MainNodeExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reached the end of the tree.
+        /// </summary>
+        internal static string MainTreeEnd {
+            get {
+                return ResourceManager.GetString("MainTreeEnd", resourceCulture);
             }
         }
         
@@ -151,12 +250,39 @@ namespace HaRepackerLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The node &quot;{0}&quot; already exists. Do you want it to be replaced?.
+        /// </summary>
+        internal static string ReplaceConfirm {
+            get {
+                return ResourceManager.GetString("ReplaceConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selection Type: {0}.
+        /// </summary>
+        internal static string SelectionType {
+            get {
+                return ResourceManager.GetString("SelectionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap undo {
             get {
                 object obj = ResourceManager.GetObject("undo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        internal static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }

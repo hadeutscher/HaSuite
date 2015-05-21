@@ -24,6 +24,9 @@ namespace HaRepacker.GUI
         public SaveForm(HaRepackerMainPanel panel, WzNode wzNode)
         {
             InitializeComponent();
+            encryptionBox.Items.Add(HaRepacker.Properties.Resources.EncTypeGMS);
+            encryptionBox.Items.Add(HaRepacker.Properties.Resources.EncTypeMSEA);
+            encryptionBox.Items.Add(HaRepacker.Properties.Resources.EncTypeNone);
             this.wzNode = wzNode;
             this.wzf = (WzFile)wzNode.Tag;
             this.panel = panel;
@@ -39,8 +42,8 @@ namespace HaRepacker.GUI
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            if (versionBox.Value < 0) { Warning.Error("Version must be above 0"); return; }
-            SaveFileDialog dialog = new SaveFileDialog() { Title = "Select where to save the file", Filter = "WZ Files(*.wz)|*.wz" };
+            if (versionBox.Value < 0) { Warning.Error(HaRepacker.Properties.Resources.SaveVersionError); return; }
+            SaveFileDialog dialog = new SaveFileDialog() { Title = HaRepacker.Properties.Resources.SelectOutWz, Filter = string.Format("{0}|*.wz", HaRepacker.Properties.Resources.WzFilter) };
             if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             if (wzf is WzFile && wzf.MapleVersion != (WzMapleVersion)encryptionBox.SelectedIndex)
                 PrepareAllImgs(((WzFile)wzf).WzDirectory);

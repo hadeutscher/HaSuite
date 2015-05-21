@@ -38,14 +38,14 @@
 
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu KeyTip="F" Focusable="True">
-                    <RibbonApplicationMenuItem Header="Open..." Command="ns:HaRibbon.Open" ImageSource="pack://application:,,,/HaCreator;component/Images/Folder.png" KeyTip="O" Focusable="True"/>
-                    <RibbonApplicationMenuItem Header="Save..." Command="ns:HaRibbon.Save" ImageSource="pack://application:,,,/HaCreator;component/Images/Save.png" KeyTip="O" Focusable="True"/>
-                    <RibbonApplicationMenuItem Header="Repack WZ Files..." Command="ns:HaRibbon.Repack" ImageSource="pack://application:,,,/HaCreator;component/Images/wz.ico" KeyTip="O" Focusable="True"/>
+                    <RibbonApplicationMenuItem x:Name="openBtn" Header="Open..." Command="ns:HaRibbon.Open" ImageSource="pack://application:,,,/HaCreator;component/Images/Folder.png" KeyTip="O" Focusable="True"/>
+                    <RibbonApplicationMenuItem x:Name="saveBtn" Header="Save..." Command="ns:HaRibbon.Save" ImageSource="pack://application:,,,/HaCreator;component/Images/Save.png" KeyTip="O" Focusable="True"/>
+                    <RibbonApplicationMenuItem x:Name="repackBtn" Header="Repack WZ Files..." Command="ns:HaRibbon.Repack" ImageSource="pack://application:,,,/HaCreator;component/Images/wz.ico" KeyTip="O" Focusable="True"/>
                     <RibbonSeparator/>
-                    <RibbonApplicationMenuItem Header="Open HaRepacker" Command="ns:HaRibbon.HaRepacker" ImageSource="pack://application:,,,/HaCreator;component/Images/HaLogo32.png" KeyTip="O" Focusable="True"/>
+                    <RibbonApplicationMenuItem x:Name="hrBtn" Header="Open HaRepacker" Command="ns:HaRibbon.HaRepacker" ImageSource="pack://application:,,,/HaCreator;component/Images/HaLogo32.png" KeyTip="O" Focusable="True"/>
                     <RibbonSeparator/>
-                    <RibbonApplicationMenuItem Header="About" Command="ns:HaRibbon.About" ImageSource="pack://application:,,,/HaCreator;component/Images/About.png" KeyTip="O" Focusable="True"/>
-                    <RibbonApplicationMenuItem Header="Help" Command="ns:HaRibbon.Help" ImageSource="pack://application:,,,/HaCreator;component/Images/help_icon.png" KeyTip="O" Focusable="True"/>
+                    <RibbonApplicationMenuItem x:Name="aboutBtn" Header="About" Command="ns:HaRibbon.About" ImageSource="pack://application:,,,/HaCreator;component/Images/About.png" KeyTip="O" Focusable="True"/>
+                    <RibbonApplicationMenuItem x:Name="helpBtn" Header="Help" Command="ns:HaRibbon.Help" ImageSource="pack://application:,,,/HaCreator;component/Images/help_icon.png" KeyTip="O" Focusable="True"/>
 
                     <RibbonApplicationMenu.FooterPaneContent>
                         <Grid>
