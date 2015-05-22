@@ -673,6 +673,9 @@
     <Resource Include="Images\arrow_down.png" />
     <Resource Include="Images\arrow_up.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\UserObjs.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

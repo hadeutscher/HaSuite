@@ -28,6 +28,7 @@ namespace HaCreator.MapEditor
         private PresentationParameters pParams = new PresentationParameters();
         private Texture2D pixel;
         private List<Board> boards = new List<Board>();
+        private Board clipBoard;
         private Board selectedBoard = null;
         private IGraphicsDeviceService graphicsDeviceService;
         private FontEngine fontEngine;
@@ -63,6 +64,7 @@ namespace HaCreator.MapEditor
             this.dxHandle = DxContainer.Handle;
             this.userObjs = new UserObjectsManager(this);
             ResetDock();
+            clipBoard = CreateHiddenBoard(new Point(), new Point(), 8);
         }
 
         public void Start()
@@ -128,6 +130,17 @@ namespace HaCreator.MapEditor
             lock (this)
             {
                 Board newBoard = new Board(mapSize, centerPoint, this, menu, ApplicationSettings.theoreticalVisibleTypes, ApplicationSettings.theoreticalEditedTypes);
+                boards.Add(newBoard);
+                newBoard.CreateLayers(layers);
+                return newBoard;
+            }
+        }
+
+        public Board CreateHiddenBoard(Point mapSize, Point centerPoint, int layers)
+        {
+            lock (this)
+            {
+                Board newBoard = new Board(mapSize, centerPoint, this, null, ItemTypes.None, ItemTypes.None);
                 newBoard.CreateLayers(layers);
                 return newBoard;
             }
@@ -211,6 +224,12 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Properties
+        public Board ClipBoard
+        {
+            get { return clipBoard; }
+            internal set { clipBoard = value; }
+        }
+
         public bool DeviceReady
         {
             get { return deviceReady; }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace HaCreator.WzStructure
 {
-    public class FootholdEnumerator : IEnumerable, IEnumerator
+    public class FootholdEnumerator : IEnumerable<FootholdLine>, IEnumerator<FootholdLine>
     {
         bool started = false;
         private FootholdLine firstLine;
@@ -30,9 +30,14 @@ namespace HaCreator.WzStructure
             firstAnchor = startAnchor;
         }
 
-        public IEnumerator GetEnumerator()
+        public IEnumerator<FootholdLine> GetEnumerator()
         {
             return this;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public bool MoveNext()
@@ -95,12 +100,12 @@ namespace HaCreator.WzStructure
         {
         }
 
-        public object Current
+        object IEnumerator.Current
         {
-            get { return currLine; }
+            get { return Current; }
         }
 
-        public FootholdLine CurrentLine
+        public FootholdLine Current
         {
             get { return currLine; }
         }
@@ -111,7 +116,7 @@ namespace HaCreator.WzStructure
         }
     }
 
-    public class AnchorEnumerator : IEnumerable, IEnumerator
+    public class AnchorEnumerator : IEnumerable<FootholdAnchor>, IEnumerator<FootholdAnchor>
     {
         private bool started = false;
         private FootholdAnchor first;
@@ -125,9 +130,14 @@ namespace HaCreator.WzStructure
             first = start;
         }
 
-        public IEnumerator GetEnumerator()
+        public IEnumerator<FootholdAnchor> GetEnumerator()
         {
             return this;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public bool MoveNext()
@@ -186,7 +196,12 @@ namespace HaCreator.WzStructure
         {
         }
 
-        public object Current
+        object IEnumerator.Current
+        {
+            get { return Current; }
+        }
+
+        public FootholdAnchor Current
         {
             get { return curr; }
         }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace HaCreator.MapEditor
 {
@@ -248,6 +249,20 @@ namespace HaCreator.MapEditor
                             }
                         }
                         clearRedo = false;
+                        break;
+                    case Keys.C:
+                        if (ctrl)
+                        {
+                            // Copy
+                            selectedBoard.CopyItemsTo(selectedBoard.SelectedItems, parentBoard.ClipBoard, new Point(-selectedBoard.Mouse.X, -selectedBoard.Mouse.Y));
+                        }
+                        break;
+                    case Keys.V:
+                        if (ctrl)
+                        {
+                            // Paste
+                            parentBoard.ClipBoard.CopyItemsTo(parentBoard.ClipBoard.BoardItems.Cast<BoardItem>().ToList(), selectedBoard, new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y));
+                        }
                         break;
                     case Keys.Z:
                         if (ctrl && selectedBoard.UndoRedoMan.UndoList.Count > 0) selectedBoard.UndoRedoMan.Undo();

@@ -58,7 +58,6 @@ namespace HaCreator.MapEditor
 
             boardItems = new BoardItemsManager(this);
             undoRedoMan = new UndoRedoManager(this);
-            parent.Boards.Add(this);
             mouse = new Mouse(this);
         }
 
@@ -217,8 +216,12 @@ namespace HaCreator.MapEditor
             GC.WaitForPendingFinalizers();
         }
 
-        #region Properties
+        public void CopyItemsTo(List<BoardItem> items, Board dstBoard, Point offset)
+        {
 
+        }
+
+        #region Properties
         public UndoRedoManager UndoRedoMan
         {
             get { return undoRedoMan; }
@@ -273,6 +276,7 @@ namespace HaCreator.MapEditor
         public Point CenterPoint
         {
             get { return centerPoint; }
+            internal set { centerPoint = value; }
         }
 
         public int vScroll
@@ -296,6 +300,10 @@ namespace HaCreator.MapEditor
             get
             {
                 return parent;
+            }
+            internal set
+            {
+                parent = value;
             }
         }
 
@@ -401,9 +409,9 @@ namespace HaCreator.MapEditor
         {
             return new SelectionInfo(selectedLayerIndex, selectedPlatform, visibleTypes, editedTypes);
         }
-        #endregion
 
         public bool Loading { get { return loading; } set { loading = value; } }
+        #endregion
     }
 
     public abstract class BoardItem

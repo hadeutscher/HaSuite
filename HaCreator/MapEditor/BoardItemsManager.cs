@@ -13,7 +13,7 @@ using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.MapEditor
 {
-    public class BoardItemsEnumerator : IEnumerator
+    public class BoardItemsEnumerator : IEnumerator<object>
     {
         private BoardItemsManager parent;
         private int currListIndex;
@@ -61,6 +61,10 @@ namespace HaCreator.MapEditor
                 return currList[listIndex];
             }
         }
+
+        public void Dispose()
+        {
+        }
     }
 
     public interface IMapleList : IList
@@ -93,7 +97,7 @@ namespace HaCreator.MapEditor
 
     }
 
-    public class BoardItemsManager : IEnumerable
+    public class BoardItemsManager : IEnumerable<object>
     {
         public MapleList<BackgroundInstance> BackBackgrounds = new MapleList<BackgroundInstance>(ItemTypes.Backgrounds, true);
         public MapleList<LayeredItem> TileObjs = new MapleList<LayeredItem>(ItemTypes.None, true);
@@ -119,9 +123,14 @@ namespace HaCreator.MapEditor
 
         private Board board;
 
-        public IEnumerator GetEnumerator()
+        public IEnumerator<object> GetEnumerator()
         {
             return new BoardItemsEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         public BoardItemsManager(Board board)
@@ -229,8 +238,8 @@ namespace HaCreator.MapEditor
         {
             lock (board.ParentControl)
             {
-
                 for (int i = 0; i < 2; i++)
+                {
                     TileObjs.Sort(
                         delegate(LayeredItem a, LayeredItem b)
                         {
@@ -273,6 +282,7 @@ namespace HaCreator.MapEditor
                             }
                         }
                     );
+                }
             }
         }
 
