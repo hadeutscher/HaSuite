@@ -30,8 +30,6 @@ namespace HaRepacker.GUI
 {
     public partial class MainForm : Form
     {
-        FHMapper.FHMapper mapper;
-
         public MainForm(string wzToLoad, bool usingPipes, bool firstrun)
         {
             InitializeComponent();
@@ -260,10 +258,10 @@ namespace HaRepacker.GUI
 
         private void renderMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            FHMapper.FHMapper mapper = new FHMapper.FHMapper(MainPanel);
+            mapper.ParseSettings();
             if (MainPanel.DataTree.SelectedNode == null) 
                 return;
-            mapper = new FHMapper.FHMapper(MainPanel);
-            mapper.ParseSettings();
             if (MainPanel.DataTree.SelectedNode.Tag is WzImage)
             {
                 WzImage img = (WzImage)MainPanel.DataTree.SelectedNode.Tag;
@@ -275,8 +273,7 @@ namespace HaRepacker.GUI
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (mapper == null) 
-                return;
+            FHMapper.FHMapper mapper = new FHMapper.FHMapper(MainPanel);
             mapper.ParseSettings();
             Settings settingsDialog = new Settings();
             settingsDialog.settings = mapper.settings;
