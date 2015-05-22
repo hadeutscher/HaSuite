@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewForm));
             this.nameBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -46,142 +47,89 @@
             // 
             // nameBox
             // 
-            this.nameBox.Location = new System.Drawing.Point(75, 12);
+            resources.ApplyResources(this.nameBox, "nameBox");
             this.nameBox.Name = "nameBox";
-            this.nameBox.Size = new System.Drawing.Size(101, 20);
-            this.nameBox.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(34, 15);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(29, 12);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "名稱";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(178, 15);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(23, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = ".wz";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(38, 37);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 12);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "類型";
             // 
             // regBox
             // 
-            this.regBox.AutoSize = true;
+            resources.ApplyResources(this.regBox, "regBox");
             this.regBox.Checked = true;
-            this.regBox.Location = new System.Drawing.Point(76, 35);
             this.regBox.Name = "regBox";
-            this.regBox.Size = new System.Drawing.Size(47, 16);
-            this.regBox.TabIndex = 4;
             this.regBox.TabStop = true;
-            this.regBox.Text = "常規";
             this.regBox.UseVisualStyleBackColor = true;
             this.regBox.CheckedChanged += new System.EventHandler(this.regBox_CheckedChanged);
             // 
             // listBox
             // 
-            this.listBox.AutoSize = true;
-            this.listBox.Location = new System.Drawing.Point(141, 35);
+            resources.ApplyResources(this.listBox, "listBox");
             this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(47, 16);
-            this.listBox.TabIndex = 5;
-            this.listBox.Text = "列表";
             this.listBox.UseVisualStyleBackColor = true;
             // 
             // copyrightBox
             // 
-            this.copyrightBox.Location = new System.Drawing.Point(75, 61);
+            resources.ApplyResources(this.copyrightBox, "copyrightBox");
             this.copyrightBox.Name = "copyrightBox";
-            this.copyrightBox.Size = new System.Drawing.Size(205, 20);
-            this.copyrightBox.TabIndex = 6;
-            this.copyrightBox.Text = "Package file v1.0 Copyright 2002 Wizet, ZMS";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(18, 64);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 12);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "版權";
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(35, 139);
+            resources.ApplyResources(this.okButton, "okButton");
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(103, 35);
-            this.okButton.TabIndex = 8;
-            this.okButton.Text = "確認";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(144, 139);
+            resources.ApplyResources(this.cancelButton, "cancelButton");
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(112, 35);
-            this.cancelButton.TabIndex = 9;
-            this.cancelButton.Text = "取消";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 90);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(53, 12);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "加密類型";
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(27, 117);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(29, 12);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "版本";
             // 
             // encryptionBox
             // 
+            resources.ApplyResources(this.encryptionBox, "encryptionBox");
             this.encryptionBox.FormattingEnabled = true;
-            this.encryptionBox.Items.AddRange(new object[] {
-            "Global MapleStory (舊)",
-            "新楓之谷/冒险岛Online/메이플스토리/MapleSEA(舊)",
-            "MapleStory/MapleSEA/メイプルストーリー"});
-            this.encryptionBox.Location = new System.Drawing.Point(75, 87);
             this.encryptionBox.Name = "encryptionBox";
-            this.encryptionBox.Size = new System.Drawing.Size(205, 21);
-            this.encryptionBox.TabIndex = 12;
             // 
             // versionBox
             // 
-            this.versionBox.Location = new System.Drawing.Point(75, 114);
+            resources.ApplyResources(this.versionBox, "versionBox");
             this.versionBox.Name = "versionBox";
-            this.versionBox.Size = new System.Drawing.Size(51, 20);
-            this.versionBox.TabIndex = 13;
-            this.versionBox.Text = "1";
             this.versionBox.Value = 1;
             // 
             // NewForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 187);
             this.Controls.Add(this.versionBox);
             this.Controls.Add(this.encryptionBox);
             this.Controls.Add(this.label6);
@@ -197,7 +145,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.nameBox);
             this.Name = "NewForm";
-            this.Text = "新建...";
             this.ResumeLayout(false);
             this.PerformLayout();
 

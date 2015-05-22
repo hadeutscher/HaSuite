@@ -40,7 +40,7 @@ namespace HaRepacker.GUI
 
         private void okButton_Click(object sender, EventArgs e)
         {
-            if (indentBox.Value < 0) { Warning.Error("縮進必須大於或等於0"); return; }
+            if (indentBox.Value < 0) { Warning.Error(HaRepacker.Properties.Resources.OptionsIndentError); return; }
             UserSettings.Sort = sortBox.Checked;
             UserSettings.UseApngIncompatibilityFrame = apngIncompEnable.Checked;
             UserSettings.AutoAssociate = autoAssociateBox.Checked;
@@ -57,7 +57,7 @@ namespace HaRepacker.GUI
 
         private void browse_Click(object sender, EventArgs e)
         {
-            SavedFolderBrowser.Show("選擇默認XML資料夾");
+            defXmlFolderBox.Text = SavedFolderBrowser.Show(HaRepacker.Properties.Resources.SelectDefaultXmlFolder);
         }
 
         private void defXmlFolderEnable_CheckedChanged(object sender, EventArgs e)

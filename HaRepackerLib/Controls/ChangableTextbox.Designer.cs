@@ -28,37 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChangableTextbox));
             this.applyButton = new System.Windows.Forms.Button();
             this.textBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // applyButton
             // 
-            this.applyButton.Enabled = false;
-            this.applyButton.Location = new System.Drawing.Point(280, 0);
+            resources.ApplyResources(this.applyButton, "applyButton");
             this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(44, 20);
-            this.applyButton.TabIndex = 7;
-            this.applyButton.Text = "應用";
             this.applyButton.UseVisualStyleBackColor = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.textBox, "textBox");
             this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(274, 20);
-            this.textBox.TabIndex = 6;
             this.textBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
             // 
             // ChangableTextbox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.textBox);
             this.Name = "ChangableTextbox";
-            this.Size = new System.Drawing.Size(330, 20);
             this.ResumeLayout(false);
             this.PerformLayout();
 

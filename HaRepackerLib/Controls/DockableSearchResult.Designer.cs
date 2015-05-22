@@ -28,28 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DockableSearchResult));
             this.searchResultsBox = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // searchResultsBox
             // 
-            this.searchResultsBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.searchResultsBox, "searchResultsBox");
             this.searchResultsBox.FormattingEnabled = true;
-            this.searchResultsBox.Location = new System.Drawing.Point(0, 0);
             this.searchResultsBox.Name = "searchResultsBox";
-            this.searchResultsBox.Size = new System.Drawing.Size(284, 262);
-            this.searchResultsBox.TabIndex = 0;
             this.searchResultsBox.SelectedIndexChanged += new System.EventHandler(this.searchResultsBox_SelectedIndexChanged);
             // 
             // DockableSearchResult
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
             this.Controls.Add(this.searchResultsBox);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
             this.Name = "DockableSearchResult";
-            this.Text = "搜尋結果";
             this.ResumeLayout(false);
 
         }

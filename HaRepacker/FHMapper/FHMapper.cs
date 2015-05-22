@@ -17,6 +17,7 @@ namespace HaRepacker.FHMapper
 {
     public class FHMapper
     {
+        public static string SettingsPath = Path.Combine(Program.GetLocalFolderPath(), "Settings.ini");
         public List<Object> settings = new List<object>();
         private HaRepackerMainPanel MainPanel;
         private TreeNode node;
@@ -322,9 +323,9 @@ namespace HaRepacker.FHMapper
             {
                 // Add the new ones
                 string theSettings;
-                if (!File.Exists(Application.StartupPath + @"\Settings.ini"))
-                    File.WriteAllText(Application.StartupPath + @"\Settings.ini", "!TAB1-!DPt:0!DPc:False!DNt:0!DNc:True!DFt:-230!DFc:False!\r\n!TAB2-!DXt:100!DXc:False!DYt:100!DYc:False!DTt:2!DTc:False!\r\n!TAB3-!DFPt:C:\\NEXON\\MapleStory\\Map.wz!DFPc:False!DSt:1!DSc:True!");
-                using (TextReader settingsFile = new StreamReader(Application.StartupPath + @"\Settings.ini"))
+                if (!File.Exists(SettingsPath))
+                    File.WriteAllText(SettingsPath, "!TAB1-!DPt:0!DPc:False!DNt:0!DNc:True!DFt:-230!DFc:False!\r\n!TAB2-!DXt:100!DXc:False!DYt:100!DYc:False!DTt:2!DTc:False!\r\n!TAB3-!DFPt:C:\\NEXON\\MapleStory\\Map.wz!DFPc:False!DSt:1!DSc:True!");
+                using (TextReader settingsFile = new StreamReader(SettingsPath))
                     theSettings = settingsFile.ReadToEnd();
                 settings.Add(Regex.Match(theSettings, @"(?<=!DPt:)-?\d*(?=!)").Value);
                 settings.Add(bool.Parse(Regex.Match(theSettings, @"(?<=!DPc:)\w+(?=!)").Value));

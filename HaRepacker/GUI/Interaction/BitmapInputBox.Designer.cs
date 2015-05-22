@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BitmapInputBox));
             this.label1 = new System.Windows.Forms.Label();
             this.nameBox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
@@ -43,91 +44,64 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 14);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(35, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "名稱:";
             // 
             // nameBox
             // 
-            this.nameBox.Location = new System.Drawing.Point(56, 11);
+            resources.ApplyResources(this.nameBox, "nameBox");
             this.nameBox.Name = "nameBox";
-            this.nameBox.Size = new System.Drawing.Size(224, 21);
-            this.nameBox.TabIndex = 0;
             this.nameBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.keyPress);
             // 
             // okButton
             // 
-            this.okButton.Location = new System.Drawing.Point(104, 266);
+            resources.ApplyResources(this.okButton, "okButton");
             this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(54, 23);
-            this.okButton.TabIndex = 3;
-            this.okButton.Text = "確認";
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(164, 266);
+            resources.ApplyResources(this.cancelButton, "cancelButton");
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(54, 23);
-            this.cancelButton.TabIndex = 4;
-            this.cancelButton.Text = "取消";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
             // pathBox
             // 
-            this.pathBox.Location = new System.Drawing.Point(56, 35);
+            resources.ApplyResources(this.pathBox, "pathBox");
             this.pathBox.Name = "pathBox";
-            this.pathBox.Size = new System.Drawing.Size(224, 21);
-            this.pathBox.TabIndex = 1;
             this.pathBox.TextChanged += new System.EventHandler(this.pathBox_TextChanged);
             this.pathBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.keyPress);
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 38);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(35, 12);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "路徑:";
             // 
             // browseButton
             // 
-            this.browseButton.Location = new System.Drawing.Point(286, 35);
+            resources.ApplyResources(this.browseButton, "browseButton");
             this.browseButton.Name = "browseButton";
-            this.browseButton.Size = new System.Drawing.Size(26, 18);
-            this.browseButton.TabIndex = 2;
-            this.browseButton.Text = "...";
             this.browseButton.UseVisualStyleBackColor = true;
             this.browseButton.Click += new System.EventHandler(this.browseButton_Click);
             // 
             // panel1
             // 
+            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.Controls.Add(this.pictureBox);
-            this.panel1.Location = new System.Drawing.Point(12, 66);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(299, 195);
-            this.panel1.TabIndex = 6;
             // 
             // pictureBox
             // 
-            this.pictureBox.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.pictureBox, "pictureBox");
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(299, 211);
-            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             // 
             // BitmapInputBox
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(324, 300);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.browseButton);
             this.Controls.Add(this.pathBox);
@@ -138,7 +112,6 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "BitmapInputBox";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.keyPress);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

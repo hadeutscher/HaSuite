@@ -12,6 +12,11 @@ using HaCreator.MapEditor;
 using System.Runtime.InteropServices;
 using MapleLib.WzLib;
 using HaCreator.GUI;
+using System.IO;
+using System.Globalization;
+using System.Threading;
+using System.Resources;
+using System.Reflection;
 
 namespace HaCreator
 {
@@ -23,47 +28,13 @@ namespace HaCreator
         public const string Version = "2.1";
         public static bool Restarting;
 
-        static void SelfCheck()
+        public static string GetLocalSettingsPath()
         {
-            string exceptResult = "";
-            if (!MapleLib.WzLib.Util.WzTool.AESSelfCheck(ref exceptResult))
-            {
-                if (exceptResult.Contains("System.Core"))
-                {
-                    switch (MessageBox.Show("HaCreator has detected that your computer is not running the latest .NET Framework.\r\n\r\nClick \"Yes\" to close the editor and go to the download page on Microsoft's site\r\nClick \"No\" to ignore the error and continue loading\r\nClick \"Cancel\" to close the editor and do nothing", "Error", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
-                    {
-                        case DialogResult.Yes:
-                            System.Diagnostics.Process.Start(@"http://www.microsoft.com/downloads/details.aspx?FamilyID=a9ef9a95-58d2-4e51-a4b7-bea3cc6962cb&displaylang=en#filelist");
-                            Application.Exit();
-                            return;
-                        case DialogResult.No:
-                            break;
-                        case DialogResult.Cancel:
-                            Application.Exit();
-                            return;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Unknown error occured during wzKey generation self check: " + exceptResult);
-                    Application.Exit();
-                }
-            }
-            if (!GUI.Initialization.XNASelfCheck(ref exceptResult))
-            {
-                switch (MessageBox.Show("HaCreator has detected that your computer is not running the XNA Framework.\r\n\r\nClick \"Yes\" to close the editor and go to the download page on Microsoft's site\r\nClick \"No\" to ignore the error and continue loading\r\nClick \"Cancel\" to close the editor and do nothing", "Error", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error))
-                {
-                    case DialogResult.Yes:
-                        System.Diagnostics.Process.Start(@"http://www.microsoft.com/downloads/details.aspx?FamilyID=53867a2a-e249-4560-8011-98eb3e799ef2&displaylang=en");
-                        Application.Exit();
-                        return;
-                    case DialogResult.No:
-                        break;
-                    case DialogResult.Cancel:
-                        Application.Exit();
-                        return;
-                }
-            }
+            string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string our_folder = Path.Combine(appdata, "HaCreator");
+            if (!Directory.Exists(our_folder))
+                Directory.CreateDirectory(our_folder);
+            return Path.Combine(our_folder, "Settings.wz");
         }
 
         /// <summary>
@@ -72,9 +43,12 @@ namespace HaCreator
         [STAThread]
         static void Main()
         {
-            SelfCheck();
+            // Startup
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            Properties.Resources.Culture = CultureInfo.CurrentCulture;
             InfoManager = new WzInformationManager();
-            SettingsManager = new WzSettingsManager(System.IO.Path.Combine(Application.StartupPath, "HCSettings.wz"), typeof(UserSettings), typeof(ApplicationSettings), typeof(Microsoft.Xna.Framework.Color));
+            SettingsManager = new WzSettingsManager(GetLocalSettingsPath(), typeof(UserSettings), typeof(ApplicationSettings), typeof(Microsoft.Xna.Framework.Color));
             SettingsManager.Load();
             MultiBoard.RecalculateSettings();
             Application.EnableVisualStyles();

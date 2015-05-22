@@ -74,7 +74,7 @@ namespace Footholds
                 }
                 this.Close();
             }
-            catch { MessageBox.Show("輸入無效.\n 確認前請提供有效的值.", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+            catch { MessageBox.Show(HaRepacker.Properties.Resources.FHMapperInvalidInput, HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning); }
         }
     }
 }

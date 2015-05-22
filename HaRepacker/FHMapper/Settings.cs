@@ -49,25 +49,25 @@ namespace HaRepacker
             string errorTBox = "";
             try {
                 //Can this be done better?
-                errorTBox = "prev值";
+                errorTBox = HaRepacker.Properties.Resources.FHSettingsPrevValue;
                 int.Parse(PrevTBox.Text);
-                errorTBox = "next值";
+                errorTBox = HaRepacker.Properties.Resources.FHSettingsNextValue;
                 int.Parse(NextTBox.Text);
-                errorTBox = "force值";
+                errorTBox = HaRepacker.Properties.Resources.FHSettingsForceValue;
                 int.Parse(ForceTBox.Text);
-                errorTBox = "X值";
+                errorTBox = HaRepacker.Properties.Resources.FHSettingsXValue;
                 int.Parse(XTBox.Text);
-                errorTBox = "Y值";
+                errorTBox = HaRepacker.Properties.Resources.FHSettingsYValue;
                 int.Parse(YTBox.Text);
-                errorTBox = "傳送點類型值";
+                errorTBox = HaRepacker.Properties.Resources.FHSettingsPortalValue;
                 int.Parse(TypeTBox.Text);
                 double.Parse(SizeTBox.Text);
                 }
-            catch { doOverwrite = false; MessageBox.Show("                      " + errorTBox + "無效.\r\n請在確認前確定所有的值都有效.", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+            catch { doOverwrite = false; MessageBox.Show(string.Format(HaRepacker.Properties.Resources.FHSettingsInvalidMessage, errorTBox), HaRepacker.Properties.Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning); }
             if (doOverwrite)
             {
                 string theSettings;
-                using (TextReader settingsFile = new StreamReader(Application.StartupPath + @"\Settings.ini"))
+                using (TextReader settingsFile = new StreamReader(FHMapper.FHMapper.SettingsPath))
                     theSettings = settingsFile.ReadToEnd();
 
                 // The below should be shorted down using Regex.Replace *Done*
@@ -120,7 +120,7 @@ namespace HaRepacker
                 /*theSettings = theSettings.Remove(Regex.Match(theSettings, @"(?<=!DSc:)\w+(?=!)").Index, Regex.Match(theSettings, @"(?<=!DSc:)\w+(?=!)").Length);
                 theSettings = theSettings.Insert(Regex.Match(theSettings, @"(?<=!DSc:)!").Index, SizeCBox.Checked.ToString());*/
 
-                using (TextWriter settingsWriter = new StreamWriter(Application.StartupPath + @"\Settings.ini"))
+                using (TextWriter settingsWriter = new StreamWriter(FHMapper.FHMapper.SettingsPath))
                     settingsWriter.Write(theSettings);
                 
 

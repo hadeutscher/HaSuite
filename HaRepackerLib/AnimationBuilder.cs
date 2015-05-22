@@ -82,7 +82,7 @@ namespace HaRepackerLib
                 WzCanvasProperty subprop = sortedProps[i];
                 if (i.ToString() != subprop.Name)
                 {
-                    Warning.Error("Something fucked up at animation builder, frame " + i.ToString());
+                    Warning.Error(string.Format(Properties.Resources.AnimError, i.ToString()));
                     return;
                 }
                 Bitmap bmp = subprop.PngProperty.GetPNG(false);
@@ -133,7 +133,7 @@ namespace HaRepackerLib
         {
             Bitmap frame = new Bitmap(frameSize.Width, frameSize.Height);
             using (Graphics g = Graphics.FromImage(frame))
-                g.DrawString("你的瀏覽器或相片檢視器不支援此格式的動畫, 請下載更新的瀏覽器比如火狐", System.Drawing.SystemFonts.MessageBoxFont, Brushes.Black, new Rectangle(0, 0, frame.Width, frame.Height));
+                g.DrawString(Properties.Resources.AnimCompatMessage, System.Drawing.SystemFonts.MessageBoxFont, Brushes.Black, new Rectangle(0, 0, frame.Width, frame.Height));
             return frame;
         }
     }

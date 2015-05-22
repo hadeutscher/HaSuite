@@ -28,35 +28,31 @@ namespace Footholds
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DisplayMap));
             this.MapPBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.MapPBox)).BeginInit();
             this.SuspendLayout();
             // 
             // MapPBox
             // 
-            this.MapPBox.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.MapPBox, "MapPBox");
             this.MapPBox.Name = "MapPBox";
-            this.MapPBox.Size = new System.Drawing.Size(705, 469);
-            this.MapPBox.TabIndex = 0;
             this.MapPBox.TabStop = false;
-            this.MapPBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapPBox_MouseMove);
             this.MapPBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MapPBox_MouseClick);
             this.MapPBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapPBox_MouseDown);
+            this.MapPBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapPBox_MouseMove);
             this.MapPBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MapPBox_MouseUp);
             // 
             // DisplayMap
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(693, 461);
             this.Controls.Add(this.MapPBox);
             this.Name = "DisplayMap";
             this.ShowIcon = false;
-            this.Text = "µØˆD";
             this.Load += new System.EventHandler(this.DisplayMap_Load);
-            this.Resize += new System.EventHandler(this.DisplayMap_Resize);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DisplayMap_MouseMove);
+            this.Resize += new System.EventHandler(this.DisplayMap_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.MapPBox)).EndInit();
             this.ResumeLayout(false);
 

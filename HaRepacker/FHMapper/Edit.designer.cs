@@ -28,6 +28,7 @@ namespace Footholds
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Edit));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.PrevLbl = new System.Windows.Forms.Label();
@@ -46,131 +47,85 @@ namespace Footholds
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 8);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "現在的prev值:";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 25);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(83, 12);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "現在的next值:";
             // 
             // PrevLbl
             // 
-            this.PrevLbl.AutoSize = true;
-            this.PrevLbl.Location = new System.Drawing.Point(115, 8);
+            resources.ApplyResources(this.PrevLbl, "PrevLbl");
             this.PrevLbl.Name = "PrevLbl";
-            this.PrevLbl.Size = new System.Drawing.Size(0, 12);
-            this.PrevLbl.TabIndex = 2;
             // 
             // NextLbl
             // 
-            this.NextLbl.AutoSize = true;
-            this.NextLbl.Location = new System.Drawing.Point(115, 25);
+            resources.ApplyResources(this.NextLbl, "NextLbl");
             this.NextLbl.Name = "NextLbl";
-            this.NextLbl.Size = new System.Drawing.Size(0, 12);
-            this.NextLbl.TabIndex = 3;
             // 
             // PrevTBox
             // 
-            this.PrevTBox.Location = new System.Drawing.Point(102, 70);
+            resources.ApplyResources(this.PrevTBox, "PrevTBox");
             this.PrevTBox.Name = "PrevTBox";
-            this.PrevTBox.Size = new System.Drawing.Size(46, 21);
-            this.PrevTBox.TabIndex = 4;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 73);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(71, 12);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "新的prev值:";
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 97);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(71, 12);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "新的next值:";
             // 
             // NextTBox
             // 
-            this.NextTBox.Location = new System.Drawing.Point(102, 94);
+            resources.ApplyResources(this.NextTBox, "NextTBox");
             this.NextTBox.Name = "NextTBox";
-            this.NextTBox.Size = new System.Drawing.Size(46, 21);
-            this.NextTBox.TabIndex = 7;
             // 
             // ConfirmBtn
             // 
-            this.ConfirmBtn.Location = new System.Drawing.Point(15, 150);
+            resources.ApplyResources(this.ConfirmBtn, "ConfirmBtn");
             this.ConfirmBtn.Name = "ConfirmBtn";
-            this.ConfirmBtn.Size = new System.Drawing.Size(59, 21);
-            this.ConfirmBtn.TabIndex = 8;
-            this.ConfirmBtn.Text = "確認";
             this.ConfirmBtn.UseVisualStyleBackColor = true;
             this.ConfirmBtn.Click += new System.EventHandler(this.Cancel_Click);
             // 
             // CancelBtn
             // 
+            resources.ApplyResources(this.CancelBtn, "CancelBtn");
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(89, 150);
             this.CancelBtn.Name = "CancelBtn";
-            this.CancelBtn.Size = new System.Drawing.Size(59, 21);
-            this.CancelBtn.TabIndex = 9;
-            this.CancelBtn.Text = "取消";
             this.CancelBtn.UseVisualStyleBackColor = true;
             this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 121);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(77, 12);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "新的force值:";
             // 
             // ForceTBox
             // 
-            this.ForceTBox.Location = new System.Drawing.Point(102, 118);
+            resources.ApplyResources(this.ForceTBox, "ForceTBox");
             this.ForceTBox.Name = "ForceTBox";
-            this.ForceTBox.Size = new System.Drawing.Size(46, 21);
-            this.ForceTBox.TabIndex = 11;
             // 
             // label6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 45);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(89, 12);
-            this.label6.TabIndex = 12;
-            this.label6.Text = "現在的force值:";
             // 
             // ForceLbl
             // 
-            this.ForceLbl.AutoSize = true;
-            this.ForceLbl.Location = new System.Drawing.Point(115, 45);
+            resources.ApplyResources(this.ForceLbl, "ForceLbl");
             this.ForceLbl.Name = "ForceLbl";
-            this.ForceLbl.Size = new System.Drawing.Size(0, 12);
-            this.ForceLbl.TabIndex = 13;
             // 
             // Edit
             // 
             this.AcceptButton = this.ConfirmBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(162, 182);
             this.Controls.Add(this.ForceLbl);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.ForceTBox);
@@ -189,7 +144,6 @@ namespace Footholds
             this.MinimizeBox = false;
             this.Name = "Edit";
             this.ShowIcon = false;
-            this.Text = "編輯";
             this.Load += new System.EventHandler(this.Edit_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -24,7 +24,7 @@ namespace HaRepackerLib
         public ReplaceBox(string name)
         {
             InitializeComponent();
-            label1.Text = "節點\"" + name + "\"已存在, 你想取代它嗎?";
+            label1.Text = string.Format(Properties.Resources.ReplaceConfirm, name);
         }
 
         private void ReplaceBox_FormClosing(object sender, FormClosingEventArgs e)

@@ -14,6 +14,7 @@ namespace HaRepacker.GUI
         public AboutForm()
         {
             InitializeComponent();
+            label1.Text = label1.Text.Replace("$VER", Program.Version);
         }
 
         private void button1_Click(object sender, EventArgs e)
