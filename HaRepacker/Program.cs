@@ -63,7 +63,10 @@ namespace HaRepacker
                 case "en":
                     return new CultureInfo("en");
                 case "zh":
-                    return new CultureInfo("zh");
+                    if (ci.EnglishName.Contains("Simplified"))
+                        return new CultureInfo("zh-CHS");
+                    else
+                        return new CultureInfo("zh-CHT");
                 default:
                     return ci;
             }

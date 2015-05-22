@@ -117,46 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AnimCompatMessage" xml:space="preserve">
-    <value>你的瀏覽器或相片檢視器不支援此格式的動畫, 請下載更新的瀏覽器比如火狐</value>
+  <data name="button1.Text" xml:space="preserve">
+    <value>确定</value>
   </data>
-  <data name="AnimError" xml:space="preserve">
-    <value>Error at animation builder, frame {0}</value>
+  <data name="button2.Text" xml:space="preserve">
+    <value>取消</value>
   </data>
-  <data name="Error" xml:space="preserve">
-    <value>錯誤</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="parseImages.Size" type="System.Drawing.Size, System.Drawing">
+    <value>260, 17</value>
   </data>
-  <data name="MainConfirmCopy" xml:space="preserve">
-    <value>要將WZ節點複製到剪切板嗎? (警告 - 如果選擇的節點較多會話比較多時間)</value>
+  <data name="parseImages.Text" xml:space="preserve">
+    <value>搜索的时候粘贴图片 (警告 - 会消耗很多时间)</value>
   </data>
-  <data name="MainConfirmPaste" xml:space="preserve">
-    <value>要從剪切板貼上WZ節點嗎? (警告 - 如果選擇的節點較多會話比較多時間)</value>
+  <data name="searchValues.Size" type="System.Drawing.Size, System.Drawing">
+    <value>86, 17</value>
   </data>
-  <data name="MainConfirmRemove" xml:space="preserve">
-    <value>你確定要移除這個節點嗎?</value>
+  <data name="searchValues.Text" xml:space="preserve">
+    <value>搜索文本值</value>
   </data>
-  <data name="MainConversionError" xml:space="preserve">
-    <value>無法將"{0}"轉換成需要的類型</value>
-  </data>
-  <data name="MainCopyDirError" xml:space="preserve">
-    <value>無法複製目錄因為需要太多記憶體了</value>
-  </data>
-  <data name="MainImageLoadError" xml:space="preserve">
-    <value>無法讀取圖片</value>
-  </data>
-  <data name="MainNodeExists" xml:space="preserve">
-    <value>這個名稱的節點已存在, 請輸入一個不同的節點名稱</value>
-  </data>
-  <data name="MainTreeEnd" xml:space="preserve">
-    <value>已經到達結尾了</value>
-  </data>
-  <data name="ReplaceConfirm" xml:space="preserve">
-    <value>節點"{0}"已存在, 你想取代它嗎?</value>
-  </data>
-  <data name="SelectionType" xml:space="preserve">
-    <value>選中類型: {0}</value>
-  </data>
-  <data name="Warning" xml:space="preserve">
-    <value>警告</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>搜索选项</value>
   </data>
 </root>

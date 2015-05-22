@@ -14,6 +14,7 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -226,19 +226,34 @@
     <Compile Include="GUI\SaveForm.designer.cs">
       <DependentUpon>SaveForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="FHMapper\DisplayMap.zh.resx">
+    <EmbeddedResource Include="FHMapper\DisplayMap.zh-CHS.resx">
       <DependentUpon>DisplayMap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FHMapper\Edit.zh.resx">
+    <EmbeddedResource Include="FHMapper\DisplayMap.zh-CHT.resx">
+      <DependentUpon>DisplayMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\Edit.zh-CHS.resx">
       <DependentUpon>Edit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FHMapper\EditPortals.zh.resx">
+    <EmbeddedResource Include="FHMapper\Edit.zh-CHT.resx">
+      <DependentUpon>Edit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\EditPortals.zh-CHS.resx">
       <DependentUpon>EditPortals.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FHMapper\Settings.zh.resx">
+    <EmbeddedResource Include="FHMapper\EditPortals.zh-CHT.resx">
+      <DependentUpon>EditPortals.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\Settings.zh-CHS.resx">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FHMapper\SpawnpointInfo.zh.resx">
+    <EmbeddedResource Include="FHMapper\Settings.zh-CHT.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\SpawnpointInfo.zh-CHS.resx">
+      <DependentUpon>SpawnpointInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FHMapper\SpawnpointInfo.zh-CHT.resx">
       <DependentUpon>SpawnpointInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\AboutForm.resx">
@@ -260,89 +275,131 @@
     <EmbeddedResource Include="FHMapper\SpawnpointInfo.resx">
       <DependentUpon>SpawnpointInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\AboutForm.zh.resx">
+    <EmbeddedResource Include="GUI\AboutForm.zh-CHS.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\AboutForm.zh-CHT.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\FirstRunForm.resx">
       <DependentUpon>FirstRunForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\FirstRunForm.zh.resx">
+    <EmbeddedResource Include="GUI\FirstRunForm.zh-CHS.resx">
+      <DependentUpon>FirstRunForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\FirstRunForm.zh-CHT.resx">
       <DependentUpon>FirstRunForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\BitmapInputBox.resx">
       <DependentUpon>BitmapInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Interaction\BitmapInputBox.zh.resx">
+    <EmbeddedResource Include="GUI\Interaction\BitmapInputBox.zh-CHS.resx">
+      <DependentUpon>BitmapInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\BitmapInputBox.zh-CHT.resx">
       <DependentUpon>BitmapInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\FloatingPointInputBox.resx">
       <DependentUpon>FloatingPointInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Interaction\FloatingPointInputBox.zh.resx">
+    <EmbeddedResource Include="GUI\Interaction\FloatingPointInputBox.zh-CHS.resx">
+      <DependentUpon>FloatingPointInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\FloatingPointInputBox.zh-CHT.resx">
       <DependentUpon>FloatingPointInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\IntInputBox.resx">
       <DependentUpon>IntInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Interaction\IntInputBox.zh.resx">
+    <EmbeddedResource Include="GUI\Interaction\IntInputBox.zh-CHS.resx">
+      <DependentUpon>IntInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\IntInputBox.zh-CHT.resx">
       <DependentUpon>IntInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\NameInputBox.resx">
       <DependentUpon>NameInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Interaction\NameInputBox.zh.resx">
+    <EmbeddedResource Include="GUI\Interaction\NameInputBox.zh-CHS.resx">
+      <DependentUpon>NameInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\NameInputBox.zh-CHT.resx">
       <DependentUpon>NameInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\NameValueInputBox.resx">
       <DependentUpon>NameValueInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Interaction\NameValueInputBox.zh.resx">
+    <EmbeddedResource Include="GUI\Interaction\NameValueInputBox.zh-CHS.resx">
+      <DependentUpon>NameValueInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\NameValueInputBox.zh-CHT.resx">
       <DependentUpon>NameValueInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\SoundInputBox.resx">
       <DependentUpon>SoundInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Interaction\SoundInputBox.zh.resx">
+    <EmbeddedResource Include="GUI\Interaction\SoundInputBox.zh-CHS.resx">
+      <DependentUpon>SoundInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\SoundInputBox.zh-CHT.resx">
       <DependentUpon>SoundInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\Interaction\VectorInputBox.resx">
       <DependentUpon>VectorInputBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\Interaction\VectorInputBox.zh.resx">
+    <EmbeddedResource Include="GUI\Interaction\VectorInputBox.zh-CHS.resx">
+      <DependentUpon>VectorInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\Interaction\VectorInputBox.zh-CHT.resx">
       <DependentUpon>VectorInputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ListEditor.resx">
       <DependentUpon>ListEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\ListEditor.zh.resx">
+    <EmbeddedResource Include="GUI\ListEditor.zh-CHS.resx">
+      <DependentUpon>ListEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ListEditor.zh-CHT.resx">
       <DependentUpon>ListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\MainForm.zh.resx">
+    <EmbeddedResource Include="GUI\MainForm.zh-CHS.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\MainForm.zh-CHT.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\NewForm.resx">
       <DependentUpon>NewForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\NewForm.zh.resx">
+    <EmbeddedResource Include="GUI\NewForm.zh-CHS.resx">
+      <DependentUpon>NewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\NewForm.zh-CHT.resx">
       <DependentUpon>NewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\OptionsForm.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\OptionsForm.zh.resx">
+    <EmbeddedResource Include="GUI\OptionsForm.zh-CHS.resx">
       <DependentUpon>OptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\SaveForm.zh.resx">
+    <EmbeddedResource Include="GUI\OptionsForm.zh-CHT.resx">
+      <DependentUpon>OptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SaveForm.zh-CHS.resx">
+      <DependentUpon>SaveForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\SaveForm.zh-CHT.resx">
       <DependentUpon>SaveForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -359,7 +416,8 @@
       <DependentUpon>SaveForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.zh.resx" />
+    <EmbeddedResource Include="Properties\Resources.zh-CHS.resx" />
+    <EmbeddedResource Include="Properties\Resources.zh-CHT.resx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
