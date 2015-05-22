@@ -1,5 +1,5 @@
 ﻿using HaCreator.MapEditor;
-using HaCreator.WzStructure;
+using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;

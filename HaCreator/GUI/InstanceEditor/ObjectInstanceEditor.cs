@@ -14,6 +14,8 @@ using System.Text;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
 using MapleLib.WzLib.WzStructure;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.UndoRedo;
 
 namespace HaCreator.GUI.InstanceEditor
 {

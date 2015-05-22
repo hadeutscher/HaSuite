@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using HaCreator.MapEditor;
+using HaCreator.MapEditor.UndoRedo;
 
 namespace HaCreator.GUI.InstanceEditor
 {

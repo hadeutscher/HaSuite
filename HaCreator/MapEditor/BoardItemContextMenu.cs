@@ -1,6 +1,9 @@
-﻿using HaCreator.GUI;
+﻿using HaCreator.Collections;
+using HaCreator.GUI;
 using HaCreator.GUI.InstanceEditor;
-using HaCreator.WzStructure;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.Wz;
 using System;
 using System.Collections.Generic;
 using System.Linq;

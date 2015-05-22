@@ -105,46 +105,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomControls\EditorPanels\BackgroundPanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\BackgroundPanel.Designer.cs">
-      <DependentUpon>BackgroundPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\CommonPanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\CommonPanel.Designer.cs">
-      <DependentUpon>CommonPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\LifePanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\LifePanel.Designer.cs">
-      <DependentUpon>LifePanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\ObjPanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\ObjPanel.Designer.cs">
-      <DependentUpon>ObjPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\PortalPanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\PortalPanel.Designer.cs">
-      <DependentUpon>PortalPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\TilePanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CustomControls\EditorPanels\TilePanel.Designer.cs">
-      <DependentUpon>TilePanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="CustomControls\HaList.xaml.cs">
       <DependentUpon>HaList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\HaRibbon.xaml.cs">
+    <Compile Include="Exceptions\NameAlreadyUsedException.cs" />
+    <Compile Include="GUI\HaRibbon.xaml.cs">
       <DependentUpon>HaRibbon.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\MapBrowser.cs">
@@ -164,6 +129,42 @@
     </Compile>
     <Compile Include="GUI\CancelableWaitWindow.Designer.cs">
       <DependentUpon>CancelableWaitWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\BackgroundPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\BackgroundPanel.Designer.cs">
+      <DependentUpon>BackgroundPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\CommonPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\CommonPanel.Designer.cs">
+      <DependentUpon>CommonPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\LifePanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\LifePanel.Designer.cs">
+      <DependentUpon>LifePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\ObjPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\ObjPanel.Designer.cs">
+      <DependentUpon>ObjPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\PortalPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\PortalPanel.Designer.cs">
+      <DependentUpon>PortalPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\TilePanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GUI\EditorPanels\TilePanel.Designer.cs">
+      <DependentUpon>TilePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="GUI\InstanceEditor\MassZmEditor.cs">
       <SubType>Form</SubType>
@@ -225,7 +226,68 @@
     <Compile Include="GUI\WaitWindow.Designer.cs">
       <DependentUpon>WaitWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="MapEditor\BoardItem.cs" />
     <Compile Include="MapEditor\BoardItemContextMenu.cs" />
+    <Compile Include="MapEditor\GraphicsDeviceService.cs" />
+    <Compile Include="Collections\BoardItemsEnumerator.cs" />
+    <Compile Include="Collections\BoardItemPair.cs" />
+    <Compile Include="Collections\IMapleList.cs" />
+    <Compile Include="Collections\MapleList.cs" />
+    <Compile Include="MapEditor\Info\BackgroundInfo.cs" />
+    <Compile Include="MapEditor\Info\MapleExtractableInfo.cs" />
+    <Compile Include="MapEditor\Info\MapleDrawableInfo.cs" />
+    <Compile Include="MapEditor\Info\MobInfo.cs" />
+    <Compile Include="MapEditor\Info\NpcInfo.cs" />
+    <Compile Include="MapEditor\Info\ObjectInfo.cs" />
+    <Compile Include="MapEditor\Info\PortalInfo.cs" />
+    <Compile Include="MapEditor\Info\ReactorInfo.cs" />
+    <Compile Include="MapEditor\Info\TileInfo.cs" />
+    <Compile Include="MapEditor\Input\MouseState.cs" />
+    <Compile Include="MapEditor\Instance\BackgroundInstance.cs" />
+    <Compile Include="MapEditor\Instance\IContainsLayerInfo.cs" />
+    <Compile Include="MapEditor\Instance\IFlippable.cs" />
+    <Compile Include="MapEditor\Instance\LayeredItem.cs" />
+    <Compile Include="MapEditor\Instance\LifeInstance.cs" />
+    <Compile Include="MapEditor\Instance\Misc\Area.cs" />
+    <Compile Include="MapEditor\Instance\Misc\BuffZone.cs" />
+    <Compile Include="MapEditor\Instance\Misc\Clock.cs" />
+    <Compile Include="MapEditor\Instance\Misc\Healer.cs" />
+    <Compile Include="MapEditor\Instance\Misc\INamedMisc.cs" />
+    <Compile Include="MapEditor\Instance\Misc\MiscLine.cs" />
+    <Compile Include="MapEditor\Instance\Misc\MiscDot.cs" />
+    <Compile Include="MapEditor\Instance\Misc\MiscRectangle.cs" />
+    <Compile Include="MapEditor\Instance\Misc\Pulley.cs" />
+    <Compile Include="MapEditor\Instance\Misc\ShipObject.cs" />
+    <Compile Include="MapEditor\Instance\Misc\SwimArea.cs" />
+    <Compile Include="MapEditor\Instance\MobInstance.cs" />
+    <Compile Include="MapEditor\Instance\NpcInstance.cs" />
+    <Compile Include="MapEditor\Instance\ObjectInstance.cs" />
+    <Compile Include="MapEditor\Instance\ObjectInstanceQuest.cs" />
+    <Compile Include="MapEditor\Instance\PortalInstance.cs" />
+    <Compile Include="MapEditor\Instance\ReactorInstance.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\Chair.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\FootholdAnchor.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\MapleDot.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\MinimapDot.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\RopeAnchor.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\ToolTipDot.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\VRDot.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\FootholdLine.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\MapleLine.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\MinimapLine.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\RopeLine.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\ToolTipLine.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\VRLine.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\MapleEmptyRectangle.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\MapleRectangle.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\MinimapRectangle.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\VRRectangle.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\ToolTip.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\ToolTipChar.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\Rope.cs" />
+    <Compile Include="MapEditor\Instance\TileInstance.cs" />
+    <Compile Include="MapEditor\SelectionInfo.cs" />
+    <Compile Include="MapEditor\Text\CharTexture.cs" />
     <Compile Include="MapEditor\TilesDesign\bsc.cs" />
     <Compile Include="MapEditor\TilesDesign\edD.cs" />
     <Compile Include="MapEditor\TilesDesign\edU.cs" />
@@ -239,6 +301,9 @@
     <Compile Include="MapEditor\TilesDesign\slLU.cs" />
     <Compile Include="MapEditor\TilesDesign\slRD.cs" />
     <Compile Include="MapEditor\TilesDesign\slRU.cs" />
+    <Compile Include="MapEditor\UndoRedo\UndoRedoType.cs" />
+    <Compile Include="MapEditor\UndoRedo\UndoRedoAction.cs" />
+    <Compile Include="MapEditor\UndoRedo\UndoRedoBatch.cs" />
     <Compile Include="MapEditor\UserObjectsManager.cs" />
     <Compile Include="ThirdParty\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
@@ -355,7 +420,7 @@
     <Compile Include="GUI\InstanceEditor\ObjectInstanceEditor.Designer.cs">
       <DependentUpon>ObjectInstanceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="MapEditor\BoardItemsManager.cs" />
+    <Compile Include="Collections\BoardItemsManager.cs" />
     <Compile Include="GUI\ExceptionHandler.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -390,16 +455,12 @@
     <Compile Include="CustomControls\DirectXHolder.Designer.cs">
       <DependentUpon>DirectXHolder.cs</DependentUpon>
     </Compile>
-    <Compile Include="MapEditor\FontEngine.cs" />
+    <Compile Include="MapEditor\Text\FontEngine.cs" />
     <Compile Include="MapEditor\HaCreatorStateManager.cs" />
-    <Compile Include="MapEditor\InputHandler.cs" />
-    <Compile Include="MapEditor\ISnappable.cs" />
+    <Compile Include="MapEditor\Input\InputHandler.cs" />
+    <Compile Include="MapEditor\Instance\ISnappable.cs" />
     <Compile Include="MapEditor\Layer.cs" />
-    <Compile Include="MapEditor\MapleInfo.cs" />
-    <Compile Include="MapEditor\MapleInstance.cs" />
-    <Compile Include="MapEditor\MiscItems.cs" />
-    <Compile Include="MapEditor\Mouse.cs" />
-    <Compile Include="MapEditor\MapleShape.cs" />
+    <Compile Include="MapEditor\Input\Mouse.cs" />
     <Compile Include="MapSimulator\DXObject.cs" />
     <Compile Include="MapSimulator\MapSimulator.cs">
       <SubType>Form</SubType>
@@ -409,32 +470,19 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WzStructure\FootholdEnumerator.cs" />
-    <Compile Include="WzStructure\MapLoader.cs" />
-    <Compile Include="WzStructure\MapSaver.cs" />
+    <Compile Include="Collections\AnchorEnumerator.cs" />
+    <Compile Include="Wz\WzInfoTools.cs" />
+    <Compile Include="Wz\PortalGameImageInfo.cs" />
+    <Compile Include="Collections\FootholdEnumerator.cs" />
+    <Compile Include="Wz\MapLoader.cs" />
+    <Compile Include="Wz\MapSaver.cs" />
+    <Compile Include="Wz\WzInformationManager.cs" />
+    <Compile Include="Wz\WzMainDirectory.cs" />
     <EmbeddedResource Include="CustomControls\AlphaColorPicker.resx">
       <DependentUpon>AlphaColorPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\DirectXHolder.resx">
       <DependentUpon>DirectXHolder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\EditorPanels\BackgroundPanel.resx">
-      <DependentUpon>BackgroundPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\EditorPanels\CommonPanel.resx">
-      <DependentUpon>CommonPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\EditorPanels\LifePanel.resx">
-      <DependentUpon>LifePanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\EditorPanels\ObjPanel.resx">
-      <DependentUpon>ObjPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\EditorPanels\PortalPanel.resx">
-      <DependentUpon>PortalPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControls\EditorPanels\TilePanel.resx">
-      <DependentUpon>TilePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\MapBrowser.resx">
       <DependentUpon>MapBrowser.cs</DependentUpon>
@@ -448,6 +496,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\CancelableWaitWindow.resx">
       <DependentUpon>CancelableWaitWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\EditorPanels\BackgroundPanel.resx">
+      <DependentUpon>BackgroundPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\EditorPanels\CommonPanel.resx">
+      <DependentUpon>CommonPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\EditorPanels\LifePanel.resx">
+      <DependentUpon>LifePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\EditorPanels\ObjPanel.resx">
+      <DependentUpon>ObjPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\EditorPanels\PortalPanel.resx">
+      <DependentUpon>PortalPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\EditorPanels\TilePanel.resx">
+      <DependentUpon>TilePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GUI\ExceptionHandler.resx">
       <DependentUpon>ExceptionHandler.cs</DependentUpon>
@@ -534,8 +600,8 @@
     <EmbeddedResource Include="GUI\WaitWindow.resx">
       <DependentUpon>WaitWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MapEditor\MultiBoardControl.resx">
-      <DependentUpon>MultiBoardControl.cs</DependentUpon>
+    <EmbeddedResource Include="MapEditor\MultiBoard.resx">
+      <DependentUpon>MultiBoard.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MapSimulator\MapSimulator.resx">
@@ -550,15 +616,15 @@
     <EmbeddedResource Include="GUI\TileSetBrowser.resx">
       <DependentUpon>TileSetBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="MapEditor\MultiBoardControl.cs">
+    <Compile Include="MapEditor\MultiBoard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MapEditor\MultiBoardControl.Designer.cs">
-      <DependentUpon>MultiBoardControl.cs</DependentUpon>
+    <Compile Include="MapEditor\MultiBoard.Designer.cs">
+      <DependentUpon>MultiBoard.cs</DependentUpon>
     </Compile>
     <Compile Include="MapEditor\TilesDesign\Snapping.cs" />
-    <Compile Include="MapEditor\UndoRedoManager.cs" />
-    <Compile Include="MapEditor\WzFileManager.cs" />
+    <Compile Include="MapEditor\UndoRedo\UndoRedoManager.cs" />
+    <Compile Include="Wz\WzFileManager.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -650,7 +716,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControls\HaRibbon.xaml">
+    <Page Include="GUI\HaRibbon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -676,6 +742,7 @@
   <ItemGroup>
     <Resource Include="Images\UserObjs.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

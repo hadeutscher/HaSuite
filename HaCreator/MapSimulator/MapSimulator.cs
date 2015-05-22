@@ -22,10 +22,12 @@ using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using System.Collections;
 using HaCreator.MapEditor;
-using HaCreator.WzStructure;
+using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure.Data;
 using MapleLib.WzLib.WzStructure;
 using HaRepackerLib;
+using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.Instance;
 
 namespace HaCreator.MapSimulator
 {

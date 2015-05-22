@@ -5,7 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using HaCreator.CustomControls;
-using HaCreator.CustomControls.EditorPanels;
+using HaCreator.GUI.EditorPanels;
 using HaCreator.GUI;
 using HaCreator.GUI.InstanceEditor;
 using MapleLib.Helpers;
@@ -21,8 +21,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using HaCreator.ThirdParty.TabPages;
 using MapleLib.WzLib;
-using HaCreator.WzStructure;
+using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.UndoRedo;
+using HaCreator.Exceptions;
+using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Instance.Misc;
 
 namespace HaCreator.MapEditor
 {
@@ -191,7 +198,7 @@ namespace HaCreator.MapEditor
                     new PortalInstanceEditor((PortalInstance)item).ShowDialog();
                     break;
                 case "ToolTip":
-                    new TooltipInstanceEditor((ToolTip)item).ShowDialog();
+                    new TooltipInstanceEditor((ToolTipInstance)item).ShowDialog();
                     break;
                 default:
                     break;

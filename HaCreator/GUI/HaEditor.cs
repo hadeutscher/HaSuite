@@ -5,8 +5,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using HaCreator.CustomControls;
-using HaCreator.CustomControls.EditorPanels;
+using HaCreator.GUI.EditorPanels;
 using HaCreator.MapEditor;
+using HaCreator.MapEditor.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -11,16 +11,17 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using HaCreator.MapEditor;
+using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.UndoRedo;
 
 namespace HaCreator.GUI.InstanceEditor
 {
     public partial class TooltipInstanceEditor : EditorBase
     {
-        public HaCreator.MapEditor.ToolTip item;
+        public ToolTipInstance item;
 
-        public TooltipInstanceEditor(HaCreator.MapEditor.ToolTip item)
+        public TooltipInstanceEditor(ToolTipInstance item)
         {
             InitializeComponent();
             this.item = item;

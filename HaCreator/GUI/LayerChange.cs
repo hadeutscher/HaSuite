@@ -5,6 +5,10 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using HaCreator.MapEditor;
+using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Input;
+using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.UndoRedo;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

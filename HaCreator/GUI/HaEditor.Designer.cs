@@ -48,7 +48,7 @@
             this.multiBoard = new HaCreator.MapEditor.MultiBoard();
             this.tabs = new HaCreator.ThirdParty.TabPages.PageCollection();
             this.wpfHost = new System.Windows.Forms.Integration.ElementHost();
-            this.ribbon = new HaCreator.CustomControls.HaRibbon();
+            this.ribbon = new HaCreator.GUI.HaRibbon();
             this.SuspendLayout();
             // 
             // dockPanel
@@ -159,7 +159,7 @@
         #endregion
 
         private System.Windows.Forms.Integration.ElementHost wpfHost;
-        private CustomControls.HaRibbon ribbon;
+        private HaRibbon ribbon;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private HaCreator.ThirdParty.TabPages.PageCollection tabs;
         private MapEditor.MultiBoard multiBoard;

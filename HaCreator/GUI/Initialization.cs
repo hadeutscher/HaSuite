@@ -13,7 +13,7 @@ using System.IO;
 using MapleLib.WzLib;
 using HaCreator.MapEditor;
 using MapleLib.WzLib.Util;
-using HaCreator.WzStructure;
+using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.Helpers;
 

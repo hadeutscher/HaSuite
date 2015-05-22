@@ -4,6 +4,8 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using HaCreator.Exceptions;
+using HaCreator.MapEditor.Info;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
 using System;
@@ -128,9 +130,5 @@ namespace HaCreator.MapEditor
         {
             get { return multiBoard; }
         }
-    }
-
-    public class NameAlreadyUsedException : Exception
-    {
     }
 }

@@ -13,12 +13,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using MapleLib.WzLib.WzStructure.Data;
+using HaCreator.MapEditor.Instance;
 
 namespace HaCreator.GUI.InstanceEditor
 {
     public partial class ObjQuestInput : EditorBase
     {
-        public MapEditor.ObjectInstanceQuest result;
+        public ObjectInstanceQuest result;
 
         public ObjQuestInput()
         {
@@ -34,7 +35,7 @@ namespace HaCreator.GUI.InstanceEditor
 
         protected override void okButton_Click(object sender, EventArgs e)
         {
-            result = new MapEditor.ObjectInstanceQuest((int)idInput.Value, (QuestState)stateInput.SelectedIndex);
+            result = new ObjectInstanceQuest((int)idInput.Value, (QuestState)stateInput.SelectedIndex);
             DialogResult = DialogResult.OK;
             Close();
         }
