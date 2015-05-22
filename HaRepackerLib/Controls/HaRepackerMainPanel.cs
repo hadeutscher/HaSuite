@@ -566,7 +566,7 @@ namespace HaRepackerLib.Controls
                 }
                 else SearchTV(subnode);
             }
-                }
+        }
 
         private void btnRestart_Click(object sender, EventArgs e)
         {

@@ -146,7 +146,7 @@ namespace SharpApng
             int size = Marshal.SizeOf(source[0]) * source.Length;
             IntPtr pnt = Marshal.AllocHGlobal(size);
             Marshal.Copy(toMarshal, 0, pnt, source.Length);
-            //Marshal.Copy(new byte[] { 0 }, 0, new IntPtr(pnt.ToInt32() + size), 1);
+            Marshal.Copy(new byte[] { 0 }, 0, new IntPtr(pnt.ToInt32() + size), 1);
             return pnt;
         }
 

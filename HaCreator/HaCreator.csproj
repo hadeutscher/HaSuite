@@ -54,7 +54,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <Win32Resource>..\ResourceTemplate.res</Win32Resource>
+    <Win32Resource>HaCreator.res</Win32Resource>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -604,6 +604,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="HaCreator.res" />
     <None Include="Resources\mapEditMenu.png" />
     <Resource Include="Images\About.png" />
     <Resource Include="Images\diagram_parallax.png" />

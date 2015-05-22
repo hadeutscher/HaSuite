@@ -53,21 +53,22 @@ namespace HaCreator
             MultiBoard.RecalculateSettings();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            /*try
-            {
-                Application.Run(new GUI.Initialization());
-            }
-            catch (Exception e)
-            {
-                Application.Run(new ExceptionHandler(e));
-            }*/
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+
+            // Program run here
             Application.Run(new GUI.Initialization());
+
+            // Shutdown
             SettingsManager.Save();
             if (Restarting)
             {
                 Application.Restart();
             }
+        }
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            new ThreadExceptionDialog((Exception)e.ExceptionObject).ShowDialog();
+            Environment.Exit(-1);
         }
     }
 }
