@@ -32,23 +32,15 @@ namespace HaRepacker
         [STAThread]
         static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-
             string wzToLoad = null;
             if (args.Length > 0)
                 wzToLoad = args[0];
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             bool firstRun = PrepareApplication(true);
             Application.Run(new MainForm(wzToLoad, true, firstRun));
             EndApplication(true, true);
-        }
-
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) 
-        {
-            new ThreadExceptionDialog((Exception)e.ExceptionObject).ShowDialog();
-            Environment.Exit(-1);
         }
 
         public static bool PrepareApplication(bool from_internal)
