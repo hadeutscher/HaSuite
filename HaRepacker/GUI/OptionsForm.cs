@@ -57,7 +57,7 @@ namespace HaRepacker.GUI
 
         private void browse_Click(object sender, EventArgs e)
         {
-            defXmlFolderBox.Text = SavedFolderBrowser.Show("選擇默認XML資料夾");
+            SavedFolderBrowser.Show("選擇默認XML資料夾");
         }
 
         private void defXmlFolderEnable_CheckedChanged(object sender, EventArgs e)
