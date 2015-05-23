@@ -104,5 +104,18 @@ namespace HaCreator.MapEditor.Instance.Shapes
                     ttc.RemoveItem(undoPipe);
             }
         }
+
+        public void CreateCharacterTooltip(XNA.Rectangle rect)
+        {
+            lock (board.ParentControl)
+            {
+                ToolTipChar ttc = new ToolTipChar(Board, rect, this);
+                List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
+                ttc.OnItemPlaced(undoPipe);
+                CharacterToolTip = ttc;
+                Board.BoardItems.CharacterToolTips.Add(ttc);
+                Board.UndoRedoMan.AddUndoBatch(undoPipe);
+            }
+        }
     }
 }

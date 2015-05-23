@@ -3,6 +3,7 @@ using HaCreator.GUI;
 using HaCreator.GUI.InstanceEditor;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.MapEditor.UndoRedo;
 using HaCreator.Wz;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor
 {
@@ -48,12 +50,18 @@ namespace HaCreator.MapEditor
             List<ToolStripMenuItem> platformCategory = new List<ToolStripMenuItem>();
 
             ToolStripMenuItem editInstance = new ToolStripMenuItem("Edit this instance...");
-            editInstance.Click += new EventHandler(editInstance_Click);
+            editInstance.Click += editInstance_Click;
             editInstance.Font = new System.Drawing.Font(editInstance.Font, System.Drawing.FontStyle.Bold);
             generalCategory.Add(editInstance);
             /*ToolStripMenuItem baseInfo = new ToolStripMenuItem("Edit base info...");
             baseInfo.Click += new EventHandler(baseInfo_Click);
             cms.Items.Add(baseInfo);*/
+            if (target is ToolTipInstance && ((ToolTipInstance)target).CharacterToolTip == null)
+            {
+                ToolStripMenuItem addChar = new ToolStripMenuItem("Add Character Tooltip");
+                addChar.Click += addChar_Click;
+                generalCategory.Add(addChar);
+            }
 
             if (target is BackgroundInstance || target is LayeredItem)
             {
@@ -100,6 +108,12 @@ namespace HaCreator.MapEditor
                     hasItems = true;
                 }
             }
+        }
+
+        void addChar_Click(object sender, EventArgs e)
+        {
+            ToolTipInstance tt = (ToolTipInstance)target;
+            tt.CreateCharacterTooltip(new XNA.Rectangle(tt.Left - 50, tt.Top - 50, tt.Width + 100, tt.Height + 100));
         }
 
         void moveLayer_Click(object sender, EventArgs e)

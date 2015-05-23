@@ -64,6 +64,15 @@ namespace HaCreator.MapEditor.Instance.Shapes
             if (boundTooltip != null) Board.ParentControl.DrawLine(sprite, new XNA.Vector2(X + Width / 2 + xShift, Y + Height / 2 + yShift), new XNA.Vector2(boundTooltip.X + boundTooltip.Width / 2 + xShift, boundTooltip.Y + boundTooltip.Height / 2 + yShift), UserSettings.ToolTipBindingLine);
         }
 
+        public override void OnItemPlaced(List<UndoRedoAction> undoPipe)
+        {
+            lock (board.ParentControl)
+            {
+                base.OnItemPlaced(undoPipe);
+                undoPipe.Add(UndoRedoManager.ToolTipLinked(BoundTooltip, this));
+            }
+        }
+
         public override void RemoveItem(List<UndoRedoAction> undoPipe)
         {
             lock (board.ParentControl)

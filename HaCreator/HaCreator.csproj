@@ -287,7 +287,7 @@
     <Compile Include="MapEditor\Instance\Shapes\MapleRectangle.cs" />
     <Compile Include="MapEditor\Instance\Shapes\MinimapRectangle.cs" />
     <Compile Include="MapEditor\Instance\Shapes\VRRectangle.cs" />
-    <Compile Include="MapEditor\Instance\Shapes\ToolTip.cs" />
+    <Compile Include="MapEditor\Instance\Shapes\ToolTipInstance.cs" />
     <Compile Include="MapEditor\Instance\Shapes\ToolTipChar.cs" />
     <Compile Include="MapEditor\Instance\Shapes\Rope.cs" />
     <Compile Include="MapEditor\Instance\TileInstance.cs" />
