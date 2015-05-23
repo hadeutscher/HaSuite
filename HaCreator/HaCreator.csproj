@@ -105,6 +105,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\BoardItemsCollection.cs" />
+    <Compile Include="Collections\BoardItemsEnumerator.cs" />
+    <Compile Include="Collections\ItemsCollectionBase.cs" />
+    <Compile Include="Collections\MapleLinesCollection.cs" />
+    <Compile Include="Collections\MapleLinesEnumerator.cs" />
     <Compile Include="CustomControls\HaList.xaml.cs">
       <DependentUpon>HaList.xaml</DependentUpon>
     </Compile>
@@ -229,7 +234,7 @@
     <Compile Include="MapEditor\BoardItem.cs" />
     <Compile Include="MapEditor\BoardItemContextMenu.cs" />
     <Compile Include="MapEditor\GraphicsDeviceService.cs" />
-    <Compile Include="Collections\BoardItemsEnumerator.cs" />
+    <Compile Include="Collections\ItemsEnumeratorBase.cs" />
     <Compile Include="Collections\BoardItemPair.cs" />
     <Compile Include="Collections\IMapleList.cs" />
     <Compile Include="Collections\MapleList.cs" />

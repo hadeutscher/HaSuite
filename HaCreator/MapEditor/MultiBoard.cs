@@ -353,7 +353,7 @@ namespace HaCreator.MapEditor
 
         private void GetObjsUnderPointFromList(IMapleList list, Point locationVirtualPos, ref BoardItem itemUnderPoint, ref BoardItem selectedUnderPoint, ref bool selectedItemHigher)
         {
-            if (!list.Selectable) return;
+            if (!list.IsItem) return;
             SelectionInfo sel = selectedBoard.GetUserSelectionInfo();
             if (list.ListType == ItemTypes.None)
             {

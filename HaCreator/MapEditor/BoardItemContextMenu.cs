@@ -149,7 +149,7 @@ namespace HaCreator.MapEditor
             lock (multiboard)
             {
                 int zm = target is IContainsLayerInfo ? ((IContainsLayerInfo)target).PlatformNumber : getZmOfSelectedFoothold();
-                foreach (BoardItem item in target.Board.BoardItems)
+                foreach (BoardItem item in target.Board.BoardItems.Items)
                 {
                     if (item is IContainsLayerInfo && ((IContainsLayerInfo)item).PlatformNumber == zm)
                     {

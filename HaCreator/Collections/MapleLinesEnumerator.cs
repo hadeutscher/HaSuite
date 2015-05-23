@@ -1,4 +1,4 @@
-﻿using HaCreator.MapEditor;
+﻿using HaCreator.MapEditor.Instance.Shapes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace HaCreator.Collections
 {
-    public class BoardItemsEnumerator : ItemsEnumeratorBase, IEnumerator<BoardItem>
+    public class MapleLinesEnumerator : ItemsEnumeratorBase, IEnumerator<MapleLine>
     {
-        public BoardItemsEnumerator(BoardItemsCollection bic) : base(bic)
+        public MapleLinesEnumerator(MapleLinesCollection mlc) : base(mlc)
         {
         }
 
-        public BoardItem Current
+        public MapleLine Current
         {
-            get { return (BoardItem)base.CurrentObject; }
+            get { return (MapleLine)base.CurrentObject; }
         }
 
         object IEnumerator.Current

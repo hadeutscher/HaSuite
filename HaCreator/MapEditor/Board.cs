@@ -78,7 +78,7 @@ namespace HaCreator.MapEditor
             }
             else if ((visibleTypes & list.ListType) == list.ListType)
             {
-                if (list.Selectable)
+                if (list.IsItem)
                 {
                     foreach (BoardItem item in list)
                     {

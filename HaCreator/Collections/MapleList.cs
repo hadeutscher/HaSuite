@@ -10,18 +10,18 @@ namespace HaCreator.Collections
     public class MapleList<T> : List<T>, IMapleList
     {
         private ItemTypes listType;
-        private bool selectable;
+        private bool item;
 
-        public MapleList(ItemTypes listType, bool selectable)
+        public MapleList(ItemTypes listType, bool item)
             : base()
         {
             this.listType = listType;
-            this.selectable = selectable;
+            this.item = item;
         }
 
-        public bool Selectable
+        public bool IsItem
         {
-            get { return selectable; }
+            get { return item; }
         }
 
         public ItemTypes ListType

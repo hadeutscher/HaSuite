@@ -69,7 +69,7 @@ namespace HaCreator.MapEditor.Input
                     Rectangle newRect = CreateRectangle(newPos, selectedBoard.Mouse.MultiSelectStart);
                     List<BoardItem> toRemove = new List<BoardItem>();
                     SelectionInfo sel = selectedBoard.GetUserSelectionInfo();
-                    foreach (BoardItem item in selectedBoard.BoardItems)
+                    foreach (BoardItem item in selectedBoard.BoardItems.Items)
                     {
                         if (MultiBoard.IsItemUnderRectangle(item, newRect) && (sel.editedTypes & item.Type) == item.Type && item.CheckIfLayerSelected(sel))
                             item.Selected = true;
@@ -235,7 +235,7 @@ namespace HaCreator.MapEditor.Input
                     case Keys.A:
                         if (ctrl)
                         {
-                            foreach (BoardItem item in selectedBoard.BoardItems)
+                            foreach (BoardItem item in selectedBoard.BoardItems.Items)
                             {
                                 if ((selectedBoard.EditedTypes & item.Type) == item.Type)
                                 {
@@ -265,7 +265,7 @@ namespace HaCreator.MapEditor.Input
                         if (ctrl)
                         {
                             // Paste
-                            parentBoard.ClipBoard.CopyItemsTo(parentBoard.ClipBoard.BoardItems.Cast<BoardItem>().ToList(), selectedBoard, new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y));
+                            parentBoard.ClipBoard.CopyItemsTo(parentBoard.ClipBoard.BoardItems.Items.ToList(), selectedBoard, new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y));
                         }
                         break;
                     case Keys.Z:

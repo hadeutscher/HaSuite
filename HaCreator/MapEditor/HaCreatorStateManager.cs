@@ -159,18 +159,22 @@ namespace HaCreator.MapEditor
         void multiBoard_OnEditInstanceClicked(BoardItem item)
         {
             InputHandler.ClearBoundItems(multiBoard.SelectedBoard);
-            switch (item.GetType().Name)
+            try
             {
-                case "ObjectInstance":
+                if (item is ObjectInstance)
+                {
                     new ObjectInstanceEditor((ObjectInstance)item).ShowDialog();
-                    break;
-                case "TileInstance":
+                }
+                else if (item is TileInstance)
+                {
                     new TileInstanceEditor((TileInstance)item).ShowDialog();
-                    break;
-                case "Chair":
+                }
+                else if (item is Chair)
+                {
                     new GeneralInstanceEditor(item).ShowDialog();
-                    break;
-                case "FootholdAnchor":
+                }
+                else if (item is FootholdAnchor)
+                {
                     FootholdLine[] selectedFootholds = FootholdLine.GetSelectedFootholds(item.Board);
                     if (selectedFootholds.Length > 0)
                     {
@@ -180,28 +184,35 @@ namespace HaCreator.MapEditor
                     {
                         new GeneralInstanceEditor(item).ShowDialog();
                     }
-                    break;
-                case "RopeAnchor":
+                }
+                else if (item is RopeAnchor)
+                {
                     new RopeInstanceEditor((RopeAnchor)item).ShowDialog();
-                    break;
-                case "NPCInstance":
-                case "MobInstance":
+                }
+                else if (item is LifeInstance)
+                {
                     new LifeInstanceEditor((LifeInstance)item).ShowDialog();
-                    break;
-                case "ReactorInstance":
+                }
+                else if (item is ReactorInstance)
+                {
                     new ReactorInstanceEditor((ReactorInstance)item).ShowDialog();
-                    break;
-                case "BackgroundInstance":
+                }
+                else if (item is BackgroundInstance)
+                {
                     new BackgroundInstanceEditor((BackgroundInstance)item).ShowDialog();
-                    break;
-                case "PortalInstance":
+                }
+                else if (item is PortalInstance)
+                {
                     new PortalInstanceEditor((PortalInstance)item).ShowDialog();
-                    break;
-                case "ToolTip":
+                }
+                else if (item is ToolTipInstance)
+                {
                     new TooltipInstanceEditor((ToolTipInstance)item).ShowDialog();
-                    break;
-                default:
-                    break;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format("An error occurred while presenting the instance editor for {0}:\r\n{1}", item.GetType().Name, e.ToString()));
             }
         }
 

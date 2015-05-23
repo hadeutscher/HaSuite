@@ -44,7 +44,7 @@ namespace HaCreator.MapEditor.Instance
             MapTileDesign tilegroup = (MapTileDesign)TileSnap.tileCats[baseInfo.u];
             int mag = baseInfo.mag;
             float first_threshold = MultiBoard.FirstSnapVerification * mag;
-            foreach (BoardItem item in Board.BoardItems)
+            foreach (BoardItem item in Board.BoardItems.Items)
             {
                 if (item is TileInstance)
                 {

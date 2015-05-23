@@ -10,7 +10,7 @@ namespace HaCreator.Collections
 {
     public interface IMapleList : IList
     {
-        bool Selectable { get; }
+        bool IsItem { get; }
         ItemTypes ListType { get; }
     }
 }

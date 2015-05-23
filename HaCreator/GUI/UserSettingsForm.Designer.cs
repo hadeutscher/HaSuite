@@ -78,6 +78,8 @@
             this.showMousePosCheckbox = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label44 = new System.Windows.Forms.Label();
+            this.minimapColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.label43 = new System.Windows.Forms.Label();
             this.originColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             this.label24 = new System.Windows.Forms.Label();
@@ -120,8 +122,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.label44 = new System.Windows.Forms.Label();
-            this.minimapColorPicker = new HaCreator.CustomControls.AlphaColorPicker();
             ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
@@ -342,11 +342,6 @@
             0,
             0,
             0});
-            this.mobrx0Box.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.mobrx0Box.Name = "mobrx0Box";
             this.mobrx0Box.Size = new System.Drawing.Size(48, 20);
             this.mobrx0Box.TabIndex = 55;
@@ -370,11 +365,6 @@
             this.mobrx1Box.Location = new System.Drawing.Point(99, 38);
             this.mobrx1Box.Maximum = new decimal(new int[] {
             2147483647,
-            0,
-            0,
-            0});
-            this.mobrx1Box.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -404,11 +394,6 @@
             0,
             0,
             0});
-            this.npcrx1Box.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.npcrx1Box.Name = "npcrx1Box";
             this.npcrx1Box.Size = new System.Drawing.Size(48, 20);
             this.npcrx1Box.TabIndex = 61;
@@ -432,11 +417,6 @@
             this.npcrx0Box.Location = new System.Drawing.Point(99, 64);
             this.npcrx0Box.Maximum = new decimal(new int[] {
             2147483647,
-            0,
-            0,
-            0});
-            this.npcrx0Box.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -466,11 +446,6 @@
             0,
             0,
             0});
-            this.reacttimeBox.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.reacttimeBox.Name = "reacttimeBox";
             this.reacttimeBox.Size = new System.Drawing.Size(48, 20);
             this.reacttimeBox.TabIndex = 65;
@@ -494,11 +469,6 @@
             this.mobtimeBox.Location = new System.Drawing.Point(99, 116);
             this.mobtimeBox.Maximum = new decimal(new int[] {
             2147483647,
-            0,
-            0,
-            0});
-            this.mobtimeBox.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});
@@ -790,6 +760,25 @@
             this.tabPage2.Size = new System.Drawing.Size(537, 447);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Graphics";
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(10, 406);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(80, 13);
+            this.label44.TabIndex = 73;
+            this.label44.Text = "Minimap Bound";
+            // 
+            // minimapColorPicker
+            // 
+            this.minimapColorPicker.Color = System.Drawing.Color.White;
+            this.minimapColorPicker.Location = new System.Drawing.Point(127, 405);
+            this.minimapColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
+            this.minimapColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
+            this.minimapColorPicker.Name = "minimapColorPicker";
+            this.minimapColorPicker.Size = new System.Drawing.Size(16, 16);
+            this.minimapColorPicker.TabIndex = 74;
             // 
             // label43
             // 
@@ -1274,25 +1263,6 @@
             this.cancelButton.TabIndex = 79;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(10, 406);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(80, 13);
-            this.label44.TabIndex = 73;
-            this.label44.Text = "Minimap Bound";
-            // 
-            // minimapColorPicker
-            // 
-            this.minimapColorPicker.Color = System.Drawing.Color.White;
-            this.minimapColorPicker.Location = new System.Drawing.Point(127, 405);
-            this.minimapColorPicker.MaximumSize = new System.Drawing.Size(16, 16);
-            this.minimapColorPicker.MinimumSize = new System.Drawing.Size(16, 16);
-            this.minimapColorPicker.Name = "minimapColorPicker";
-            this.minimapColorPicker.Size = new System.Drawing.Size(16, 16);
-            this.minimapColorPicker.TabIndex = 74;
             // 
             // UserSettingsForm
             // 

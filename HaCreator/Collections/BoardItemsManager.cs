@@ -18,7 +18,7 @@ using HaCreator.MapEditor.Info;
 
 namespace HaCreator.Collections
 {
-    public class BoardItemsManager : IEnumerable<object>
+    public class BoardItemsManager
     {
         public MapleList<BackgroundInstance> BackBackgrounds = new MapleList<BackgroundInstance>(ItemTypes.Backgrounds, true);
         public MapleList<LayeredItem> TileObjs = new MapleList<LayeredItem>(ItemTypes.None, true);
@@ -41,28 +41,25 @@ namespace HaCreator.Collections
 
         public List<Rope> Ropes = new List<Rope>();
         public IMapleList[] AllItemLists;
+        public BoardItemsCollection Items;
+        public MapleLinesCollection Lines;
 
         private Board board;
-
-        public IEnumerator<object> GetEnumerator()
-        {
-            return new BoardItemsEnumerator(this);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
 
         public BoardItemsManager(Board board)
         {
             AllItemLists = new IMapleList[] { BackBackgrounds, TileObjs, Mobs, NPCs, Reactors, Portals, FrontBackgrounds, FootholdLines, RopeLines, FHAnchors, RopeAnchors, Chairs, CharacterToolTips, ToolTips, ToolTipDots, MiscItems, SpecialDots };
             this.board = board;
+            Items = new BoardItemsCollection(this, true);
+            Lines = new MapleLinesCollection(this, false);
         }
 
         public void Clear()
         {
-            foreach (IMapleList itemList in AllItemLists) itemList.Clear();
+            foreach (IMapleList itemList in AllItemLists)
+            {
+                itemList.Clear();
+            }
         }
 
         public void Remove(BoardItem item)
