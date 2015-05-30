@@ -87,9 +87,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
     <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -251,6 +253,7 @@
     <Compile Include="MapEditor\Instance\BackgroundInstance.cs" />
     <Compile Include="MapEditor\Instance\IContainsLayerInfo.cs" />
     <Compile Include="MapEditor\Instance\IFlippable.cs" />
+    <Compile Include="MapEditor\Instance\ISerializable.cs" />
     <Compile Include="MapEditor\Instance\LayeredItem.cs" />
     <Compile Include="MapEditor\Instance\LifeInstance.cs" />
     <Compile Include="MapEditor\Instance\Misc\Area.cs" />
@@ -292,6 +295,7 @@
     <Compile Include="MapEditor\Instance\Shapes\Rope.cs" />
     <Compile Include="MapEditor\Instance\TileInstance.cs" />
     <Compile Include="MapEditor\SelectionInfo.cs" />
+    <Compile Include="MapEditor\Serialization.cs" />
     <Compile Include="MapEditor\Text\CharTexture.cs" />
     <Compile Include="MapEditor\TilesDesign\bsc.cs" />
     <Compile Include="MapEditor\TilesDesign\edD.cs" />

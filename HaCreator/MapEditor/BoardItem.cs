@@ -3,21 +3,22 @@ using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure.Data;
-using Microsoft.Xna.Framework;
+using XNA = Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HaCreator.MapEditor
 {
-    public abstract class BoardItem
+    public abstract class BoardItem : ISerializable
     {
-        protected Vector3 position;
-        private Hashtable boundItems = new Hashtable();//key = BoardItem; value = point (distance)
+        protected XNA.Vector3 position;
+        private Dictionary<BoardItem, XNA.Point> boundItems = new Dictionary<BoardItem, XNA.Point>();//key = BoardItem; value = point (distance)
         private List<BoardItem> boundItemsList = new List<BoardItem>();
         private BoardItem parent = null;
         private bool selected = false;
@@ -25,11 +26,11 @@ namespace HaCreator.MapEditor
 
         /*temporary fields used by other functions*/
         public BoardItem tempParent = null; //for mouse drag-drop
-        public Point moveStartPos = new Point(); //for undo of drag-drop
+        public XNA.Point moveStartPos = new XNA.Point(); //for undo of drag-drop
 
         public BoardItem(Board board, int x, int y, int z)
         {
-            position = new Vector3(x, y, z);
+            position = new XNA.Vector3(x, y, z);
             this.board = board;
         }
 
@@ -46,10 +47,9 @@ namespace HaCreator.MapEditor
         {
             lock (Board.ParentControl)
             {
-                object[] keys = new object[boundItems.Keys.Count];
-                boundItems.Keys.CopyTo(keys, 0);
-                foreach (object key in keys)
-                    ((BoardItem)key).OnItemPlaced(undoPipe);
+                List<BoardItem> items = boundItems.Keys.ToList();
+                foreach (BoardItem item in items)
+                    item.OnItemPlaced(undoPipe);
 
                 if (undoPipe != null)
                 {
@@ -69,10 +69,9 @@ namespace HaCreator.MapEditor
         {
             lock (Board.ParentControl)
             {
-                object[] keys = new object[boundItems.Keys.Count];
-                boundItems.Keys.CopyTo(keys, 0);
-                foreach (object key in keys)
-                    ((BoardItem)key).RemoveItem(undoPipe);
+                List<BoardItem> items = boundItems.Keys.ToList();
+                foreach (BoardItem item in items)
+                    item.RemoveItem(undoPipe);
 
                 if (undoPipe != null)
                 {
@@ -104,11 +103,11 @@ namespace HaCreator.MapEditor
             return texture;
         }
 
-        public virtual void BindItem(BoardItem item, Point distance)
+        public virtual void BindItem(BoardItem item, XNA.Point distance)
         {
             lock (Board.ParentControl)
             {
-                if (boundItems.Contains(item)) return;
+                if (boundItems.ContainsKey(item)) return;
                 boundItems[item] = distance;
                 boundItemsList.Add(item);
                 item.parent = this;
@@ -119,7 +118,7 @@ namespace HaCreator.MapEditor
         {
             lock (Board.ParentControl)
             {
-                if (boundItems.Contains(item))
+                if (boundItems.ContainsKey(item))
                 {
                     boundItems.Remove(item);
                     boundItemsList.Remove(item);
@@ -134,20 +133,19 @@ namespace HaCreator.MapEditor
             {
                 position.X = x;
                 position.Y = y;
-                object[] keys = new object[boundItems.Keys.Count];
-                boundItems.Keys.CopyTo(keys, 0);
-                foreach (object key in keys)
+                List<BoardItem> items = boundItems.Keys.ToList();
+                foreach (BoardItem item in items)
                 {
-                    object value = boundItems[key];
-                    ((BoardItem)key).Move(((Point)value).X + x, ((Point)value).Y + y);
+                    XNA.Point value = boundItems[item];
+                    item.Move(value.X + x, value.Y + y);
                 }
                 if (this.parent != null && !(parent is Mouse))
                 {
-                    parent.boundItems[this] = new Point(this.X - parent.X, this.Y - parent.Y);
+                    parent.boundItems[this] = new XNA.Point(this.X - parent.X, this.Y - parent.Y);
                 }
                 if (this.tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
                 {
-                    tempParent.boundItems[this] = new Point(this.X - tempParent.X, this.Y - tempParent.Y);
+                    tempParent.boundItems[this] = new XNA.Point(this.X - tempParent.X, this.Y - tempParent.Y);
                 }
             }
         }
@@ -158,25 +156,24 @@ namespace HaCreator.MapEditor
             {
                 position.X = x;
                 position.Y = y;
-                object[] keys = new object[boundItems.Keys.Count];
-                boundItems.Keys.CopyTo(keys, 0);
-                foreach (object key in keys)
+                List<BoardItem> items = boundItems.Keys.ToList();
+                foreach (BoardItem item in items)
                 {
-                    object value = boundItems[key];
-                    ((BoardItem)key).Move(((Point)value).X + x, ((Point)value).Y + y);
+                    XNA.Point value = boundItems[item];
+                    item.Move(value.X + x, value.Y + y);
                 }
                 if (this.tempParent != null && !tempParent.Selected) //to fix a certain mouse selection bug
                 {
-                    tempParent.boundItems[this] = new Point(this.X - tempParent.X, this.Y - tempParent.Y);
+                    tempParent.boundItems[this] = new XNA.Point(this.X - tempParent.X, this.Y - tempParent.Y);
                 }
             }
         }
 
-        public virtual void Draw(SpriteBatch sprite, Color color, int xShift, int yShift)
+        public virtual void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift)
         {
             if (ApplicationSettings.InfoMode)
             {
-                Board.ParentControl.FillRectangle(sprite, new Rectangle(this.X - UserSettings.DotWidth + xShift, this.Y - UserSettings.DotWidth + yShift, UserSettings.DotWidth * 2, UserSettings.DotWidth * 2), UserSettings.OriginColor);
+                Board.ParentControl.FillRectangle(sprite, new XNA.Rectangle(this.X - UserSettings.DotWidth + xShift, this.Y - UserSettings.DotWidth + yShift, UserSettings.DotWidth * 2, UserSettings.DotWidth * 2), UserSettings.OriginColor);
             }
         }
 
@@ -185,10 +182,10 @@ namespace HaCreator.MapEditor
             // By default, item is nonlayered
             return true;
         }
-        public virtual Color GetColor(SelectionInfo sel, bool selected)
+        public virtual XNA.Color GetColor(SelectionInfo sel, bool selected)
         {
             if ((sel.editedTypes & Type) == Type && CheckIfLayerSelected(sel))
-                return selected ? UserSettings.SelectedColor : Color.White;
+                return selected ? UserSettings.SelectedColor : XNA.Color.White;
             else return MultiBoard.InactiveColor;
         }
 
@@ -316,7 +313,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public virtual Hashtable BoundItems
+        public virtual Dictionary<BoardItem, XNA.Point> BoundItems
         {
             get
             {
@@ -336,6 +333,55 @@ namespace HaCreator.MapEditor
         {
             get { return parent; }
             set { parent = value; }
+        }
+        #endregion
+
+        #region ISerializable Implementation
+        public bool SelectSerialized(HashSet<ISerializable> serList)
+        {
+            foreach (BoardItem item in BoundItems.Keys)
+            {
+                serList.Add((ISerializable)item);
+            }
+            return true;
+        }
+
+        public dynamic Serialize()
+        {
+            dynamic result = new ExpandoObject();
+            result.x = position.X;
+            result.y = position.Y;
+            result.z = position.Z;
+            return result;
+        }
+
+        public IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, int> refDict)
+        {
+            IDictionary<string, object> result = new ExpandoObject();
+            foreach (BoardItem item in boundItems.Keys)
+            {
+                result[refDict[item].ToString()] = boundItems[item];
+            }
+            return result;
+        }
+
+        public BoardItem(dynamic json)
+        {
+            position = new XNA.Vector3(json.x, json.y, json.z);
+        }
+
+        public List<ISerializable> DeserializBindings(IDictionary<string, object> bindSer, Dictionary<int, ISerializable> refDict)
+        {
+            List<ISerializable> result = new List<ISerializable>();
+            foreach (string id_str in bindSer.Keys)
+            {
+                int id = int.Parse(id_str);
+                BoardItem item = (BoardItem)refDict[id];
+                result.Add(item);
+                XNA.Point offs = (XNA.Point)bindSer[id_str];
+                boundItems.Add(item, offs);
+            }
+            return result;
         }
         #endregion
     }

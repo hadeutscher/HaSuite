@@ -93,11 +93,12 @@ namespace HaCreator.MapEditor.Input
                         MouseState state = selectedBoard.Mouse.State;
                         if (state == MouseState.Selection || state == MouseState.StaticObjectAdding || state == MouseState.RandomTiles || state == MouseState.Ropes || state == MouseState.Footholds || state == MouseState.Chairs)
                         {
-                            object[] keys = new object[selectedBoard.Mouse.BoundItems.Count];
-                            selectedBoard.Mouse.BoundItems.Keys.CopyTo(keys, 0);
-                            foreach (object item in keys)
+                            List<BoardItem> items = selectedBoard.Mouse.BoundItems.Keys.ToList();
+                            foreach (BoardItem item in items)
+                            {
                                 if (item is ISnappable)
                                     ((ISnappable)item).DoSnap();
+                            }
                         }
                     }
                 }
@@ -476,13 +477,11 @@ namespace HaCreator.MapEditor.Input
         {
             lock (board.ParentControl)
             {
-                object[] keys = new object[board.Mouse.BoundItems.Count];
-                board.Mouse.BoundItems.Keys.CopyTo(keys, 0);
                 List<UndoRedoAction> undoActions = new List<UndoRedoAction>();
                 bool addUndo;
-                foreach (object key in keys)
+                List<BoardItem> items = board.Mouse.BoundItems.Keys.ToList();
+                foreach (BoardItem item in items)
                 {
-                    BoardItem item = (BoardItem)key;
                     addUndo = item.tempParent == null || !(item.tempParent.Parent is Mouse);
                     board.Mouse.ReleaseItem(item);
                     if (addUndo)

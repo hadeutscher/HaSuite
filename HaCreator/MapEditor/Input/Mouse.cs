@@ -85,9 +85,7 @@ namespace HaCreator.MapEditor.Input
                 else if (state == MouseState.Ropes)
                 {
                     int count = BoundItems.Count;
-                    object[] keys = new object[count];
-                    BoundItems.Keys.CopyTo(keys, 0);
-                    RopeAnchor anchor = (RopeAnchor)keys[0];
+                    RopeAnchor anchor = (RopeAnchor)BoundItems.Keys.ElementAt(0);
                     ReleaseItem(anchor);
                     if (count == 1)
                     {
@@ -98,9 +96,7 @@ namespace HaCreator.MapEditor.Input
                 else if (state == MouseState.Tooltip)
                 {
                     int count = BoundItems.Count;
-                    object[] keys = new object[count];
-                    BoundItems.Keys.CopyTo(keys, 0);
-                    ToolTipDot dot = (ToolTipDot)keys[0];
+                    ToolTipDot dot = (ToolTipDot)BoundItems.Keys.ElementAt(0);
                     ReleaseItem(dot);
                     if (count == 1)
                     {
@@ -113,22 +109,21 @@ namespace HaCreator.MapEditor.Input
                 else if (state == MouseState.Clock)
                 {
                     int count = BoundItems.Count;
-                    object[] keys = new object[count];
-                    BoundItems.Keys.CopyTo(keys, 0);
-                    Clock c = null;
-                    foreach (object k in keys)
+                    List<BoardItem> items = BoundItems.Keys.ToList();
+                    Clock clock = null;
+                    foreach (BoardItem item in items)
                     {
-                        if (k is Clock)
+                        if (item is Clock)
                         {
-                            c = (Clock)k;
+                            clock = (Clock)item;
                         }
                     }
-                    for (int i = 0; i < keys.Length; i++)
+                    foreach (BoardItem item in items)
                     {
-                        ReleaseItem((BoardItem)keys[i]);
+                        ReleaseItem(item);
                     }
                     List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
-                    c.OnItemPlaced(undoPipe);
+                    clock.OnItemPlaced(undoPipe);
                     Board.UndoRedoMan.AddUndoBatch(undoPipe);
                     CreateClock();
                 }
@@ -238,12 +233,10 @@ namespace HaCreator.MapEditor.Input
                 }
                 if (state == MouseState.Ropes || state == MouseState.Tooltip)
                 {
-                    object[] keys = new object[BoundItems.Keys.Count];
-                    BoundItems.Keys.CopyTo(keys, 0);
                     if (state == MouseState.Ropes)
-                        ((RopeAnchor)keys[0]).RemoveItem(null);
+                        ((RopeAnchor)BoundItems.Keys.ElementAt(0)).RemoveItem(null);
                     else
-                        ((ToolTipDot)keys[0]).ParentTooltip.RemoveItem(null);
+                        ((ToolTipDot)BoundItems.Keys.ElementAt(0)).ParentTooltip.RemoveItem(null);
                 }
                 else if (state == MouseState.Footholds && connectedLines.Count > 0)
                 {
@@ -253,11 +246,10 @@ namespace HaCreator.MapEditor.Input
                 } 
                 else if (state == MouseState.Clock)
                 {
-                    object[] keys = new object[BoundItems.Keys.Count];
-                    BoundItems.Keys.CopyTo(keys, 0);
-                    for (int i = 0; i < keys.Length; i++)
+                    List<BoardItem> items = BoundItems.Keys.ToList();
+                    foreach (BoardItem item in items)
                     {
-                        ((BoardItem)keys[i]).RemoveItem(null);
+                        item.RemoveItem(null);
                     }
                 }
                 InputHandler.ClearBoundItems(Board);
@@ -451,7 +443,8 @@ namespace HaCreator.MapEditor.Input
         {
             lock (Board.ParentControl)
             {
-                if (BoundItems.Contains(item)) return;
+                if (BoundItems.ContainsKey(item)) 
+                    return;
                 BoundItems[item] = distance;
                 item.tempParent = item.Parent;
                 item.Parent = this;
@@ -462,7 +455,7 @@ namespace HaCreator.MapEditor.Input
         {
             lock (Board.ParentControl)
             {
-                if (BoundItems.Contains(item))
+                if (BoundItems.ContainsKey(item))
                 {
                     BoundItems.Remove(item);
                     item.Parent = item.tempParent;
