@@ -55,9 +55,18 @@ namespace HaCreator.MapEditor.Info
             }
         }
 
-        public static NpcInfo Load(WzImage parentObject)
+        public static NpcInfo Get(string id)
         {
-            string id = /*WzInfoTools.RemoveLeadingZeros(*/WzInfoTools.RemoveExtension(parentObject.Name)/*)*/;
+            WzImage npcImage = (WzImage)Program.WzManager["npc"][id + ".img"];
+            if (!npcImage.Parsed) npcImage.ParseImage();
+            if (npcImage.HCTag == null)
+                npcImage.HCTag = NpcInfo.Load(npcImage);
+            return (NpcInfo)npcImage.HCTag;
+        }
+
+        private static NpcInfo Load(WzImage parentObject)
+        {
+            string id = WzInfoTools.RemoveExtension(parentObject.Name);
             return new NpcInfo(null, new System.Drawing.Point(), id, WzInfoTools.GetNpcNameById(id), parentObject);
         }
 

@@ -32,7 +32,7 @@ namespace HaCreator.MapEditor
         private PresentationParameters pParams = new PresentationParameters();
         private Texture2D pixel;
         private List<Board> boards = new List<Board>();
-        private Board clipBoard;
+        private string clipBoard;
         private Board selectedBoard = null;
         private IGraphicsDeviceService graphicsDeviceService;
         private FontEngine fontEngine;
@@ -68,7 +68,6 @@ namespace HaCreator.MapEditor
             this.dxHandle = DxContainer.Handle;
             this.userObjs = new UserObjectsManager(this);
             ResetDock();
-            clipBoard = CreateHiddenBoard(new Point(), new Point(), 8);
         }
 
         public void Start()
@@ -228,10 +227,10 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Properties
-        public Board ClipBoard
+        public string ClipBoard
         {
             get { return clipBoard; }
-            internal set { clipBoard = value; }
+            set { clipBoard = value; }
         }
 
         public bool DeviceReady

@@ -110,7 +110,8 @@ namespace HaCreator.Collections
                 if (item is TileInstance || item is ObjectInstance)
                 {
                     TileObjs.Add((LayeredItem)item);
-                    if (sort) Sort();
+                    if (sort) 
+                        Sort();
                 }
                 else if (item is BackgroundInstance)
                 {
@@ -122,7 +123,8 @@ namespace HaCreator.Collections
                     {
                         BackBackgrounds.Add((BackgroundInstance)item);
                     }
-                    if (sort) Sort();
+                    if (sort) 
+                        Sort();
                 }
                 else if (item.Type == ItemTypes.Misc)
                 {

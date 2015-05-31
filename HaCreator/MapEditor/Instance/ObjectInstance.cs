@@ -166,5 +166,46 @@ namespace HaCreator.MapEditor.Instance
         public int? cx { get { return _cx; } set { _cx = value; } }
         public int? cy { get { return _cy; } set { _cy = value; } }
         public List<ObjectInstanceQuest> QuestInfo { get { return questInfo; } set { questInfo = value; } }
+
+        public override dynamic Serialize()
+        {
+            dynamic result = base.Serialize();
+            result.os = baseInfo.oS;
+            result.l0 = baseInfo.l0;
+            result.l1 = baseInfo.l1;
+            result.l2 = baseInfo.l2;
+            result.flip = flip;
+            result.r = _r;
+            result.name = name;
+            result.hide = _hide;
+            result.reactor = _reactor;
+            result.flow = _flow;
+            result.rx = _rx;
+            result.ry = _ry;
+            result.cx = _cx;
+            result.cy = _cy;
+            result.tags = tags;
+            result.quest = questInfo == null ? null : questInfo.ToArray();
+            return result;
+        }
+
+        public ObjectInstance(Board board, dynamic json)
+            : base(board, (object)json)
+        {
+            baseInfo = ObjectInfo.Get(json.os, json.l0, json.l1, json.l2);
+            flip = json.flip;
+            _r = json.r;
+            name = json.name;
+            _hide = json.hide;
+            _reactor = json.reactor;
+            _flow = json.flow;
+            _rx = json.rx;
+            _ry = json.ry;
+            _cx = json.cx;
+            _cy = json.cy;
+            tags = json.tags;
+            if (json.quest != null)
+                questInfo = ((dynamic[])json.quest).Select(x => new ObjectInstanceQuest(x)).ToList();
+        }
     }
 }

@@ -39,38 +39,19 @@ namespace HaCreator.GUI.EditorPanels
         {
             if (bgSetListBox.SelectedItem == null) return;
             bgImageContainer.Controls.Clear();
-            WzImage bgSetImage = Program.InfoManager.BackgroundSets[(string)bgSetListBox.SelectedItem];
-            if (!bgSetImage.Parsed) bgSetImage.ParseImage();
-            if (aniBg.Checked)
+
+            WzImageProperty parentProp = Program.InfoManager.BackgroundSets[(string)bgSetListBox.SelectedItem][aniBg.Checked ? "ani" : "back"];
+            if (parentProp == null || parentProp.WzProperties == null)
+                return;
+            foreach (WzImageProperty prop in parentProp.WzProperties)
             {
-                WzImageProperty aniProp = bgSetImage["ani"];
-                if (aniProp == null || aniProp.WzProperties == null) return;
-                foreach (WzSubProperty aniBgProp in aniProp.WzProperties)
-                {
-                    if (aniBgProp.HCTag == null)
-                        aniBgProp.HCTag = BackgroundInfo.Load(aniBgProp, (string)bgSetListBox.SelectedItem, true, aniBgProp.Name);
-                    ImageViewer aniItem = bgImageContainer.Add(((BackgroundInfo)aniBgProp.HCTag).Image, aniBgProp.Name, true);
-                    aniItem.Tag = aniBgProp.HCTag;
-                    aniItem.MouseDown += new MouseEventHandler(bgItem_Click);
-                    aniItem.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-                    aniItem.MaxHeight = UserSettings.ImageViewerHeight;
-                    aniItem.MaxWidth = UserSettings.ImageViewerWidth;
-                }
-            }
-            else
-            {
-                WzImageProperty backProp = bgSetImage["back"];
-                foreach (WzCanvasProperty backBg in backProp.WzProperties)
-                {
-                    if (backBg.HCTag == null)
-                        backBg.HCTag = BackgroundInfo.Load(backBg, (string)bgSetListBox.SelectedItem, false, backBg.Name);
-                    ImageViewer item = bgImageContainer.Add(((BackgroundInfo)backBg.HCTag).Image, backBg.Name, true);
-                    item.Tag = backBg.HCTag;
-                    item.MouseDown += new MouseEventHandler(bgItem_Click);
-                    item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-                    item.MaxHeight = UserSettings.ImageViewerHeight;
-                    item.MaxWidth = UserSettings.ImageViewerWidth;
-                }
+                BackgroundInfo bgInfo = BackgroundInfo.Get((string)bgSetListBox.SelectedItem, aniBg.Checked, prop.Name);
+                ImageViewer item = bgImageContainer.Add(bgInfo.Image, prop.Name, true);
+                item.Tag = bgInfo;
+                item.MouseDown += new MouseEventHandler(bgItem_Click);
+                item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                item.MaxHeight = UserSettings.ImageViewerHeight;
+                item.MaxWidth = UserSettings.ImageViewerWidth;
             }
         }
 

@@ -66,7 +66,8 @@ namespace HaCreator.GUI.EditorPanels
             if (tileSetList.SelectedItem == null) return;
             tileImagesContainer.Controls.Clear();
             WzImage tileSetImage = Program.InfoManager.TileSets[(string)tileSetList.SelectedItem];
-            if (tileSetImage == null) return;
+            if (tileSetImage == null) 
+                return;
             int? mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"]);
             foreach (WzSubProperty tCat in tileSetImage.WzProperties)
             {
@@ -79,10 +80,7 @@ namespace HaCreator.GUI.EditorPanels
                     TileInfo[] randomInfos = new TileInfo[tCat.WzProperties.Count];
                     for (int i = 0; i < randomInfos.Length; i++)
                     {
-                        WzCanvasProperty tile = (WzCanvasProperty)tCat.WzProperties[i]; // NOTE - accessing WzProperties on purpose because the prop's name doesn't matter
-                        if (tile.HCTag == null)
-                            tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
-                        randomInfos[i] = (TileInfo)tile.HCTag;
+                        randomInfos[i] = TileInfo.Get((string)tileSetList.SelectedItem, tCat.Name, tCat.WzProperties[i].Name, mag);
                     }
                     item.Tag = randomInfos;
                     item.MouseDown += new MouseEventHandler(tileItem_Click);
@@ -92,10 +90,8 @@ namespace HaCreator.GUI.EditorPanels
                 {
                     foreach (WzCanvasProperty tile in tCat.WzProperties)
                     {
-                        if (tile.HCTag == null)
-                            tile.HCTag = TileInfo.Load(tile, (string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
                         ImageViewer item = tileImagesContainer.Add(tile.PngProperty.GetPNG(false), tCat.Name + "/" + tile.Name, true);
-                        item.Tag = tile.HCTag;
+                        item.Tag = TileInfo.Get((string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
                         item.MouseDown += new MouseEventHandler(tileItem_Click);
                         item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
                     }

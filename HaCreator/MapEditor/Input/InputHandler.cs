@@ -14,6 +14,8 @@ using HaCreator.MapEditor.UndoRedo;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Misc;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.Exceptions;
+using HaCreator.MapEditor.Info;
 
 namespace HaCreator.MapEditor.Input
 {
@@ -255,18 +257,76 @@ namespace HaCreator.MapEditor.Input
                         }
                         clearRedo = false;
                         break;
-                    case Keys.C:
+                    case Keys.C: // Copy
                         if (ctrl)
                         {
-                            // Copy
-                            selectedBoard.CopyItemsTo(selectedBoard.SelectedItems, parentBoard.ClipBoard, new Point(-selectedBoard.Mouse.X, -selectedBoard.Mouse.Y));
+                            selectedBoard.ParentControl.ClipBoard = selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems.Cast<ISerializable>());
                         }
                         break;
-                    case Keys.V:
+                    case Keys.V: // Paste
                         if (ctrl)
                         {
-                            // Paste
-                            parentBoard.ClipBoard.CopyItemsTo(parentBoard.ClipBoard.BoardItems.Items.ToList(), selectedBoard, new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y));
+                            List<ISerializable> items;
+                            try
+                            {
+                                items = selectedBoard.SerializationManager.DeserializeList(selectedBoard.ParentControl.ClipBoard);
+                            }
+                            catch (DeserializationException de)
+                            {
+                                MessageBox.Show(de.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            catch (Exception e)
+                            {
+                                MessageBox.Show(string.Format("An error occurred: {0}", e.ToString()), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            bool needsLayer = false;
+                            
+                            // Make sure we dont have any tS conflicts
+                            string tS = null;
+                            foreach (ISerializable item in items)
+                            {
+                                if (item is TileInstance)
+                                {
+                                    TileInstance tile = (TileInstance)item;
+                                    string currtS = ((TileInfo)tile.BaseInfo).tS;
+                                    if (currtS != tS)
+                                    {
+                                        if (tS == null)
+                                            tS = currtS;
+                                        else
+                                        {
+                                            MessageBox.Show("Clipboard contains two tiles with different tile sets, cannot paste.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            return;
+                                        }
+                                    }
+                                }
+                                if (item is LayeredItem)
+                                {
+                                    needsLayer = true;
+                                }
+                            }
+                            if (needsLayer && (selectedBoard.SelectedLayerIndex < 0 || selectedBoard.SelectedPlatform < 0))
+                            {
+                                MessageBox.Show("Layered items in clipboard and no layer/platform selected, cannot paste.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            if (tS != null && selectedBoard.SelectedLayer.tS != null && tS != selectedBoard.SelectedLayer.tS)
+                            {
+                                MessageBox.Show("Clipboard contains tile in a different set than the current selected layer, cannot paste.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            // Add the items
+                            List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
+                            foreach(ISerializable item in items)
+                            {
+                                item.AddToBoard(undoPipe);
+                            }
+                            selectedBoard.BoardItems.Sort();
+                            selectedBoard.UndoRedoMan.AddUndoBatch(undoPipe);
                         }
                         break;
                     case Keys.Z:

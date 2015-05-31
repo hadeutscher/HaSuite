@@ -71,12 +71,9 @@ namespace HaCreator.GUI.EditorPanels
             WzImageProperty l1Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem][(string)objL1ListBox.SelectedItem];
             foreach (WzSubProperty l2Prop in l1Prop.WzProperties)
             {
-                if (l2Prop.HCTag == null)
-                    l2Prop.HCTag = ObjectInfo.Load(l2Prop, (string)objSetListBox.SelectedItem, (string)objL0ListBox.SelectedItem, (string)objL1ListBox.SelectedItem, l2Prop.Name);
-                ObjectInfo info = (ObjectInfo)l2Prop.HCTag;
-                WzCanvasProperty objCanvas = (WzCanvasProperty)l2Prop["0"];
-                ImageViewer item = objImagesContainer.Add(objCanvas.PngProperty.GetPNG(false), l2Prop.Name, true);
-                item.Tag = l2Prop.HCTag;
+                ObjectInfo info = ObjectInfo.Get((string)objSetListBox.SelectedItem, (string)objL0ListBox.SelectedItem, (string)objL1ListBox.SelectedItem, l2Prop.Name);
+                ImageViewer item = objImagesContainer.Add(info.Image, l2Prop.Name, true);
+                item.Tag = info;
                 item.MouseDown += new MouseEventHandler(objItem_Click);
                 item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
                 item.MaxHeight = UserSettings.ImageViewerHeight;

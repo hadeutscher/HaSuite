@@ -82,16 +82,7 @@ namespace HaCreator.MapEditor
                     {
                         TileInstance tile = (TileInstance)item;
                         TileInfo tileBase = (TileInfo)tile.BaseInfo;
-                        WzImageProperty tCat = Program.InfoManager.TileSets[newTS][tileBase.u];
-                        int? mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[newTS]["info"]["mag"]);
-                        WzImageProperty tProp = tCat[tileBase.no];
-                        if (tProp == null)
-                        {
-                            tProp = tCat["0"];
-                        }
-                        if (tProp.HCTag == null)
-                            tProp.HCTag = TileInfo.Load((WzCanvasProperty)tProp, newTS, tileBase.u, tileBase.no, mag);
-                        TileInfo tileInfo = (TileInfo)tProp.HCTag;
+                        TileInfo tileInfo = TileInfo.GetWithDefaultNo(newTS, tileBase.u, tileBase.no, "0");
                         tile.SetBaseInfo(tileInfo);
                     }
                 }

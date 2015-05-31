@@ -55,9 +55,18 @@ namespace HaCreator.MapEditor.Info
             }
         }
 
-        public static MobInfo Load(WzImage parentObject)
+        public static MobInfo Get(string id)
         {
-            string id = /*WzInfoTools.RemoveLeadingZeros(*/WzInfoTools.RemoveExtension(parentObject.Name)/*)*/;
+            WzImage mobImage = (WzImage)Program.WzManager["mob"][id + ".img"];
+            if (!mobImage.Parsed) mobImage.ParseImage();
+            if (mobImage.HCTag == null)
+                mobImage.HCTag = MobInfo.Load(mobImage);
+            return (MobInfo)mobImage.HCTag;
+        }
+
+        private static MobInfo Load(WzImage parentObject)
+        {
+            string id = WzInfoTools.RemoveExtension(parentObject.Name);
             return new MobInfo(null, new System.Drawing.Point(), id, WzInfoTools.GetMobNameById(id), parentObject);
         }
 

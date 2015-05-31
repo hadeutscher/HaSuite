@@ -12,6 +12,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HaCreator.Exceptions;
 
 namespace HaCreator.MapEditor
 {
@@ -337,16 +338,33 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region ISerializable Implementation
-        public bool SelectSerialized(HashSet<ISerializable> serList)
+        public virtual bool ShouldSerialize
         {
+            get
+            {
+                return true;
+            }
+        }
+
+        public virtual bool ShouldSerializeChildren
+        {
+            get
+            {
+                return boundItems.Count > 0;
+            }
+        }
+
+        public virtual List<ISerializable> SelectSerialized()
+        {
+            List<ISerializable> serList = new List<ISerializable>();
             foreach (BoardItem item in BoundItems.Keys)
             {
                 serList.Add((ISerializable)item);
             }
-            return true;
+            return serList;
         }
 
-        public dynamic Serialize()
+        public virtual dynamic Serialize()
         {
             dynamic result = new ExpandoObject();
             result.x = position.X;
@@ -355,33 +373,46 @@ namespace HaCreator.MapEditor
             return result;
         }
 
-        public IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, int> refDict)
+        public virtual IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, int> refDict)
         {
-            IDictionary<string, object> result = new ExpandoObject();
-            foreach (BoardItem item in boundItems.Keys)
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            List<int> bindOrder = new List<int>();
+            foreach (BoardItem item in boundItemsList)
             {
-                result[refDict[item].ToString()] = boundItems[item];
+                int refNum = refDict[item];
+                result.Add(refNum.ToString(), SerializationManager.SerializePoint(boundItems[item]));
+                bindOrder.Add(refNum);
             }
+            if (bindOrder.Count > 0)
+                result.Add("bindOrder", bindOrder.ToArray());
             return result;
         }
 
-        public BoardItem(dynamic json)
+        public BoardItem(Board board, dynamic json)
         {
-            position = new XNA.Vector3(json.x, json.y, json.z);
+            this.board = board;
+            position = new XNA.Vector3((float)json.x, (float)json.y, (float)json.z);
         }
 
-        public List<ISerializable> DeserializBindings(IDictionary<string, object> bindSer, Dictionary<int, ISerializable> refDict)
+        public virtual void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<int, ISerializable> refDict)
         {
-            List<ISerializable> result = new List<ISerializable>();
-            foreach (string id_str in bindSer.Keys)
+            if (!bindSer.ContainsKey("bindOrder"))
+                return; // No bindings were serialized
+            int[] bindOrder = (int[])bindSer["bindOrder"];
+            foreach (int id in bindOrder)
             {
-                int id = int.Parse(id_str);
                 BoardItem item = (BoardItem)refDict[id];
-                result.Add(item);
-                XNA.Point offs = (XNA.Point)bindSer[id_str];
+                XNA.Point offs = (XNA.Point)bindSer[id.ToString()];
                 boundItems.Add(item, offs);
+                boundItemsList.Add(item);
+                item.parent = this;
             }
-            return result;
+        }
+
+        public virtual void AddToBoard(List<UndoRedoAction> undoPipe)
+        {
+            OnItemPlaced(undoPipe);
+            board.BoardItems.Add(this, false);
         }
         #endregion
     }

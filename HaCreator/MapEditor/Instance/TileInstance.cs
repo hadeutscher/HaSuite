@@ -1,4 +1,5 @@
-﻿using HaCreator.MapEditor.Info;
+﻿using HaCreator.Exceptions;
+using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.TilesDesign;
 using HaCreator.MapEditor.UndoRedo;
@@ -173,6 +174,21 @@ namespace HaCreator.MapEditor.Instance
             {
                 return baseInfo.Origin;
             }
+        }
+
+        public override dynamic Serialize()
+        {
+            dynamic result = base.Serialize();
+            result.ts = baseInfo.tS;
+            result.u = baseInfo.u;
+            result.no = baseInfo.no;
+            return result;
+        }
+
+        public TileInstance(Board board, dynamic json)
+            : base(board, (object)json)
+        {
+            baseInfo = TileInfo.Get(json.ts, json.u, json.no);
         }
     }
 }

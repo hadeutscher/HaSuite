@@ -216,17 +216,13 @@ namespace HaCreator.Wz
         public static MobInfo GetMobInfoById(string id)
         {
             id = AddLeadingZeros(id, 7);
-            WzImage image = (WzImage)Program.WzManager["mob"][id + ".img"];
-            if (image.HCTag == null) image.HCTag = MobInfo.Load(image);
-            return (MobInfo)image.HCTag;
+            return MobInfo.Get(id);
         }
 
         public static NpcInfo GetNpcInfoById(string id)
         {
             id = AddLeadingZeros(id, 7);
-            WzImage image = (WzImage)Program.WzManager["npc"][id + ".img"];
-            if (image.HCTag == null) image.HCTag = NpcInfo.Load(image);
-            return (NpcInfo)image.HCTag;
+            return NpcInfo.Get(id);
         }
 
         public static Color XNAToDrawingColor(XNA.Color c)

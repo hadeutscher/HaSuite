@@ -1,6 +1,7 @@
 ﻿using HaCreator.MapEditor.UndoRedo;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,5 +75,29 @@ namespace HaCreator.MapEditor.Instance
         }
 
         public int PlatformNumber { get { return zm; } set { zm = value; } }
+
+        public override dynamic Serialize()
+        {
+            dynamic result = base.Serialize();
+            result.layer = layer.LayerNumber;
+            result.zm = zm;
+            return result;
+        }
+
+        public override void AddToBoard(List<UndoRedoAction> undoPipe)
+        {
+            base.AddToBoard(undoPipe);
+            layer = board.SelectedLayer;
+            layer.Items.Add(this);
+            zm = board.SelectedPlatform;
+        }
+
+        public LayeredItem(Board board, dynamic json)
+            : base(board, (object)json)
+        {
+            // Layer and zM will not be retained upon copying; This feels like the more expected behavior to me. This also simplifies tile copying.
+            /*layer = board.Layers[json.layer];
+            zm = json.zm;*/
+        }
     }
 }

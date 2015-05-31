@@ -47,6 +47,7 @@ namespace HaCreator.MapEditor
         private VRRectangle vrRect = null;
         private MinimapRectangle mmRect = null;
         private ContextMenuStrip menu = null;
+        private SerializationManager serMan = null;
 
         public ItemTypes VisibleTypes { get { return visibleTypes; } set { visibleTypes = value; } }
         public ItemTypes EditedTypes { get { return editedTypes; } set { editedTypes = value; } }
@@ -63,6 +64,7 @@ namespace HaCreator.MapEditor
             boardItems = new BoardItemsManager(this);
             undoRedoMan = new UndoRedoManager(this);
             mouse = new Mouse(this);
+            serMan = new SerializationManager(this);
         }
 
         public void RenderList(IMapleList list, SpriteBatch sprite, int xShift, int yShift)
@@ -415,6 +417,11 @@ namespace HaCreator.MapEditor
         }
 
         public bool Loading { get { return loading; } set { loading = value; } }
+
+        public SerializationManager SerializationManager
+        {
+            get { return serMan; }
+        }
         #endregion
     }
 }

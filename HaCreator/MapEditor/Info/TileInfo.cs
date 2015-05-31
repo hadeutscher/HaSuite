@@ -33,14 +33,36 @@ namespace HaCreator.MapEditor.Info
             this._z = z;
         }
 
-        public static TileInfo Load(WzCanvasProperty parentObject, WzSubProperty infoObject)
+        public static TileInfo Get(string tS, string u, string no)
         {
-            string[] path = parentObject.FullPath.Split(@"\".ToCharArray());
-            int? mag = InfoTool.GetOptionalInt(infoObject["mag"]);
-            return Load(parentObject, WzInfoTools.RemoveExtension(path[path.Length - 3]), path[path.Length - 2], path[path.Length - 1], mag.HasValue ? mag.Value : 1);
+            int? mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[tS]["info"]["mag"]);
+            return Get(tS, u, no, mag);
         }
 
-        public static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no, int? mag)
+        public static TileInfo GetWithDefaultNo(string tS, string u, string no, string defaultNo)
+        {
+            int? mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[tS]["info"]["mag"]);
+            WzImageProperty prop = Program.InfoManager.TileSets[tS][u];
+            WzImageProperty tileInfoProp = prop[no];
+            if (tileInfoProp == null)
+            {
+                tileInfoProp = prop[defaultNo];
+            }
+            if (tileInfoProp.HCTag == null)
+                tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no, mag);
+            return (TileInfo)tileInfoProp.HCTag;
+        }
+
+        // Optimized version, for cases where you already know the mag (e.g. mass loading tiles of the same tileSet)
+        public static TileInfo Get(string tS, string u, string no, int? mag)
+        {
+            WzImageProperty tileInfoProp = Program.InfoManager.TileSets[tS][u][no];
+            if (tileInfoProp.HCTag == null)
+                tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no, mag);
+            return (TileInfo)tileInfoProp.HCTag;
+        }
+
+        private static TileInfo Load(WzCanvasProperty parentObject, string tS, string u, string no, int? mag)
         {
             WzImageProperty zProp = parentObject["z"];
             int z = zProp == null ? 0 : InfoTool.GetInt(zProp);

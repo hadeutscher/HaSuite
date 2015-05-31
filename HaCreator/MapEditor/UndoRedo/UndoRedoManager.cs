@@ -28,9 +28,7 @@ namespace HaCreator.MapEditor.UndoRedo
         public void AddUndoBatch(List<UndoRedoAction> actions)
         {
             if (actions.Count == 0)
-            {
                 return;
-            }
             UndoRedoBatch batch = new UndoRedoBatch() { Actions = actions };
             UndoList.Add(batch);
             RedoList.Clear();

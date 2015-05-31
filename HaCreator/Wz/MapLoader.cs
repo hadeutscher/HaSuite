@@ -175,13 +175,15 @@ namespace HaCreator.Wz
                     WzImageProperty questParent = obj["quest"];
                     List<ObjectInstanceQuest> questInfo = null;
                     if (questParent != null)
+                    {
+                        questInfo = new List<ObjectInstanceQuest>();
                         foreach (WzIntProperty info in questParent.WzProperties)
+                        {
                             questInfo.Add(new ObjectInstanceQuest(int.Parse(info.Name), (QuestState)info.Value));
+                        }
+                    }
                     bool flip = InfoTool.GetBool(obj["f"]);
-                    WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
-                    if (objInfoProp.HCTag == null)
-                        objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
-                    ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
+                    ObjectInfo objInfo = ObjectInfo.Get(oS, l0, l1, l2);
                     Layer l = mapBoard.Layers[layer];
                     mapBoard.BoardItems.TileObjs.Add((LayeredItem)objInfo.CreateInstance(l, mapBoard, x, y, z, zM, r, hide, reactor, flow, rx, ry, cx, cy, name, tags, questInfo, flip, false));
                     l.zMList.Add(zM);
@@ -194,12 +196,8 @@ namespace HaCreator.Wz
                     int zM = InfoTool.GetInt(tile["zM"]);
                     string u = InfoTool.GetString(tile["u"]);
                     int no = InfoTool.GetInt(tile["no"]);
-                    WzImageProperty tileInfoProp = Program.InfoManager.TileSets[tS][u][no.ToString()];
-                    int? mag = InfoTool.GetOptionalInt(Program.InfoManager.TileSets[tS]["info"]["mag"]);
-                    if (tileInfoProp.HCTag == null)
-                        tileInfoProp.HCTag = TileInfo.Load((WzCanvasProperty)tileInfoProp, tS, u, no.ToString(), mag);
-                    TileInfo tileInfo = (TileInfo)tileInfoProp.HCTag;
                     Layer l = mapBoard.Layers[layer];
+                    TileInfo tileInfo = TileInfo.Get(tS, u, no.ToString());
                     mapBoard.BoardItems.TileObjs.Add((LayeredItem)tileInfo.CreateInstance(l, mapBoard, x, y, int.Parse(tile.Name), zM, false, false));
                     l.zMList.Add(zM);
                 }
@@ -229,19 +227,11 @@ namespace HaCreator.Wz
                 switch (type)
                 {
                     case "m":
-                        WzImage mobImage = (WzImage)Program.WzManager["mob"][id + ".img"];
-                        if (!mobImage.Parsed) mobImage.ParseImage();
-                        if (mobImage.HCTag == null)
-                            mobImage.HCTag = MobInfo.Load(mobImage);
-                        MobInfo mobInfo = (MobInfo)mobImage.HCTag;
+                        MobInfo mobInfo = MobInfo.Get(id);
                         mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, x - rx0, rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
                         break;
                     case "n":
-                        WzImage npcImage = (WzImage)Program.WzManager["npc"][id + ".img"];
-                        if (!npcImage.Parsed) npcImage.ParseImage();
-                        if (npcImage.HCTag == null)
-                            npcImage.HCTag = NpcInfo.Load(npcImage);
-                        NpcInfo npcInfo = (NpcInfo)npcImage.HCTag;
+                        NpcInfo npcInfo = NpcInfo.Get(id);
                         mapBoard.BoardItems.NPCs.Add((NpcInstance)npcInfo.CreateInstance(mapBoard, x, cy, x - rx0, rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
                         break;
                     default:
@@ -542,12 +532,7 @@ namespace HaCreator.Wz
                 string bS = InfoTool.GetString(bgProp["bS"]);
                 bool ani = InfoTool.GetBool(bgProp["ani"]);
                 string no = InfoTool.GetInt(bgProp["no"]).ToString();
-                WzImage bsImg = Program.InfoManager.BackgroundSets[bS];
-                if (bsImg == null) continue;
-                WzImageProperty bgInfoProp = bsImg[ani ? "ani" : "back"][no];
-                if (bgInfoProp.HCTag == null)
-                    bgInfoProp.HCTag = BackgroundInfo.Load(bgInfoProp, bS, ani, no);
-                BackgroundInfo bgInfo = (BackgroundInfo)bgInfoProp.HCTag;
+                BackgroundInfo bgInfo = BackgroundInfo.Get(bS, ani, no);
                 IList list = front ? mapBoard.BoardItems.FrontBackgrounds : mapBoard.BoardItems.BackBackgrounds;
                 list.Add((BackgroundInstance)bgInfo.CreateInstance(mapBoard, x, y, i, rx, ry, cx, cy, type, a, front, flip));
             }
@@ -578,10 +563,7 @@ namespace HaCreator.Wz
                 string l0 = objPathParts[objPathParts.Length - 3];
                 string l1 = objPathParts[objPathParts.Length - 2];
                 string l2 = objPathParts[objPathParts.Length - 1];
-                WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
-                if (objInfoProp.HCTag == null)
-                    objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
-                ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
+                ObjectInfo objInfo = ObjectInfo.Get(oS, l0, l1, l2);
                 ShipObject shipInstance = new ShipObject(objInfo, mapBoard, 
                     InfoTool.GetInt(ship["x"]), 
                     InfoTool.GetInt(ship["y"]), 
@@ -612,10 +594,7 @@ namespace HaCreator.Wz
                 string l0 = objPathParts[objPathParts.Length - 3];
                 string l1 = objPathParts[objPathParts.Length - 2];
                 string l2 = objPathParts[objPathParts.Length - 1];
-                WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
-                if (objInfoProp.HCTag == null)
-                    objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
-                ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
+                ObjectInfo objInfo = ObjectInfo.Get(oS, l0, l1, l2);
                 Healer healerInstance = new Healer(objInfo, mapBoard,
                     InfoTool.GetInt(healer["x"]),
                     InfoTool.GetInt(healer["yMin"]),
@@ -634,10 +613,7 @@ namespace HaCreator.Wz
                 string l0 = objPathParts[objPathParts.Length - 3];
                 string l1 = objPathParts[objPathParts.Length - 2];
                 string l2 = objPathParts[objPathParts.Length - 1];
-                WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
-                if (objInfoProp.HCTag == null)
-                    objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
-                ObjectInfo objInfo = (ObjectInfo)objInfoProp.HCTag;
+                ObjectInfo objInfo = ObjectInfo.Get(oS, l0, l1, l2);
                 Pulley pulleyInstance = new Pulley(objInfo, mapBoard,
                     InfoTool.GetInt(pulley["x"]),
                     InfoTool.GetInt(pulley["y"]));

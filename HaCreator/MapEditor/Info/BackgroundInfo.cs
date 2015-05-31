@@ -26,13 +26,16 @@ namespace HaCreator.MapEditor.Info
             _no = no;
         }
 
-        public static BackgroundInfo Load(WzImageProperty parentObject)
+        public static BackgroundInfo Get(string bS, bool ani, string no)
         {
-            string[] path = parentObject.FullPath.Split(@"\".ToCharArray());
-            return Load(parentObject, WzInfoTools.RemoveExtension(path[path.Length - 3]), path[path.Length - 2] == "ani", path[path.Length - 1]);
+            WzImage bsImg = Program.InfoManager.BackgroundSets[bS];
+            WzImageProperty bgInfoProp = bsImg[ani ? "ani" : "back"][no];
+            if (bgInfoProp.HCTag == null)
+                bgInfoProp.HCTag = BackgroundInfo.Load(bgInfoProp, bS, ani, no);
+            return (BackgroundInfo)bgInfoProp.HCTag;
         }
 
-        public static BackgroundInfo Load(WzImageProperty parentObject, string bS, bool ani, string no)
+        private static BackgroundInfo Load(WzImageProperty parentObject, string bS, bool ani, string no)
         {
             WzCanvasProperty frame0 = ani ? (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject["0"]) : (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject);
             return new BackgroundInfo(frame0.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)frame0["origin"]), bS, ani, no, parentObject);

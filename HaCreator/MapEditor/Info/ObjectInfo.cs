@@ -37,13 +37,15 @@ namespace HaCreator.MapEditor.Info
             this.connect = oS.StartsWith("connect");
         }
 
-        public static ObjectInfo Load(WzSubProperty parentObject)
+        public static ObjectInfo Get(string oS, string l0, string l1, string l2)
         {
-            string[] path = parentObject.FullPath.Split(@"\".ToCharArray());
-            return Load(parentObject, WzInfoTools.RemoveExtension(path[path.Length - 4]), path[path.Length - 3], path[path.Length - 2], path[path.Length - 1]);
+            WzImageProperty objInfoProp = Program.InfoManager.ObjectSets[oS][l0][l1][l2];
+            if (objInfoProp.HCTag == null)
+                objInfoProp.HCTag = ObjectInfo.Load((WzSubProperty)objInfoProp, oS, l0, l1, l2);
+            return (ObjectInfo)objInfoProp.HCTag;
         }
 
-        public static ObjectInfo Load(WzSubProperty parentObject, string oS, string l0, string l1, string l2)
+        private static ObjectInfo Load(WzSubProperty parentObject, string oS, string l0, string l1, string l2)
         {
             WzCanvasProperty frame1 = (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject["0"]);
             ObjectInfo result = new ObjectInfo(frame1.PngProperty.GetPNG(false), WzInfoTools.VectorToSystemPoint((WzVectorProperty)frame1["origin"]), oS, l0, l1, l2, parentObject);

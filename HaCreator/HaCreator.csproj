@@ -97,6 +97,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="system.windows.controls.ribbon, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -112,9 +113,11 @@
     <Compile Include="Collections\ItemsCollectionBase.cs" />
     <Compile Include="Collections\MapleLinesCollection.cs" />
     <Compile Include="Collections\MapleLinesEnumerator.cs" />
+    <Compile Include="Collections\SerializableEnumerator.cs" />
     <Compile Include="CustomControls\HaList.xaml.cs">
       <DependentUpon>HaList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\DeserializationException.cs" />
     <Compile Include="Exceptions\NameAlreadyUsedException.cs" />
     <Compile Include="GUI\HaRibbon.xaml.cs">
       <DependentUpon>HaRibbon.xaml</DependentUpon>
@@ -295,7 +298,7 @@
     <Compile Include="MapEditor\Instance\Shapes\Rope.cs" />
     <Compile Include="MapEditor\Instance\TileInstance.cs" />
     <Compile Include="MapEditor\SelectionInfo.cs" />
-    <Compile Include="MapEditor\Serialization.cs" />
+    <Compile Include="MapEditor\SerializationManager.cs" />
     <Compile Include="MapEditor\Text\CharTexture.cs" />
     <Compile Include="MapEditor\TilesDesign\bsc.cs" />
     <Compile Include="MapEditor\TilesDesign\edD.cs" />
