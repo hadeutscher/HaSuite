@@ -21,8 +21,8 @@ namespace HaCreator.MapEditor.Instance.Shapes
     public abstract class MapleLine
     {
         private Board board;
-        private MapleDot firstDot;
-        private MapleDot secondDot;
+        protected MapleDot firstDot;
+        protected MapleDot secondDot;
         private bool beforeConnecting;
         private bool _xBind = false;
         private bool _yBind = false;
@@ -35,11 +35,13 @@ namespace HaCreator.MapEditor.Instance.Shapes
             this.secondDot = board.Mouse;
             this.secondDot.connectedLines.Add(this);
             this.beforeConnecting = true;
-            firstDot.PointMoved += new MapleDot.OnPointMovedDelegate(OnFirstDotMoved);
+            firstDot.PointMoved += OnFirstDotMoved;
         }
 
-        protected MapleLine()
+        protected MapleLine(Board board)
         {
+            this.board = board;
+            this.beforeConnecting = false;
         }
 
         public MapleLine(Board board, MapleDot firstDot, MapleDot secondDot)
@@ -50,8 +52,8 @@ namespace HaCreator.MapEditor.Instance.Shapes
             this.secondDot = secondDot;
             this.secondDot.connectedLines.Add(this);
             this.beforeConnecting = false;
-            firstDot.PointMoved += new MapleDot.OnPointMovedDelegate(OnFirstDotMoved);
-            secondDot.PointMoved += new MapleDot.OnPointMovedDelegate(OnSecondDotMoved);
+            firstDot.PointMoved += OnFirstDotMoved;
+            secondDot.PointMoved += OnSecondDotMoved;
         }
 
         public void ConnectSecondDot(MapleDot secondDot)
@@ -60,7 +62,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
             this.secondDot.connectedLines.Clear();
             this.secondDot = secondDot;
             this.secondDot.connectedLines.Add(this);
-            secondDot.PointMoved += new MapleDot.OnPointMovedDelegate(OnSecondDotMoved);
+            secondDot.PointMoved += OnSecondDotMoved;
         }
 
         public virtual void OnPlaced(List<UndoRedoAction> undoPipe)
@@ -159,6 +161,16 @@ namespace HaCreator.MapEditor.Instance.Shapes
         public virtual void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift)
         {
             board.ParentControl.DrawLine(sprite, new XNA.Vector2(firstDot.X + xShift, firstDot.Y + yShift), new XNA.Vector2(secondDot.X + xShift, secondDot.Y + yShift), color);
+        }
+
+        public MapleDot GetOtherDot(MapleDot x)
+        {
+            if (firstDot == x)
+                return secondDot;
+            else if (secondDot == x)
+                return firstDot;
+            else
+                throw new Exception("GetOtherDot: line is not properly connected");
         }
     }
 }

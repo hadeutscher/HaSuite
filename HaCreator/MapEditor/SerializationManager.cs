@@ -25,18 +25,20 @@ namespace HaCreator.MapEditor
     {
         Board board;
 
+        public const string HaClipboardData = "HaClipboardData";
+
         public SerializationManager(Board board)
         {
             this.board = board;
         }
 
-        public string SerializeList(IEnumerable<ISerializable> list)
+        public string SerializeList(IEnumerable<ISerializableSelector> list)
         {
             // Get the list of all items to serialize, including dependencies and excluding non-serializable ISerializables
             List<ISerializable> items = new SerializableEnumerator(list).ToList();
 
             // Make reference IDs for every serialized object
-            Dictionary<ISerializable, int> refDict =  MakeSerializationRefDict(items);
+            Dictionary<ISerializable, long> refDict = MakeSerializationRefDict(items);
 
             // Loop over all items, making their dynamic objects and adding them to the serialization queue
             List<dynamic> dynamicList = new List<dynamic>(items.Count);
@@ -44,7 +46,9 @@ namespace HaCreator.MapEditor
             {
                 dynamic serData = new ExpandoObject();
                 serData.type = item.GetType().FullName;
-                serData.data = item.Serialize();
+                object data = item.Serialize();
+                serData.dataType = data.GetType().FullName;
+                serData.data = JsonConvert.SerializeObject(data);
                 serData.bindings = item.SerializeBindings(refDict);
                 dynamicList.Add(serData);
             }
@@ -53,9 +57,9 @@ namespace HaCreator.MapEditor
             return JsonConvert.SerializeObject(dynamicList.ToArray());
         }
 
-        Dictionary<ISerializable, int> MakeSerializationRefDict(List<ISerializable> items)
+        Dictionary<ISerializable, long> MakeSerializationRefDict(List<ISerializable> items)
         {
-            Dictionary<ISerializable, int> result = new Dictionary<ISerializable, int>(items.Count);
+            Dictionary<ISerializable, long> result = new Dictionary<ISerializable, long>(items.Count);
             for (int i = 0; i < items.Count; i++)
             {
                 result.Add(items[i], i);
@@ -63,9 +67,9 @@ namespace HaCreator.MapEditor
             return result;
         }
 
-        Dictionary<int, ISerializable> MakeDeserializationRefDict(List<ISerializable> items)
+        Dictionary<long, ISerializable> MakeDeserializationRefDict(List<ISerializable> items)
         {
-            Dictionary<int, ISerializable> result = new Dictionary<int, ISerializable>(items.Count);
+            Dictionary<long, ISerializable> result = new Dictionary<long, ISerializable>(items.Count);
             for (int i = 0; i < items.Count; i++)
             {
                 result.Add(i, items[i]);
@@ -90,10 +94,10 @@ namespace HaCreator.MapEditor
                 {
                     result.Add(pair.Key, Deserialize2(pair.Value));
                 }
-                if (result.Count == 1 && result.ContainsKey("val"))
+                /*if (result.Count == 1 && result.ContainsKey("val"))
                 {
                     return (MapleBool)(byte)(long)result["val"]; // Yes, you need all these casts here, otherwise VS doesn't understand how to cast that
-                }
+                }*/
                 return result;
             }
             else if (obj is JValue)
@@ -125,8 +129,11 @@ namespace HaCreator.MapEditor
             {
                 dynamic serData2 = Deserialize2(serData);
                 string typeName = serData2.type;
-                dynamic data = serData2.data;
-                ISerializable item = (ISerializable)ConstructObject(typeName, new object[] { board, data }, new[] { typeof(Board), typeof(string) });
+                string data = serData2.data;
+                string dataTypeName = serData2.dataType;
+                Type dataType = Type.GetType(dataTypeName);
+                object dataObject = JsonConvert.DeserializeObject(data, dataType);
+                ISerializable item = (ISerializable)ConstructObject(typeName, new object[] { board, dataObject }, new[] { typeof(Board), dataType });
                 items.Add(item);
 
                 // Store the binding dict for later, since we can deserialize binding data untill all objects have been constructed
@@ -134,7 +141,7 @@ namespace HaCreator.MapEditor
             }
 
             // Make binding references and deserialize them
-            Dictionary<int, ISerializable> refDict = MakeDeserializationRefDict(items);
+            Dictionary<long, ISerializable> refDict = MakeDeserializationRefDict(items);
             for (int i = 0; i < items.Count; i++)
             {
                 items[i].DeserializeBindings(itemBindings[i], refDict);

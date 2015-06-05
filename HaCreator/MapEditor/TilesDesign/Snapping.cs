@@ -7,19 +7,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-//using System.Drawing;
-using Microsoft.Xna.Framework;
-using MapleLib.WzLib.WzStructure.Data;
 
 namespace HaCreator.MapEditor.TilesDesign
 {
     public static class TileSnap
     {
-        public static MapleTable<string, MapTileDesign> tileCats;
+        public static Dictionary<string, MapTileDesign> tileCats;
 
         static TileSnap()
         {
-            tileCats = new MapleTable<string, MapTileDesign>();
+            tileCats = new Dictionary<string, MapTileDesign>();
             tileCats["bsc"] = new bsc();
             tileCats["edU"] = new edU();
             tileCats["edD"] = new edD();

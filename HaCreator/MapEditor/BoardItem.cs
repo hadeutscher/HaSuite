@@ -22,7 +22,7 @@ using HaCreator.Exceptions;
 
 namespace HaCreator.MapEditor
 {
-    public abstract class BoardItem : ISerializable
+    public abstract class BoardItem : ISerializableSelector
     {
         protected XNA.Vector3 position;
         private Dictionary<BoardItem, XNA.Point> boundItems = new Dictionary<BoardItem, XNA.Point>();//key = BoardItem; value = point (distance)
@@ -157,7 +157,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public void SnapMove(int x, int y)
+        public virtual void SnapMove(int x, int y)
         {
             lock (Board.ParentControl)
             {
@@ -344,15 +344,12 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region ISerializable Implementation
-        public virtual bool ShouldSerialize
+        public class SerializationForm
         {
-            get
-            {
-                return true;
-            }
+            public float x, y, z;
         }
 
-        public virtual bool ShouldSerializeChildren
+        public virtual bool ShouldSelectSerialized
         {
             get
             {
@@ -360,32 +357,39 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public virtual List<ISerializable> SelectSerialized()
+        public virtual List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems)
         {
-            List<ISerializable> serList = new List<ISerializable>();
+            List<ISerializableSelector> serList = new List<ISerializableSelector>();
             foreach (BoardItem item in BoundItems.Keys)
             {
-                serList.Add((ISerializable)item);
+                serList.Add(item);
             }
             return serList;
         }
 
-        public virtual dynamic Serialize()
+        public virtual object Serialize()
         {
-            dynamic result = new ExpandoObject();
-            result.x = position.X;
-            result.y = position.Y;
-            result.z = position.Z;
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
             return result;
         }
 
-        public virtual IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, int> refDict)
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            result.x = position.X;
+            result.y = position.Y;
+            result.z = position.Z;
+        }
+
+        public virtual IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, long> refDict)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
-            List<int> bindOrder = new List<int>();
+            List<long> bindOrder = new List<long>();
             foreach (BoardItem item in boundItemsList)
             {
-                int refNum = refDict[item];
+                if (!(item is ISerializable)) // We should only have bound ISerializables (specifically, chairs and foothold anchors)
+                    throw new SerializationException("Bound item is not ISerializable");
+                long refNum = refDict[(ISerializable)item];
                 result.Add(refNum.ToString(), SerializationManager.SerializePoint(boundItems[item]));
                 bindOrder.Add(refNum);
             }
@@ -394,18 +398,18 @@ namespace HaCreator.MapEditor
             return result;
         }
 
-        public BoardItem(Board board, dynamic json)
+        public BoardItem(Board board, SerializationForm json)
         {
             this.board = board;
-            position = new XNA.Vector3((float)json.x, (float)json.y, (float)json.z);
+            position = new XNA.Vector3(json.x, json.y, json.z);
         }
 
-        public virtual void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<int, ISerializable> refDict)
+        public virtual void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<long, ISerializable> refDict)
         {
             if (!bindSer.ContainsKey("bindOrder"))
                 return; // No bindings were serialized
-            int[] bindOrder = (int[])bindSer["bindOrder"];
-            foreach (int id in bindOrder)
+            long[] bindOrder = (long[])bindSer["bindOrder"];
+            foreach (long id in bindOrder)
             {
                 BoardItem item = (BoardItem)refDict[id];
                 XNA.Point offs = (XNA.Point)bindSer[id.ToString()];
@@ -417,8 +421,24 @@ namespace HaCreator.MapEditor
 
         public virtual void AddToBoard(List<UndoRedoAction> undoPipe)
         {
-            OnItemPlaced(undoPipe);
+            if (undoPipe != null)
+            {
+                OnItemPlaced(undoPipe);
+            }
             board.BoardItems.Add(this, false);
+        }
+
+        public virtual void PostDeserializationActions(bool? selected, XNA.Point? offset)
+        {
+            if (selected.HasValue)
+            {
+                Selected = selected.Value;
+            }
+            if (offset.HasValue)
+            {
+                position.X += offset.Value.X;
+                position.Y += offset.Value.Y;
+            }
         }
         #endregion
     }

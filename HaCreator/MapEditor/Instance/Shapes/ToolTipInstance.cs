@@ -16,39 +16,29 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes
 {
-    public class ToolTipInstance : MapleRectangle // Renamed to ToolTipInstance to avoid ambiguity with System.Windows.Forms.ToolTip
+    public class ToolTipInstance : MapleRectangle, ISerializable // Renamed to ToolTipInstance to avoid ambiguity with System.Windows.Forms.ToolTip
     {
         private string title;
         private string desc;
-        private ToolTipChar ttc;
+        private ToolTipChar ttc = null;
         private int originalNum;
 
         public ToolTipInstance(Board board, XNA.Rectangle rect, string title, string desc, int originalNum = -1)
             : base(board, rect)
         {
-            lock (board.ParentControl)
-            {
-                PointA = new ToolTipDot(this, board, rect.Left, rect.Top);
-                PointB = new ToolTipDot(this, board, rect.Right, rect.Top);
-                PointC = new ToolTipDot(this, board, rect.Right, rect.Bottom);
-                PointD = new ToolTipDot(this, board, rect.Left, rect.Bottom);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointA);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointB);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointC);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointD);
-                LineAB = new ToolTipLine(board, PointA, PointB);
-                LineBC = new ToolTipLine(board, PointB, PointC);
-                LineCD = new ToolTipLine(board, PointC, PointD);
-                LineDA = new ToolTipLine(board, PointD, PointA);
-                LineAB.yBind = true;
-                LineBC.xBind = true;
-                LineCD.yBind = true;
-                LineDA.xBind = true;
-                this.title = title;
-                this.desc = desc;
-                this.ttc = null;
-                this.originalNum = originalNum;
-            }
+            this.title = title;
+            this.desc = desc;
+            this.originalNum = originalNum;
+        }
+
+        public override MapleDot CreateDot(int x, int y)
+        {
+            return new ToolTipDot(this, board, x, y);
+        }
+
+        public override MapleLine CreateLine(MapleDot a, MapleDot b)
+        {
+            return new ToolTipLine(board, a, b);
         }
 
         public string Title
@@ -115,13 +105,82 @@ namespace HaCreator.MapEditor.Instance.Shapes
         {
             lock (board.ParentControl)
             {
-                ToolTipChar ttc = new ToolTipChar(Board, rect, this);
+                ttc = new ToolTipChar(Board, rect, this);
                 List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
                 ttc.OnItemPlaced(undoPipe);
-                CharacterToolTip = ttc;
                 Board.BoardItems.CharacterToolTips.Add(ttc);
                 Board.UndoRedoMan.AddUndoBatch(undoPipe);
             }
+        }
+
+        public new class SerializationForm : MapleRectangle.SerializationForm
+        {
+            public string title, desc;
+            public int originalnum;
+        }
+
+        public override bool ShouldSelectSerialized
+        {
+            get
+            {
+                return base.ShouldSelectSerialized || ttc != null;
+            }
+        }
+
+        public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems)
+        {
+            List<ISerializableSelector> result = base.SelectSerialized(serializedItems);
+            if (ttc != null)
+                result.Add(ttc);
+            return result;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.title = title;
+            result.desc = desc;
+            result.originalnum = originalNum;
+        }
+
+        private const string TTC_KEY = "ttc";
+
+        public override IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, long> refDict)
+        {
+            if (ttc != null)
+            {
+                Dictionary<string, object> result = new Dictionary<string, object>();
+                result[TTC_KEY] = refDict[ttc];
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public override void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<long, ISerializable> refDict)
+        {
+            if (bindSer != null)
+            {
+                ttc = (ToolTipChar)refDict[(long)bindSer[TTC_KEY]];
+                ttc.BoundTooltip = this;
+            }
+        }
+
+        public ToolTipInstance(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            title = json.title;
+            desc = json.desc;
+            originalNum = json.originalnum;
         }
     }
 }

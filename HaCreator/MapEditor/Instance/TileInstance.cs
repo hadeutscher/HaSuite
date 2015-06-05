@@ -182,17 +182,28 @@ namespace HaCreator.MapEditor.Instance
             }
         }
 
-        public override dynamic Serialize()
+        public new class SerializationForm : LayeredItem.SerializationForm
         {
-            dynamic result = base.Serialize();
-            result.ts = baseInfo.tS;
-            result.u = baseInfo.u;
-            result.no = baseInfo.no;
+            public string ts, u, no;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
             return result;
         }
 
-        public TileInstance(Board board, dynamic json)
-            : base(board, (object)json)
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.ts = baseInfo.tS;
+            result.u = baseInfo.u;
+            result.no = baseInfo.no;
+        }
+
+        public TileInstance(Board board, SerializationForm json)
+            : base(board, json)
         {
             baseInfo = TileInfo.Get(json.ts, json.u, json.no);
         }

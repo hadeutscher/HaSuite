@@ -16,7 +16,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance
 {
-    public class ReactorInstance : BoardItem, IFlippable
+    public class ReactorInstance : BoardItem, IFlippable, ISerializable
     {
         private ReactorInfo baseInfo;
         private int reactorTime;
@@ -112,6 +112,36 @@ namespace HaCreator.MapEditor.Instance
         {
             get { return name; }
             set { name = value; }
+        }
+
+        public new class SerializationForm : BoardItem.SerializationForm
+        {
+            public string id;
+            public int reactortime;
+            public bool flip;
+            public string name;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.id = baseInfo.ID;
+            result.reactortime = reactorTime;
+            result.flip = flip;
+            result.name = name;
+        }
+
+        public ReactorInstance(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            baseInfo = ReactorInfo.Get(json.id);
         }
     }
 }

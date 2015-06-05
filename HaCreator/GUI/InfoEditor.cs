@@ -70,16 +70,16 @@ namespace HaCreator.GUI
             if (info.mapType != MapType.CashShopPreview)
             {
                 List<string> sortedBGMs = new List<string>();
-                foreach (DictionaryEntry bgm in Program.InfoManager.BGMs)
-                    sortedBGMs.Add((string)bgm.Key);
+                foreach (KeyValuePair<string, WzSoundProperty> bgm in Program.InfoManager.BGMs)
+                    sortedBGMs.Add(bgm.Key);
                 sortedBGMs.Sort();
                 foreach (string bgm in sortedBGMs)
                     bgmBox.Items.Add(bgm);
                 bgmBox.SelectedItem = info.bgm;
 
                 List<string> sortedMarks = new List<string>();
-                foreach (DictionaryEntry mark in Program.InfoManager.MapMarks)
-                    sortedMarks.Add((string)mark.Key);
+                foreach (KeyValuePair<string, Bitmap> mark in Program.InfoManager.MapMarks)
+                    sortedMarks.Add(mark.Key);
                 sortedMarks.Sort();
                 foreach (string mark in sortedMarks)
                     markBox.Items.Add(mark);

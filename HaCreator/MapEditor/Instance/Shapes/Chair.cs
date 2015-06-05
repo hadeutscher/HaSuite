@@ -14,7 +14,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes
 {
-    public class Chair : MapleDot, ISnappable
+    public class Chair : MapleDot, ISnappable, ISerializable
     {
         public Chair(Board board, int x, int y)
             : base(board, x, y)
@@ -64,5 +64,8 @@ namespace HaCreator.MapEditor.Instance.Shapes
         {
             get { return true; }
         }
+
+        public Chair(Board board, BoardItem.SerializationForm json)
+            : base(board, json) { }
     }
 }

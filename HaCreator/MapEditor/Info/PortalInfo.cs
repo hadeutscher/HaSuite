@@ -72,6 +72,11 @@ namespace HaCreator.MapEditor.Info
             return new PortalInstance(this, board, x, y, pn, type, tn, tm, script, delay, hideTooltip, onlyOnce, horizontalImpact, verticalImpact, image, hRange, vRange);
         }
 
+        public string Type
+        {
+            get { return type; }
+        }
+
         public static PortalInfo GetPortalInfoByType(string type)
         {
             return Program.InfoManager.Portals[type];

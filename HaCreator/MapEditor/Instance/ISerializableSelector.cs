@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace HaCreator.MapEditor.Instance
 {
-    // The difference between LayeredItem and this is that LayeredItems are actually 
-    // ordered according to their layer (tiles\objs) in the editor. IContainsLayerInfo only
-    // contains info about layers, and is not necessarily drawn according to it.
-    public interface IContainsLayerInfo
+    public interface ISerializableSelector
     {
-        int LayerNumber { get; set; }
-        int PlatformNumber { get; set; }
+        // Lets the object decide whether SelectSerialized should be called
+        bool ShouldSelectSerialized { get; }
+
+        // Lets the object add other objects to the serialization queue
+        List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems);
     }
 }

@@ -34,8 +34,8 @@ namespace HaCreator.GUI.EditorPanels
             InitializeComponent();
 
             List<string> sortedBgSets = new List<string>();
-            foreach (DictionaryEntry bS in Program.InfoManager.BackgroundSets)
-                sortedBgSets.Add((string)bS.Key);
+            foreach (KeyValuePair<string, WzImage> bS in Program.InfoManager.BackgroundSets)
+                sortedBgSets.Add(bS.Key);
             sortedBgSets.Sort();
             foreach (string bS in sortedBgSets)
                 bgSetListBox.Items.Add(bS);

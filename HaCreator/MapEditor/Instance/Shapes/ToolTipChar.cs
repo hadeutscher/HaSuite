@@ -16,33 +16,24 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes
 {
-    public class ToolTipChar : MapleRectangle
+    public class ToolTipChar : MapleRectangle, ISerializable
     {
         private ToolTipInstance boundTooltip;
 
         public ToolTipChar(Board board, XNA.Rectangle rect, ToolTipInstance boundTooltip)
             : base(board, rect)
         {
-            lock (board.ParentControl)
-            {
-                PointA = new ToolTipDot(this, board, rect.Left, rect.Top);
-                PointB = new ToolTipDot(this, board, rect.Right, rect.Top);
-                PointC = new ToolTipDot(this, board, rect.Right, rect.Bottom);
-                PointD = new ToolTipDot(this, board, rect.Left, rect.Bottom);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointA);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointB);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointC);
-                board.BoardItems.ToolTipDots.Add((ToolTipDot)PointD);
-                LineAB = new ToolTipLine(board, PointA, PointB);
-                LineBC = new ToolTipLine(board, PointB, PointC);
-                LineCD = new ToolTipLine(board, PointC, PointD);
-                LineDA = new ToolTipLine(board, PointD, PointA);
-                LineAB.yBind = true;
-                LineBC.xBind = true;
-                LineCD.yBind = true;
-                LineDA.xBind = true;
-                BoundTooltip = boundTooltip;
-            }
+            BoundTooltip = boundTooltip;
+        }
+
+        public override MapleDot CreateDot(int x, int y)
+        {
+            return new ToolTipDot(this, board, x, y);
+        }
+
+        public override MapleLine CreateLine(MapleDot a, MapleDot b)
+        {
+            return new ToolTipLine(board, a, b);
         }
 
         public ToolTipInstance BoundTooltip
@@ -92,6 +83,24 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 boundTooltip.CharacterToolTip = null;
                 boundTooltip = null;
             }
+        }
+
+        public override bool ShouldSelectSerialized
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems)
+        {
+            return new List<ISerializableSelector> { boundTooltip };
+        }
+
+        public ToolTipChar(Board board, MapleRectangle.SerializationForm json)
+            : base(board, json)
+        {
         }
     }
 }

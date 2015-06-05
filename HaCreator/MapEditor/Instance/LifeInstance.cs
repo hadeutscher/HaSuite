@@ -16,9 +16,8 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance
 {
-    public abstract class LifeInstance : BoardItem, IFlippable
+    public abstract class LifeInstance : BoardItem, IFlippable, ISerializable
     {
-        private MapleDrawableInfo baseInfo;
         private int _rx0Shift;
         private int _rx1Shift;
         private int _yShift;
@@ -33,7 +32,6 @@ namespace HaCreator.MapEditor.Instance
             : base(board, x, y, -1)
         {
             this.limitedname = limitedname;
-            this.baseInfo = baseInfo;
             this._rx0Shift = rx0Shift;
             this._rx1Shift = rx1Shift;
             this._yShift = yShift;
@@ -42,14 +40,18 @@ namespace HaCreator.MapEditor.Instance
             this.team = team;
             this.flip = flip;
             if (flip == true)
-                X -= Width - 2 * Origin.X;
+            {
+                // We need to use the data from baseInfo directly because BaseInfo property is only instantiated in the child ctor,
+                // which will execute after we are finished.
+                X -= baseInfo.Width - 2 * baseInfo.Origin.X;
+            }
         }
 
         public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift)
         {
             XNA.Rectangle destinationRectangle = new XNA.Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             //if (baseInfo.Texture == null) baseInfo.CreateTexture(sprite.GraphicsDevice);
-            sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
+            sprite.Draw(BaseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1f);
             base.Draw(sprite, color, xShift, yShift);
         }
 
@@ -96,34 +98,29 @@ namespace HaCreator.MapEditor.Instance
             set { hide = value; }
         }
 
-        public override MapleDrawableInfo BaseInfo
-        {
-            get { return baseInfo; }
-        }
-
         public override System.Drawing.Bitmap Image
         {
             get
             {
-                return baseInfo.Image;
+                return BaseInfo.Image;
             }
         }
 
         public override int Width
         {
-            get { return baseInfo.Width; }
+            get { return BaseInfo.Width; }
         }
 
         public override int Height
         {
-            get { return baseInfo.Height; }
+            get { return BaseInfo.Height; }
         }
 
         public override System.Drawing.Point Origin
         {
             get
             {
-                return baseInfo.Origin;
+                return BaseInfo.Origin;
             }
         }
 
@@ -177,5 +174,48 @@ namespace HaCreator.MapEditor.Instance
 
         public int? Info { get { return info; } set { info = value; } }
         public int? Team { get { return team; } set { team = value; } }
+
+        public new class SerializationForm : BoardItem.SerializationForm
+        {
+            public int rx0, rx1, yshift;
+            public int? mobtime;
+            public string limitedname;
+            public MapleBool flip, hide;
+            public int? info, team;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.rx0 = _rx0Shift;
+            result.rx1 = _rx1Shift;
+            result.yshift = _yShift;
+            result.mobtime = mobTime;
+            result.limitedname = limitedname;
+            result.flip = flip;
+            result.hide = hide;
+            result.info = info;
+            result.team = team;
+        }
+
+        public LifeInstance(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            _rx0Shift = json.rx0;
+            _rx1Shift = json.rx1;
+            _yShift = json.yshift;
+            mobTime = json.mobtime;
+            flip = json.flip;
+            hide = json.hide;
+            info = json.info;
+            team = json.team;
+        }
     }
 }

@@ -60,9 +60,9 @@ namespace HaCreator.CustomControls
         public void InitializeMaps(bool special)
         {
             mapLogin1 = Program.WzManager["ui"]["MapLogin1.img"] != null;
-            foreach (DictionaryEntry map in Program.InfoManager.Maps)
+            foreach (KeyValuePair<string, string> map in Program.InfoManager.Maps)
             {
-                maps.Add((string)map.Key + " - " + (string)map.Value);
+                maps.Add(map.Key + " - " + map.Value);
             }
             maps.Sort();
             if (special)

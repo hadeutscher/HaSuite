@@ -193,6 +193,9 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 return (boundb - tolerance) <= value && value <= (bounda + tolerance);
         }
 
+        public MapleDot(Board board, BoardItem.SerializationForm json)
+            : base(board, json) { }
+
         public delegate void OnPointMovedDelegate();
         public event OnPointMovedDelegate PointMoved;
     }

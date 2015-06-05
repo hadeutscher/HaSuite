@@ -35,8 +35,8 @@ namespace HaCreator.GUI.EditorPanels
             InitializeComponent();
 
             List<string> sortedObjSets = new List<string>();
-            foreach (DictionaryEntry oS in Program.InfoManager.ObjectSets)
-                sortedObjSets.Add((string)oS.Key);
+            foreach (KeyValuePair<string, WzImage> oS in Program.InfoManager.ObjectSets)
+                sortedObjSets.Add(oS.Key);
             sortedObjSets.Sort();
             foreach (string oS in sortedObjSets)
                 objSetListBox.Items.Add(oS);

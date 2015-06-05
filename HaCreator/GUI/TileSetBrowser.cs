@@ -29,8 +29,8 @@ namespace HaCreator.GUI
             InitializeComponent();
             targetListBox = target;
             List<string> sortedTileSets = new List<string>();
-            foreach (DictionaryEntry tS in Program.InfoManager.TileSets)
-                sortedTileSets.Add((string)tS.Key);
+            foreach (KeyValuePair<string, WzImage> tS in Program.InfoManager.TileSets)
+                sortedTileSets.Add(tS.Key);
             sortedTileSets.Sort();
             foreach (string tS in sortedTileSets)
             {

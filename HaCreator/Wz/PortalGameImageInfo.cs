@@ -19,9 +19,9 @@ namespace HaCreator.Wz
     {
         private Bitmap defaultImage;
 
-        private MapleTable<Bitmap> imageList;
+        private Dictionary<string, Bitmap> imageList;
 
-        public PortalGameImageInfo(Bitmap defaultImage, MapleTable<Bitmap> imageList)
+        public PortalGameImageInfo(Bitmap defaultImage, Dictionary<string, Bitmap> imageList)
         {
             this.defaultImage = defaultImage;
             this.imageList = imageList;

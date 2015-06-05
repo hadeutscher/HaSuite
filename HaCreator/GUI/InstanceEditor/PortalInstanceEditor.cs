@@ -305,7 +305,7 @@ namespace HaCreator.GUI.InstanceEditor
                         break;
                 }
 
-                if (portalImageList.SelectedItem != null && Program.InfoManager.GamePortals[Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]] != null)
+                if (portalImageList.SelectedItem != null && Program.InfoManager.GamePortals.ContainsKey(Program.InfoManager.PortalTypeById[ptComboBox.SelectedIndex]))
                 {
                     item.image = (string)portalImageList.SelectedItem;
                 }
@@ -485,15 +485,15 @@ namespace HaCreator.GUI.InstanceEditor
             leftBlankLabel.Visible = pt == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP;
             if (pt == PortalType.PORTALTYPE_COLLISION_VERTICAL_JUMP)
                 btnBrowseTn.Enabled = true;
-            PortalGameImageInfo imageInfo = Program.InfoManager.GamePortals[pt];
-            if (imageInfo == null) rowMan.SetInvisible("image");
+            if (!Program.InfoManager.GamePortals.ContainsKey(pt)) 
+                rowMan.SetInvisible("image");
             else
             {
                 portalImageList.Items.Clear();
                 portalImageList.Items.Add("default");
                 portalImageBox.Image = null;
                 rowMan.SetVisible("image");
-                foreach (DictionaryEntry image in imageInfo)
+                foreach (DictionaryEntry image in Program.InfoManager.GamePortals[pt])
                     portalImageList.Items.Add(image.Key);
                 portalImageList.SelectedIndex = 0;
             }

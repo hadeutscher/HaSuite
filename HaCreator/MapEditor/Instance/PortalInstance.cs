@@ -17,7 +17,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance
 {
-    public class PortalInstance : BoardItem
+    public class PortalInstance : BoardItem, ISerializable
     {
         private PortalInfo baseInfo;
         private string _pn;
@@ -233,6 +233,62 @@ namespace HaCreator.MapEditor.Instance
         {
             get { return _vRange; }
             set { _vRange = value; }
+        }
+
+        public new class SerializationForm : BoardItem.SerializationForm
+        {
+            public string pn, pt, tn;
+            public int tm;
+            public string script;
+            public int? delay;
+            public MapleBool hidett, onlyonce;
+            public int? himpact, vimpact;
+            public string image;
+            public int? hrange, vrange;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.pn = _pn;
+            result.pt = _pt;
+            result.tn = _tn;
+            result.tm = _tm;
+            result.script = _script;
+            result.delay = _delay;
+            result.hidett = _hideTooltip;
+            result.onlyonce = _onlyOnce;
+            result.himpact = _horizontalImpact;
+            result.vimpact = _verticalImpact;
+            result.image = _image;
+            result.hrange = _hRange;
+            result.vrange = _vRange;
+        }
+
+        public PortalInstance(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            _pn = json.pn;
+            _pt = json.pt;
+            _tn = json.tn;
+            _tm = json.tm;
+            _script = json.script;
+            _delay = json.delay;
+            _hideTooltip = json.hidett;
+            _onlyOnce = json.onlyonce;
+            _horizontalImpact = json.himpact;
+            _verticalImpact = json.vimpact;
+            _image = json.image;
+            _hRange = json.hrange;
+            _vRange = json.vrange;
+            baseInfo = PortalInfo.GetPortalInfoByType(pt);
         }
     }
 }

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace HaCreator.MapEditor.Instance
 {
-    public class BackgroundInstance : BoardItem, IFlippable
+    public class BackgroundInstance : BoardItem, IFlippable, ISerializable
     {
         private BackgroundInfo baseInfo;
         private bool flip;
@@ -76,9 +76,6 @@ namespace HaCreator.MapEditor.Instance
         public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift)
         {
             XNA.Rectangle destinationRectangle;
-            /*if (ApplicationSettings.emulateParallax)
-                destinationRectangle = new Rectangle((int)X - Origin.X, (int)Y - Origin.Y, Width, Height);
-            else */
             destinationRectangle = new XNA.Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0f, 0f), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
             base.Draw(sprite, color, xShift, yShift);
@@ -115,7 +112,7 @@ namespace HaCreator.MapEditor.Instance
             }
         }
 
-        //parallax + undo\redo is shit. I don't like this way either.
+        // Parallax + Undo\Redo is troublesome. I don't like this way either.
         public int BaseX { get { return (int)base.position.X; } set { base.position.X = value; } }
         public int BaseY { get { return (int)base.position.Y; } set { base.position.Y = value; } }
 
@@ -227,6 +224,66 @@ namespace HaCreator.MapEditor.Instance
         {
             BaseX = x;
             BaseY = y;
+        }
+
+        public new class SerializationForm : BoardItem.SerializationForm
+        {
+            public bool flip;
+            public int a, cx, cy, rx, ry;
+            public bool front;
+            public BackgroundType type;
+            public string bs;
+            public bool ani;
+            public string no;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.flip = flip;
+            result.a = _a;
+            result.cx = _cx;
+            result.cy = _cy;
+            result.rx = _rx;
+            result.ry = _ry;
+            result.front = _front;
+            result.type = _type;
+            result.bs = baseInfo.bS;
+            result.ani = baseInfo.ani;
+            result.no = baseInfo.no;
+        }
+
+        public BackgroundInstance(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            flip = json.flip;
+            _a = json.a;
+            _cx = json.cx;
+            _cy = json.cy;
+            _rx = json.rx;
+            _ry = json.ry;
+            _front = json.front;
+            _type = json.type;
+            baseInfo = BackgroundInfo.Get(json.bs, json.ani, json.no);
+        }
+
+        public override void PostDeserializationActions(bool? selected, XNA.Point? offset)
+        {
+            if (selected.HasValue)
+            {
+                Selected = selected.Value;
+            }
+            if (offset.HasValue)
+            {
+                Move(X + offset.Value.X, Y + offset.Value.Y);
+            }
         }
     }
 }

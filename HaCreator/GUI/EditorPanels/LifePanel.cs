@@ -35,17 +35,17 @@ namespace HaCreator.GUI.EditorPanels
             this.hcsm = hcsm;
             InitializeComponent();
 
-            foreach (DictionaryEntry entry in Program.InfoManager.Reactors)
+            foreach (KeyValuePair<string, ReactorInfo> entry in Program.InfoManager.Reactors)
             {
-                reactors.Add(((ReactorInfo)entry.Value).ID);
+                reactors.Add(entry.Value.ID);
             }
-            foreach (DictionaryEntry entry in Program.InfoManager.NPCs)
+            foreach (KeyValuePair<string, string> entry in Program.InfoManager.NPCs)
             {
-                npcs.Add((string)entry.Key + " - " + (string)entry.Value);
+                npcs.Add(entry.Key + " - " + entry.Value);
             }
-            foreach (DictionaryEntry entry in Program.InfoManager.Mobs)
+            foreach (KeyValuePair<string, string> entry in Program.InfoManager.Mobs)
             {
-                mobs.Add((string)entry.Key + " - " + (string)entry.Value);
+                mobs.Add(entry.Key + " - " + entry.Value);
             }
 
             ReloadLifeList();

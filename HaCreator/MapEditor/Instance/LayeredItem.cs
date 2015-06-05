@@ -11,10 +11,11 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance
 {
-    public abstract class LayeredItem : BoardItem, IContainsLayerInfo
+    public abstract class LayeredItem : BoardItem, IContainsLayerInfo, ISerializable
     {
         private Layer layer;
         private int zm;
@@ -82,28 +83,44 @@ namespace HaCreator.MapEditor.Instance
 
         public int PlatformNumber { get { return zm; } set { zm = value; } }
 
-        public override dynamic Serialize()
+        public new class SerializationForm : BoardItem.SerializationForm
         {
-            dynamic result = base.Serialize();
+            public int layer, zm;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
             result.layer = layer.LayerNumber;
             result.zm = zm;
-            return result;
+        }
+
+        public LayeredItem(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            // Layer and zM will not be retained upon copying and pasting, since AddToBoard will set layer & zm itself
+            // This feels like the more expected behavior to me. This also simplifies tile copying.
+            // If the item is deserialized as part of crash recoverty, AddToBoard will not set the layer & zm, and we will recover correctly
+            layer = board.Layers[json.layer];
+            zm = json.zm;
         }
 
         public override void AddToBoard(List<UndoRedoAction> undoPipe)
         {
             base.AddToBoard(undoPipe);
-            layer = board.SelectedLayer;
+            if (undoPipe != null)
+            {
+                layer = board.SelectedLayer;
+                zm = board.SelectedPlatform;
+            }
             layer.Items.Add(this);
-            zm = board.SelectedPlatform;
-        }
-
-        public LayeredItem(Board board, dynamic json)
-            : base(board, (object)json)
-        {
-            // Layer and zM will not be retained upon copying; This feels like the more expected behavior to me. This also simplifies tile copying.
-            /*layer = board.Layers[json.layer];
-            zm = json.zm;*/
         }
     }
 }

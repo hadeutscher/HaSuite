@@ -16,14 +16,14 @@ namespace HaCreator.Collections
 {
     class SerializableEnumerator : IEnumerable<ISerializable>, IEnumerator<ISerializable>
     {
-        HashSet<ISerializable> visited;
-        Queue<ISerializable> queue;
-        ISerializable current = null;
+        HashSet<ISerializableSelector> visited;
+        Queue<ISerializableSelector> queue;
+        ISerializableSelector current = null;
 
-        public SerializableEnumerator(IEnumerable<ISerializable> startList)
+        public SerializableEnumerator(IEnumerable<ISerializableSelector> startList)
         {
-            visited = new HashSet<ISerializable>(startList);
-            queue = new Queue<ISerializable>(visited);
+            visited = new HashSet<ISerializableSelector>(startList);
+            queue = new Queue<ISerializableSelector>(visited);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -47,27 +47,39 @@ namespace HaCreator.Collections
 
         public ISerializable Current
         {
-            get { return current; }
+            get { return (ISerializable)current; }
         }
 
         public bool MoveNext()
         {
-            if (queue.Count == 0)
-                return false;
+            // This method iterates the binding tree in order to find all ISerializables that need to be serialized
+            // (these are all the selected ISerializableSelectors that are also ISerializable, and all their children who are as such)
+            //
+            // SelectSerialized might return the same item on different objects (I can't think of a sitauation in the current
+            // implementation that will cause it, but we will assume that anyway to future-proof this class). Therefore, we
+            // hold a HashSet of all the items we already added to the Queue, and only enqueue those that are unique.
+            //
+            // Additionally, we need to make sure that FootholdAnchors are called last, because they decide whether or not
+            // to include their Footholds by checking if both ends of the line are selected. This is fine because if one
+            // or more of the ends is not selected in the initial list, and is included later on, it will be pushed to
+            // the end of the queue and will be called after all tiles/objects have already been processed.
+
             do
             {
+                if (queue.Count == 0)
+                    return false;
                 current = queue.Dequeue();
-                if (current.ShouldSerializeChildren)
+                if (current.ShouldSelectSerialized)
                 {
-                    List<ISerializable> currList = current.SelectSerialized();
-                    foreach (ISerializable item in currList)
+                    List<ISerializableSelector> currList = current.SelectSerialized(visited);
+                    foreach (ISerializableSelector item in currList)
                     {
                         if (visited.Add(item))
                             queue.Enqueue(item);
                     }
                 }
             }
-            while (!current.ShouldSerialize);
+            while (!(current is ISerializable));
             return true;
         }
 

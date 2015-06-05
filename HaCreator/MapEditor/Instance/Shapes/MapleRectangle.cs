@@ -30,11 +30,41 @@ namespace HaCreator.MapEditor.Instance.Shapes
         private MapleLine da;
 
         public MapleRectangle(Board board, XNA.Rectangle rect)
-            : base(board, rect.X, rect.Y, -1)
+            : base(board, 0, 0, 0) // BoardItem position doesn't do anything in rectangles
         {
+            lock (board.ParentControl)
+            {
+                // Make dots
+                a = CreateDot(rect.Left, rect.Top);
+                b = CreateDot(rect.Right, rect.Top);
+                c = CreateDot(rect.Right, rect.Bottom);
+                d = CreateDot(rect.Left, rect.Bottom);
+                PlaceDots();
+
+                // Make lines
+                ab = CreateLine(a, b);
+                bc = CreateLine(b, c);
+                cd = CreateLine(c, d);
+                da = CreateLine(d, a);
+                ab.yBind = true;
+                bc.xBind = true;
+                cd.yBind = true;
+                da.xBind = true;
+            }
+        }
+
+        protected void PlaceDots()
+        {
+            board.BoardItems.Add(a, false);
+            board.BoardItems.Add(b, false);
+            board.BoardItems.Add(c, false);
+            board.BoardItems.Add(d, false);
         }
 
         public abstract XNA.Color Color { get; }
+
+        public abstract MapleDot CreateDot(int x, int y);
+        public abstract MapleLine CreateLine(MapleDot a, MapleDot b);
 
         public MapleDot PointA
         {
@@ -171,6 +201,11 @@ namespace HaCreator.MapEditor.Instance.Shapes
             // Not doing anything since move is handled in the dots
         }
 
+        public override void SnapMove(int x, int y)
+        {
+            // Not doing anything since move is handled in the dots
+        }
+
         public override int Left
         {
             get
@@ -242,5 +277,69 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 PointD.OnItemPlaced(undoPipe);
             }
         }
+
+        #region ISerializable Implementation
+        public new class SerializationForm
+        {
+            public int x1, y1, x2, y2;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            result.x1 = Left;
+            result.x2 = Right;
+            result.y1 = Top;
+            result.y2 = Bottom;
+        }
+
+        public MapleRectangle(Board board, SerializationForm json)
+            : base(board, 0, 0, 0)
+        {
+            // Make dots
+            a = CreateDot(json.x1, json.y1);
+            b = CreateDot(json.x2, json.y1);
+            c = CreateDot(json.x2, json.y2);
+            d = CreateDot(json.x1, json.y2);
+
+            // Make lines
+            ab = CreateLine(a, b);
+            bc = CreateLine(b, c);
+            cd = CreateLine(c, d);
+            da = CreateLine(d, a);
+            ab.yBind = true;
+            bc.xBind = true;
+            cd.yBind = true;
+            da.xBind = true;
+        }
+
+        public override void AddToBoard(List<UndoRedoAction> undoPipe)
+        {
+            PlaceDots();
+            board.BoardItems.Add(this, false);
+            OnItemPlaced(undoPipe);
+        }
+
+        public override void PostDeserializationActions(bool? selected, XNA.Point? offset)
+        {
+            if (selected.HasValue)
+            {
+                Selected = selected.Value;
+            }
+            if (offset.HasValue)
+            {
+                foreach (MapleDot dot in new[] { a, b, c, d })
+                {
+                    dot.MoveSilent(dot.X + offset.Value.X, dot.Y + offset.Value.Y);
+                }
+            }
+        }
+        #endregion
     }
 }

@@ -37,8 +37,8 @@ namespace HaCreator.GUI.EditorPanels
             InitializeComponent();
 
             List<string> sortedTileSets = new List<string>();
-            foreach (DictionaryEntry tS in Program.InfoManager.TileSets)
-                sortedTileSets.Add((string)tS.Key);
+            foreach (KeyValuePair<string, WzImage> tS in Program.InfoManager.TileSets)
+                sortedTileSets.Add(tS.Key);
             sortedTileSets.Sort();
             foreach (string tS in sortedTileSets)
                 tileSetList.Items.Add(tS);
@@ -65,9 +65,10 @@ namespace HaCreator.GUI.EditorPanels
         {
             if (tileSetList.SelectedItem == null) return;
             tileImagesContainer.Controls.Clear();
-            WzImage tileSetImage = Program.InfoManager.TileSets[(string)tileSetList.SelectedItem];
-            if (tileSetImage == null) 
+            string selectedSetName = (string)tileSetList.SelectedItem;
+            if (!Program.InfoManager.TileSets.ContainsKey(selectedSetName))
                 return;
+            WzImage tileSetImage = Program.InfoManager.TileSets[selectedSetName];
             int? mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"]);
             foreach (WzSubProperty tCat in tileSetImage.WzProperties)
             {

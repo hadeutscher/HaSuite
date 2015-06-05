@@ -23,25 +23,16 @@ namespace HaCreator.MapEditor.Instance.Misc
         public MiscRectangle(Board board, XNA.Rectangle rect)
             : base(board, rect)
         {
-            lock (board.ParentControl)
-            {
-                PointA = new MiscDot(this, board, rect.Left, rect.Top);
-                PointB = new MiscDot(this, board, rect.Right, rect.Top);
-                PointC = new MiscDot(this, board, rect.Right, rect.Bottom);
-                PointD = new MiscDot(this, board, rect.Left, rect.Bottom);
-                board.BoardItems.MiscItems.Add((MiscDot)PointA);
-                board.BoardItems.MiscItems.Add((MiscDot)PointB);
-                board.BoardItems.MiscItems.Add((MiscDot)PointC);
-                board.BoardItems.MiscItems.Add((MiscDot)PointD);
-                LineAB = new MiscLine(board, PointA, PointB);
-                LineBC = new MiscLine(board, PointB, PointC);
-                LineCD = new MiscLine(board, PointC, PointD);
-                LineDA = new MiscLine(board, PointD, PointA);
-                LineAB.yBind = true;
-                LineBC.xBind = true;
-                LineCD.yBind = true;
-                LineDA.xBind = true;
-            }
+        }
+
+        public override MapleDot CreateDot(int x, int y)
+        {
+            return new MiscDot(this, board, x, y);
+        }
+
+        public override MapleLine CreateLine(MapleDot a, MapleDot b)
+        {
+            return new MiscLine(board, a, b);
         }
 
         public override XNA.Color Color

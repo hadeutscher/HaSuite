@@ -19,18 +19,18 @@ namespace HaCreator.Wz
 {
     public class WzInformationManager
     {
-        public MapleTable<string> NPCs = new MapleTable<string>();
-        public MapleTable<string> Mobs = new MapleTable<string>();
-        public MapleTable<ReactorInfo> Reactors = new MapleTable<ReactorInfo>();
-        public MapleTable<WzImage> TileSets = new MapleTable<WzImage>();
-        public MapleTable<WzImage> ObjectSets = new MapleTable<WzImage>();
-        public MapleTable<WzImage> BackgroundSets = new MapleTable<WzImage>();
-        public MapleTable<WzSoundProperty> BGMs = new MapleTable<WzSoundProperty>();
-        public MapleTable<Bitmap> MapMarks = new MapleTable<Bitmap>();
-        public MapleTable<string> Maps = new MapleTable<string>();
-        public MapleTable<string, PortalInfo> Portals;
-        public List<string> PortalTypeById;
-        public MapleTable<string, int> PortalIdByType;
-        public MapleTable<string, PortalGameImageInfo> GamePortals = new MapleTable<string, PortalGameImageInfo>();
+        public Dictionary<string, string> NPCs = new Dictionary<string, string>();
+        public Dictionary<string, string> Mobs = new Dictionary<string, string>();
+        public Dictionary<string, ReactorInfo> Reactors = new Dictionary<string, ReactorInfo>();
+        public Dictionary<string, WzImage> TileSets = new Dictionary<string, WzImage>();
+        public Dictionary<string, WzImage> ObjectSets = new Dictionary<string, WzImage>();
+        public Dictionary<string, WzImage> BackgroundSets = new Dictionary<string, WzImage>();
+        public Dictionary<string, WzSoundProperty> BGMs = new Dictionary<string, WzSoundProperty>();
+        public Dictionary<string, Bitmap> MapMarks = new Dictionary<string, Bitmap>();
+        public Dictionary<string, string> Maps = new Dictionary<string, string>();
+        public Dictionary<string, PortalInfo> Portals = new Dictionary<string, PortalInfo>();
+        public List<string> PortalTypeById = new List<string>();
+        public Dictionary<string, int> PortalIdByType = new Dictionary<string,int>();
+        public Dictionary<string, PortalGameImageInfo> GamePortals = new Dictionary<string, PortalGameImageInfo>();
     }
 }

@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace HaCreator.Exceptions
 {
-    public class DeserializationException : Exception
+    public class SerializationException : Exception
     {
-        public DeserializationException() : base() { }
-        public DeserializationException(string message) : base(message) { }
+        public SerializationException() : base() { }
+        public SerializationException(string message) : base(message) { }
     }
 }

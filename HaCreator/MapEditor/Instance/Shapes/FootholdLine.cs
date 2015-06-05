@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using HaCreator.MapEditor.UndoRedo;
 using MapleLib.WzLib.WzStructure;
 using MapleLib.WzLib.WzStructure.Data;
 using System;
@@ -15,7 +16,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes
 {
-    public class FootholdLine : MapleLine, IContainsLayerInfo
+    public class FootholdLine : MapleLine, IContainsLayerInfo, ISerializable
     {
         private MapleBool _cantThrough;
         private MapleBool _forbidFallDown;
@@ -162,5 +163,95 @@ namespace HaCreator.MapEditor.Instance.Shapes
             else
                 throw new Exception("GetOtherAnchor: line is not properly connected");
         }
+
+        #region ISerializable Implementation
+        public class SerializationForm
+        {
+            public MapleBool cantthrough, forbidfalldown;
+            public int? piece, force;
+        }
+
+        public bool ShouldSelectSerialized
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems)
+        {
+            List<ISerializableSelector> result = new List<ISerializableSelector>();
+            // We add the dots to make sure they are serialized (we might have been added as a prev/next override of another line)
+            result.Add(FirstDot);
+            result.Add(SecondDot);
+            if (prevOverride != null)
+                result.Add(prevOverride);
+            if (nextOverride != null)
+                result.Add(nextOverride);
+            return result;
+        }
+
+        public object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            result.cantthrough = _cantThrough;
+            result.forbidfalldown = _forbidFallDown;
+            result.piece = _piece;
+            result.force = _force;
+            return result;
+        }
+
+        private const string FIRSTDOT_KEY = "dot1";
+        private const string SECONDDOT_KEY = "dot2";
+        private const string PREVOVERRIDE_KEY = "prevOverride";
+        private const string NEXTOVERRIDE_KEY = "nextOverride";
+
+        public IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, long> refDict)
+        {
+            Dictionary<string, object> result = new Dictionary<string, object>();
+            result[FIRSTDOT_KEY] = refDict[(FootholdAnchor)FirstDot];
+            result[SECONDDOT_KEY] = refDict[(FootholdAnchor)SecondDot];
+            if (prevOverride != null)
+                result[PREVOVERRIDE_KEY] = refDict[prevOverride];
+            if (nextOverride != null)
+                result[NEXTOVERRIDE_KEY] = refDict[nextOverride];
+            return result;
+        }
+
+        public FootholdLine(Board board, SerializationForm json)
+            : base(board)
+        {
+            _cantThrough = json.cantthrough;
+            _forbidFallDown = json.forbidfalldown;
+            _piece = json.piece;
+            _force = json.force;
+        }
+
+        public void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<long, ISerializable> refDict)
+        {
+            firstDot = (FootholdAnchor)refDict[(long)bindSer[FIRSTDOT_KEY]];
+            secondDot = (FootholdAnchor)refDict[(long)bindSer[SECONDDOT_KEY]];
+            if (bindSer.ContainsKey(PREVOVERRIDE_KEY))
+                prevOverride = (FootholdLine)refDict[(long)bindSer[PREVOVERRIDE_KEY]];
+            if (bindSer.ContainsKey(NEXTOVERRIDE_KEY))
+                prevOverride = (FootholdLine)refDict[(long)bindSer[NEXTOVERRIDE_KEY]];
+            firstDot.connectedLines.Add(this);
+            secondDot.connectedLines.Add(this);
+            firstDot.PointMoved += OnFirstDotMoved;
+            secondDot.PointMoved += OnSecondDotMoved;
+        }
+
+        public void AddToBoard(List<UndoRedoAction> undoPipe)
+        {
+            base.OnPlaced(undoPipe);
+            Board.BoardItems.FootholdLines.Add(this);
+        }
+
+        public void PostDeserializationActions(bool? selected, XNA.Point? offset)
+        {
+            // Nothing to do here, we cant be offset nor selected.
+        }
+        #endregion
     }
 }

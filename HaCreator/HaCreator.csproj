@@ -278,6 +278,7 @@
     <Compile Include="MapEditor\Instance\ReactorInstance.cs" />
     <Compile Include="MapEditor\Instance\Shapes\Chair.cs" />
     <Compile Include="MapEditor\Instance\Shapes\FootholdAnchor.cs" />
+    <Compile Include="MapEditor\Instance\ISerializableSelector.cs" />
     <Compile Include="MapEditor\Instance\Shapes\MapleDot.cs" />
     <Compile Include="MapEditor\Instance\Shapes\MinimapDot.cs" />
     <Compile Include="MapEditor\Instance\Shapes\RopeAnchor.cs" />

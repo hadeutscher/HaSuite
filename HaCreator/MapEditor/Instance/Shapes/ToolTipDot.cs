@@ -52,5 +52,18 @@ namespace HaCreator.MapEditor.Instance.Shapes
         {
             get { return false; }
         }
+
+        public override bool ShouldSelectSerialized
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems)
+        {
+            return new List<ISerializableSelector> { parentTooltip };
+        }
     }
 }

@@ -342,7 +342,7 @@ namespace HaCreator.Wz
             int layer;
             FootholdAnchor a;
             FootholdAnchor b;
-            MapleTable<int, FootholdLine> fhs = new MapleTable<int, FootholdLine>();
+            Dictionary<int, FootholdLine> fhs = new Dictionary<int, FootholdLine>();
             foreach (WzSubProperty layerProp in footholdParent.WzProperties)
             {
                 layer = int.Parse(layerProp.Name);
@@ -396,14 +396,14 @@ namespace HaCreator.Wz
                         {
                             if (IsAnchorPrevOfFoothold(anchor, line))
                             {
-                                if (fhs.Contains(line.prev))
+                                if (fhs.ContainsKey(line.prev))
                                 {
                                     line.prevOverride = fhs[line.prev];
                                 }
                             }
                             else
                             {
-                                if (fhs.Contains(line.next))
+                                if (fhs.ContainsKey(line.next))
                                 {
                                     line.nextOverride = fhs[line.next];
                                 }

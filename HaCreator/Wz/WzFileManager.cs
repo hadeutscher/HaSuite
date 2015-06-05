@@ -22,9 +22,9 @@ namespace HaCreator.Wz
     public class WzFileManager
     {
         private string baseDir;
-        public MapleTable<string, WzFile> wzFiles = new MapleTable<string, WzFile>();
-        public MapleTable<WzFile, bool> wzFilesUpdated = new MapleTable<WzFile, bool>();
-        public MapleTable<string, WzMainDirectory> wzDirs = new MapleTable<string, WzMainDirectory>();
+        public Dictionary<string, WzFile> wzFiles = new Dictionary<string, WzFile>();
+        public Dictionary<WzFile, bool> wzFilesUpdated = new Dictionary<WzFile, bool>();
+        public Dictionary<string, WzMainDirectory> wzDirs = new Dictionary<string, WzMainDirectory>();
         private WzMapleVersion version;
 
         public WzFileManager(string directory, WzMapleVersion version)
@@ -223,9 +223,6 @@ namespace HaCreator.Wz
         {
             WzSubProperty portalParent = (WzSubProperty)this["map"]["MapHelper.img"]["portal"];
             WzSubProperty editorParent = (WzSubProperty)portalParent["editor"];
-            Program.InfoManager.Portals = new MapleTable<string, PortalInfo>();
-            Program.InfoManager.PortalTypeById = new List<string>();
-            Program.InfoManager.PortalIdByType = new MapleTable<string, int>();
             for (int i = 0; i < editorParent.WzProperties.Count; i++)
             {
                 WzCanvasProperty portal = (WzCanvasProperty)editorParent.WzProperties[i];
@@ -237,7 +234,7 @@ namespace HaCreator.Wz
             {
                 if (portal.WzProperties[0] is WzSubProperty)
                 {
-                    MapleTable<Bitmap> images = new MapleTable<Bitmap>();
+                    Dictionary<string, Bitmap> images = new Dictionary<string, Bitmap>();
                     Bitmap defaultImage = null;
                     foreach (WzSubProperty image in portal.WzProperties)
                     {

@@ -62,11 +62,8 @@ namespace HaCreator.MapSimulator
 
         public MapSimulator(Board mapBoard)
         {
-            WzSoundProperty bgm = Program.InfoManager.BGMs[mapBoard.MapInfo.bgm];
-            if (bgm != null)
-            {
-                audio = new WzMp3Streamer(bgm, true);
-            }
+            if (Program.InfoManager.BGMs.ContainsKey(mapBoard.MapInfo.bgm))
+                audio = new WzMp3Streamer(Program.InfoManager.BGMs[mapBoard.MapInfo.bgm], true);
             mapCenter = mapBoard.CenterPoint;
             minimapPos = new Point((int)Math.Round((mapBoard.MinimapPosition.X + mapCenter.X) / (double)mapBoard.mag), (int)Math.Round((mapBoard.MinimapPosition.Y + mapCenter.Y) / (double)mapBoard.mag));
             if (mapBoard.VRRectangle == null) vr = new Rectangle(0, 0, mapBoard.MapSize.X, mapBoard.MapSize.Y);

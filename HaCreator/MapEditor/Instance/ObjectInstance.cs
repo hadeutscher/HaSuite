@@ -173,9 +173,28 @@ namespace HaCreator.MapEditor.Instance
         public int? cy { get { return _cy; } set { _cy = value; } }
         public List<ObjectInstanceQuest> QuestInfo { get { return questInfo; } set { questInfo = value; } }
 
-        public override dynamic Serialize()
+        public new class SerializationForm : LayeredItem.SerializationForm
         {
-            dynamic result = base.Serialize();
+            public string os, l0, l1, l2;
+            public bool flip;
+            public MapleBool r;
+            public string name;
+            public MapleBool hide, reactor, flow;
+            public int? rx, ry, cx, cy;
+            public string tags;
+            public ObjectInstanceQuest[] quest;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
             result.os = baseInfo.oS;
             result.l0 = baseInfo.l0;
             result.l1 = baseInfo.l1;
@@ -192,11 +211,10 @@ namespace HaCreator.MapEditor.Instance
             result.cy = _cy;
             result.tags = tags;
             result.quest = questInfo == null ? null : questInfo.ToArray();
-            return result;
         }
 
-        public ObjectInstance(Board board, dynamic json)
-            : base(board, (object)json)
+        public ObjectInstance(Board board, SerializationForm json)
+            : base(board, json)
         {
             baseInfo = ObjectInfo.Get(json.os, json.l0, json.l1, json.l2);
             flip = json.flip;
@@ -211,7 +229,7 @@ namespace HaCreator.MapEditor.Instance
             _cy = json.cy;
             tags = json.tags;
             if (json.quest != null)
-                questInfo = ((dynamic[])json.quest).Select(x => new ObjectInstanceQuest(x)).ToList();
+                questInfo = json.quest.ToList();
         }
     }
 }

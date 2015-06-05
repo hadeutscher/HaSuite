@@ -32,7 +32,6 @@ namespace HaCreator.MapEditor
         private PresentationParameters pParams = new PresentationParameters();
         private Texture2D pixel;
         private List<Board> boards = new List<Board>();
-        private string clipBoard;
         private Board selectedBoard = null;
         private IGraphicsDeviceService graphicsDeviceService;
         private FontEngine fontEngine;
@@ -227,12 +226,6 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Properties
-        public string ClipBoard
-        {
-            get { return clipBoard; }
-            set { clipBoard = value; }
-        }
-
         public bool DeviceReady
         {
             get { return deviceReady; }

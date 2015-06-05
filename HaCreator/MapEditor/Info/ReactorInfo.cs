@@ -58,9 +58,14 @@ namespace HaCreator.MapEditor.Info
             }
         }
 
+        public static ReactorInfo Get(string id)
+        {
+            return Program.InfoManager.Reactors[id];
+        }
+
         public static ReactorInfo Load(WzImage parentObject)
         {
-            return new ReactorInfo(null, new System.Drawing.Point(), /*WzInfoTools.RemoveLeadingZeros(*/WzInfoTools.RemoveExtension(parentObject.Name)/*)*/, parentObject);
+            return new ReactorInfo(null, new System.Drawing.Point(), WzInfoTools.RemoveExtension(parentObject.Name), parentObject);
         }
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)

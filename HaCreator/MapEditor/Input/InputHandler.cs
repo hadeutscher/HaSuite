@@ -212,11 +212,13 @@ namespace HaCreator.MapEditor.Input
                         if (ctrl)
                         {
                             foreach (BoardItem item in selectedBoard.SelectedItems)
+                            {
                                 if (item is IFlippable)
                                 {
                                     ((IFlippable)item).Flip = !((IFlippable)item).Flip;
                                     actions.Add(UndoRedoManager.ItemFlipped((IFlippable)item));
                                 }
+                            }
                         }
                         break;
                     case Keys.Add:
@@ -257,21 +259,39 @@ namespace HaCreator.MapEditor.Input
                         }
                         clearRedo = false;
                         break;
+                    case Keys.X: // Cut
+                        if (ctrl && selectedBoard.Mouse.State == MouseState.Selection)
+                        {
+                            Clipboard.SetData(SerializationManager.HaClipboardData, 
+                                selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems.Cast<ISerializableSelector>()));
+                            int selectedItemIndex = 0;
+                            while (selectedBoard.SelectedItems.Count > selectedItemIndex)
+                            {
+                                BoardItem item = selectedBoard.SelectedItems[selectedItemIndex];
+                                if (item is ToolTipDot || item is MiscDot || item is VRDot || item is MinimapDot)
+                                    selectedItemIndex++;
+                                else
+                                    item.RemoveItem(actions);
+                            }
+                            break;
+                        }
+                        break;
                     case Keys.C: // Copy
                         if (ctrl)
                         {
-                            selectedBoard.ParentControl.ClipBoard = selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems.Cast<ISerializable>());
+                            Clipboard.SetData(SerializationManager.HaClipboardData, 
+                                selectedBoard.SerializationManager.SerializeList(selectedBoard.SelectedItems.Cast<ISerializableSelector>()));
                         }
                         break;
                     case Keys.V: // Paste
-                        if (ctrl)
+                        if (ctrl && Clipboard.ContainsData(SerializationManager.HaClipboardData))
                         {
                             List<ISerializable> items;
                             try
                             {
-                                items = selectedBoard.SerializationManager.DeserializeList(selectedBoard.ParentControl.ClipBoard);
+                                items = selectedBoard.SerializationManager.DeserializeList((string)Clipboard.GetData(SerializationManager.HaClipboardData));
                             }
-                            catch (DeserializationException de)
+                            catch (SerializationException de)
                             {
                                 MessageBox.Show(de.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
@@ -319,11 +339,49 @@ namespace HaCreator.MapEditor.Input
                                 return;
                             }
 
+                            // Calculate offsetting
+                            Point minPos = new Point(int.MaxValue, int.MaxValue);
+                            Point maxPos = new Point(int.MinValue, int.MinValue);
+                            foreach (ISerializable item in items)
+                            {
+                                if (item is BoardItem)
+                                {
+                                    BoardItem bi = (BoardItem)item;
+                                    if (bi.Left < minPos.X)
+                                        minPos.X = bi.Left;
+                                    if (bi.Top < minPos.Y)
+                                        minPos.Y = bi.Top;
+                                    if (bi.Right > maxPos.X)
+                                        maxPos.X = bi.Right;
+                                    if (bi.Bottom > maxPos.Y)
+                                        maxPos.Y = bi.Bottom;
+                                }
+                                else if (item is Rope)
+                                {
+                                    Rope r = (Rope)item;
+                                    int x = r.FirstAnchor.Y;
+                                    int minY = Math.Min(r.FirstAnchor.Y, r.SecondAnchor.Y);
+                                    int maxY = Math.Max(r.FirstAnchor.Y, r.SecondAnchor.Y);
+                                    if (x < minPos.X)
+                                        minPos.X = x;
+                                    if (x > maxPos.X)
+                                        maxPos.X = x;
+                                    if (minY < minPos.Y)
+                                        minPos.Y = minY;
+                                    if (maxY > maxPos.Y)
+                                        maxPos.Y = maxY;
+                                }
+                            }
+                            Point center = new Point((maxPos.X + minPos.X) / 2, (maxPos.Y + minPos.Y) / 2);
+                            Point offset = new Point(selectedBoard.Mouse.X - center.X, selectedBoard.Mouse.Y - center.Y);
+
                             // Add the items
+                            ClearSelectedItems(selectedBoard);
                             List<UndoRedoAction> undoPipe = new List<UndoRedoAction>();
                             foreach(ISerializable item in items)
                             {
                                 item.AddToBoard(undoPipe);
+                                item.PostDeserializationActions(true, offset);
                             }
                             selectedBoard.BoardItems.Sort();
                             selectedBoard.UndoRedoMan.AddUndoBatch(undoPipe);

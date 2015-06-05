@@ -14,13 +14,12 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Shapes
 {
-    public class FootholdAnchor : MapleDot, IContainsLayerInfo
+    public class FootholdAnchor : MapleDot, IContainsLayerInfo, ISerializable
     {
         private int layer;
         private int zm;
 
         public bool user;
-        public bool removed;
 
         public FootholdAnchor(Board board, int x, int y, int layer, int zm, bool user)
             : base(board, x, y)
@@ -150,6 +149,75 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 }
             }
             return null;
+        }
+
+        public new class SerializationForm : BoardItem.SerializationForm
+        {
+            public int layer, zm;
+            public bool user;
+        }
+
+        public override bool ShouldSelectSerialized
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override List<ISerializableSelector> SelectSerialized(HashSet<ISerializableSelector> serializedItems)
+        {
+            List<ISerializableSelector> serList = new List<ISerializableSelector>();
+            foreach (FootholdLine fh in connectedLines)
+            {
+                if (serializedItems.Contains(fh.GetOtherAnchor(this)))
+                    serList.Add(fh);
+            }
+            return serList;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.layer = layer;
+            result.zm = zm;
+            result.user = user;
+        }
+
+        public override IDictionary<string, object> SerializeBindings(Dictionary<ISerializable, long> refDict)
+        {
+            // No bindings
+            return null;
+        }
+
+        public FootholdAnchor(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            layer = json.layer;
+            zm = json.zm;
+            user = json.user; // Will be reset to true on AddToBoard if we are copypasting
+        }
+
+        public override void DeserializeBindings(IDictionary<string, object> bindSer, Dictionary<long, ISerializable> refDict)
+        {
+            // No bindings
+            return;
+        }
+
+        public override void AddToBoard(List<UndoRedo.UndoRedoAction> undoPipe)
+        {
+            if (undoPipe != null)
+            {
+                user = true;
+                base.AddToBoard(undoPipe);
+            }
         }
     }
 }
