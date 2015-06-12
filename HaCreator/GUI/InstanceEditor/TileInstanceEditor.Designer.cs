@@ -37,12 +37,9 @@
             this.zInput = new System.Windows.Forms.NumericUpDown();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.zmBox = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zInput)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zmBox)).BeginInit();
             this.SuspendLayout();
             // 
             // pathLabel
@@ -130,7 +127,7 @@
             // okButton
             // 
             this.okButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.okButton.Location = new System.Drawing.Point(12, 156);
+            this.okButton.Location = new System.Drawing.Point(12, 130);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(76, 28);
             this.okButton.TabIndex = 3;
@@ -140,41 +137,18 @@
             // cancelButton
             // 
             this.cancelButton.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.cancelButton.Location = new System.Drawing.Point(94, 156);
+            this.cancelButton.Location = new System.Drawing.Point(94, 130);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(73, 28);
             this.cancelButton.TabIndex = 4;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(52, 132);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(21, 13);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "zM";
-            // 
-            // zmBox
-            // 
-            this.zmBox.Location = new System.Drawing.Point(79, 130);
-            this.zmBox.Maximum = new decimal(new int[] {
-            2147483647,
-            0,
-            0,
-            0});
-            this.zmBox.Name = "zmBox";
-            this.zmBox.Size = new System.Drawing.Size(50, 20);
-            this.zmBox.TabIndex = 7;
-            // 
             // TileInstanceEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(179, 193);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.zmBox);
+            this.ClientSize = new System.Drawing.Size(179, 167);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.label3);
@@ -195,7 +169,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.yInput)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.zInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.zmBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -212,7 +185,5 @@
         private System.Windows.Forms.NumericUpDown zInput;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.NumericUpDown zmBox;
     }
 }

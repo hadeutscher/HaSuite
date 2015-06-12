@@ -591,6 +591,8 @@ namespace HaCreator.MapEditor
         {
             lock (this)
             {
+                if (!this.deviceReady)
+                    return;
                 int oldvalue = vScrollBar.Value;
                 int scrollValue = (e.Delta / 10) * vScrollBar.LargeChange;
                 if (vScrollBar.Value - scrollValue < vScrollBar.Minimum)

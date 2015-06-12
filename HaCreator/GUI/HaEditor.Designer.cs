@@ -162,6 +162,6 @@
         private HaRibbon ribbon;
         private WeifenLuo.WinFormsUI.Docking.DockPanel dockPanel;
         private HaCreator.ThirdParty.TabPages.PageCollection tabs;
-        private MapEditor.MultiBoard multiBoard;
+        private HaCreator.MapEditor.MultiBoard multiBoard;
     }
 }

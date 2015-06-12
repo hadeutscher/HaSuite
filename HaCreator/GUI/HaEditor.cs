@@ -99,7 +99,7 @@ namespace HaCreator.GUI
 
             commonPanel.Pane = bgPanel.Pane = portalPanel.Pane = lifePanel.Pane = objPanel.Pane = tilePanel.Pane;
 
-            hcsm.LoadMap();
+            hcsm.LoadMap(new Load(multiBoard, tabs, hcsm.MakeRightClickHandler()));
         }
 
         private void RedockControls()

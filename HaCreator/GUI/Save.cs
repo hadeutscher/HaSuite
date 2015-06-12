@@ -75,5 +75,17 @@ namespace HaCreator.GUI
             MessageBox.Show("Saved map with ID: " + newId.ToString());
             Close();
         }
+
+        private void Save_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                saveButton_Click(null, null);
+            }
+        }
     }
 }

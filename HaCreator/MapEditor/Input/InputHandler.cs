@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using Microsoft.Xna.Framework;
+using XNA = Microsoft.Xna.Framework;
 using System.Runtime.InteropServices;
 using System.Linq;
 using HaCreator.MapEditor.UndoRedo;
@@ -34,14 +34,14 @@ namespace HaCreator.MapEditor.Input
             parentBoard.MouseMoved += new MultiBoard.MouseMovedDelegate(parentBoard_MouseMoved);
         }
 
-        public static Rectangle CreateRectangle(Point a, Point b)
+        public static XNA.Rectangle CreateRectangle(XNA.Point a, XNA.Point b)
         {
             int left, right, top, bottom;
             if (a.X < b.X) { left = a.X; right = b.X; }
             else { left = b.X; right = a.X; }
             if (a.Y < b.Y) { top = a.Y; bottom = b.Y; }
             else { top = b.Y; bottom = a.Y; }
-            return new Rectangle(left, top, right - left, bottom - top);
+            return new XNA.Rectangle(left, top, right - left, bottom - top);
         }
 
         [DllImport("user32.dll")]
@@ -57,7 +57,7 @@ namespace HaCreator.MapEditor.Input
             return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
         }
         
-        private void parentBoard_MouseMoved(Board selectedBoard, Point oldPos, Point newPos, Point currPhysicalPos)
+        private void parentBoard_MouseMoved(Board selectedBoard, XNA.Point oldPos, XNA.Point newPos, XNA.Point currPhysicalPos)
         {
             lock (parentBoard)
             {
@@ -67,8 +67,8 @@ namespace HaCreator.MapEditor.Input
                 }
                 else if (selectedBoard.Mouse.MultiSelectOngoing && (Math.Abs(selectedBoard.Mouse.X - selectedBoard.Mouse.MultiSelectStart.X) > 1 || Math.Abs(selectedBoard.Mouse.Y - selectedBoard.Mouse.MultiSelectStart.Y) > 1))
                 {
-                    Rectangle oldRect = CreateRectangle(oldPos, selectedBoard.Mouse.MultiSelectStart);
-                    Rectangle newRect = CreateRectangle(newPos, selectedBoard.Mouse.MultiSelectStart);
+                    XNA.Rectangle oldRect = CreateRectangle(oldPos, selectedBoard.Mouse.MultiSelectStart);
+                    XNA.Rectangle newRect = CreateRectangle(newPos, selectedBoard.Mouse.MultiSelectStart);
                     List<BoardItem> toRemove = new List<BoardItem>();
                     SelectionInfo sel = selectedBoard.GetUserSelectionInfo();
                     foreach (BoardItem item in selectedBoard.BoardItems.Items)
@@ -114,7 +114,7 @@ namespace HaCreator.MapEditor.Input
                 {
                     // auto scrolling
                     // Bind physicalpos to our dxcontainer, to prevent extremely fast scrolling
-                    currPhysicalPos = new Point(Math.Min(Math.Max(currPhysicalPos.X, 0), parentBoard.Width), Math.Min(Math.Max(currPhysicalPos.Y, 0), parentBoard.Height));
+                    currPhysicalPos = new XNA.Point(Math.Min(Math.Max(currPhysicalPos.X, 0), parentBoard.Width), Math.Min(Math.Max(currPhysicalPos.Y, 0), parentBoard.Height));
 
                     if (currPhysicalPos.X - UserSettings.ScrollDistance < 0 && oldPos.X > newPos.X) //move to left
                         selectedBoard.hScroll = (int)Math.Max(0, selectedBoard.hScroll - Math.Pow(UserSettings.ScrollBase, (UserSettings.ScrollDistance - currPhysicalPos.X) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor);
@@ -128,12 +128,12 @@ namespace HaCreator.MapEditor.Input
             }
         }
 
-        private UndoRedoAction CreateItemUndoMoveAction(BoardItem item, Point posChange)
+        private UndoRedoAction CreateItemUndoMoveAction(BoardItem item, XNA.Point posChange)
         {
             if (item is BackgroundInstance)
-                return UndoRedoManager.BackgroundMoved((BackgroundInstance)item, new Point(((BackgroundInstance)item).BaseX + posChange.X, ((BackgroundInstance)item).BaseY + posChange.Y), new Point(((BackgroundInstance)item).BaseX, ((BackgroundInstance)item).BaseY));
+                return UndoRedoManager.BackgroundMoved((BackgroundInstance)item, new XNA.Point(((BackgroundInstance)item).BaseX + posChange.X, ((BackgroundInstance)item).BaseY + posChange.Y), new XNA.Point(((BackgroundInstance)item).BaseX, ((BackgroundInstance)item).BaseY));
             else
-                return UndoRedoManager.ItemMoved(item, new Point(item.X + posChange.X, item.Y + posChange.Y), new Point(item.X, item.Y));
+                return UndoRedoManager.ItemMoved(item, new XNA.Point(item.X + posChange.X, item.Y + posChange.Y), new XNA.Point(item.X, item.Y));
         }
 
         private void parentBoard_ShortcutKeyPressed(Board selectedBoard, bool ctrl, bool shift, bool alt, Keys key)
@@ -151,7 +151,7 @@ namespace HaCreator.MapEditor.Input
                             if (!item.BoundToSelectedItem(selectedBoard))
                             {
                                 item.X--;
-                                actions.Add(CreateItemUndoMoveAction(item, new Point(1, 0)));
+                                actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(1, 0)));
                             }
                         break;
                     case Keys.Right:
@@ -159,7 +159,7 @@ namespace HaCreator.MapEditor.Input
                             if (!item.BoundToSelectedItem(selectedBoard))
                             {
                                 item.X++;
-                                actions.Add(CreateItemUndoMoveAction(item, new Point(-1, 0)));
+                                actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(-1, 0)));
                             }
                         break;
                     case Keys.Up:
@@ -167,7 +167,7 @@ namespace HaCreator.MapEditor.Input
                             if (!item.BoundToSelectedItem(selectedBoard))
                             {
                                 item.Y--;
-                                actions.Add(CreateItemUndoMoveAction(item, new Point(0, 1)));
+                                actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(0, 1)));
                             }
                         break;
                     case Keys.Down:
@@ -175,7 +175,7 @@ namespace HaCreator.MapEditor.Input
                             if (!item.BoundToSelectedItem(selectedBoard))
                             {
                                 item.Y++;
-                                actions.Add(CreateItemUndoMoveAction(item, new Point(0, -1)));
+                                actions.Add(CreateItemUndoMoveAction(item, new XNA.Point(0, -1)));
                             }
                         break;
                     case Keys.Delete:
@@ -340,8 +340,8 @@ namespace HaCreator.MapEditor.Input
                             }
 
                             // Calculate offsetting
-                            Point minPos = new Point(int.MaxValue, int.MaxValue);
-                            Point maxPos = new Point(int.MinValue, int.MinValue);
+                            XNA.Point minPos = new XNA.Point(int.MaxValue, int.MaxValue);
+                            XNA.Point maxPos = new XNA.Point(int.MinValue, int.MinValue);
                             foreach (ISerializable item in items)
                             {
                                 if (item is BoardItem)
@@ -372,8 +372,8 @@ namespace HaCreator.MapEditor.Input
                                         maxPos.Y = maxY;
                                 }
                             }
-                            Point center = new Point((maxPos.X + minPos.X) / 2, (maxPos.Y + minPos.Y) / 2);
-                            Point offset = new Point(selectedBoard.Mouse.X - center.X, selectedBoard.Mouse.Y - center.Y);
+                            XNA.Point center = new XNA.Point((maxPos.X + minPos.X) / 2, (maxPos.Y + minPos.Y) / 2);
+                            XNA.Point offset = new XNA.Point(selectedBoard.Mouse.X - center.X, selectedBoard.Mouse.Y - center.Y);
 
                             // Add the items
                             ClearSelectedItems(selectedBoard);
@@ -418,14 +418,14 @@ namespace HaCreator.MapEditor.Input
             }
         }
 
-        private bool ClickOnMinimap(Board selectedBoard, Point position)
+        private bool ClickOnMinimap(Board selectedBoard, XNA.Point position)
         {
             if (selectedBoard.MiniMap == null || !UserSettings.useMiniMap) return false;
             return position.X > 0 && position.X < selectedBoard.MinimapArea.Width && position.Y > 0 && position.Y < selectedBoard.MinimapArea.Height;
 
         }
 
-        private void parentBoard_MouseDoubleClick(Board selectedBoard, BoardItem target, Point realPosition, Point virtualPosition)
+        private void parentBoard_MouseDoubleClick(Board selectedBoard, BoardItem target, XNA.Point realPosition, XNA.Point virtualPosition)
         {
             if (ClickOnMinimap(selectedBoard, realPosition)) return;
             if (target != null)
@@ -440,7 +440,7 @@ namespace HaCreator.MapEditor.Input
             }
         }
 
-        private void parentBoard_RightMouseClick(Board selectedBoard, BoardItem rightClickTarget, Point realPosition, Point virtualPosition, MouseState mouseState)
+        private void parentBoard_RightMouseClick(Board selectedBoard, BoardItem rightClickTarget, XNA.Point realPosition, XNA.Point virtualPosition, MouseState mouseState)
         {
             lock (parentBoard)
             {
@@ -460,7 +460,7 @@ namespace HaCreator.MapEditor.Input
             }
         }
 
-        private void parentBoard_LeftMouseUp(Board selectedBoard, BoardItem target, BoardItem selectedTarget, Point realPosition, Point virtualPosition, bool selectedItemHigher)
+        private void parentBoard_LeftMouseUp(Board selectedBoard, BoardItem target, BoardItem selectedTarget, XNA.Point realPosition, XNA.Point virtualPosition, bool selectedItemHigher)
         {
             lock (parentBoard)
             {
@@ -484,7 +484,7 @@ namespace HaCreator.MapEditor.Input
             }
         }
         
-        private void HandleMinimapBrowse(Board selectedBoard, Point realPosition)
+        private void HandleMinimapBrowse(Board selectedBoard, XNA.Point realPosition)
         {
             int h = realPosition.X * selectedBoard.mag - selectedBoard.ParentControl.Width / 2;
             int v = realPosition.Y * selectedBoard.mag - selectedBoard.ParentControl.Height / 2;
@@ -496,7 +496,7 @@ namespace HaCreator.MapEditor.Input
             else selectedBoard.vScroll = v;
         }
 
-        private void parentBoard_LeftMouseDown(Board selectedBoard, BoardItem item, BoardItem selectedItem, Point realPosition, Point virtualPosition, bool selectedItemHigher)
+        private void parentBoard_LeftMouseDown(Board selectedBoard, BoardItem item, BoardItem selectedItem, XNA.Point realPosition, XNA.Point virtualPosition, bool selectedItemHigher)
         {
             lock (parentBoard)
             {
@@ -565,18 +565,18 @@ namespace HaCreator.MapEditor.Input
 
         private void BindAllSelectedItems(Board selectedBoard)
         {
-            BindAllSelectedItems(selectedBoard, new Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y));
+            BindAllSelectedItems(selectedBoard, new XNA.Point(selectedBoard.Mouse.X, selectedBoard.Mouse.Y));
         }
 
-        private void BindAllSelectedItems(Board selectedBoard, Point mousePosition)
+        private void BindAllSelectedItems(Board selectedBoard, XNA.Point mousePosition)
         {
             foreach (BoardItem itemToSelect in selectedBoard.SelectedItems)
             {
-                selectedBoard.Mouse.BindItem(itemToSelect, new Point(itemToSelect.X - mousePosition.X, itemToSelect.Y - mousePosition.Y));
+                selectedBoard.Mouse.BindItem(itemToSelect, new XNA.Point(itemToSelect.X - mousePosition.X, itemToSelect.Y - mousePosition.Y));
                 if (itemToSelect is BackgroundInstance)
-                    itemToSelect.moveStartPos = new Point(((BackgroundInstance)itemToSelect).BaseX, ((BackgroundInstance)itemToSelect).BaseY);
+                    itemToSelect.moveStartPos = new XNA.Point(((BackgroundInstance)itemToSelect).BaseX, ((BackgroundInstance)itemToSelect).BaseY);
                 else
-                    itemToSelect.moveStartPos = new Point(itemToSelect.X, itemToSelect.Y);
+                    itemToSelect.moveStartPos = new XNA.Point(itemToSelect.X, itemToSelect.Y);
             }
         }
 
@@ -605,9 +605,9 @@ namespace HaCreator.MapEditor.Input
                     if (addUndo)
                     {
                         if ((item is BackgroundInstance) && (((BackgroundInstance)item).BaseX != item.moveStartPos.X || ((BackgroundInstance)item).BaseY != item.moveStartPos.Y))
-                            undoActions.Add(UndoRedoManager.BackgroundMoved((BackgroundInstance)item, new Point(item.moveStartPos.X, item.moveStartPos.Y), new Point(((BackgroundInstance)item).BaseX, ((BackgroundInstance)item).BaseY)));
+                            undoActions.Add(UndoRedoManager.BackgroundMoved((BackgroundInstance)item, new XNA.Point(item.moveStartPos.X, item.moveStartPos.Y), new XNA.Point(((BackgroundInstance)item).BaseX, ((BackgroundInstance)item).BaseY)));
                         else if (!(item is BackgroundInstance) && (item.X != item.moveStartPos.X || item.Y != item.moveStartPos.Y))
-                            undoActions.Add(UndoRedoManager.ItemMoved(item, new Point(item.moveStartPos.X, item.moveStartPos.Y), new Point(item.X, item.Y)));
+                            undoActions.Add(UndoRedoManager.ItemMoved(item, new XNA.Point(item.moveStartPos.X, item.moveStartPos.Y), new XNA.Point(item.X, item.Y)));
                     }
                 }
                 if (undoActions.Count > 0)

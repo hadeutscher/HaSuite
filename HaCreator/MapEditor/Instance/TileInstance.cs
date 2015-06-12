@@ -55,6 +55,7 @@ namespace HaCreator.MapEditor.Instance
             {
                 if (item is TileInstance)
                 {
+                    // Trying to snap to other selected items can mess up some of the mouse bindings
                     if (item.Selected || item.Equals(this))
                         continue;
                     TileInstance tile = (TileInstance)item;
@@ -103,15 +104,7 @@ namespace HaCreator.MapEditor.Instance
             int mag = baseInfo.mag;
             TileInstance closestTile = candidates[best].Item2;
             MapTileDesignPotential closestInfo = candidates[best].Item3;
-            XNA.Point parentOffs = (XNA.Point)this.Parent.BoundItems[this];
-            XNA.Point snapOffs = new XNA.Point(this.Parent.X + parentOffs.X - (closestTile.X - closestInfo.x * mag), this.Parent.Y + parentOffs.Y - (closestTile.Y - closestInfo.y * mag));
-            foreach (BoardItem item in Board.SelectedItems)
-            {
-                if (item.tempParent != null || item.Parent == null) continue;
-                parentOffs = (XNA.Point)item.Parent.BoundItems[item];
-                item.SnapMove(item.Parent.X + parentOffs.X - snapOffs.X, item.Parent.Y + parentOffs.Y - snapOffs.Y);
-            }
-            this.SnapMove(closestTile.X - closestInfo.x * mag, closestTile.Y - closestInfo.y * mag);
+            SnapMoveAllSelectedItems(new XNA.Point(closestTile.X - closestInfo.x * mag, closestTile.Y - closestInfo.y * mag));
         }
 
         public override ItemTypes Type

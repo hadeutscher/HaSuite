@@ -353,16 +353,13 @@ namespace HaCreator.GUI
                 }
                 if (info.mapType == MapType.RegularMap)
                 {
-                    /*if (WzInfoTools.RemoveLeadingZeros(info.id.ToString()) != WzInfoTools.RemoveLeadingZeros(idBox.Text))
-                    {
-                        ChangeID(info.id.ToString(), idBox.Text);
-                        info.id = int.Parse(idBox.Text);
-                    }*/
-                    /*if (nameBox.Text != info.strMapName || nameBox.Text != info.strStreetName)
-                        changeStringwz(info.id, nameBox.Text, streetBox.Text);*/
+                    // No need to change String.wz here, we will do that upon saving
                     info.strMapName = nameBox.Text;
                     info.strStreetName = streetBox.Text;
                     info.strCategoryName = categoryBox.Text;
+
+                    // We do, however, need to change the tab's name/info
+                    board.TabPage.Text = info.strMapName;
                 }
                 info.returnMap = cannotReturnCBX.Checked ? info.id : (int)returnBox.Value;
                 info.forcedReturn = returnHereCBX.Checked ? 999999999 : (int)forcedRet.Value;

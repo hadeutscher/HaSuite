@@ -17,27 +17,18 @@ namespace HaCreator.MapEditor.Instance.Shapes
     public class MinimapRectangle : MapleEmptyRectangle
     {
         public MinimapRectangle(Board board, XNA.Rectangle rect)
-            : base(board)
+            : base(board, rect)
         {
-            lock (board.ParentControl)
-            {
-                PointA = new MinimapDot(this, board, rect.Left, rect.Top);
-                PointB = new MinimapDot(this, board, rect.Right, rect.Top);
-                PointC = new MinimapDot(this, board, rect.Right, rect.Bottom);
-                PointD = new MinimapDot(this, board, rect.Left, rect.Bottom);
-                board.BoardItems.SpecialDots.Add((MinimapDot)PointA);
-                board.BoardItems.SpecialDots.Add((MinimapDot)PointB);
-                board.BoardItems.SpecialDots.Add((MinimapDot)PointC);
-                board.BoardItems.SpecialDots.Add((MinimapDot)PointD);
-                LineAB = new MinimapLine(board, PointA, PointB);
-                LineBC = new MinimapLine(board, PointB, PointC);
-                LineCD = new MinimapLine(board, PointC, PointD);
-                LineDA = new MinimapLine(board, PointD, PointA);
-                LineAB.yBind = true;
-                LineBC.xBind = true;
-                LineCD.yBind = true;
-                LineDA.xBind = true;
-            }
+        }
+
+        public override MapleDot CreateDot(int x, int y)
+        {
+            return new MinimapDot(this, board, x, y);
+        }
+
+        public override MapleLine CreateLine(MapleDot a, MapleDot b)
+        {
+            return new MinimapLine(board, a, b);
         }
 
         public override void RemoveItem(List<UndoRedoAction> undoPipe)
@@ -48,6 +39,12 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 board.MinimapRectangle = null;
                 board.RegenerateMinimap();
             }
+        }
+
+        public MinimapRectangle(Board board, SerializationForm json)
+            : base(board, new XNA.Rectangle(json.x0, json.y0, json.x1 - json.x0, json.y1 - json.y0))
+        {
+            board.MinimapRectangle = this;
         }
     }
 }

@@ -84,10 +84,12 @@
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "Save";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Save";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Save_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

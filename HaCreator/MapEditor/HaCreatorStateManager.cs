@@ -47,6 +47,7 @@ namespace HaCreator.MapEditor
             this.ribbon = ribbon;
             this.tabs = tabs;
 
+            this.ribbon.NewClicked += ribbon_NewClicked;
             this.ribbon.OpenClicked += ribbon_OpenClicked;
             this.ribbon.SaveClicked += ribbon_SaveClicked;
             this.ribbon.RepackClicked += ribbon_RepackClicked;
@@ -55,7 +56,6 @@ namespace HaCreator.MapEditor
             this.ribbon.SettingsClicked += ribbon_SettingsClicked;
             this.ribbon.ExitClicked += ribbon_ExitClicked;
             this.ribbon.ViewToggled += ribbon_ViewToggled;
-            this.ribbon.ShowVRToggled += ribbon_ShowVRToggled;
             this.ribbon.ShowMinimapToggled += ribbon_ShowMinimapToggled;
             this.ribbon.ParallaxToggled += ribbon_ParallaxToggled;
             this.ribbon.LayerViewChanged += ribbon_LayerViewChanged;
@@ -68,6 +68,7 @@ namespace HaCreator.MapEditor
             this.ribbon.FinalizeClicked += ribbon_FinalizeClicked;
             this.ribbon.NewPlatformClicked += ribbon_NewPlatformClicked;
             this.ribbon.UserObjsClicked += ribbon_UserObjsClicked;
+            this.ribbon.ExportClicked += ribbon_ExportClicked;
 
             this.tabs.CurrentPageChanged += tabs_CurrentPageChanged;
 
@@ -325,6 +326,17 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Ribbon Handlers
+        void ribbon_ExportClicked()
+        {
+            SaveFileDialog ofd = new SaveFileDialog() { Title = "Select export location", Filter = "HaCreator Map File (*.ham)|*.ham" };
+            if (ofd.ShowDialog() != DialogResult.OK) 
+                return;
+            lock (multiBoard)
+            {
+                File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard());
+            }
+        }
+
         void ribbon_UserObjsClicked()
         {
             lock (multiBoard)
@@ -444,11 +456,6 @@ namespace HaCreator.MapEditor
             UserSettings.useMiniMap = pressed;
         }
 
-        void ribbon_ShowVRToggled(bool pressed)
-        {
-            UserSettings.showVR = pressed;
-        }
-
         void setTypes(ref ItemTypes newVisibleTypes, ref ItemTypes newEditedTypes, bool? x, ItemTypes type)
         {
             if (x.HasValue)
@@ -504,7 +511,10 @@ namespace HaCreator.MapEditor
 
         void ribbon_SettingsClicked()
         {
-            new UserSettingsForm().ShowDialog();
+            lock (multiBoard)
+            {
+                new UserSettingsForm().ShowDialog();
+            }
         }
 
         void ribbon_HelpClicked()
@@ -546,30 +556,43 @@ namespace HaCreator.MapEditor
             }
         }
 
-        void ribbon_OpenClicked()
+        public EventHandler[] MakeRightClickHandler()
         {
-            LoadMap();
+            return new EventHandler[] { new EventHandler(mapEditInfo), new EventHandler(mapAddVR), new EventHandler(mapAddMinimap) };
         }
 
-        public void LoadMap()
+        void ribbon_NewClicked()
         {
-            if (new Load(multiBoard, tabs, new EventHandler[] { new EventHandler(mapEditInfo), new EventHandler(mapAddVR), new EventHandler(mapAddMinimap) }).ShowDialog() == DialogResult.OK)
+            LoadMap(new New(multiBoard, tabs, MakeRightClickHandler()));
+        }
+
+        void ribbon_OpenClicked()
+        {
+            LoadMap(new Load(multiBoard, tabs, MakeRightClickHandler()));
+        }
+
+        public void LoadMap(Form loader)
+        {
+            lock (multiBoard)
             {
-                if (!multiBoard.DeviceReady)
+                if (loader.ShowDialog() == DialogResult.OK)
                 {
-                    ribbon.SetEnabled(true);
-                    ribbon.SetOptions(UserSettings.showVR, UserSettings.useMiniMap, UserSettings.emulateParallax, UserSettings.useSnapping, ApplicationSettings.randomTiles, ApplicationSettings.InfoMode);
-                    if (FirstMapLoaded != null)
-                        FirstMapLoaded.Invoke();
-                    multiBoard.Start();
+                    if (!multiBoard.DeviceReady)
+                    {
+                        ribbon.SetEnabled(true);
+                        ribbon.SetOptions(UserSettings.useMiniMap, UserSettings.emulateParallax, UserSettings.useSnapping, ApplicationSettings.randomTiles, ApplicationSettings.InfoMode);
+                        if (FirstMapLoaded != null)
+                            FirstMapLoaded.Invoke();
+                        multiBoard.Start();
+                    }
+                    multiBoard.SelectedBoard.SelectedPlatform = multiBoard.SelectedBoard.SelectedLayerIndex == -1 ? -1 : multiBoard.SelectedBoard.Layers[multiBoard.SelectedBoard.SelectedLayerIndex].zMList.ElementAt(0);
+                    ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
+                    ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform);
+                    multiBoard.SelectedBoard.VisibleTypes = ApplicationSettings.theoreticalVisibleTypes;
+                    multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
+                    ParseVisibleEditedTypes();
+                    multiBoard.Focus();
                 }
-                multiBoard.SelectedBoard.SelectedPlatform = multiBoard.SelectedBoard.SelectedLayerIndex == -1 ? -1 : multiBoard.SelectedBoard.Layers[multiBoard.SelectedBoard.SelectedLayerIndex].zMList.ElementAt(0);
-                ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
-                ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform);
-                multiBoard.SelectedBoard.VisibleTypes = ApplicationSettings.theoreticalVisibleTypes;
-                multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
-                ParseVisibleEditedTypes();
-                multiBoard.Focus();
             }
         }
 

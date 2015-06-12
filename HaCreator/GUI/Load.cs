@@ -53,21 +53,10 @@ namespace HaCreator.GUI
 
         private void Load_Load(object sender, EventArgs e)
         {
-            newWidth.Text = ApplicationSettings.LastMapSize.Width.ToString();
-            newHeight.Text = ApplicationSettings.LastMapSize.Height.ToString();
-            if (multiBoard.Boards.Count == 0)
-            {
-                newTab.Checked = true;
-                newTab.Enabled = false;
-            }
-            else
-            {
-                newTab.Checked = ApplicationSettings.newTab;
-            }
             switch (ApplicationSettings.lastRadioIndex)
             {
                 case 0:
-                    NewSelect.Checked = true;
+                    HAMSelect.Checked = true;
                     break;
                 case 1:
                     XMLSelect.Checked = true;
@@ -80,10 +69,9 @@ namespace HaCreator.GUI
 
         private void selectionChanged(object sender, EventArgs e)
         {
-            if (NewSelect.Checked)
+            if (HAMSelect.Checked)
             {
-                newWidth.Enabled = true;
-                newHeight.Enabled = true;
+                HAMBox.Enabled = true;
                 XMLBox.Enabled = false;
                 searchBox.Enabled = false;
                 mapBrowser.IsEnabled = false;
@@ -91,8 +79,7 @@ namespace HaCreator.GUI
             }
             else if (XMLSelect.Checked)
             {
-                newWidth.Enabled = false;
-                newHeight.Enabled = false;
+                HAMBox.Enabled = false;
                 XMLBox.Enabled = true;
                 searchBox.Enabled = false;
                 mapBrowser.IsEnabled = false;
@@ -100,8 +87,7 @@ namespace HaCreator.GUI
             }
             else if (WZSelect.Checked)
             {
-                newWidth.Enabled = false;
-                newHeight.Enabled = false;
+                HAMBox.Enabled = false;
                 XMLBox.Enabled = false;
                 searchBox.Enabled = true;
                 mapBrowser.IsEnabled = true;
@@ -122,25 +108,30 @@ namespace HaCreator.GUI
             loadButton.Enabled = true;
         }
 
+        private void browseHAM_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Title = "Select Map to load...";
+            dialog.Filter = "HaCreator Map File (*.ham)|*.ham";
+            if (dialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+            HAMBox.Text = dialog.FileName;
+            loadButton.Enabled = true;
+        }
+
         private void loadButton_Click(object sender, EventArgs e)
         {
             MapLoader loader = new MapLoader();
-            if (newTab.Checked && multiBoard.Boards.Count != 0)
-                ApplicationSettings.newTab = true;
-            else if (!newTab.Checked)
-            {
-                ApplicationSettings.newTab = false;
-                Board toRemove = (Board)Tabs.CurrentPage.Tag;
-                Tabs.Remove(Tabs.CurrentPage);
-                toRemove.Dispose();
-            }
             WzImage mapImage = null;
             string mapName = null, streetName = "", categoryName = "";
             WzSubProperty strMapProp = null;
-            if (NewSelect.Checked)
+            if (HAMSelect.Checked)
             {
                 ApplicationSettings.lastRadioIndex = 0;
-                loader.CreateMap("<Untitled>", "<Untitled>", loader.CreateStandardMapMenu(rightClickHandler), new XNA.Point(int.Parse(newWidth.Text), int.Parse(newHeight.Text)), new XNA.Point(int.Parse(newWidth.Text) / 2, int.Parse(newHeight.Text) / 2), 8, Tabs, multiBoard);
+                loader.CreateMap("", "", loader.CreateStandardMapMenu(rightClickHandler), new XNA.Point(), new XNA.Point(), 8, Tabs, multiBoard);
+                multiBoard.SelectedBoard.SerializationManager.DeserializeBoard(File.ReadAllText(HAMBox.Text));
                 DialogResult = DialogResult.OK;
                 Close();
                 return;

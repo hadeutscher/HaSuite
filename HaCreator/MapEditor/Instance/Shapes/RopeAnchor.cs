@@ -75,6 +75,8 @@ namespace HaCreator.MapEditor.Instance.Shapes
             double closestDistanceLine = double.MaxValue;
             foreach (FootholdLine fh in Board.BoardItems.FootholdLines)
             {
+                if (fh.FirstDot.Selected || fh.SecondDot.Selected)
+                    continue;
                 if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int)UserSettings.SnapDistance) && BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int)UserSettings.SnapDistance))
                 {
                     double targetY = fh.CalculateY(X) + 2;
@@ -90,7 +92,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
             double closestDistanceRope = double.MaxValue;
             foreach (LayeredItem li in Board.BoardItems.TileObjs)
             {
-                if (!(li is ObjectInstance))
+                if (!(li is ObjectInstance) || li.Selected)
                     continue;
                 ObjectInstance objInst = (ObjectInstance)li;
                 ObjectInfo objInfo = (ObjectInfo)objInst.BaseInfo;
@@ -113,11 +115,12 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 }
             }
             if (closestDistanceRope >= closestDistanceLine && closestLine != null)
-                this.Y = (int)closestLine.CalculateY(X) + 2;
+            {
+                SnapMoveAllSelectedItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) + 2));
+            }
             else if (closestDistanceRope <= closestDistanceLine && closestRopeHint.HasValue)
             {
-                this.X = closestRopeHint.Value.X;
-                this.Y = closestRopeHint.Value.Y;
+                SnapMoveAllSelectedItems(new XNA.Point(closestRopeHint.Value.X, closestRopeHint.Value.Y));
             }
         }
 

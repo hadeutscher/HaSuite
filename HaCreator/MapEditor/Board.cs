@@ -48,6 +48,7 @@ namespace HaCreator.MapEditor
         private MinimapRectangle mmRect = null;
         private ContextMenuStrip menu = null;
         private SerializationManager serMan = null;
+        private HaCreator.ThirdParty.TabPages.TabPage page = null;
 
         public ItemTypes VisibleTypes { get { return visibleTypes; } set { visibleTypes = value; } }
         public ItemTypes EditedTypes { get { return editedTypes; } set { editedTypes = value; } }
@@ -67,18 +68,17 @@ namespace HaCreator.MapEditor
             serMan = new SerializationManager(this);
         }
 
-        public void RenderList(IMapleList list, SpriteBatch sprite, int xShift, int yShift)
+        public void RenderList(IMapleList list, SpriteBatch sprite, int xShift, int yShift, SelectionInfo sel)
         {
-            SelectionInfo sel = GetUserSelectionInfo();
             if (list.ListType == ItemTypes.None)
             {
                 foreach (BoardItem item in list)
                 {
-                    if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X, yShift - item.Origin.Y) && ((visibleTypes & item.Type) == item.Type))
+                    if (parent.IsItemInRange(item.X, item.Y, item.Width, item.Height, xShift - item.Origin.X, yShift - item.Origin.Y) && ((sel.visibleTypes & item.Type) != 0))
                         item.Draw(sprite, item.GetColor(sel, item.Selected), xShift, yShift);
                 }
             }
-            else if ((visibleTypes & list.ListType) == list.ListType)
+            else if ((sel.visibleTypes & list.ListType) != 0)
             {
                 if (list.IsItem)
                 {
@@ -150,10 +150,11 @@ namespace HaCreator.MapEditor
                 return;
             int xShift = centerPoint.X - hScroll;
             int yShift = centerPoint.Y - vScroll;
+            SelectionInfo sel = GetUserSelectionInfo();
 
             // Render the object lists
             for (int i = 0; i < boardItems.AllItemLists.Length; i++)
-                RenderList(boardItems.AllItemLists[i], sprite, xShift, yShift);
+                RenderList(boardItems.AllItemLists[i], sprite, xShift, yShift, sel);
 
             // Render the user's selection square
             if (mouse.MultiSelectOngoing)
@@ -170,14 +171,14 @@ namespace HaCreator.MapEditor
             }
             
             // Render VR if it exists
-            if (VRRectangle != null)
+            if (VRRectangle != null && (sel.visibleTypes & VRRectangle.Type) != 0)
             {
-                VRRectangle.Draw(sprite, xShift, yShift);
+                VRRectangle.Draw(sprite, xShift, yShift, sel);
             }
             // Render minimap rectangle
-            if (MinimapRectangle != null)
+            if (MinimapRectangle != null && (sel.visibleTypes & MinimapRectangle.Type) != 0)
             {
-                MinimapRectangle.Draw(sprite, xShift, yShift);
+                MinimapRectangle.Draw(sprite, xShift, yShift, sel);
             }
 
             // Render the minimap itself
@@ -421,6 +422,12 @@ namespace HaCreator.MapEditor
         public SerializationManager SerializationManager
         {
             get { return serMan; }
+        }
+
+        public HaCreator.ThirdParty.TabPages.TabPage TabPage
+        {
+            get { return page; }
+            set { page = value; }
         }
         #endregion
     }

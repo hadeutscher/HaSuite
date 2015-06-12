@@ -72,7 +72,6 @@ namespace HaCreator
         public static int ImageViewerWidth = 100;
 
         public static bool useMiniMap = true;
-        public static bool showVR = true;
         public static bool useSnapping = true;
         public static bool emulateParallax = true;
         public static bool suppressWarnings = false;
@@ -97,7 +96,6 @@ namespace HaCreator
         public static int MapleFolderIndex = 0;
         public static System.Drawing.Size LastMapSize = new System.Drawing.Size(800, 800);
         public static int lastRadioIndex = 3;
-        public static bool newTab = true;
         public static bool randomTiles = true;
         public static bool InfoMode = false;
         public static int lastDefaultLayer = -1;

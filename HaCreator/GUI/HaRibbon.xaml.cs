@@ -65,6 +65,8 @@ namespace HaCreator.GUI
             }
         }
 
+        public static readonly RoutedUICommand New = new RoutedUICommand("New", "New", typeof(HaRibbon),
+            new InputGestureCollection() { new KeyGesture(Key.N, ModifierKeys.Control) });
         public static readonly RoutedUICommand Open = new RoutedUICommand("Open", "Open", typeof(HaRibbon), 
             new InputGestureCollection() { new KeyGesture(Key.O, ModifierKeys.Control) });
         public static readonly RoutedUICommand Save = new RoutedUICommand("Save", "Save", typeof(HaRibbon),
@@ -80,8 +82,6 @@ namespace HaCreator.GUI
         public static readonly RoutedUICommand Exit = new RoutedUICommand("Exit", "Exit", typeof(HaRibbon),
             new InputGestureCollection() {});
         public static readonly RoutedUICommand ViewBoxes = new RoutedUICommand("ViewBoxes", "ViewBoxes", typeof(HaRibbon),
-            new InputGestureCollection() { });
-        public static readonly RoutedUICommand ShowVR = new RoutedUICommand("ShowVR", "ShowVR", typeof(HaRibbon),
             new InputGestureCollection() { });
         public static readonly RoutedUICommand Minimap = new RoutedUICommand("Minimap", "Minimap", typeof(HaRibbon),
             new InputGestureCollection() { });
@@ -117,10 +117,18 @@ namespace HaCreator.GUI
             new InputGestureCollection() { });
         public static readonly RoutedUICommand UserObjs = new RoutedUICommand("UserObjs", "UserObjs", typeof(HaRibbon),
             new InputGestureCollection() { });
+        public static readonly RoutedUICommand Export = new RoutedUICommand("Export", "Export", typeof(HaRibbon),
+            new InputGestureCollection() { });
 
         private void AlwaysExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void New_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (NewClicked != null)
+                NewClicked.Invoke();
         }
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -167,16 +175,8 @@ namespace HaCreator.GUI
 
         private void ViewBoxes_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            CheckBox rcb = (CheckBox)e.OriginalSource;
-            
             if (ViewToggled != null)
                 ViewToggled.Invoke(tilesCheck.IsChecked, objsCheck.IsChecked, npcsCheck.IsChecked, mobsCheck.IsChecked, reactCheck.IsChecked, portalCheck.IsChecked, fhCheck.IsChecked, ropeCheck.IsChecked, chairCheck.IsChecked, tooltipCheck.IsChecked, bgCheck.IsChecked, miscCheck.IsChecked);
-        }
-
-        private void ShowVR_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (ShowVRToggled != null)
-                ShowVRToggled.Invoke(((RibbonToggleButton)e.OriginalSource).IsChecked.Value);
         }
 
         private void Minimap_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -231,6 +231,12 @@ namespace HaCreator.GUI
         {
             if (HaRepackerClicked != null)
                 HaRepackerClicked.Invoke();
+        }
+
+        private void Export_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (ExportClicked != null)
+                ExportClicked.Invoke();
         }
 
         #region Layer UI
@@ -457,6 +463,7 @@ namespace HaCreator.GUI
         public delegate void ToggleEvent(bool pressed);
         public delegate void LayerViewChangedEvent(int layer, int platform);
 
+        public event EmptyEvent NewClicked;
         public event EmptyEvent OpenClicked;
         public event EmptyEvent SaveClicked;
         public event EmptyEvent RepackClicked;
@@ -466,7 +473,6 @@ namespace HaCreator.GUI
         public event EmptyEvent ExitClicked;
         public event EmptyEvent FinalizeClicked;
         public event ViewToggleEvent ViewToggled;
-        public event ToggleEvent ShowVRToggled;
         public event ToggleEvent ShowMinimapToggled;
         public event ToggleEvent ParallaxToggled;
         public event LayerViewChangedEvent LayerViewChanged;
@@ -476,6 +482,7 @@ namespace HaCreator.GUI
         public event ToggleEvent RandomTilesToggled;
         public event ToggleEvent InfoModeToggled;
         public event EmptyEvent HaRepackerClicked;
+        public event EmptyEvent ExportClicked;
         public event EmptyEvent NewPlatformClicked;
         public event EmptyEvent UserObjsClicked;
 
@@ -501,12 +508,12 @@ namespace HaCreator.GUI
             toolsTab.IsEnabled = enabled;
             statTab.IsEnabled = enabled;
             saveBtn.IsEnabled = enabled;
+            exportBtn.IsEnabled = enabled;
             //resetLayerBoxIfNeeded();
         }
 
-        public void SetOptions(bool vr, bool minimap, bool parallax, bool snap, bool random, bool infomode)
+        public void SetOptions(bool minimap, bool parallax, bool snap, bool random, bool infomode)
         {
-            showvrBtn.IsChecked = vr;
             minimapBtn.IsChecked = minimap;
             parallaxBtn.IsChecked = parallax;
             snapBtn.IsChecked = snap;
@@ -523,6 +530,30 @@ namespace HaCreator.GUI
         public void SetItemDesc(string desc)
         {
             itemDesc.Text = desc;
+        }
+        
+        private void ChangeAllCheckboxes(bool? state)
+        {
+            foreach (CheckBox cb in new CheckBox[] { tilesCheck, objsCheck, npcsCheck, mobsCheck, reactCheck, portalCheck, fhCheck, ropeCheck, chairCheck, tooltipCheck, bgCheck, miscCheck })
+            {
+                cb.IsChecked = state;
+            }
+            ViewBoxes_Executed(null, null);
+        }
+
+        private void allFullCheck_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeAllCheckboxes(true);
+        }
+
+        private void allHalfCheck_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeAllCheckboxes(null);
+        }
+
+        private void allClearCheck_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeAllCheckboxes(false);
         }
     }
 }

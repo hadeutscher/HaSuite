@@ -133,7 +133,8 @@ namespace HaCreator.MapEditor.Instance
             double closestDistance = double.MaxValue;
             foreach (LayeredItem li in Board.BoardItems.TileObjs)
             {
-                if (!(li is ObjectInstance))
+                // Trying to snap to other selected items can mess up some of the mouse bindings
+                if (!(li is ObjectInstance) || li.Selected || li.Equals(this))
                     continue;
                 ObjectInstance objInst = (ObjectInstance)li;
                 ObjectInfo objInfo = (ObjectInfo)objInst.BaseInfo;
@@ -156,8 +157,7 @@ namespace HaCreator.MapEditor.Instance
 
             if (closestDestPoint.HasValue)
             {
-                X = closestDestPoint.Value.X;
-                Y = closestDestPoint.Value.Y;
+                SnapMoveAllSelectedItems(new XNA.Point(closestDestPoint.Value.X, closestDestPoint.Value.Y));
             }
         }
 

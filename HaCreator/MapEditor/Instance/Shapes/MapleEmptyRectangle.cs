@@ -5,6 +5,7 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 using HaCreator.MapEditor.UndoRedo;
+using MapleLib.WzLib.WzStructure.Data;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,40 @@ namespace HaCreator.MapEditor.Instance.Shapes
 
         protected Board board;
 
-        public MapleEmptyRectangle(Board board)
+        public MapleEmptyRectangle(Board board, XNA.Rectangle rect)
         {
             this.board = board;
+
+            lock (board.ParentControl)
+            {
+                a = CreateDot(rect.Left, rect.Top);
+                b = CreateDot(rect.Right, rect.Top);
+                c = CreateDot(rect.Right, rect.Bottom);
+                d = CreateDot(rect.Left, rect.Bottom);
+                PlaceDots();
+
+                // Make lines
+                ab = CreateLine(a, b);
+                bc = CreateLine(b, c);
+                cd = CreateLine(c, d);
+                da = CreateLine(d, a);
+                ab.yBind = true;
+                bc.xBind = true;
+                cd.yBind = true;
+                da.xBind = true;
+            }
         }
+
+        protected void PlaceDots()
+        {
+            board.BoardItems.Add(a, false);
+            board.BoardItems.Add(b, false);
+            board.BoardItems.Add(c, false);
+            board.BoardItems.Add(d, false);
+        }
+
+        public abstract MapleDot CreateDot(int x, int y);
+        public abstract MapleLine CreateLine(MapleDot a, MapleDot b);
 
         public MapleDot PointA
         {
@@ -158,9 +189,9 @@ namespace HaCreator.MapEditor.Instance.Shapes
             }
         }
 
-        public virtual void Draw(SpriteBatch sprite, int xShift, int yShift)
+        public virtual void Draw(SpriteBatch sprite, int xShift, int yShift, SelectionInfo sel)
         {
-            XNA.Color lineColor = ab.Color;
+            XNA.Color lineColor = ab.GetColor(sel);
             int x, y;
             if (a.X < b.X) x = a.X + xShift;
             else x = b.X + xShift;
@@ -170,6 +201,26 @@ namespace HaCreator.MapEditor.Instance.Shapes
             bc.Draw(sprite, lineColor, xShift, yShift);
             cd.Draw(sprite, lineColor, xShift, yShift);
             da.Draw(sprite, lineColor, xShift, yShift);
+        }
+
+        public ItemTypes Type
+        {
+            get { return ItemTypes.Misc; }
+        }
+
+        public class SerializationForm
+        {
+            public int x0, x1, y0, y1;
+        }
+
+        public object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            result.x0 = Left;
+            result.y0 = Top;
+            result.x1 = Right;
+            result.y1 = Bottom;
+            return result;
         }
     }
 }

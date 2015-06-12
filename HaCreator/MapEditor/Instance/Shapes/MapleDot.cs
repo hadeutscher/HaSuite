@@ -10,6 +10,7 @@ using HaCreator.MapEditor.UndoRedo;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,11 @@ namespace HaCreator.MapEditor.Instance.Shapes
         public abstract XNA.Color Color { get; }
         public abstract XNA.Color InactiveColor { get; }
 
-        private static System.Drawing.Point origin = new System.Drawing.Point(UserSettings.DotWidth, UserSettings.DotWidth);
+        private static Point origin = new Point(UserSettings.DotWidth, UserSettings.DotWidth);
+        public static void OnDotWidthChanged()
+        {
+            origin = new Point(UserSettings.DotWidth, UserSettings.DotWidth);
+        }
 
         public override bool IsPixelTransparent(int x, int y)
         {
@@ -73,11 +78,9 @@ namespace HaCreator.MapEditor.Instance.Shapes
             }
         }
 
-        public static System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(UserSettings.DotWidth * 2, UserSettings.DotWidth * 2);
-
         public override System.Drawing.Bitmap Image
         {
-            get { return bmp; }
+            get { return null; }
         }
 
         public override int Width
@@ -148,7 +151,18 @@ namespace HaCreator.MapEditor.Instance.Shapes
             lock (board.ParentControl)
             {
                 base.Move(x, y);
-                if (PointMoved != null) PointMoved.Invoke();
+                if (PointMoved != null)
+                    PointMoved.Invoke();
+            }
+        }
+
+        public override void SnapMove(int x, int y)
+        {
+            lock (board.ParentControl)
+            {
+                base.SnapMove(x, y);
+                if (PointMoved != null)
+                    PointMoved.Invoke();
             }
         }
 
@@ -159,7 +173,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
 
         public virtual void DoSnap()
         {
-            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey) && connectedLines.Count != 0 && connectedLines[0] is FootholdLine)
+            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey) && connectedLines.Count != 0 && connectedLines[0] is FootholdLine && board.SelectedItems.Count == 1 && board.SelectedItems[0].Equals(this))
             {
                 FootholdAnchor closestAnchor = null;
                 double closestAngle = double.MaxValue;
@@ -178,9 +192,9 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 if (closestAnchor != null)
                 {
                     if (xClosest)
-                        Y = closestAnchor.Y;
+                        SnapMoveAllSelectedItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, closestAnchor.Y));
                     else
-                        X = closestAnchor.X;
+                        SnapMoveAllSelectedItems(new XNA.Point(closestAnchor.X, Parent.Y + Parent.BoundItems[this].Y));
                 }
             }
         }

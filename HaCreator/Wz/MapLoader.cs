@@ -799,6 +799,7 @@ namespace HaCreator.Wz
                 Board newBoard = multiBoard.CreateBoard(size, center, layers, menu);
                 GenerateDefaultZms(newBoard);
                 HaCreator.ThirdParty.TabPages.TabPage page = new HaCreator.ThirdParty.TabPages.TabPage(text, multiBoard, tooltip, menu);
+                newBoard.TabPage = page;
                 page.Tag = newBoard;
                 Tabs.Add(page);
                 Tabs.CurrentPage = page;

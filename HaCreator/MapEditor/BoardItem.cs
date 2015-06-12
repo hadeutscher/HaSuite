@@ -220,6 +220,23 @@ namespace HaCreator.MapEditor
             }
             return false;
         }
+
+        // Receives this item's snap destination, and moves all selected items accordingly
+        public void SnapMoveAllSelectedItems(XNA.Point newPos)
+        {
+            // Get offset from parent (Mouse) to this item
+            XNA.Point parentOffs = Parent.BoundItems[this];
+            // Calculate offset between the location that this item should be in (mouse + parentOffs), to the location it is being snapped to
+            XNA.Point snapOffs = new XNA.Point(Parent.X + parentOffs.X - newPos.X, Parent.Y + parentOffs.Y - newPos.Y);
+            // Move all selected items accordingly
+            foreach (BoardItem item in Board.SelectedItems)
+            {
+                if (item.tempParent != null || item.Parent == null)
+                    continue;
+                XNA.Point currParentOffs = item.Parent.BoundItems[item];
+                item.SnapMove(item.Parent.X + currParentOffs.X - snapOffs.X, item.Parent.Y + currParentOffs.Y - snapOffs.Y);
+            }
+        }
         #endregion
 
         #region Properties

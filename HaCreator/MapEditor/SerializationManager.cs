@@ -7,6 +7,7 @@
 using HaCreator.Collections;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.Instance.Shapes;
 using MapleLib.WzLib.WzStructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,6 +31,14 @@ namespace HaCreator.MapEditor
         public SerializationManager(Board board)
         {
             this.board = board;
+        }
+
+        public static Dictionary<string, int> SerializePoint(XNA.Point p)
+        {
+            Dictionary<string, int> result = new Dictionary<string, int>(2);
+            result.Add("x", p.X);
+            result.Add("y", p.Y);
+            return result;
         }
 
         public string SerializeList(IEnumerable<ISerializableSelector> list)
@@ -57,7 +66,66 @@ namespace HaCreator.MapEditor
             return JsonConvert.SerializeObject(dynamicList.ToArray());
         }
 
-        Dictionary<ISerializable, long> MakeSerializationRefDict(List<ISerializable> items)
+        public List<ISerializable> DeserializeList(string serialization)
+        {
+            dynamic[] dynamicArray = JsonConvert.DeserializeObject<dynamic[]>(serialization);
+            List<ISerializable> items = new List<ISerializable>();
+            List<IDictionary<string, object>> itemBindings = new List<IDictionary<string, object>>();
+            foreach (dynamic serData in dynamicArray)
+            {
+                dynamic serData2 = Deserialize2(serData);
+                string typeName = serData2.type;
+                string data = serData2.data;
+                string dataTypeName = serData2.dataType;
+                Type dataType = Type.GetType(dataTypeName);
+                object dataObject = JsonConvert.DeserializeObject(data, dataType);
+                ISerializable item = (ISerializable)ConstructObject(typeName, new object[] { board, dataObject }, new[] { typeof(Board), dataType });
+                items.Add(item);
+
+                // Store the binding dict for later, since we can deserialize binding data untill all objects have been constructed
+                itemBindings.Add(serData2.bindings);
+            }
+
+            // Make binding references and deserialize them
+            Dictionary<long, ISerializable> refDict = MakeDeserializationRefDict(items);
+            for (int i = 0; i < items.Count; i++)
+            {
+                items[i].DeserializeBindings(itemBindings[i], refDict);
+            }
+            return items;
+        }
+
+        public string SerializeBoard()
+        {
+            dynamic serData = new ExpandoObject();
+            // No need to also include FootholdLines beacuse they will be included through their anchors
+            serData.items = SerializeList(board.BoardItems.Items);
+            serData.info = JsonConvert.SerializeObject(board.MapInfo);
+            serData.vr = JsonConvert.SerializeObject(board.VRRectangle == null ? null : board.VRRectangle.Serialize());
+            serData.minimap = JsonConvert.SerializeObject(board.MinimapRectangle == null ? null : board.MinimapRectangle.Serialize());
+            serData.center = SerializePoint(board.CenterPoint);
+            serData.size = SerializePoint(board.MapSize);
+            return JsonConvert.SerializeObject(serData);
+        }
+
+        public void DeserializeBoard(string data)
+        {
+            dynamic serData = JsonConvert.DeserializeObject(data);
+            serData = Deserialize2(serData);
+            board.MapSize = new XNA.Point(serData.size.x, serData.size.y);
+            board.CenterPoint = new XNA.Point(serData.center.x, serData.center.y);
+            MapleEmptyRectangle.SerializationForm vrSer = JsonConvert.DeserializeObject<MapleEmptyRectangle.SerializationForm>(serData.vr);
+            MapleEmptyRectangle.SerializationForm mmSer = JsonConvert.DeserializeObject<MapleEmptyRectangle.SerializationForm>(serData.minimap);
+            board.VRRectangle = vrSer == null ? null : new VRRectangle(board, vrSer);
+            board.MinimapRectangle = mmSer == null ? null : new MinimapRectangle(board, mmSer);
+            board.MapInfo = JsonConvert.DeserializeObject<MapInfo>(serData.info);
+            foreach (ISerializable item in DeserializeList(serData.items))
+            {
+                item.AddToBoard(null);
+            }
+        }
+
+        private Dictionary<ISerializable, long> MakeSerializationRefDict(List<ISerializable> items)
         {
             Dictionary<ISerializable, long> result = new Dictionary<ISerializable, long>(items.Count);
             for (int i = 0; i < items.Count; i++)
@@ -67,21 +135,13 @@ namespace HaCreator.MapEditor
             return result;
         }
 
-        Dictionary<long, ISerializable> MakeDeserializationRefDict(List<ISerializable> items)
+        private Dictionary<long, ISerializable> MakeDeserializationRefDict(List<ISerializable> items)
         {
             Dictionary<long, ISerializable> result = new Dictionary<long, ISerializable>(items.Count);
             for (int i = 0; i < items.Count; i++)
             {
                 result.Add(i, items[i]);
             }
-            return result;
-        }
-
-        public static Dictionary<string, int> SerializePoint(XNA.Point p)
-        {
-            Dictionary<string, int> result = new Dictionary<string, int>(2);
-            result.Add("x", p.X);
-            result.Add("y", p.Y);
             return result;
         }
 
@@ -120,36 +180,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        public List<ISerializable> DeserializeList(string serialization)
-        {
-            dynamic[] dynamicArray = JsonConvert.DeserializeObject<dynamic[]>(serialization);
-            List<ISerializable> items = new List<ISerializable>();
-            List<IDictionary<string, object>> itemBindings = new List<IDictionary<string,object>>();
-            foreach (dynamic serData in dynamicArray)
-            {
-                dynamic serData2 = Deserialize2(serData);
-                string typeName = serData2.type;
-                string data = serData2.data;
-                string dataTypeName = serData2.dataType;
-                Type dataType = Type.GetType(dataTypeName);
-                object dataObject = JsonConvert.DeserializeObject(data, dataType);
-                ISerializable item = (ISerializable)ConstructObject(typeName, new object[] { board, dataObject }, new[] { typeof(Board), dataType });
-                items.Add(item);
-
-                // Store the binding dict for later, since we can deserialize binding data untill all objects have been constructed
-                itemBindings.Add(serData2.bindings);
-            }
-
-            // Make binding references and deserialize them
-            Dictionary<long, ISerializable> refDict = MakeDeserializationRefDict(items);
-            for (int i = 0; i < items.Count; i++)
-            {
-                items[i].DeserializeBindings(itemBindings[i], refDict);
-            }
-            return items;
-        }
-
-        public object ConstructObject(string typeName, object[] args, Type[] ctorTemplate)
+        private object ConstructObject(string typeName, object[] args, Type[] ctorTemplate)
         {
             Type type = Type.GetType(typeName);
             ConstructorInfo ctorInfo = type.GetConstructor(ctorTemplate);

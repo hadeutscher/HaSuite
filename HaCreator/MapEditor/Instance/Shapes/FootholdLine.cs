@@ -69,7 +69,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
 
         public override XNA.Color Color
         {
-            get { return Selected ? UserSettings.SelectedColor : UserSettings.FootholdColor; }
+            get { return UserSettings.FootholdColor; }
         }
 
         public override XNA.Color InactiveColor

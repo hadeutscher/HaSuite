@@ -32,6 +32,9 @@ namespace HaCreator.MapEditor.Instance.Shapes
             double closestDistance = double.MaxValue;
             foreach (FootholdLine fh in Board.BoardItems.FootholdLines)
             {
+                // Trying to snap to other selected items can mess up some of the mouse bindings
+                if (fh.FirstDot.Selected || fh.SecondDot.Selected)
+                    continue;
                 if (!fh.IsWall && BetweenOrEquals(X, fh.FirstDot.X, fh.SecondDot.X, (int)UserSettings.SnapDistance) && BetweenOrEquals(Y, fh.FirstDot.Y, fh.SecondDot.Y, (int)UserSettings.SnapDistance))
                 {
                     double targetY = fh.CalculateY(X) - 1;
@@ -39,7 +42,10 @@ namespace HaCreator.MapEditor.Instance.Shapes
                     if (closestDistance > distance) { closestDistance = distance; closestLine = fh; }
                 }
             }
-            if (closestLine != null) this.Y = (int)closestLine.CalculateY(X) - 1;
+            if (closestLine != null)
+            {
+                SnapMoveAllSelectedItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) - 1));
+            }
         }
 
         public override XNA.Color Color

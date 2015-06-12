@@ -135,7 +135,6 @@ namespace HaCreator.MapEditor.Instance.Shapes
 
         public void OnFirstDotMoved()
         {
-            if (secondDot.Selected) return;
             if (xBind)
                 secondDot.MoveSilent(firstDot.X, secondDot.Y);
             if (yBind)
@@ -144,17 +143,16 @@ namespace HaCreator.MapEditor.Instance.Shapes
 
         public void OnSecondDotMoved()
         {
-            if (firstDot.Selected) return;
             if (xBind)
                 firstDot.MoveSilent(secondDot.X, firstDot.Y);
             if (yBind)
                 firstDot.MoveSilent(firstDot.X, secondDot.Y);
         }
 
-        public XNA.Color GetColor(SelectionInfo sel)
+        public virtual XNA.Color GetColor(SelectionInfo sel)
         {
             if ((sel.editedTypes & Type) == Type && firstDot.CheckIfLayerSelected(sel))
-                return Color;
+                return Selected ? UserSettings.SelectedColor : Color;
             else return InactiveColor;
         }
 
