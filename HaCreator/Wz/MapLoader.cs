@@ -416,7 +416,7 @@ namespace HaCreator.Wz
             }
         }
 
-        public void GenerateDefaultZms(Board mapBoard)
+        public static void GenerateDefaultZms(Board mapBoard)
         {
             // generate default zM's
             HashSet<int> allExistingZMs = new HashSet<int>();

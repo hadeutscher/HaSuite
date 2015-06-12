@@ -35,6 +35,12 @@ namespace HaCreator.MapEditor.Info
             }
         }
 
+        public void ParseImageIfNeeded()
+        {
+            if (Image == null)
+                ParseImage();
+        }
+
         public abstract void ParseImage();
     }
 }

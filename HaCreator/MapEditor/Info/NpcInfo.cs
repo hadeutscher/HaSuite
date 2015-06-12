@@ -67,7 +67,9 @@ namespace HaCreator.MapEditor.Info
             if (!npcImage.Parsed) npcImage.ParseImage();
             if (npcImage.HCTag == null)
                 npcImage.HCTag = NpcInfo.Load(npcImage);
-            return (NpcInfo)npcImage.HCTag;
+            NpcInfo result = (NpcInfo)npcImage.HCTag;
+            result.ParseImageIfNeeded();
+            return result;
         }
 
         private static NpcInfo Load(WzImage parentObject)

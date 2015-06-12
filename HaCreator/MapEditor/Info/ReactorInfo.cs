@@ -60,7 +60,9 @@ namespace HaCreator.MapEditor.Info
 
         public static ReactorInfo Get(string id)
         {
-            return Program.InfoManager.Reactors[id];
+            ReactorInfo result = Program.InfoManager.Reactors[id];
+            result.ParseImageIfNeeded();
+            return result;
         }
 
         public static ReactorInfo Load(WzImage parentObject)

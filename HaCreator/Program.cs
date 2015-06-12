@@ -45,7 +45,9 @@ namespace HaCreator
         static void Main()
         {
             // Startup
+#if !DEBUG
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+#endif
 
             Properties.Resources.Culture = CultureInfo.CurrentCulture;
             InfoManager = new WzInformationManager();

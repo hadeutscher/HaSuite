@@ -8,6 +8,7 @@ using HaCreator.Collections;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Instance.Shapes;
+using HaCreator.Wz;
 using MapleLib.WzLib.WzStructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -39,6 +40,11 @@ namespace HaCreator.MapEditor
             result.Add("x", p.X);
             result.Add("y", p.Y);
             return result;
+        }
+
+        public static XNA.Point DeserializePoint(dynamic json)
+        {
+            return new XNA.Point((int)json.x, (int)json.y);
         }
 
         public string SerializeList(IEnumerable<ISerializableSelector> list)
@@ -97,6 +103,10 @@ namespace HaCreator.MapEditor
 
         public string SerializeBoard()
         {
+#if DEBUG
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+#endif
             dynamic serData = new ExpandoObject();
             // No need to also include FootholdLines beacuse they will be included through their anchors
             serData.items = SerializeList(board.BoardItems.Items);
@@ -105,15 +115,19 @@ namespace HaCreator.MapEditor
             serData.minimap = JsonConvert.SerializeObject(board.MinimapRectangle == null ? null : board.MinimapRectangle.Serialize());
             serData.center = SerializePoint(board.CenterPoint);
             serData.size = SerializePoint(board.MapSize);
-            return JsonConvert.SerializeObject(serData);
+            string result = JsonConvert.SerializeObject(serData);
+#if DEBUG
+            System.Windows.Forms.MessageBox.Show(sw.ElapsedMilliseconds.ToString());
+#endif
+            return result;
         }
 
         public void DeserializeBoard(string data)
         {
             dynamic serData = JsonConvert.DeserializeObject(data);
             serData = Deserialize2(serData);
-            board.MapSize = new XNA.Point(serData.size.x, serData.size.y);
-            board.CenterPoint = new XNA.Point(serData.center.x, serData.center.y);
+            board.MapSize = DeserializePoint(serData.size);
+            board.CenterPoint = DeserializePoint(serData.center);
             MapleEmptyRectangle.SerializationForm vrSer = JsonConvert.DeserializeObject<MapleEmptyRectangle.SerializationForm>(serData.vr);
             MapleEmptyRectangle.SerializationForm mmSer = JsonConvert.DeserializeObject<MapleEmptyRectangle.SerializationForm>(serData.minimap);
             board.VRRectangle = vrSer == null ? null : new VRRectangle(board, vrSer);
@@ -123,6 +137,14 @@ namespace HaCreator.MapEditor
             {
                 item.AddToBoard(null);
             }
+            board.RegenerateMinimap();
+            board.TabPage.Text = board.MapInfo.strMapName;
+            foreach (Layer l in board.Layers)
+            {
+                l.RecheckTileSet();
+                l.RecheckZM();
+            }
+            MapLoader.GenerateDefaultZms(board);
         }
 
         private Dictionary<ISerializable, long> MakeSerializationRefDict(List<ISerializable> items)
@@ -154,10 +176,6 @@ namespace HaCreator.MapEditor
                 {
                     result.Add(pair.Key, Deserialize2(pair.Value));
                 }
-                /*if (result.Count == 1 && result.ContainsKey("val"))
-                {
-                    return (MapleBool)(byte)(long)result["val"]; // Yes, you need all these casts here, otherwise VS doesn't understand how to cast that
-                }*/
                 return result;
             }
             else if (obj is JValue)

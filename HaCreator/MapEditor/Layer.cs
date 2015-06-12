@@ -106,6 +106,15 @@ namespace HaCreator.MapEditor
             tS = null;
         }
 
+        public void RecheckZM()
+        {
+            zMList.Clear();
+            foreach (LayeredItem li in items)
+            {
+                zMList.Add(li.PlatformNumber);
+            }
+        }
+
         public int zMDefault { get { return board.SelectedPlatform == -1 ? zMList.ElementAt(0) : board.SelectedPlatform; } }
 
         public SortedSet<int> zMList { get { return zms; } }

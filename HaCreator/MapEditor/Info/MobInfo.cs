@@ -67,7 +67,9 @@ namespace HaCreator.MapEditor.Info
             if (!mobImage.Parsed) mobImage.ParseImage();
             if (mobImage.HCTag == null)
                 mobImage.HCTag = MobInfo.Load(mobImage);
-            return (MobInfo)mobImage.HCTag;
+            MobInfo result = (MobInfo)mobImage.HCTag;
+            result.ParseImageIfNeeded();
+            return result;
         }
 
         private static MobInfo Load(WzImage parentObject)

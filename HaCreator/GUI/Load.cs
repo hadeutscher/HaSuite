@@ -131,7 +131,9 @@ namespace HaCreator.GUI
             {
                 ApplicationSettings.lastRadioIndex = 0;
                 loader.CreateMap("", "", loader.CreateStandardMapMenu(rightClickHandler), new XNA.Point(), new XNA.Point(), 8, Tabs, multiBoard);
+                multiBoard.SelectedBoard.Loading = true; // Prevent TS Change callbacks while were loading
                 multiBoard.SelectedBoard.SerializationManager.DeserializeBoard(File.ReadAllText(HAMBox.Text));
+                multiBoard.SelectedBoard.Loading = false;
                 DialogResult = DialogResult.OK;
                 Close();
                 return;

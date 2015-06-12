@@ -69,7 +69,10 @@ namespace HaCreator.MapEditor.Instance.Shapes
         {
             lock (board.ParentControl)
             {
-                undoPipe.Add(UndoRedoManager.LineAdded(this, firstDot, secondDot));
+                if (undoPipe != null)
+                {
+                    undoPipe.Add(UndoRedoManager.LineAdded(this, firstDot, secondDot));
+                }
             }
         }
 

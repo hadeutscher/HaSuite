@@ -66,7 +66,10 @@ namespace HaCreator.MapEditor.Instance.Shapes
             lock (board.ParentControl)
             {
                 base.OnItemPlaced(undoPipe);
-                undoPipe.Add(UndoRedoManager.ToolTipLinked(BoundTooltip, this));
+                if (undoPipe != null)
+                {
+                    undoPipe.Add(UndoRedoManager.ToolTipLinked(BoundTooltip, this));
+                }
             }
         }
 

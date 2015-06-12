@@ -218,8 +218,8 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 user = true;
                 layer = board.SelectedLayerIndex;
                 zm = board.SelectedPlatform;
-                base.AddToBoard(undoPipe);
             }
+            base.AddToBoard(undoPipe);
         }
     }
 }

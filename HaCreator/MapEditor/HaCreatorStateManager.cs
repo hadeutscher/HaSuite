@@ -637,41 +637,57 @@ namespace HaCreator.MapEditor
 
         public static string CreateItemDescription(BoardItem item, string lineBreak)
         {
-            switch (item.GetType().Name)
+            if (item is TileInstance)
             {
-                case "TileInstance":
-                    return "Tile:" + lineBreak + ((TileInfo)item.BaseInfo).tS + @"\" + ((TileInfo)item.BaseInfo).u + @"\" + ((TileInfo)item.BaseInfo).no;
-                case "ObjectInstance":
-                    return "Object:" + lineBreak + ((ObjectInfo)item.BaseInfo).oS + @"\" + ((ObjectInfo)item.BaseInfo).l0 + @"\" + ((ObjectInfo)item.BaseInfo).l1 + @"\" + ((ObjectInfo)item.BaseInfo).l2;
-                case "BackgroundInstance":
-                    return "Background:" + lineBreak + ((BackgroundInfo)item.BaseInfo).bS + @"\" + (((BackgroundInfo)item.BaseInfo).ani ? "ani" : "back") + @"\" + ((BackgroundInfo)item.BaseInfo).no;
-                case "PortalInstance":
-                    return "Portal:" + lineBreak + "Name: " + ((PortalInstance)item).pn + lineBreak + "Type: " + Tables.PortalTypeNames[((PortalInstance)item).pt];
-                case "MobInstance":
-                    return "Mob:" + lineBreak + "Name: " + ((MobInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((MobInfo)item.BaseInfo).ID;
-                case "NPCInstance":
-                    return "Npc:" + lineBreak + "Name: " + ((NpcInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((NpcInfo)item.BaseInfo).ID;
-                case "ReactorInstance":
-                    return "Reactor:" + lineBreak + "ID: " + ((ReactorInfo)item.BaseInfo).ID;
-                case "FootholdAnchor":
-                    return "Foothold";
-                case "RopeAnchor":
-                    return ((RopeAnchor)item).ParentRope.ladder ? "Ladder" : "Rope";
-                case "Chair":
-                    return "Chair";
-                case "ToolTipDot":
-                case "ToolTip":
-                case "ToolTipChar":
-                    return "Tooltip";
-                default:
-                    if (item is INamedMisc)
-                    {
-                        return ((INamedMisc)item).Name;
-                    }
-                    else
-                    {
-                        return "";
-                    }
+                return "Tile:" + lineBreak + ((TileInfo)item.BaseInfo).tS + @"\" + ((TileInfo)item.BaseInfo).u + @"\" + ((TileInfo)item.BaseInfo).no;
+            }
+            else if (item is ObjectInstance)
+            {
+                return "Object:" + lineBreak + ((ObjectInfo)item.BaseInfo).oS + @"\" + ((ObjectInfo)item.BaseInfo).l0 + @"\" + ((ObjectInfo)item.BaseInfo).l1 + @"\" + ((ObjectInfo)item.BaseInfo).l2;
+            }
+            else if (item is BackgroundInstance)
+            {
+                return "Background:" + lineBreak + ((BackgroundInfo)item.BaseInfo).bS + @"\" + (((BackgroundInfo)item.BaseInfo).ani ? "ani" : "back") + @"\" + ((BackgroundInfo)item.BaseInfo).no;
+            }
+            else if (item is PortalInstance)
+            {
+                return "Portal:" + lineBreak + "Name: " + ((PortalInstance)item).pn + lineBreak + "Type: " + Tables.PortalTypeNames[((PortalInstance)item).pt];
+            }
+            else if (item is MobInstance)
+            {
+                return "Mob:" + lineBreak + "Name: " + ((MobInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((MobInfo)item.BaseInfo).ID;
+            }
+            else if (item is NpcInstance)
+            {
+                return "Npc:" + lineBreak + "Name: " + ((NpcInfo)item.BaseInfo).Name + lineBreak + "ID: " + ((NpcInfo)item.BaseInfo).ID;
+            }
+            else if (item is ReactorInstance)
+            {
+                return "Reactor:" + lineBreak + "ID: " + ((ReactorInfo)item.BaseInfo).ID;
+            }
+            else if (item is FootholdAnchor)
+            {
+                return "Foothold";
+            }
+            else if (item is RopeAnchor)
+            {
+                return ((RopeAnchor)item).ParentRope.ladder ? "Ladder" : "Rope";
+            }
+            else if (item is Chair)
+            {
+                return "Chair";
+            }
+            else if (item is ToolTipChar || item is ToolTipDot || item is ToolTipInstance)
+            {
+                return "Tooltip";
+            }
+            else if (item is INamedMisc)
+            {
+                return ((INamedMisc)item).Name;
+            }
+            else
+            {
+                return "";
             }
         }
 
@@ -688,12 +704,14 @@ namespace HaCreator.MapEditor
         public void EnterEditMode(ItemTypes type)
         {
             multiBoard.SelectedBoard.EditedTypes = type;
+            multiBoard.SelectedBoard.VisibleTypes |= type;
             ribbon.SetEnabled(false);
         }
 
         public void ExitEditMode()
         {
             multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
+            multiBoard.SelectedBoard.VisibleTypes = ApplicationSettings.theoreticalVisibleTypes;
             ribbon.SetEnabled(true);
         }
 
