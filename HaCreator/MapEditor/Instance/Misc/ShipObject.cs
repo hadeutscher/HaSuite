@@ -16,7 +16,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Misc
 {
-    public class ShipObject : BoardItem, IFlippable, INamedMisc
+    public class ShipObject : BoardItem, IFlippable, INamedMisc, ISerializable
     {
         private ObjectInfo baseInfo; //shipObj
         private bool flip;

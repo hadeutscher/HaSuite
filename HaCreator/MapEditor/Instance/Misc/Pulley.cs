@@ -16,7 +16,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Misc
 {
-    public class Pulley : BoardItem, INamedMisc
+    public class Pulley : BoardItem, INamedMisc, ISerializable
     {
         private ObjectInfo baseInfo;
 
