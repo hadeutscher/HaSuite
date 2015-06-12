@@ -141,5 +141,45 @@ namespace HaCreator.MapEditor.Instance.Misc
                 return baseInfo.Origin;
             }
         }
+
+        public new class SerializationForm : BoardItem.SerializationForm
+        {
+            public string os, l0, l1, l2;
+            public bool flip;
+            public int? x0, zval;
+            public int tmove, shipkind;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.os = baseInfo.oS;
+            result.l0 = baseInfo.l0;
+            result.l1 = baseInfo.l1;
+            result.l2 = baseInfo.l2;
+            result.flip = flip;
+            result.x0 = x0;
+            result.zval = zVal;
+            result.tmove = tMove;
+            result.shipkind = shipKind;
+        }
+
+        public ShipObject(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            flip = json.flip;
+            x0 = json.x0;
+            zVal = json.zval;
+            tMove = json.tmove;
+            shipKind = json.shipkind;
+            baseInfo = ObjectInfo.Get(json.os, json.l0, json.l1, json.l2);
+        }
     }
 }

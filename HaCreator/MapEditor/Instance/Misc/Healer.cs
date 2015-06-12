@@ -16,7 +16,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Misc
 {
-    public class Healer : BoardItem, INamedMisc
+    public class Healer : BoardItem, INamedMisc, ISerializable
     {
         private ObjectInfo baseInfo;
         public int yMin;
@@ -125,6 +125,46 @@ namespace HaCreator.MapEditor.Instance.Misc
             {
                 return "Special: Healer";
             }
+        }
+
+        public new class SerializationForm : BoardItem.SerializationForm
+        {
+            public string os, l0, l1, l2;
+            public int ymin, ymax, healmin, healmax, fall, rise;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.os = baseInfo.oS;
+            result.l0 = baseInfo.l0;
+            result.l1 = baseInfo.l1;
+            result.l2 = baseInfo.l2;
+            result.ymin = yMin;
+            result.ymax = yMax;
+            result.healmin = healMin;
+            result.healmax = healMax;
+            result.fall = fall;
+            result.rise = rise;
+        }
+
+        public Healer(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            yMin = json.ymin;
+            yMax = json.ymax;
+            healMin = json.healmin;
+            healMax = json.healmax;
+            fall = json.fall;
+            rise = json.rise;
+            baseInfo = ObjectInfo.Get(json.os, json.l0, json.l1, json.l2);
         }
     }
 }
