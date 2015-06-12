@@ -323,7 +323,7 @@ namespace HaCreator.MapEditor.Input
                                         }
                                     }
                                 }
-                                if (item is LayeredItem)
+                                if (item is IContainsLayerInfo)
                                 {
                                     needsLayer = true;
                                 }

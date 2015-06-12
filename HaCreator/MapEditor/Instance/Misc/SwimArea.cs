@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using HaCreator.MapEditor.Instance.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Misc
 {
-    public class SwimArea : MiscRectangle
+    public class SwimArea : MiscRectangle, ISerializable
     {
         string id;
 
@@ -32,6 +33,30 @@ namespace HaCreator.MapEditor.Instance.Misc
         public override string Name
         {
             get { return "SwimArea " + id; }
+        }
+
+        public new class SerializationForm : MapleRectangle.SerializationForm
+        {
+            public string id;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.id = id;
+        }
+
+        public SwimArea(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            id = json.id;
         }
     }
 }

@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using HaCreator.MapEditor.Instance.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.MapEditor.Instance.Misc
 {
-    public class BuffZone : MiscRectangle
+    public class BuffZone : MiscRectangle, ISerializable
     {
         private int itemID;
         private int interval;
@@ -55,6 +56,37 @@ namespace HaCreator.MapEditor.Instance.Misc
         {
             get { return zoneName; }
             set { zoneName = value; }
+        }
+
+        public new class SerializationForm : MapleRectangle.SerializationForm
+        {
+            public int itemid, interval, duration;
+            public string zonename;
+        }
+
+        public override object Serialize()
+        {
+            SerializationForm result = new SerializationForm();
+            UpdateSerializedForm(result);
+            return result;
+        }
+
+        protected void UpdateSerializedForm(SerializationForm result)
+        {
+            base.UpdateSerializedForm(result);
+            result.itemid = itemID;
+            result.interval = interval;
+            result.duration = duration;
+            result.zonename = zoneName;
+        }
+
+        public BuffZone(Board board, SerializationForm json)
+            : base(board, json)
+        {
+            itemID = json.itemid;
+            interval = json.interval;
+            duration = json.duration;
+            zoneName = json.zonename;
         }
     }
 }

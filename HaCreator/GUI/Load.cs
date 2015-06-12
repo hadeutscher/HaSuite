@@ -203,6 +203,10 @@ namespace HaCreator.GUI
             {
                 Close();
             }
+            else if (e.KeyCode == Keys.Enter)
+            {
+                loadButton_Click(null, null);
+            }
         }
     }
 }

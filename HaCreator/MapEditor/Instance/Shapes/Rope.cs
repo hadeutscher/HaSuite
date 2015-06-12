@@ -130,7 +130,11 @@ namespace HaCreator.MapEditor.Instance.Shapes
         public void AddToBoard(List<UndoRedoAction> undoPipe)
         {
             Create();
-            undoPipe.Add(UndoRedoManager.RopeAdded(this));
+            if (undoPipe != null)
+            {
+                _page = board.SelectedLayerIndex;
+                undoPipe.Add(UndoRedoManager.RopeAdded(this));
+            }
         }
 
         public void PostDeserializationActions(bool? selected, XNA.Point? offset)

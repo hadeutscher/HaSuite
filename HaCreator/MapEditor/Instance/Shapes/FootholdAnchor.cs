@@ -216,6 +216,8 @@ namespace HaCreator.MapEditor.Instance.Shapes
             if (undoPipe != null)
             {
                 user = true;
+                layer = board.SelectedLayerIndex;
+                zm = board.SelectedPlatform;
                 base.AddToBoard(undoPipe);
             }
         }

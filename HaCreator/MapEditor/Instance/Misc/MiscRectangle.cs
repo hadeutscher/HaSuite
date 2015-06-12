@@ -53,5 +53,8 @@ namespace HaCreator.MapEditor.Instance.Misc
             base.Draw(sprite, dotColor, xShift, yShift);
             board.ParentControl.FontEngine.DrawString(sprite, new System.Drawing.Point(X + xShift + 2, Y + yShift + 2), XNA.Color.Black, Name, Width);
         }
+
+        public MiscRectangle(Board board, MapleRectangle.SerializationForm json)
+            : base(board, json) { }
     }
 }
