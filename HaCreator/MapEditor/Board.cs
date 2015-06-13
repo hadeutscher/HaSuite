@@ -36,7 +36,9 @@ namespace HaCreator.MapEditor
         private System.Drawing.Point miniMapPos;
         private Texture2D miniMapTexture;
         private int selectedLayerIndex = ApplicationSettings.lastDefaultLayer;
-        private int selectedPlatform = -1;
+        private int selectedPlatform = 0;
+        private bool selectedAllLayers = ApplicationSettings.lastAllLayers;
+        private bool selectedAllPlats = true;
         private int _hScroll = 0;
         private int _vScroll = 0;
         private int _mag = 16;
@@ -396,6 +398,12 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public bool SelectedAllLayers
+        {
+            get { return selectedAllLayers; }
+            set { selectedAllLayers = value; }
+        }
+
         public ContextMenuStrip Menu
         {
             get { return menu; }
@@ -403,7 +411,7 @@ namespace HaCreator.MapEditor
 
         public Layer SelectedLayer
         {
-            get { return SelectedLayerIndex == -1 ? null : Layers[SelectedLayerIndex]; }
+            get { return Layers[SelectedLayerIndex]; }
         }
 
         public int SelectedPlatform
@@ -412,9 +420,15 @@ namespace HaCreator.MapEditor
             set { selectedPlatform = value; }
         }
 
+        public bool SelectedAllPlatforms
+        {
+            get { return selectedAllPlats; }
+            set { selectedAllPlats = value; }
+        }
+
         public SelectionInfo GetUserSelectionInfo()
         {
-            return new SelectionInfo(selectedLayerIndex, selectedPlatform, visibleTypes, editedTypes);
+            return new SelectionInfo(selectedAllLayers ? -1 : selectedLayerIndex, selectedAllPlats ? -1 : selectedPlatform, visibleTypes, editedTypes);
         }
 
         public bool Loading { get { return loading; } set { loading = value; } }

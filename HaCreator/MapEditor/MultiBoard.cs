@@ -423,6 +423,12 @@ namespace HaCreator.MapEditor
             return false;
         }
 
+        public void OnExportRequested()
+        {
+            if (ExportRequested != null)
+                ExportRequested.Invoke();
+        }
+
         public delegate void LeftMouseDownDelegate(Board selectedBoard, BoardItem item, BoardItem selectedItem, Point realPosition, Point virtualPosition, bool selectedItemHigher);
         public event LeftMouseDownDelegate LeftMouseDown;
 
@@ -443,6 +449,8 @@ namespace HaCreator.MapEditor
 
         public delegate void ImageDroppedDelegate(Board selectedBoard, System.Drawing.Bitmap bmp, string name, Point pos);
         public event ImageDroppedDelegate ImageDropped;
+
+        public event HaCreator.GUI.HaRibbon.EmptyEvent ExportRequested; 
 
         private void DxContainer_MouseClick(object sender, MouseEventArgs e)
         {
@@ -507,7 +515,7 @@ namespace HaCreator.MapEditor
             }
         }
 
-        private void DxContainer_KeyDown(object sender, KeyEventArgs e)
+        public void DxContainer_KeyDown(object sender, KeyEventArgs e)
         {
             lock (this)
             {
@@ -517,9 +525,12 @@ namespace HaCreator.MapEditor
                     bool alt = (Control.ModifierKeys & Keys.Alt) == Keys.Alt;
                     bool shift = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
                     Keys filteredKeys = e.KeyData;
-                    if (ctrl) filteredKeys = filteredKeys ^ Keys.Control;
-                    if (alt) filteredKeys = filteredKeys ^ Keys.Alt;
-                    if (shift) filteredKeys = filteredKeys ^ Keys.Shift;
+                    if (ctrl && (filteredKeys & Keys.Control) != 0)
+                        filteredKeys = filteredKeys ^ Keys.Control;
+                    if (alt && (filteredKeys & Keys.Alt) != 0)
+                        filteredKeys = filteredKeys ^ Keys.Alt;
+                    if (shift && (filteredKeys & Keys.Shift) != 0)
+                        filteredKeys = filteredKeys ^ Keys.Shift;
                     lock (this)
                     {
                         ShortcutKeyPressed(selectedBoard, ctrl, shift, alt, filteredKeys);

@@ -94,10 +94,12 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.infoLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.KeyPreview = true;
             this.Name = "Repack";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Repack";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Repack_FormClosing);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Repack_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

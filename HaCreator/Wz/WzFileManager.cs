@@ -24,6 +24,7 @@ namespace HaCreator.Wz
         private string baseDir;
         public Dictionary<string, WzFile> wzFiles = new Dictionary<string, WzFile>();
         public Dictionary<WzFile, bool> wzFilesUpdated = new Dictionary<WzFile, bool>();
+        public HashSet<WzImage> updatedImages = new HashSet<WzImage>();
         public Dictionary<string, WzMainDirectory> wzDirs = new Dictionary<string, WzMainDirectory>();
         private WzMapleVersion version;
 
@@ -96,6 +97,7 @@ namespace HaCreator.Wz
         public void SetUpdated(string name, WzImage img)
         {
             img.Changed = true;
+            updatedImages.Add(img);
             wzFilesUpdated[GetMainDirectoryByName(name).File] = true;
         }
 

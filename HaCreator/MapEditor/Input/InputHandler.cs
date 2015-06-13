@@ -395,6 +395,9 @@ namespace HaCreator.MapEditor.Input
                         if (ctrl && selectedBoard.UndoRedoMan.RedoList.Count > 0) selectedBoard.UndoRedoMan.Redo();
                         clearRedo = false;
                         break;
+                    case Keys.S:
+                        selectedBoard.ParentControl.OnExportRequested();
+                        break;
                     case Keys.Escape:
                         if (selectedBoard.Mouse.State == MouseState.Selection)
                         {

@@ -318,39 +318,25 @@ namespace HaCreator.GUI
             }
         }
 
-        private void SetLayerUsability()
-        {
-            layerUpBtn.IsEnabled = layerDownBtn.IsEnabled = layerBox.IsEnabled = !layerCheckbox.IsChecked.Value;
-        }
-
-        private void SetPlatformUsability()
-        {
-            platformUpBtn.IsEnabled = platformDownBtn.IsEnabled = platformBox.IsEnabled = !platformCheckbox.IsChecked.Value && !layerCheckbox.IsChecked.Value;
-            platformCheckbox.IsEnabled = !layerCheckbox.IsChecked.Value;
-        }
-
         private void UpdateLocalLayerInfo()
         {
             actualLayerIndex = layerBox.SelectedIndex;
-            actualPlatform = platformBox.SelectedItem == null ? -1 : (int)platformBox.SelectedItem;
+            actualPlatform = platformBox.SelectedItem == null ? 0 : (int)platformBox.SelectedItem;
         }
 
         private void UpdateRemoteLayerInfo()
         {
             if (LayerViewChanged != null)
-                LayerViewChanged.Invoke(layerCheckbox.IsChecked.Value ? -1 : actualLayerIndex, (layerCheckbox.IsChecked.Value || platformCheckbox.IsChecked.Value) ? -1 : actualPlatform);
+                LayerViewChanged.Invoke(actualLayerIndex, actualPlatform, layerCheckbox.IsChecked.Value, (layerCheckbox.IsChecked.Value || platformCheckbox.IsChecked.Value));
         }
 
         private void AllLayerView_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SetLayerUsability();
-            SetPlatformUsability();
             UpdateRemoteLayerInfo();
         }
 
         private void AllPlatformView_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SetPlatformUsability();
             UpdateRemoteLayerInfo();
         }
 
@@ -387,46 +373,25 @@ namespace HaCreator.GUI
             }
         }
 
-        public void SetSelectedLayer(int layer, int platform)
+        public void SetSelectedLayer(int layer, int platform, bool allLayers, bool allPlats)
         {
+            // Disable callbacks
             beginInternalEditing();
 
-            if (layer == -1)
-            {
-                layer = 0;
-                if (layerBox.SelectedIndex == -1)
-                {
-                    layerBox.SelectedIndex = 0;
-                }
-                layerCheckbox.IsChecked = true;
-            }
-            else
-            {
-                layerCheckbox.IsChecked = false;
-                layerBox.SelectedIndex = layer;
-            }
-
+            // Set layer info
+            layerCheckbox.IsChecked = allLayers;
+            layerBox.SelectedIndex = layer;
             LoadPlatformsForLayer(layers[layer].zMList);
 
-            if (platform == -1)
-            {
-                if (platformBox.SelectedIndex == -1)
-                {
-                    platformBox.SelectedIndex = 0;
-                }
-                platformCheckbox.IsChecked = true;
-            }
-            else
-            {
-                platformCheckbox.IsChecked = false;
-                platformBox.SelectedIndex = layers[layer].zMList.ToList().IndexOf(platform);
-                actualPlatform = platform;
-            }
+            // Set platform info
+            platformCheckbox.IsChecked = allPlats;
+            platformBox.SelectedIndex = layers[layer].zMList.ToList().IndexOf(platform);
+            actualPlatform = platform;
 
-            SetLayerUsability();
-            SetPlatformUsability();
+            // Update stuff
             UpdateLocalLayerInfo();
 
+            // Re-enable callbacks
             endInternalEditing();
         }
 
@@ -461,7 +426,7 @@ namespace HaCreator.GUI
         public delegate void EmptyEvent();
         public delegate void ViewToggleEvent(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc);
         public delegate void ToggleEvent(bool pressed);
-        public delegate void LayerViewChangedEvent(int layer, int platform);
+        public delegate void LayerViewChangedEvent(int layer, int platform, bool allLayers, bool allPlats);
 
         public event EmptyEvent NewClicked;
         public event EmptyEvent OpenClicked;
@@ -485,6 +450,7 @@ namespace HaCreator.GUI
         public event EmptyEvent ExportClicked;
         public event EmptyEvent NewPlatformClicked;
         public event EmptyEvent UserObjsClicked;
+        public event EventHandler<System.Windows.Forms.KeyEventArgs> RibbonKeyDown;
 
         public void SetVisibilityCheckboxes(bool? tiles, bool? objs, bool? npcs, bool? mobs, bool? reactors, bool? portals, bool? footholds, bool? ropes, bool? chairs, bool? tooltips, bool? backgrounds, bool? misc)
         {
@@ -554,6 +520,15 @@ namespace HaCreator.GUI
         private void allClearCheck_Click(object sender, RoutedEventArgs e)
         {
             ChangeAllCheckboxes(false);
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
+            if (e.Key != Key.Down && e.Key != Key.Up && RibbonKeyDown != null)
+            {
+                RibbonKeyDown.Invoke(this, new System.Windows.Forms.KeyEventArgs((System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(e.Key)));
+            }
         }
     }
 }

@@ -69,6 +69,7 @@ namespace HaCreator.MapEditor
             this.ribbon.NewPlatformClicked += ribbon_NewPlatformClicked;
             this.ribbon.UserObjsClicked += ribbon_UserObjsClicked;
             this.ribbon.ExportClicked += ribbon_ExportClicked;
+            this.ribbon.RibbonKeyDown += multiBoard.DxContainer_KeyDown;
 
             this.tabs.CurrentPageChanged += tabs_CurrentPageChanged;
 
@@ -81,6 +82,7 @@ namespace HaCreator.MapEditor
             this.multiBoard.SelectedItemChanged += multiBoard_SelectedItemChanged;
             this.multiBoard.MouseMoved += multiBoard_MouseMoved;
             this.multiBoard.ImageDropped += multiBoard_ImageDropped;
+            this.multiBoard.ExportRequested += ribbon_ExportClicked;
 
             multiBoard.Visible = false;
             ribbon.SetEnabled(false);
@@ -318,7 +320,7 @@ namespace HaCreator.MapEditor
                 multiBoard.SelectedBoard = (Board)currentPage.Tag;
                 ApplicationSettings.lastDefaultLayer = multiBoard.SelectedBoard.SelectedLayerIndex;
                 ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
-                ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform);
+                ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform, multiBoard.SelectedBoard.SelectedAllLayers, multiBoard.SelectedBoard.SelectedAllPlatforms);
                 ParseVisibleEditedTypes();
                 multiBoard.Focus();
             }
@@ -326,11 +328,16 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Ribbon Handlers
-        void ribbon_ExportClicked()
+        private string lastSaveLoc = null;
+
+        public void ribbon_ExportClicked()
         {
             SaveFileDialog ofd = new SaveFileDialog() { Title = "Select export location", Filter = "HaCreator Map File (*.ham)|*.ham" };
+            if (lastSaveLoc != null)
+                ofd.FileName = lastSaveLoc;
             if (ofd.ShowDialog() != DialogResult.OK) 
                 return;
+            lastSaveLoc = ofd.FileName;
             lock (multiBoard)
             {
                 File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard());
@@ -587,7 +594,7 @@ namespace HaCreator.MapEditor
                     }
                     multiBoard.SelectedBoard.SelectedPlatform = multiBoard.SelectedBoard.SelectedLayerIndex == -1 ? -1 : multiBoard.SelectedBoard.Layers[multiBoard.SelectedBoard.SelectedLayerIndex].zMList.ElementAt(0);
                     ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
-                    ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform);
+                    ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform, multiBoard.SelectedBoard.SelectedAllLayers, multiBoard.SelectedBoard.SelectedAllPlatforms);
                     multiBoard.SelectedBoard.VisibleTypes = ApplicationSettings.theoreticalVisibleTypes;
                     multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
                     ParseVisibleEditedTypes();
@@ -607,24 +614,27 @@ namespace HaCreator.MapEditor
                 multiBoard.SelectedBoard.SelectedLayer.zMList.Add(zm);
                 multiBoard.SelectedBoard.SelectedPlatform = zm;
                 ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
-                ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform);
+                ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform, multiBoard.SelectedBoard.SelectedAllLayers, multiBoard.SelectedBoard.SelectedAllPlatforms);
             }
         }
         #endregion
 
         #region Ribbon Layer Boxes
-        private void SetLayer(int currentLayer, int currentPlatform)
+        private void SetLayer(int currentLayer, int currentPlatform, bool allLayers, bool allPlats)
         {
             multiBoard.SelectedBoard.SelectedLayerIndex = currentLayer;
             multiBoard.SelectedBoard.SelectedPlatform = currentPlatform;
+            multiBoard.SelectedBoard.SelectedAllLayers = allLayers;
+            multiBoard.SelectedBoard.SelectedAllPlatforms = allPlats;
             ApplicationSettings.lastDefaultLayer = currentLayer;
+            ApplicationSettings.lastAllLayers = allLayers;
         }
 
-        void ribbon_LayerViewChanged(int layer, int platform)
+        void ribbon_LayerViewChanged(int layer, int platform, bool allLayers, bool allPlats)
         {
             if (multiBoard.SelectedBoard == null)
                 return;
-            SetLayer(layer, platform);
+            SetLayer(layer, platform, allLayers, allPlats);
             InputHandler.ClearSelectedItems(multiBoard.SelectedBoard);
 
         }
