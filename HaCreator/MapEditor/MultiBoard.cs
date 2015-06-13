@@ -42,6 +42,7 @@ namespace HaCreator.MapEditor
         private bool needsReset = false;
         private IntPtr dxHandle;
         private UserObjectsManager userObjs;
+        private Scheduler scheduler;
 #if FPS_TEST
         private FPSCounter fpsCounter = new FPSCounter();
 #endif
@@ -87,6 +88,10 @@ namespace HaCreator.MapEditor
             form = FindForm();
             renderer = new Thread(new ThreadStart(RenderLoop));
             renderer.Start();
+
+            Dictionary<Action, int> clientList = new Dictionary<Action, int>();
+            clientList.Add(delegate { lock (this) { /* TODO */ } }, 1000);
+            scheduler = new Scheduler(clientList);
         }
 
         public void Stop()
@@ -94,6 +99,10 @@ namespace HaCreator.MapEditor
             if (renderer != null)
             {
                 renderer.Abort();
+            }
+            if (scheduler != null)
+            {
+                scheduler.Dispose();
             }
         }
 

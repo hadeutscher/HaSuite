@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace HaCreator.MapEditor
 {
-    public class FPSCounter
+    public class FPSCounter : IDisposable
     {
         private Thread resetThread;
         private int frames = 0;
@@ -42,7 +42,7 @@ namespace HaCreator.MapEditor
             get { return frames; }
         }
 
-        ~FPSCounter()
+        public void Dispose()
         {
             resetThread.Abort();
         }

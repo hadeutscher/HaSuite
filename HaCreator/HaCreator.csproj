@@ -307,6 +307,7 @@
     <Compile Include="MapEditor\Instance\Shapes\ToolTipChar.cs" />
     <Compile Include="MapEditor\Instance\Shapes\Rope.cs" />
     <Compile Include="MapEditor\Instance\TileInstance.cs" />
+    <Compile Include="MapEditor\Scheduler.cs" />
     <Compile Include="MapEditor\SelectionInfo.cs" />
     <Compile Include="MapEditor\SerializationManager.cs" />
     <Compile Include="MapEditor\Text\CharTexture.cs" />
