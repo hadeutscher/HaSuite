@@ -110,13 +110,17 @@ namespace HaCreator.MapEditor
             sw.Start();
 #endif
             dynamic serData = new ExpandoObject();
-            // No need to also include FootholdLines beacuse they will be included through their anchors
-            serData.items = SerializeList(board.BoardItems.Items);
-            serData.info = JsonConvert.SerializeObject(board.MapInfo);
-            serData.vr = JsonConvert.SerializeObject(board.VRRectangle == null ? null : board.VRRectangle.Serialize());
-            serData.minimap = JsonConvert.SerializeObject(board.MinimapRectangle == null ? null : board.MinimapRectangle.Serialize());
-            serData.center = SerializePoint(board.CenterPoint);
-            serData.size = SerializePoint(board.MapSize);
+            lock (board.ParentControl)
+            {
+                // No need to also include FootholdLines beacuse they will be included through their anchors
+                serData.items = SerializeList(board.BoardItems.Items);
+                serData.info = JsonConvert.SerializeObject(board.MapInfo);
+                serData.vr = JsonConvert.SerializeObject(board.VRRectangle == null ? null : board.VRRectangle.Serialize());
+                serData.minimap = JsonConvert.SerializeObject(board.MinimapRectangle == null ? null : board.MinimapRectangle.Serialize());
+                serData.center = SerializePoint(board.CenterPoint);
+                serData.size = SerializePoint(board.MapSize);
+            }
+            serData.userobjs = board.ParentControl.UserObjects.SerializedForm;
             string result = JsonConvert.SerializeObject(serData);
 #if SPEEDTEST
             System.Windows.Forms.MessageBox.Show(sw.ElapsedMilliseconds.ToString());
@@ -128,6 +132,10 @@ namespace HaCreator.MapEditor
         {
             dynamic serData = JsonConvert.DeserializeObject(data);
             serData = Deserialize2(serData);
+            if (serData.userobjs != null)
+            {
+                board.ParentControl.UserObjects.DeserializeObjects(serData.userobjs);
+            }
             board.MapSize = DeserializePoint(serData.size);
             board.CenterPoint = DeserializePoint(serData.center);
             MapleEmptyRectangle.SerializationForm vrSer = JsonConvert.DeserializeObject<MapleEmptyRectangle.SerializationForm>(serData.vr);

@@ -6,11 +6,15 @@
 
 using HaCreator.Exceptions;
 using HaCreator.MapEditor.Info;
+using HaCreator.MapEditor.Instance;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +30,9 @@ namespace HaCreator.MapEditor
         private MultiBoard multiBoard;
         private WzImageProperty l1prop;
         private List<ObjectInfo> newObjects = new List<ObjectInfo>();
+        private Dictionary<string, byte[]> newObjectsData = new Dictionary<string, byte[]>();
+        private string serializedFormCache = null;
+        private bool dirty = false;
 
         public UserObjectsManager(MultiBoard multiBoard)
         {
@@ -57,6 +64,13 @@ namespace HaCreator.MapEditor
             l1prop = l0prop[l1];
         }
 
+        private byte[] SaveImageToBytes(Bitmap bmp)
+        {
+            MemoryStream ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Png);
+            return ms.ToArray();
+        }
+
         public ObjectInfo Add(Bitmap bmp, string name)
         {
             if (!IsNameValid(name))
@@ -74,6 +88,8 @@ namespace HaCreator.MapEditor
 
             ObjectInfo oi = new ObjectInfo(bmp, origin, oS, l0, l1, name, prop);
             newObjects.Add(oi);
+            newObjectsData.Add(name, SaveImageToBytes(bmp));
+            SerializeObjects();
             l1prop[name] = prop;
 
             return oi;
@@ -81,6 +97,32 @@ namespace HaCreator.MapEditor
 
         public void Remove(string l2)
         {
+            // Remove it from the serialized form
+            if (newObjectsData.ContainsKey(l2))
+            {
+                newObjectsData.Remove(l2);
+                SerializeObjects();
+            }
+
+            // Remove all instances of it
+            foreach (Board board in multiBoard.Boards)
+            {
+                for (int i = 0; i < board.BoardItems.TileObjs.Count; i++)
+                {
+                    LayeredItem li = board.BoardItems.TileObjs[i];
+                    if (li is ObjectInstance)
+                    {
+                        ObjectInfo oi = (ObjectInfo)li.BaseInfo;
+                        if (oi.oS == oS && oi.l0 == l0 && oi.l1 == l1 && oi.l2 == l2)
+                        {
+                            li.RemoveItem(null);
+                            i--;
+                        }
+                    }
+                }
+            }
+            
+            // Search it in newObjects
             foreach (ObjectInfo oi in newObjects)
             {
                 if (oi.l2 == l2)
@@ -90,6 +132,8 @@ namespace HaCreator.MapEditor
                     return;
                 }
             }
+
+            // Search it in wz objects
             foreach (WzImageProperty prop in l1prop.WzProperties)
             {
                 if (prop.Name == l2)
@@ -97,8 +141,10 @@ namespace HaCreator.MapEditor
                     prop.Remove();
                     // We removed a property that existed in the file already, so we must set it as updated
                     SetOsUpdated();
+                    return;
                 }
             }
+
             throw new Exception("Could not find " + l2 + " in userObjs");
         }
 
@@ -111,6 +157,26 @@ namespace HaCreator.MapEditor
                 objsDir[oS + ".img"] = Program.InfoManager.ObjectSets[oS];
             SetOsUpdated();
             newObjects.Clear();
+        }
+
+        private void SerializeObjects()
+        {
+            if (newObjectsData.Count == 0)
+                serializedFormCache = null;
+            else
+                serializedFormCache = JsonConvert.SerializeObject(newObjectsData);
+            dirty = true;
+        }
+
+        public void DeserializeObjects(string data)
+        {
+            Dictionary<string, byte[]>  newObjectsData2 = JsonConvert.DeserializeObject<Dictionary<string, byte[]>>(data);
+            foreach (KeyValuePair<string, byte[]> obj in newObjectsData2)
+            {
+                if (IsNameValid(obj.Key))
+                    Add((Bitmap)Image.FromStream(new MemoryStream(obj.Value)), obj.Key);
+            }
+            SerializeObjects();
         }
 
         private void SetOsUpdated()
@@ -137,5 +203,15 @@ namespace HaCreator.MapEditor
         {
             get { return multiBoard; }
         }
+
+        public string SerializedForm
+        {
+            get
+            {
+                return serializedFormCache;
+            }
+        }
+
+        public bool Dirty { get { return dirty; } set { dirty = value; } }
     }
 }

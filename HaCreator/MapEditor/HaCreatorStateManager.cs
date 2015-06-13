@@ -338,10 +338,8 @@ namespace HaCreator.MapEditor
             if (ofd.ShowDialog() != DialogResult.OK) 
                 return;
             lastSaveLoc = ofd.FileName;
-            lock (multiBoard)
-            {
-                File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard());
-            }
+            // No need to lock, SerializeBoard locks only the critical areas to cut down on locked time
+            File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard());
         }
 
         void ribbon_UserObjsClicked()
