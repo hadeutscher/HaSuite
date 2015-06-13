@@ -71,7 +71,7 @@ namespace HaCreator.Wz
 
         private void SaveMapInfo()
         {
-            board.MapInfo.Save(image, board.MinimapRectangle == null ? (System.Drawing.Rectangle?)null : new System.Drawing.Rectangle(board.MinimapRectangle.X, board.MinimapRectangle.Y, board.MinimapRectangle.Width, board.MinimapRectangle.Height));
+            board.MapInfo.Save(image, board.VRRectangle == null ? (System.Drawing.Rectangle?)null : new System.Drawing.Rectangle(board.VRRectangle.X, board.VRRectangle.Y, board.VRRectangle.Width, board.VRRectangle.Height));
             if (board.MapInfo.mapType == MapType.RegularMap)
             {
                 WzImage strMapImg = (WzImage)Program.WzManager.String["Map.img"];
@@ -128,8 +128,8 @@ namespace HaCreator.Wz
                 miniMap["canvas"] = canvas;
                 miniMap["width"] = InfoTool.SetInt(board.MinimapRectangle.Width);
                 miniMap["height"] = InfoTool.SetInt(board.MinimapRectangle.Height);
-                miniMap["centerX"] = InfoTool.SetInt(board.MinimapPosition.X);
-                miniMap["centerY"] = InfoTool.SetInt(board.MinimapPosition.Y);
+                miniMap["centerX"] = InfoTool.SetInt(-board.MinimapPosition.X);
+                miniMap["centerY"] = InfoTool.SetInt(-board.MinimapPosition.Y);
                 miniMap["mag"] = InfoTool.SetInt(4);
                 image["miniMap"] = miniMap;
             }
@@ -231,7 +231,7 @@ namespace HaCreator.Wz
         public void SaveRopes()
         {
             WzSubProperty ropeParent = new WzSubProperty();
-            for (int i = 1; i < board.BoardItems.Ropes.Count; i++)
+            for (int i = 0; i < board.BoardItems.Ropes.Count; i++)
             {
                 Rope ropeInst = board.BoardItems.Ropes[i];
                 WzSubProperty rope = new WzSubProperty();
@@ -243,7 +243,7 @@ namespace HaCreator.Wz
                 rope["page"] = InfoTool.SetInt(ropeInst.LayerNumber);
                 rope["l"] = InfoTool.SetBool(ropeInst.ladder);
 
-                ropeParent[i.ToString()] = rope;
+                ropeParent[(i + 1).ToString()] = rope;
             }
             image["ladderRope"] = ropeParent;
         }

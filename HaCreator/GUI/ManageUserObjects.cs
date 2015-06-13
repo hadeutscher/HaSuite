@@ -56,6 +56,8 @@ namespace HaCreator.GUI
 
         private void objsList_DrawItem(object sender, DrawItemEventArgs e)
         {
+            if (e.Index == -1)
+                return;
             e.DrawBackground();
             Graphics g = e.Graphics;
 
