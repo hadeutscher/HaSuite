@@ -4,8 +4,11 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-//uncomment line below to use XNA's Z-order functions
-//#define UseXNAZorder
+// uncomment line below to use XNA's Z-order functions
+// #define UseXNAZorder
+
+// uncomment line below to show FPS counter
+// #define FPS_TEST
 
 using System;
 using System.Collections;
@@ -24,7 +27,7 @@ using HaCreator.MapEditor.Instance;
 
 namespace HaCreator.MapEditor
 {
-    public partial class MultiBoard : UserControl, IServiceProvider
+    public partial class MultiBoard : UserControl
     {
         private bool deviceReady = false;
         private GraphicsDevice DxDevice;
@@ -33,13 +36,15 @@ namespace HaCreator.MapEditor
         private Texture2D pixel;
         private List<Board> boards = new List<Board>();
         private Board selectedBoard = null;
-        private IGraphicsDeviceService graphicsDeviceService;
         private FontEngine fontEngine;
         private Form form;
         private Thread renderer;
         private bool needsReset = false;
         private IntPtr dxHandle;
         private UserObjectsManager userObjs;
+#if FPS_TEST
+        private FPSCounter fpsCounter = new FPSCounter();
+#endif
 
         private void RenderLoop()
         {
@@ -52,6 +57,9 @@ namespace HaCreator.MapEditor
                 if (deviceReady && form.WindowState != FormWindowState.Minimized)
                 {
                     RenderFrame();
+#if FPS_TEST
+                    fpsCounter.Tick();
+#endif
                 }
                 else
                 {
@@ -89,6 +97,21 @@ namespace HaCreator.MapEditor
             }
         }
 
+        public static GraphicsDevice CreateGraphicsDevice(PresentationParameters pParams)
+        {
+            try
+            {
+                return new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile.HiDef, pParams);
+            }
+            catch (Exception e)
+            {
+                HaRepackerLib.Warning.Error(string.Format("Graphics adapter is not supported: {0}\r\n\r\n{1}", e.Message, e.StackTrace));
+                Environment.Exit(0);
+                // This code will never be reached, but VS still requires this path to end
+                throw;
+            }
+        }
+
         private void PrepareDevice()
         {
             pParams.BackBufferWidth = Math.Max(DxContainer.Width, 1);
@@ -98,21 +121,7 @@ namespace HaCreator.MapEditor
             pParams.DeviceWindowHandle = dxHandle;
             pParams.IsFullScreen = false;
             //pParams.PresentationInterval = PresentInterval.Immediate;
-            try
-            {
-                GraphicsProfile profile = GraphicsProfile.Reach;
-                if (GraphicsAdapter.DefaultAdapter.IsProfileSupported(GraphicsProfile.HiDef))
-                    profile = GraphicsProfile.HiDef;
-                else if (!GraphicsAdapter.DefaultAdapter.IsProfileSupported(GraphicsProfile.Reach))
-                    throw new NotSupportedException();
-                DxDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, profile, pParams);
-            }
-            catch
-            {
-                HaRepackerLib.Warning.Error("Graphics adapter is not supported");
-                Environment.Exit(1);
-            }
-            graphicsDeviceService = new GraphicsDeviceService(DxDevice);
+            DxDevice = MultiBoard.CreateGraphicsDevice(pParams);
             fontEngine = new FontEngine(UserSettings.FontName, UserSettings.FontStyle, UserSettings.FontSize, DxDevice);
             sprite = new SpriteBatch(DxDevice);
         }
@@ -175,18 +184,24 @@ namespace HaCreator.MapEditor
 
         public void RenderFrame()
         {
-            lock (this)
+            if (needsReset)
             {
-                if (needsReset)
+                Invoke((Action)delegate
                 {
-                    ResetDevice();
-                }
-                DxDevice.Clear(ClearOptions.Target, Color.White, 1.0f, 0); // Clear the window to black
+                    ResetDock();
+                    AdjustScrollBars();
+                });
+                ResetDevice();
+                needsReset = false;
+            }
+            DxDevice.Clear(ClearOptions.Target, Color.White, 1.0f, 0); // Clear the window to black
 #if UseXNAZorder
             sprite.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.FrontToBack, SaveStateMode.None);
 #else
-                sprite.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+            sprite.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
 #endif
+            lock (this)
+            {
                 selectedBoard.RenderBoard(sprite);
                 if (selectedBoard.MapSize.X < DxContainer.Width)
                 {
@@ -196,32 +211,28 @@ namespace HaCreator.MapEditor
                 {
                     DrawLine(sprite, new Vector2(0, MapSize.Y), new Vector2(DxContainer.Width, MapSize.Y), Color.Black);
                 }
-                sprite.End();
-                try
-                {
-                    DxDevice.Present();
-                }
-                catch (DeviceLostException)
-                {
-                }
-                catch (DeviceNotResetException)
-                {
-                    needsReset = true;
-                }
             }
+#if FPS_TEST
+            fontEngine.DrawString(sprite, new System.Drawing.Point(), Color.Black, fpsCounter.Frames.ToString(), 1000);
+#endif
+            sprite.End();
+            try
+            {
+                DxDevice.Present();
+            }
+            catch (DeviceLostException)
+            {
+            }
+            catch (DeviceNotResetException)
+            {
+                needsReset = true;
+            }
+
         }
 
         public bool IsItemInRange(int x, int y, int w, int h, int xshift, int yshift)
         {
             return x + xshift + w > 0 && y + yshift + h > 0 && x + xshift < DxContainer.Width && y + yshift < DxContainer.Height;
-        }
-
-        public new object GetService(Type serviceType)
-        {
-            if (serviceType == typeof(Microsoft.Xna.Framework.Graphics.IGraphicsDeviceService))
-                return this.graphicsDeviceService;
-            else
-                return base.GetService(serviceType);
         }
         #endregion
 
@@ -620,12 +631,8 @@ namespace HaCreator.MapEditor
         protected override void OnSizeChanged(EventArgs e)
         {
             base.OnSizeChanged(e);
-            if (Width == 0 && Height == 0) return;
-
-            ResetDock();
+            if (Width == 0 || Height == 0 || selectedBoard == null) return;
             needsReset = true;
-            if (selectedBoard != null)
-                AdjustScrollBars();
         }
 
         public void AdjustScrollBars()
@@ -691,8 +698,8 @@ namespace HaCreator.MapEditor
         private void ResetDevice()
         {
             // Note that this function has to be thread safe - it is called from the renderer thread
-            if (form.WindowState == FormWindowState.Minimized) 
-                return;
+            /*if (form.WindowState == FormWindowState.Minimized) 
+                return;*/
             pParams.BackBufferWidth = DxContainer.Width;
             pParams.BackBufferHeight = DxContainer.Height;
             DxDevice.Reset(pParams);

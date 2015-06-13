@@ -31,7 +31,7 @@ using HaCreator.MapEditor.Instance;
 
 namespace HaCreator.MapSimulator
 {
-    public partial class MapSimulator : Form, IServiceProvider
+    public partial class MapSimulator : Form
     {
         public int mapShiftX = 0;
         public int mapShiftY = 0;
@@ -43,8 +43,6 @@ namespace HaCreator.MapSimulator
         private GraphicsDevice DxDevice;
         private SpriteBatch sprite;
         private PresentationParameters pParams = new PresentationParameters();
-        private IGraphicsDeviceService graphicsDeviceService;
-        private ContentManager contentMan;
         public List<MapItem>[] mapObjects = CreateLayersArray();
         public List<BackgroundItem> backgrounds = new List<BackgroundItem>();
         private Rectangle vr;
@@ -88,36 +86,13 @@ namespace HaCreator.MapSimulator
             pParams.DeviceWindowHandle = Handle;
             pParams.IsFullScreen = false;
 #endif
-            try
-            {
-                GraphicsProfile profile = GraphicsProfile.Reach;
-                if (GraphicsAdapter.DefaultAdapter.IsProfileSupported(GraphicsProfile.HiDef))
-                    profile = GraphicsProfile.HiDef;
-                else if (!GraphicsAdapter.DefaultAdapter.IsProfileSupported(GraphicsProfile.Reach))
-                    throw new NotSupportedException();
-                DxDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, profile, pParams);
-            }
-            catch
-            {
-                HaRepackerLib.Warning.Error("Graphics adapter is not supported");
-                Application.Exit();
-            }
-            graphicsDeviceService = new GraphicsDeviceService(DxDevice);
+            DxDevice = MultiBoard.CreateGraphicsDevice(pParams);
             this.minimap = BoardItem.TextureFromBitmap(DxDevice, mapBoard.MiniMap);
             System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(1, 1);
             bmp.SetPixel(0, 0, System.Drawing.Color.White);
             pixel = BoardItem.TextureFromBitmap(DxDevice, bmp);
 
-            contentMan = new ContentManager(this);
             sprite = new SpriteBatch(DxDevice);
-        }
-
-        public new object GetService(Type serviceType)
-        {
-            if (serviceType == typeof(Microsoft.Xna.Framework.Graphics.IGraphicsDeviceService))
-                return this.graphicsDeviceService;
-            else
-                return base.GetService(serviceType);
         }
 
         protected override void OnPaint(PaintEventArgs e)
