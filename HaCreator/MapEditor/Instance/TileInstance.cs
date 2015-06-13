@@ -104,7 +104,7 @@ namespace HaCreator.MapEditor.Instance
             int mag = baseInfo.mag;
             TileInstance closestTile = candidates[best].Item2;
             MapTileDesignPotential closestInfo = candidates[best].Item3;
-            SnapMoveAllSelectedItems(new XNA.Point(closestTile.X - closestInfo.x * mag, closestTile.Y - closestInfo.y * mag));
+            SnapMoveAllMouseBoundItems(new XNA.Point(closestTile.X - closestInfo.x * mag, closestTile.Y - closestInfo.y * mag));
         }
 
         public override ItemTypes Type

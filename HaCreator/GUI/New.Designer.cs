@@ -65,7 +65,7 @@
             0});
             this.newHeight.Name = "newHeight";
             this.newHeight.Size = new System.Drawing.Size(41, 20);
-            this.newHeight.TabIndex = 15;
+            this.newHeight.TabIndex = 1;
             this.newHeight.Value = new decimal(new int[] {
             600,
             0,
@@ -82,7 +82,7 @@
             0});
             this.newWidth.Name = "newWidth";
             this.newWidth.Size = new System.Drawing.Size(45, 20);
-            this.newWidth.TabIndex = 14;
+            this.newWidth.TabIndex = 0;
             this.newWidth.Value = new decimal(new int[] {
             800,
             0,
@@ -95,7 +95,7 @@
             this.newButton.Location = new System.Drawing.Point(12, 38);
             this.newButton.Name = "newButton";
             this.newButton.Size = new System.Drawing.Size(194, 30);
-            this.newButton.TabIndex = 18;
+            this.newButton.TabIndex = 2;
             this.newButton.Text = "Create";
             this.newButton.Click += new System.EventHandler(this.newButton_Click);
             // 

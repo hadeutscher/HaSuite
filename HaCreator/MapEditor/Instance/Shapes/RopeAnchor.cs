@@ -116,11 +116,11 @@ namespace HaCreator.MapEditor.Instance.Shapes
             }
             if (closestDistanceRope >= closestDistanceLine && closestLine != null)
             {
-                SnapMoveAllSelectedItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) + 2));
+                SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) + 2));
             }
             else if (closestDistanceRope <= closestDistanceLine && closestRopeHint.HasValue)
             {
-                SnapMoveAllSelectedItems(new XNA.Point(closestRopeHint.Value.X, closestRopeHint.Value.Y));
+                SnapMoveAllMouseBoundItems(new XNA.Point(closestRopeHint.Value.X, closestRopeHint.Value.Y));
             }
         }
 

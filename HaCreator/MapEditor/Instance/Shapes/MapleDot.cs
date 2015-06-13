@@ -192,9 +192,9 @@ namespace HaCreator.MapEditor.Instance.Shapes
                 if (closestAnchor != null)
                 {
                     if (xClosest)
-                        SnapMoveAllSelectedItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, closestAnchor.Y));
+                        SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, closestAnchor.Y));
                     else
-                        SnapMoveAllSelectedItems(new XNA.Point(closestAnchor.X, Parent.Y + Parent.BoundItems[this].Y));
+                        SnapMoveAllMouseBoundItems(new XNA.Point(closestAnchor.X, Parent.Y + Parent.BoundItems[this].Y));
                 }
             }
         }

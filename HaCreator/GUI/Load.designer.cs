@@ -48,7 +48,7 @@
             this.loadButton.Location = new System.Drawing.Point(169, 303);
             this.loadButton.Name = "loadButton";
             this.loadButton.Size = new System.Drawing.Size(200, 32);
-            this.loadButton.TabIndex = 1;
+            this.loadButton.TabIndex = 9;
             this.loadButton.Text = "Load";
             this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
             // 
@@ -59,7 +59,7 @@
             this.WZSelect.Location = new System.Drawing.Point(11, 63);
             this.WZSelect.Name = "WZSelect";
             this.WZSelect.Size = new System.Drawing.Size(43, 17);
-            this.WZSelect.TabIndex = 2;
+            this.WZSelect.TabIndex = 6;
             this.WZSelect.TabStop = true;
             this.WZSelect.Text = "WZ";
             this.WZSelect.UseVisualStyleBackColor = true;
@@ -82,7 +82,7 @@
             this.XMLBox.Location = new System.Drawing.Point(64, 38);
             this.XMLBox.Name = "XMLBox";
             this.XMLBox.Size = new System.Drawing.Size(158, 20);
-            this.XMLBox.TabIndex = 5;
+            this.XMLBox.TabIndex = 4;
             this.XMLBox.Click += new System.EventHandler(this.browseXML_Click);
             // 
             // searchBox
@@ -90,7 +90,7 @@
             this.searchBox.Location = new System.Drawing.Point(64, 62);
             this.searchBox.Name = "searchBox";
             this.searchBox.Size = new System.Drawing.Size(158, 20);
-            this.searchBox.TabIndex = 15;
+            this.searchBox.TabIndex = 7;
             // 
             // browseXML
             // 
@@ -98,7 +98,7 @@
             this.browseXML.Location = new System.Drawing.Point(228, 39);
             this.browseXML.Name = "browseXML";
             this.browseXML.Size = new System.Drawing.Size(36, 19);
-            this.browseXML.TabIndex = 16;
+            this.browseXML.TabIndex = 5;
             this.browseXML.Text = "...";
             this.browseXML.Click += new System.EventHandler(this.browseXML_Click);
             // 
@@ -107,7 +107,7 @@
             this.mapBrowser.Location = new System.Drawing.Point(11, 86);
             this.mapBrowser.Name = "mapBrowser";
             this.mapBrowser.Size = new System.Drawing.Size(533, 211);
-            this.mapBrowser.TabIndex = 19;
+            this.mapBrowser.TabIndex = 8;
             this.mapBrowser.SelectionChanged += new HaCreator.CustomControls.MapBrowser.MapSelectChangedDelegate(this.mapBrowser_SelectionChanged);
             // 
             // browseHAM
@@ -116,7 +116,7 @@
             this.browseHAM.Location = new System.Drawing.Point(228, 13);
             this.browseHAM.Name = "browseHAM";
             this.browseHAM.Size = new System.Drawing.Size(36, 19);
-            this.browseHAM.TabIndex = 22;
+            this.browseHAM.TabIndex = 2;
             this.browseHAM.Text = "...";
             this.browseHAM.Click += new System.EventHandler(this.browseHAM_Click);
             // 
@@ -126,7 +126,7 @@
             this.HAMBox.Location = new System.Drawing.Point(64, 12);
             this.HAMBox.Name = "HAMBox";
             this.HAMBox.Size = new System.Drawing.Size(158, 20);
-            this.HAMBox.TabIndex = 21;
+            this.HAMBox.TabIndex = 1;
             this.HAMBox.Click += new System.EventHandler(this.browseHAM_Click);
             // 
             // HAMSelect
@@ -135,7 +135,7 @@
             this.HAMSelect.Location = new System.Drawing.Point(11, 13);
             this.HAMSelect.Name = "HAMSelect";
             this.HAMSelect.Size = new System.Drawing.Size(49, 17);
-            this.HAMSelect.TabIndex = 20;
+            this.HAMSelect.TabIndex = 0;
             this.HAMSelect.Text = "HAM";
             this.HAMSelect.UseVisualStyleBackColor = true;
             // 

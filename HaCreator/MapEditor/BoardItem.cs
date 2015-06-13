@@ -221,19 +221,20 @@ namespace HaCreator.MapEditor
             return false;
         }
 
-        // Receives this item's snap destination, and moves all selected items accordingly
-        public void SnapMoveAllSelectedItems(XNA.Point newPos)
+        // Receives this item's snap destination, and moves all mouse-bound items accordingly
+        public void SnapMoveAllMouseBoundItems(XNA.Point newPos)
         {
             // Get offset from parent (Mouse) to this item
             XNA.Point parentOffs = Parent.BoundItems[this];
             // Calculate offset between the location that this item should be in (mouse + parentOffs), to the location it is being snapped to
             XNA.Point snapOffs = new XNA.Point(Parent.X + parentOffs.X - newPos.X, Parent.Y + parentOffs.Y - newPos.Y);
             // Move all selected items accordingly
-            foreach (BoardItem item in Board.SelectedItems)
+            foreach (KeyValuePair<BoardItem, XNA.Point> binding in Board.Mouse.BoundItems)
             {
+                BoardItem item = binding.Key;
                 if (item.tempParent != null || item.Parent == null)
                     continue;
-                XNA.Point currParentOffs = item.Parent.BoundItems[item];
+                XNA.Point currParentOffs = binding.Value;
                 item.SnapMove(item.Parent.X + currParentOffs.X - snapOffs.X, item.Parent.Y + currParentOffs.Y - snapOffs.Y);
             }
         }
@@ -425,11 +426,11 @@ namespace HaCreator.MapEditor
         {
             if (!bindSer.ContainsKey("bindOrder"))
                 return; // No bindings were serialized
-            long[] bindOrder = (long[])bindSer["bindOrder"];
+            long[] bindOrder = ((object[])bindSer["bindOrder"]).Cast<long>().ToArray();
             foreach (long id in bindOrder)
             {
                 BoardItem item = (BoardItem)refDict[id];
-                XNA.Point offs = (XNA.Point)bindSer[id.ToString()];
+                XNA.Point offs = SerializationManager.DeserializePoint(bindSer[id.ToString()]);
                 boundItems.Add(item, offs);
                 boundItemsList.Add(item);
                 item.parent = this;

@@ -44,7 +44,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
             }
             if (closestLine != null)
             {
-                SnapMoveAllSelectedItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) - 1));
+                SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) - 1));
             }
         }
 

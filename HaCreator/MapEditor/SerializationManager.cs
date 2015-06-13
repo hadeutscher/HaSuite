@@ -4,6 +4,8 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+//#define SPEEDTEST
+
 using HaCreator.Collections;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance;
@@ -88,7 +90,7 @@ namespace HaCreator.MapEditor
                 ISerializable item = (ISerializable)ConstructObject(typeName, new object[] { board, dataObject }, new[] { typeof(Board), dataType });
                 items.Add(item);
 
-                // Store the binding dict for later, since we can deserialize binding data untill all objects have been constructed
+                // Store the binding dict for later, since we cant deserialize binding data untill all objects have been constructed
                 itemBindings.Add(serData2.bindings);
             }
 
@@ -103,7 +105,7 @@ namespace HaCreator.MapEditor
 
         public string SerializeBoard()
         {
-#if DEBUG
+#if SPEEDTEST
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
 #endif
@@ -116,7 +118,7 @@ namespace HaCreator.MapEditor
             serData.center = SerializePoint(board.CenterPoint);
             serData.size = SerializePoint(board.MapSize);
             string result = JsonConvert.SerializeObject(serData);
-#if DEBUG
+#if SPEEDTEST
             System.Windows.Forms.MessageBox.Show(sw.ElapsedMilliseconds.ToString());
 #endif
             return result;

@@ -31,6 +31,13 @@ namespace HaCreator.MapEditor
         {
             this.multiBoard = multiBoard;
 
+            if (Program.InfoManager == null)
+            {
+                // Prevents VS designer from crashing when rendering this control; there is no way that Program.InfoManager will be null
+                // in the real execution of this code.
+                return;
+            }
+
             // Make sure that all our structures exist
             if (!Program.InfoManager.ObjectSets.ContainsKey(oS))
             {

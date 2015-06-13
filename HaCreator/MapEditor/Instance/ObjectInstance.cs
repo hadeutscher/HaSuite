@@ -157,7 +157,7 @@ namespace HaCreator.MapEditor.Instance
 
             if (closestDestPoint.HasValue)
             {
-                SnapMoveAllSelectedItems(new XNA.Point(closestDestPoint.Value.X, closestDestPoint.Value.Y));
+                SnapMoveAllMouseBoundItems(new XNA.Point(closestDestPoint.Value.X, closestDestPoint.Value.Y));
             }
         }
 
