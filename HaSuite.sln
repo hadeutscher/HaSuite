@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HaRepackerLib", "HaRepackerLib\HaRepackerLib.csproj", "{B68C971F-4B8A-44A3-88D0-6213D1A512E7}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -48,6 +48,7 @@ Global
 		{28AAB36D-942E-4476-A000-0E9DE380F390}.Release|x86.ActiveCfg = Release|x86
 		{28AAB36D-942E-4476-A000-0E9DE380F390}.Release|x86.Build.0 = Release|x86
 		{679DD557-5E1E-447E-B48C-0F082E5FB1F4}.Debug|x64.ActiveCfg = Debug|x64
+		{679DD557-5E1E-447E-B48C-0F082E5FB1F4}.Debug|x64.Build.0 = Debug|x64
 		{679DD557-5E1E-447E-B48C-0F082E5FB1F4}.Debug|x86.ActiveCfg = Debug|x86
 		{679DD557-5E1E-447E-B48C-0F082E5FB1F4}.Debug|x86.Build.0 = Debug|x86
 		{679DD557-5E1E-447E-B48C-0F082E5FB1F4}.Release|x64.ActiveCfg = Release|x64
