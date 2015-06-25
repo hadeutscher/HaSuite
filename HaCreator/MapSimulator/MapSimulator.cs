@@ -28,6 +28,7 @@ using MapleLib.WzLib.WzStructure;
 using HaRepackerLib;
 using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.Instance;
+using HaCreator.MapEditor.Input;
 
 namespace HaCreator.MapSimulator
 {
@@ -168,17 +169,18 @@ namespace HaCreator.MapSimulator
 
         void HandleKeyPresses()
         {
-            KeyboardState state = Keyboard.GetState();
-            int offset = (state[Microsoft.Xna.Framework.Input.Keys.LeftShift] == KeyState.Down || state[Microsoft.Xna.Framework.Input.Keys.RightShift] == KeyState.Down) ? 100 : 10;
-            if (state[Microsoft.Xna.Framework.Input.Keys.Left] == KeyState.Down)
+            if (!Focused)
+                return;
+            int offset = (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.LShiftKey) || InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.RShiftKey)) ? 100 : 10;
+            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.Left))
                 mapShiftX = Math.Max(vr.Left, mapShiftX - offset);
-            if (state[Microsoft.Xna.Framework.Input.Keys.Up] == KeyState.Down)
+            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.Up))
                 mapShiftY = Math.Max(vr.Top, mapShiftY - offset);
-            if (state[Microsoft.Xna.Framework.Input.Keys.Right] == KeyState.Down)
+            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.Right))
                 mapShiftX = Math.Min(vr.Right - width, mapShiftX + offset);
-            if (state[Microsoft.Xna.Framework.Input.Keys.Down] == KeyState.Down)
+            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.Down))
                 mapShiftY = Math.Min(vr.Bottom - height, mapShiftY + offset);
-            if (state[Microsoft.Xna.Framework.Input.Keys.Escape] == KeyState.Down)
+            if (InputHandler.IsKeyPushedDown(System.Windows.Forms.Keys.Escape))
             {
                 DxDevice.Dispose();
                 Close();

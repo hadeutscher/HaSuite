@@ -75,7 +75,6 @@
             this.clipBox = new System.Windows.Forms.CheckBox();
             this.errorsCheckBox = new System.Windows.Forms.CheckBox();
             this.xgaResolutionCheckbox = new System.Windows.Forms.CheckBox();
-            this.showMousePosCheckbox = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.label44 = new System.Windows.Forms.Label();
@@ -122,6 +121,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.okayButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.autoBackupBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.linewBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dotwBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mobrx0Box)).BeginInit();
@@ -623,12 +623,12 @@
             // tabPage1
             // 
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPage1.Controls.Add(this.autoBackupBox);
             this.tabPage1.Controls.Add(this.invertUpDownBox);
             this.tabPage1.Controls.Add(this.fixFh);
             this.tabPage1.Controls.Add(this.clipBox);
             this.tabPage1.Controls.Add(this.errorsCheckBox);
             this.tabPage1.Controls.Add(this.xgaResolutionCheckbox);
-            this.tabPage1.Controls.Add(this.showMousePosCheckbox);
             this.tabPage1.Controls.Add(this.label20);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.linewBox);
@@ -644,7 +644,7 @@
             // invertUpDownBox
             // 
             this.invertUpDownBox.AutoSize = true;
-            this.invertUpDownBox.Location = new System.Drawing.Point(165, 291);
+            this.invertUpDownBox.Location = new System.Drawing.Point(165, 270);
             this.invertUpDownBox.Name = "invertUpDownBox";
             this.invertUpDownBox.Size = new System.Drawing.Size(163, 17);
             this.invertUpDownBox.TabIndex = 63;
@@ -653,7 +653,7 @@
             // fixFh
             // 
             this.fixFh.AutoSize = true;
-            this.fixFh.Location = new System.Drawing.Point(165, 268);
+            this.fixFh.Location = new System.Drawing.Point(165, 247);
             this.fixFh.Name = "fixFh";
             this.fixFh.Size = new System.Drawing.Size(148, 17);
             this.fixFh.TabIndex = 62;
@@ -662,7 +662,7 @@
             // clipBox
             // 
             this.clipBox.AutoSize = true;
-            this.clipBox.Location = new System.Drawing.Point(165, 245);
+            this.clipBox.Location = new System.Drawing.Point(165, 224);
             this.clipBox.Name = "clipBox";
             this.clipBox.Size = new System.Drawing.Size(67, 17);
             this.clipBox.TabIndex = 61;
@@ -680,20 +680,11 @@
             // xgaResolutionCheckbox
             // 
             this.xgaResolutionCheckbox.AutoSize = true;
-            this.xgaResolutionCheckbox.Location = new System.Drawing.Point(165, 222);
+            this.xgaResolutionCheckbox.Location = new System.Drawing.Point(165, 201);
             this.xgaResolutionCheckbox.Name = "xgaResolutionCheckbox";
             this.xgaResolutionCheckbox.Size = new System.Drawing.Size(155, 17);
             this.xgaResolutionCheckbox.TabIndex = 59;
             this.xgaResolutionCheckbox.Text = "Simulate in XGA Resolution";
-            // 
-            // showMousePosCheckbox
-            // 
-            this.showMousePosCheckbox.AutoSize = true;
-            this.showMousePosCheckbox.Location = new System.Drawing.Point(165, 201);
-            this.showMousePosCheckbox.Name = "showMousePosCheckbox";
-            this.showMousePosCheckbox.Size = new System.Drawing.Size(193, 17);
-            this.showMousePosCheckbox.TabIndex = 58;
-            this.showMousePosCheckbox.Text = "Show Mouse Position in StatusStrip";
             // 
             // label20
             // 
@@ -1264,6 +1255,15 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
+            // autoBackupBox
+            // 
+            this.autoBackupBox.AutoSize = true;
+            this.autoBackupBox.Location = new System.Drawing.Point(165, 293);
+            this.autoBackupBox.Name = "autoBackupBox";
+            this.autoBackupBox.Size = new System.Drawing.Size(113, 17);
+            this.autoBackupBox.TabIndex = 64;
+            this.autoBackupBox.Text = "Automatic Backup";
+            // 
             // UserSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1373,7 +1373,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.CheckBox showMousePosCheckbox;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.NumericUpDown zShiftBox;
         private System.Windows.Forms.Label label25;
@@ -1402,5 +1401,6 @@
         private CustomControls.AlphaColorPicker originColorPicker;
         private System.Windows.Forms.Label label44;
         private CustomControls.AlphaColorPicker minimapColorPicker;
+        private System.Windows.Forms.CheckBox autoBackupBox;
     }
 }

@@ -36,7 +36,6 @@ namespace HaCreator.Collections
         public MapleList<ToolTipInstance> ToolTips = new MapleList<ToolTipInstance>(ItemTypes.ToolTips, true);
         public MapleList<ToolTipDot> ToolTipDots = new MapleList<ToolTipDot>(ItemTypes.ToolTips, true);
         public MapleList<BoardItem> MiscItems = new MapleList<BoardItem>(ItemTypes.Misc, true);
-        public MapleList<MiscDot> MiscDots = new MapleList<MiscDot>(ItemTypes.Misc, true);
         public MapleList<MapleDot> SpecialDots = new MapleList<MapleDot>(ItemTypes.Misc, true);
 
         public List<Rope> Ropes = new List<Rope>();
@@ -128,7 +127,10 @@ namespace HaCreator.Collections
                 }
                 else if (item.Type == ItemTypes.Misc)
                 {
-                    MiscItems.Add(item);
+                    if (item is VRDot || item is MinimapDot)
+                        SpecialDots.Add((MapleDot)item);
+                    else
+                        MiscItems.Add(item);
                 }
                 else
                 {

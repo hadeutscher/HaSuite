@@ -54,6 +54,7 @@ namespace HaCreator.GUI
         private int actualPlatform = 0;
         private int changingIndexCnt = 0;
         private List<Layer> layers = null;
+        private bool hasMinimap = false;
 
         private void Ribbon_Loaded(object sender, RoutedEventArgs e)
         {
@@ -123,6 +124,11 @@ namespace HaCreator.GUI
         private void AlwaysExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void HasMinimap(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = hasMinimap;
         }
 
         private void New_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -496,6 +502,12 @@ namespace HaCreator.GUI
         public void SetItemDesc(string desc)
         {
             itemDesc.Text = desc;
+        }
+
+        public void SetHasMinimap(bool hasMinimap)
+        {
+            this.hasMinimap = hasMinimap;
+            CommandManager.InvalidateRequerySuggested();
         }
         
         private void ChangeAllCheckboxes(bool? state)

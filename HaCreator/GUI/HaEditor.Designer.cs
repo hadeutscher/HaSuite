@@ -126,7 +126,6 @@
             this.tabs.TabIndex = 2;
             this.tabs.Text = "pageCollection1";
             this.tabs.TopMargin = 3;
-            this.tabs.PageClosing += new HaCreator.ThirdParty.TabPages.PageCollection.PageClosingEventHandler(this.tabs_PageClosing);
             // 
             // wpfHost
             // 

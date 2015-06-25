@@ -21,6 +21,7 @@ namespace HaCreator.GUI
 {
     public partial class Initialization : System.Windows.Forms.Form
     {
+        public HaEditor editor = null;
 
         public Initialization()
         {
@@ -65,7 +66,8 @@ namespace HaCreator.GUI
 
             Hide();
             Application.DoEvents();
-            new HaEditor().ShowDialog();
+            editor = new HaEditor();
+            editor.ShowDialog();
             Application.Exit();
         }
 

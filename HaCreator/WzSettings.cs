@@ -25,7 +25,6 @@ namespace HaCreator
     public static class UserSettings
     {
         public static bool ShowErrorsMessage = true;
-        public static bool ShowMousePos = true;
         public static bool XGAResolution = false;
         public static bool ClipText = false;
         public static Color TabColor = Color.LightSteelBlue;
@@ -77,6 +76,9 @@ namespace HaCreator
         public static bool suppressWarnings = false;
         public static bool FixFootholdMispositions = true;
         public static bool InverseUpDown = true;
+        public static bool BackupEnabled = true;
+        public static int BackupIdleTime = 5000;
+        public static int BackupMaxTime = 60000;
 
         // Controls debug features such feature compatibility testing and special exception handling
         public static bool enableDebug =

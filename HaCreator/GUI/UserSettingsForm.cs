@@ -25,11 +25,11 @@ namespace HaCreator.GUI
             linewBox.Value = UserSettings.LineWidth;
             dotwBox.Value = UserSettings.DotWidth;
             inactiveaBox.Value = UserSettings.NonActiveAlpha;
-            showMousePosCheckbox.Checked = UserSettings.ShowMousePos;
             xgaResolutionCheckbox.Checked = UserSettings.XGAResolution;
             clipBox.Checked = UserSettings.ClipText;
             fixFh.Checked = UserSettings.FixFootholdMispositions;
             invertUpDownBox.Checked = UserSettings.InverseUpDown;
+            autoBackupBox.Checked = UserSettings.BackupEnabled;
 
             tabColorPicker.Color = UserSettings.TabColor;
             dragColorPicker.Color = XNAToSystemColor(UserSettings.SelectSquare);
@@ -92,11 +92,11 @@ namespace HaCreator.GUI
             UserSettings.DotWidth = (int)dotwBox.Value;
             MapleDot.OnDotWidthChanged(); // Update DotWidth in dots to avoid requiring a restart
             UserSettings.NonActiveAlpha = (int)inactiveaBox.Value;
-            UserSettings.ShowMousePos = showMousePosCheckbox.Checked;
             UserSettings.XGAResolution = xgaResolutionCheckbox.Checked;
             UserSettings.ClipText = clipBox.Checked;
             UserSettings.FixFootholdMispositions = fixFh.Checked;
             UserSettings.InverseUpDown = invertUpDownBox.Checked;
+            UserSettings.BackupEnabled = autoBackupBox.Checked;
 
             UserSettings.TabColor = tabColorPicker.Color;
             UserSettings.SelectSquare = SystemToXNAColor(dragColorPicker.Color);

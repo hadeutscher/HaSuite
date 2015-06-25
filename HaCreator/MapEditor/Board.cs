@@ -17,6 +17,7 @@ using HaCreator.Collections;
 using HaCreator.MapEditor.UndoRedo;
 using HaCreator.MapEditor.Input;
 using HaCreator.MapEditor.Instance.Shapes;
+using System.Threading;
 
 namespace HaCreator.MapEditor
 {
@@ -51,12 +52,17 @@ namespace HaCreator.MapEditor
         private ContextMenuStrip menu = null;
         private SerializationManager serMan = null;
         private HaCreator.ThirdParty.TabPages.TabPage page = null;
+        private bool dirty;
+        private int uid;
+
+        private static int uidCounter = 0;
 
         public ItemTypes VisibleTypes { get { return visibleTypes; } set { visibleTypes = value; } }
         public ItemTypes EditedTypes { get { return editedTypes; } set { editedTypes = value; } }
 
         public Board(Point mapSize, Point centerPoint, MultiBoard parent, ContextMenuStrip menu, ItemTypes visibleTypes, ItemTypes editedTypes)
         {
+            this.uid = Interlocked.Increment(ref uidCounter);
             this.MapSize = mapSize;
             this.centerPoint = centerPoint;
             this.parent = parent;
@@ -217,10 +223,15 @@ namespace HaCreator.MapEditor
 
         public void Dispose()
         {
-            parent.Boards.Remove(this);
-            boardItems.Clear();
-            selected.Clear();
-            layers.Clear();
+            lock (parent)
+            {
+                parent.Boards.Remove(this);
+                boardItems.Clear();
+                selected.Clear();
+                layers.Clear();
+            }
+            // This must be called when MultiBoard is unlocked, to prevent BackupManager deadlocking
+            parent.OnBoardRemoved(this);
             GC.Collect();
             GC.WaitForPendingFinalizers();
         }
@@ -231,6 +242,17 @@ namespace HaCreator.MapEditor
         }
 
         #region Properties
+        public int UniqueID
+        {
+            get { return uid; }
+        }
+
+        public bool Dirty
+        {
+            get { return dirty; }
+            set { dirty = value; }
+        }
+
         public UndoRedoManager UndoRedoMan
         {
             get { return undoRedoMan; }
@@ -356,6 +378,7 @@ namespace HaCreator.MapEditor
             { 
                 mmRect = value;
                 menu.Items[2].Enabled = value == null;
+                parent.OnMinimapStateChanged(this, mmRect != null);
             }
         }
 

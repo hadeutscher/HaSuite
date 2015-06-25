@@ -90,7 +90,11 @@ namespace HaCreator.MapEditor
             renderer.Start();
 
             Dictionary<Action, int> clientList = new Dictionary<Action, int>();
-            clientList.Add(delegate { lock (this) { /* TODO */ } }, 1000);
+            clientList.Add(delegate
+            {
+                if (BackupCheck != null)
+                    BackupCheck.Invoke();
+            }, 1000);
             scheduler = new Scheduler(clientList);
         }
 
@@ -138,6 +142,18 @@ namespace HaCreator.MapEditor
         #endregion
 
         #region Methods
+        public void OnMinimapStateChanged(Board board, bool hasMm)
+        {
+            if (MinimapStateChanged != null)
+                MinimapStateChanged.Invoke(board, hasMm);
+        }
+
+        public void OnBoardRemoved(Board board)
+        {
+            if (BoardRemoved != null)
+                BoardRemoved.Invoke(board, null);
+        }
+
         private Texture2D CreatePixel()
         {
             System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(1, 1);
@@ -470,7 +486,8 @@ namespace HaCreator.MapEditor
         public delegate void ImageDroppedDelegate(Board selectedBoard, System.Drawing.Bitmap bmp, string name, Point pos);
         public event ImageDroppedDelegate ImageDropped;
 
-        public event HaCreator.GUI.HaRibbon.EmptyEvent ExportRequested; 
+        public event HaCreator.GUI.HaRibbon.EmptyEvent ExportRequested;
+        public event HaCreator.GUI.HaRibbon.EmptyEvent BackupCheck;
 
         private void DxContainer_MouseClick(object sender, MouseEventArgs e)
         {
@@ -766,6 +783,9 @@ namespace HaCreator.MapEditor
 
         public delegate void SelectedItemChangedDelegate(BoardItem selectedItem);
         public event SelectedItemChangedDelegate SelectedItemChanged;
+
+        public event EventHandler BoardRemoved;
+        public event EventHandler<bool> MinimapStateChanged;
 
         public void OnSelectedItemChanged(BoardItem selectedItem)
         {

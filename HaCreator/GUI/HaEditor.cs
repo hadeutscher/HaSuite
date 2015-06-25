@@ -24,7 +24,7 @@ namespace HaCreator.GUI
     public partial class HaEditor : Form
     {
         private InputHandler handler;
-        private HaCreatorStateManager hcsm;
+        public HaCreatorStateManager hcsm;
         private DockInflateHelper dih;
 
         private TilePanel tilePanel;
@@ -40,7 +40,6 @@ namespace HaCreator.GUI
             InitializeComponentCustom();
             RedockControls();
         }
-
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -58,7 +57,7 @@ namespace HaCreator.GUI
             dih = new DockInflateHelper(this.dockPanel);
             dih.RedockRequired += RedockControls;
             handler = new InputHandler(multiBoard);
-            hcsm = new HaCreatorStateManager(multiBoard, ribbon, tabs);
+            hcsm = new HaCreatorStateManager(multiBoard, ribbon, tabs, handler);
             hcsm.CloseRequested += hcsm_CloseRequested;
             hcsm.FirstMapLoaded += hcsm_FirstMapLoaded;
 
@@ -99,7 +98,8 @@ namespace HaCreator.GUI
 
             commonPanel.Pane = bgPanel.Pane = portalPanel.Pane = lifePanel.Pane = objPanel.Pane = tilePanel.Pane;
 
-            hcsm.LoadMap(new Load(multiBoard, tabs, hcsm.MakeRightClickHandler()));
+            if (!hcsm.backupMan.AttemptRestore())
+                hcsm.LoadMap(new Load(multiBoard, tabs, hcsm.MakeRightClickHandler()));
         }
 
         private void RedockControls()
@@ -116,12 +116,6 @@ namespace HaCreator.GUI
         private void HaEditor_SizeChanged(object sender, EventArgs e)
         {
             RedockControls();
-        }
-
-        private void tabs_PageClosing(HaCreator.ThirdParty.TabPages.TabPage page, ref bool cancel)
-        {
-            if (MessageBox.Show("Are you sure you want to close this map?", "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                cancel = true;
         }
 
         private void HaEditor_FormClosing(object sender, FormClosingEventArgs e)

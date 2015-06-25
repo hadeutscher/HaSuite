@@ -29,13 +29,18 @@ namespace HaCreator
         public const string Version = "2.1";
         public static bool Restarting;
 
-        public static string GetLocalSettingsPath()
+        public static string GetLocalSettingsFolder()
         {
             string appdata = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string our_folder = Path.Combine(appdata, "HaCreator");
             if (!Directory.Exists(our_folder))
                 Directory.CreateDirectory(our_folder);
-            return Path.Combine(our_folder, "Settings.wz");
+            return our_folder;
+        }
+
+        public static string GetLocalSettingsPath()
+        {
+            return Path.Combine(GetLocalSettingsFolder(), "Settings.wz");
         }
 
         /// <summary>
@@ -59,9 +64,11 @@ namespace HaCreator
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 
             // Program run here
-            Application.Run(new GUI.Initialization());
+            GUI.Initialization initForm = new GUI.Initialization();
+            Application.Run(initForm);
 
             // Shutdown
+            initForm.editor.hcsm.backupMan.ClearBackups();
             SettingsManager.Save();
             if (Restarting)
             {

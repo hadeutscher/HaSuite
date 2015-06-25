@@ -23,7 +23,7 @@
                 <CommandBinding Command="ns:HaRibbon.Finalize"  CanExecute="AlwaysExecute" Executed="Finalize_Executed" />
                 <CommandBinding Command="ns:HaRibbon.AllLayerView"  CanExecute="AlwaysExecute" Executed="AllLayerView_Executed" />
                 <CommandBinding Command="ns:HaRibbon.MapSim"  CanExecute="AlwaysExecute" Executed="MapSim_Executed" />
-                <CommandBinding Command="ns:HaRibbon.RegenMinimap"  CanExecute="AlwaysExecute" Executed="RegenMinimap_Executed" />
+                <CommandBinding Command="ns:HaRibbon.RegenMinimap"  CanExecute="HasMinimap" Executed="RegenMinimap_Executed" />
                 <CommandBinding Command="ns:HaRibbon.Snapping"  CanExecute="AlwaysExecute" Executed="Snapping_Executed" />
                 <CommandBinding Command="ns:HaRibbon.Random"  CanExecute="AlwaysExecute" Executed="Random_Executed" />
                 <CommandBinding Command="ns:HaRibbon.InfoMode"  CanExecute="AlwaysExecute" Executed="InfoMode_Executed" />

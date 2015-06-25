@@ -103,7 +103,7 @@ namespace HaCreator.MapEditor
             return items;
         }
 
-        public string SerializeBoard()
+        public string SerializeBoard(bool userobjs)
         {
 #if SPEEDTEST
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
@@ -120,7 +120,7 @@ namespace HaCreator.MapEditor
                 serData.center = SerializePoint(board.CenterPoint);
                 serData.size = SerializePoint(board.MapSize);
             }
-            serData.userobjs = board.ParentControl.UserObjects.SerializedForm;
+            serData.userobjs = userobjs ? board.ParentControl.UserObjects.SerializedForm : null;
             string result = JsonConvert.SerializeObject(serData);
 #if SPEEDTEST
             System.Windows.Forms.MessageBox.Show(sw.ElapsedMilliseconds.ToString());

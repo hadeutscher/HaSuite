@@ -244,6 +244,7 @@
     <Compile Include="GUI\WaitWindow.Designer.cs">
       <DependentUpon>WaitWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="MapEditor\BackupManager.cs" />
     <Compile Include="MapEditor\BoardItem.cs" />
     <Compile Include="MapEditor\BoardItemContextMenu.cs" />
     <Compile Include="MapEditor\FPSCounter.cs" />

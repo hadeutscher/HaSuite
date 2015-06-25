@@ -35,17 +35,21 @@ namespace HaCreator.MapEditor
 {
     public class HaCreatorStateManager
     {
-        MultiBoard multiBoard;
-        HaRibbon ribbon;
-        PageCollection tabs;
-        TilePanel tilePanel;
-        ObjPanel objPanel;
+        private MultiBoard multiBoard;
+        private HaRibbon ribbon;
+        private PageCollection tabs;
+        private InputHandler input;
+        private TilePanel tilePanel;
+        private ObjPanel objPanel;
+        public BackupManager backupMan;
 
-        public HaCreatorStateManager(MultiBoard multiBoard, HaRibbon ribbon, PageCollection tabs)
+        public HaCreatorStateManager(MultiBoard multiBoard, HaRibbon ribbon, PageCollection tabs, InputHandler input)
         {
             this.multiBoard = multiBoard;
             this.ribbon = ribbon;
             this.tabs = tabs;
+            this.input = input;
+            this.backupMan = new BackupManager(multiBoard, input, this, tabs);
 
             this.ribbon.NewClicked += ribbon_NewClicked;
             this.ribbon.OpenClicked += ribbon_OpenClicked;
@@ -72,6 +76,8 @@ namespace HaCreator.MapEditor
             this.ribbon.RibbonKeyDown += multiBoard.DxContainer_KeyDown;
 
             this.tabs.CurrentPageChanged += tabs_CurrentPageChanged;
+            this.tabs.PageClosing += tabs_PageClosing;
+            this.tabs.PageRemoved += tabs_PageRemoved;
 
             this.multiBoard.OnBringToFrontClicked += multiBoard_OnBringToFrontClicked;
             this.multiBoard.OnEditBaseClicked += multiBoard_OnEditBaseClicked;
@@ -83,12 +89,50 @@ namespace HaCreator.MapEditor
             this.multiBoard.MouseMoved += multiBoard_MouseMoved;
             this.multiBoard.ImageDropped += multiBoard_ImageDropped;
             this.multiBoard.ExportRequested += ribbon_ExportClicked;
+            this.multiBoard.BackupCheck += multiBoard_BackupCheck;
+            this.multiBoard.BoardRemoved += multiBoard_BoardRemoved;
+            this.multiBoard.MinimapStateChanged += multiBoard_MinimapStateChanged;
 
             multiBoard.Visible = false;
             ribbon.SetEnabled(false);
         }
 
         #region MultiBoard Events
+        void multiBoard_MinimapStateChanged(object sender, bool hasMm)
+        {
+            ribbon.SetHasMinimap(hasMm);
+        }
+
+        void multiBoard_BoardRemoved(object sender, EventArgs e)
+        {
+            Board board = (Board)sender;
+            backupMan.DeleteBackup(board.UniqueID);
+        }
+
+        private void tabs_PageClosing(HaCreator.ThirdParty.TabPages.TabPage page, ref bool cancel)
+        {
+            if (MessageBox.Show("Are you sure you want to close this map?", "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                cancel = true;
+        }
+
+        void tabs_PageRemoved(ThirdParty.TabPages.TabPage page)
+        {
+            Board board = (Board)page.Tag;
+            board.Dispose();
+        }
+
+        void multiBoard_BackupCheck()
+        {
+            try
+            {
+                backupMan.BackupCheck();
+            }
+            catch (Exception e)
+            {
+                HaRepackerLib.Warning.Error(string.Format("Backup failed! Error:{0}\r\n{1}", e.Message, e.StackTrace));
+            }
+        }
+
         void multiBoard_ImageDropped(Board selectedBoard, System.Drawing.Bitmap bmp, string name, Microsoft.Xna.Framework.Point pos)
         {
             WaitWindow ww = new WaitWindow("Processing \"" + name + "\"...");
@@ -321,6 +365,7 @@ namespace HaCreator.MapEditor
                 ApplicationSettings.lastDefaultLayer = multiBoard.SelectedBoard.SelectedLayerIndex;
                 ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
                 ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform, multiBoard.SelectedBoard.SelectedAllLayers, multiBoard.SelectedBoard.SelectedAllPlatforms);
+                ribbon.SetHasMinimap(multiBoard.SelectedBoard.MinimapRectangle != null);
                 ParseVisibleEditedTypes();
                 multiBoard.Focus();
             }
@@ -339,7 +384,14 @@ namespace HaCreator.MapEditor
                 return;
             lastSaveLoc = ofd.FileName;
             // No need to lock, SerializeBoard locks only the critical areas to cut down on locked time
-            File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard());
+            try
+            {
+                File.WriteAllText(ofd.FileName, multiBoard.SelectedBoard.SerializationManager.SerializeBoard(true));
+            }
+            catch (Exception e)
+            {
+                HaRepackerLib.Warning.Error(string.Format("Could not save: {0}\r\n\r\n{1}", e.Message, e.StackTrace));
+            }
         }
 
         void ribbon_UserObjsClicked()
@@ -576,11 +628,11 @@ namespace HaCreator.MapEditor
             LoadMap(new Load(multiBoard, tabs, MakeRightClickHandler()));
         }
 
-        public void LoadMap(Form loader)
+        public void LoadMap(Form loader = null)
         {
             lock (multiBoard)
             {
-                if (loader.ShowDialog() == DialogResult.OK)
+                if (loader == null || loader.ShowDialog() == DialogResult.OK)
                 {
                     if (!multiBoard.DeviceReady)
                     {
@@ -593,6 +645,7 @@ namespace HaCreator.MapEditor
                     multiBoard.SelectedBoard.SelectedPlatform = multiBoard.SelectedBoard.SelectedLayerIndex == -1 ? -1 : multiBoard.SelectedBoard.Layers[multiBoard.SelectedBoard.SelectedLayerIndex].zMList.ElementAt(0);
                     ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
                     ribbon.SetSelectedLayer(multiBoard.SelectedBoard.SelectedLayerIndex, multiBoard.SelectedBoard.SelectedPlatform, multiBoard.SelectedBoard.SelectedAllLayers, multiBoard.SelectedBoard.SelectedAllPlatforms);
+                    ribbon.SetHasMinimap(multiBoard.SelectedBoard.MinimapRectangle != null);
                     multiBoard.SelectedBoard.VisibleTypes = ApplicationSettings.theoreticalVisibleTypes;
                     multiBoard.SelectedBoard.EditedTypes = ApplicationSettings.theoreticalEditedTypes;
                     ParseVisibleEditedTypes();

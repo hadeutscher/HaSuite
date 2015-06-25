@@ -22,6 +22,7 @@ using HaCreator.MapEditor.Instance.Shapes;
 using HaCreator.MapEditor.Instance;
 using HaCreator.MapEditor.Info;
 using HaCreator.MapEditor.Instance.Misc;
+using XNA = Microsoft.Xna.Framework;
 
 namespace HaCreator.Wz
 {
@@ -808,6 +809,18 @@ namespace HaCreator.Wz
                 foreach (ToolStripItem item in menu.Items)
                     item.Tag = newBoard;
             }
+        }
+
+        public void CreateMapFromHam(MultiBoard multiBoard, HaCreator.ThirdParty.TabPages.PageCollection Tabs, string data, EventHandler[] rightClickHandler)
+        {
+            CreateMap("", "", CreateStandardMapMenu(rightClickHandler), new XNA.Point(), new XNA.Point(), 8, Tabs, multiBoard);
+            multiBoard.SelectedBoard.Loading = true; // Prevent TS Change callbacks while were loading
+            lock (multiBoard)
+            {
+                multiBoard.SelectedBoard.SerializationManager.DeserializeBoard(data);
+                multiBoard.AdjustScrollBars();
+            }
+            multiBoard.SelectedBoard.Loading = false;
         }
     }
 

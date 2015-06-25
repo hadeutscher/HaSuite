@@ -22,6 +22,42 @@ namespace HaCreator.MapEditor.Input
     public class InputHandler
     {
         private MultiBoard parentBoard;
+        private int lastUserInteraction = 0;
+        private int lastBackup = 0;
+
+        public void OnUserInteraction()
+        {
+            lastUserInteraction = Environment.TickCount;
+            parentBoard.SelectedBoard.Dirty = true;
+        }
+
+        public void OnBackup()
+        {
+            lastBackup = Environment.TickCount;
+        }
+
+        private bool IsTickCountDiff(ref int source, int ms)
+        {
+            int diff = Environment.TickCount - source;
+            if (diff < 0)
+            {
+                // This can happen on TickCount overflow
+                // We will just reset the timer and return false, to prevent anything special from happening
+                source = Environment.TickCount;
+                return false;
+            }
+            return diff >= ms;
+        }
+
+        public bool IsUserIdleFor(int ms)
+        {
+            return IsTickCountDiff(ref lastUserInteraction, ms);
+        }
+
+        public bool IsBackupDelayedFor(int ms)
+        {
+            return IsTickCountDiff(ref lastBackup, ms);
+        }
 
         public InputHandler(MultiBoard parentBoard)
         {
@@ -61,6 +97,7 @@ namespace HaCreator.MapEditor.Input
         {
             lock (parentBoard)
             {
+                OnUserInteraction();
                 if (selectedBoard.Mouse.MinimapBrowseOngoing && selectedBoard.Mouse.State == MouseState.Selection)
                 {
                     HandleMinimapBrowse(selectedBoard, currPhysicalPos);
@@ -140,6 +177,7 @@ namespace HaCreator.MapEditor.Input
         {
             lock (parentBoard)
             {
+                OnUserInteraction();
                 List<UndoRedoAction> actions = new List<UndoRedoAction>();
                 if (key == Keys.ControlKey || key == Keys.ShiftKey || key == Keys.Menu /*ALT key*/)
                     return;
@@ -430,16 +468,20 @@ namespace HaCreator.MapEditor.Input
 
         private void parentBoard_MouseDoubleClick(Board selectedBoard, BoardItem target, XNA.Point realPosition, XNA.Point virtualPosition)
         {
-            if (ClickOnMinimap(selectedBoard, realPosition)) return;
-            if (target != null)
+            lock (parentBoard)
             {
-                ClearSelectedItems(selectedBoard);
-                target.Selected = true;
-                parentBoard.EditInstanceClicked(target);
-            }
-            else if (selectedBoard.Mouse.State == MouseState.Footholds)
-            {
-                selectedBoard.Mouse.CreateFhAnchor();
+                OnUserInteraction();
+                if (ClickOnMinimap(selectedBoard, realPosition)) return;
+                if (target != null)
+                {
+                    ClearSelectedItems(selectedBoard);
+                    target.Selected = true;
+                    parentBoard.EditInstanceClicked(target);
+                }
+                else if (selectedBoard.Mouse.State == MouseState.Footholds)
+                {
+                    selectedBoard.Mouse.CreateFhAnchor();
+                }
             }
         }
 
@@ -447,6 +489,7 @@ namespace HaCreator.MapEditor.Input
         {
             lock (parentBoard)
             {
+                OnUserInteraction();
                 if (mouseState == MouseState.Selection)
                 {
                     ClearBoundItems(selectedBoard);
@@ -467,6 +510,7 @@ namespace HaCreator.MapEditor.Input
         {
             lock (parentBoard)
             {
+                OnUserInteraction();
                 if (selectedBoard.Mouse.State == MouseState.Selection)//handle drag-drop selection end
                 {
                     ClearBoundItems(selectedBoard);
@@ -503,6 +547,7 @@ namespace HaCreator.MapEditor.Input
         {
             lock (parentBoard)
             {
+                OnUserInteraction();
                 if (ClickOnMinimap(selectedBoard, realPosition) && selectedBoard.Mouse.State == MouseState.Selection)
                 {
                     //ClearSelectedItems(selectedBoard);
