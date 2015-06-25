@@ -221,15 +221,34 @@ namespace HaCreator.MapEditor.Input
                         {
                             case MouseState.Selection:
                                 int selectedItemIndex = 0;
-                                while (selectedBoard.SelectedItems.Count > selectedItemIndex)
+                                bool askedVr = false, askedMm = false;
+                                List<BoardItem> selectedItems = selectedBoard.SelectedItems.ToList(); // Dupe the selection list
+                                foreach (BoardItem item in selectedItems)
                                 {
-                                    BoardItem item = selectedBoard.SelectedItems[selectedItemIndex];
                                     if (item is ToolTipDot || item is MiscDot)
-                                        selectedItemIndex++;
-                                    else if (item is VRDot && MessageBox.Show("This will remove the map's VR. This is not undoable, you must re-add VR from the map's main menu. Continue?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                                        selectedBoard.VRRectangle.RemoveItem(null);
-                                    else if (item is MinimapDot && MessageBox.Show("This will remove the map's minimap. This is not undoable, you must re-add the minimap from the map's main menu. Continue?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                                        selectedBoard.MinimapRectangle.RemoveItem(null);
+                                        continue;
+                                    else if (item is VRDot)
+                                    {
+                                        if (!askedVr)
+                                        {
+                                            askedVr = true;
+                                            if (MessageBox.Show("This will remove the map's VR. This is not undoable, you must re-add VR from the map's main menu. Continue?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                                            {
+                                                selectedBoard.VRRectangle.RemoveItem(null);
+                                            }
+                                        }
+                                    }
+                                    else if (item is MinimapDot)
+                                    {
+                                        if (!askedMm)
+                                        {
+                                            askedMm = true;
+                                            if (MessageBox.Show("This will remove the map's minimap. This is not undoable, you must re-add the minimap from the map's main menu. Continue?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                                            {
+                                                selectedBoard.MinimapRectangle.RemoveItem(null);
+                                            }
+                                        }
+                                    }
                                     else
                                         item.RemoveItem(actions);
                                 }
