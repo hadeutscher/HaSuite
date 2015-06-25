@@ -421,7 +421,12 @@ namespace HaCreator.Wz
         {
             // generate default zM's
             HashSet<int> allExistingZMs = new HashSet<int>();
-            mapBoard.Layers.ForEach(x => x.zMList.ToList().ForEach(y => allExistingZMs.Add(y)));
+            foreach (Layer l in mapBoard.Layers)
+            {
+                l.RecheckTileSet();
+                l.RecheckZM();
+                l.zMList.ToList().ForEach(y => allExistingZMs.Add(y));
+            }
 
             for (int i = 0; i < mapBoard.Layers.Count; i++)
             {

@@ -68,7 +68,8 @@ namespace HaCreator
             Application.Run(initForm);
 
             // Shutdown
-            initForm.editor.hcsm.backupMan.ClearBackups();
+            if (initForm.editor != null)
+                initForm.editor.hcsm.backupMan.ClearBackups();
             SettingsManager.Save();
             if (Restarting)
             {

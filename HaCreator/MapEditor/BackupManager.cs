@@ -127,12 +127,9 @@ namespace HaCreator.MapEditor
                 string basePath = GetBasePath();
                 if (!Directory.Exists(basePath))
                     return false;
-                if (MessageBox.Show("HaCreator was shut down unexpectedly, and can attempt to recover from a backed up state automatically. Proceed?\r\n\r\n(To recover the backup files manually, press \"No\")", "Recovery", MessageBoxButtons.YesNo, MessageBoxIcon.Information) != DialogResult.Yes)
+                if (MessageBox.Show("HaCreator was shut down unexpectedly, and can attempt to recover from a backed up state automatically. Proceed?\r\n\r\n(To start from scratch, press \"No\")", "Recovery", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
                 {
-                    if (MessageBox.Show("Do you want to delete the backup files ({0}) and start from scratch?\r\n\r\n(To recover the backup files manually, press \"No\")") == DialogResult.Yes)
-                    {
-                        ClearBackups();
-                    }
+                    ClearBackups();
                     return false;
                 }
                 foreach (FileInfo file in new DirectoryInfo(basePath).GetFiles())
