@@ -32,10 +32,10 @@ namespace HaRepackerLib
             mpegStream = new Mp3FileReader(byteStream);
             wavePlayer = new WaveOut(WaveCallbackInfo.FunctionCallback());
             wavePlayer.Init(mpegStream);
-            wavePlayer.PlaybackStopped +=new EventHandler(wavePlayer_PlaybackStopped);
+            wavePlayer.PlaybackStopped += new EventHandler<StoppedEventArgs>(wavePlayer_PlaybackStopped);
         }
 
-        void wavePlayer_PlaybackStopped(object sender, EventArgs e)
+        void wavePlayer_PlaybackStopped(object sender, StoppedEventArgs e)
         {
  	        if (repeat && !disposed)
             {

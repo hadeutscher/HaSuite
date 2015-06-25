@@ -241,7 +241,7 @@
       <Project>{28AAB36D-942E-4476-A000-0E9DE380F390}</Project>
       <Name>MapleLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NAudio\NAudio.csproj">
+    <ProjectReference Include="..\NAudio\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
     </ProjectReference>
