@@ -233,6 +233,10 @@
     <None Include="Resources\arrow_right.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\dockpanelsuite\WinFormsUI\WinFormsUI.csproj">
+      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
+      <Name>WinFormsUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MapleLib\MapleLib.csproj">
       <Project>{28AAB36D-942E-4476-A000-0E9DE380F390}</Project>
       <Name>MapleLib</Name>
@@ -240,10 +244,6 @@
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WinFormsUI\WinFormsUI.csproj">
-      <Project>{C75532C4-765B-418E-B09B-46D36B2ABDB1}</Project>
-      <Name>WinFormsUI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

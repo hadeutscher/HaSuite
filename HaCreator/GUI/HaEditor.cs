@@ -25,7 +25,6 @@ namespace HaCreator.GUI
     {
         private InputHandler handler;
         public HaCreatorStateManager hcsm;
-        private DockInflateHelper dih;
 
         private TilePanel tilePanel;
         private ObjPanel objPanel;
@@ -48,14 +47,7 @@ namespace HaCreator.GUI
 
         private void InitializeComponentCustom()
         {
-            // make dockPanel everyone's parent
-            wpfHost.Parent = dockPanel;
-            tabs.Parent = dockPanel;
-            dockPanel.Parent = this;
-
             // helper classes
-            dih = new DockInflateHelper(this.dockPanel);
-            dih.RedockRequired += RedockControls;
             handler = new InputHandler(multiBoard);
             hcsm = new HaCreatorStateManager(multiBoard, ribbon, tabs, handler);
             hcsm.CloseRequested += hcsm_CloseRequested;
@@ -89,13 +81,12 @@ namespace HaCreator.GUI
             portalPanel = new PortalPanel(hcsm) { Enabled = false };
             bgPanel = new BackgroundPanel(hcsm) { Enabled = false };
             commonPanel = new CommonPanel(hcsm) { Enabled = false };
-            dih.AddContent(tilePanel, DockState.DockRight);
-            dih.AddContent(objPanel, DockState.DockRight);
-            dih.AddContent(lifePanel, DockState.DockRight);
-            dih.AddContent(portalPanel, DockState.DockRight);
-            dih.AddContent(bgPanel, DockState.DockRight);
-            dih.AddContent(commonPanel, DockState.DockRight);
 
+            List<DockContent> dockContents = new List<DockContent> { tilePanel, objPanel, lifePanel, portalPanel, bgPanel, commonPanel };
+
+            dockContents.ForEach(x => x.Show(dockPanel));
+            dockContents.ForEach(x => x.DockState = DockState.DockRight);
+            dockContents.ForEach(x => x.DockAreas = DockAreas.DockRight);
             commonPanel.Pane = bgPanel.Pane = portalPanel.Pane = lifePanel.Pane = objPanel.Pane = tilePanel.Pane;
 
             if (!hcsm.backupMan.AttemptRestore())
@@ -104,18 +95,12 @@ namespace HaCreator.GUI
 
         private void RedockControls()
         {
-            Rectangle baseArea = dih.GetActiveRectangle();
             int ribbonHeight = (int)ribbon.ribbon.ActualHeight - ribbon.reducedHeight;
 
-            wpfHost.Location = new Point(baseArea.Left, baseArea.Top);
-            wpfHost.Size = new Size(baseArea.Width, ribbonHeight);
-            tabs.Location = new Point(baseArea.Left + tabs.Margin.Left, ribbonHeight + tabs.Margin.Top);
-            tabs.Size = new Size(baseArea.Width - tabs.Margin.Left - tabs.Margin.Right, baseArea.Height - ribbonHeight - tabs.Margin.Top - tabs.Margin.Bottom);
-        }
-
-        private void HaEditor_SizeChanged(object sender, EventArgs e)
-        {
-            RedockControls();
+            wpfHost.Location = new Point();
+            wpfHost.Size = new Size(panel1.Width, ribbonHeight);
+            tabs.Location = new Point(tabs.Margin.Left, ribbonHeight + tabs.Margin.Top);
+            tabs.Size = new Size(panel1.Width - tabs.Margin.Left - tabs.Margin.Right, panel1.Height - ribbonHeight - tabs.Margin.Top - tabs.Margin.Bottom);
         }
 
         private void HaEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -129,6 +114,11 @@ namespace HaCreator.GUI
         private void HaEditor_FormClosed(object sender, FormClosedEventArgs e)
         {
             multiBoard.Stop();
+        }
+
+        private void panel1_SizeChanged(object sender, EventArgs e)
+        {
+            RedockControls();
         }
     }
 }

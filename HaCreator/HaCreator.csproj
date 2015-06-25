@@ -675,6 +675,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\dockpanelsuite\WinFormsUI\WinFormsUI.csproj">
+      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
+      <Name>WinFormsUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HaRepackerLib\HaRepackerLib.csproj">
       <Project>{B68C971F-4B8A-44A3-88D0-6213D1A512E7}</Project>
       <Name>HaRepackerLib</Name>
@@ -690,10 +694,6 @@
     <ProjectReference Include="..\NAudio\NAudio.csproj">
       <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
       <Name>NAudio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WinFormsUI\WinFormsUI.csproj">
-      <Project>{c75532c4-765b-418e-b09b-46d36b2abdb1}</Project>
-      <Name>WinFormsUI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
