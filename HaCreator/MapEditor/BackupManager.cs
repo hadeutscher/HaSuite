@@ -53,6 +53,14 @@ namespace HaCreator.MapEditor
                 return;
             if (input.IsUserIdleFor(UserSettings.BackupIdleTime) || input.IsBackupDelayedFor(UserSettings.BackupMaxTime))
             {
+                lock (multiBoard)
+                {
+                    if (multiBoard.SelectedBoard == null ||
+                        multiBoard.SelectedBoard.Mouse == null ||
+                        multiBoard.SelectedBoard.Mouse.State != MouseState.Selection ||
+                        multiBoard.SelectedBoard.Mouse.BoundItems.Count > 0)
+                        return;
+                }
                 input.OnBackup();
 
                 // We really don't want to hang on IO while multiBoard is locked, so we queue it
