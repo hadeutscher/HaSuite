@@ -31,12 +31,10 @@ namespace HaCreator.GUI.InstanceEditor
             ufBox.Checked = item.ParentRope.uf;
             if (item.ParentRope.ladder)
             {
-                ropeBox.Checked = false;
                 ladderBox.Checked = true;
             }
             else
             {
-                ropeBox.Checked = true;
                 ladderBox.Checked = false;
             }
             pathLabel.Text = HaCreatorStateManager.CreateItemDescription(item, "\r\n");

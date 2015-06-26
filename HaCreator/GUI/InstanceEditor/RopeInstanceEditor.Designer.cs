@@ -35,7 +35,6 @@
             this.yInput = new System.Windows.Forms.NumericUpDown();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.ropeBox = new System.Windows.Forms.CheckBox();
             this.ladderBox = new System.Windows.Forms.CheckBox();
             this.ufBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.xInput)).BeginInit();
@@ -123,19 +122,10 @@
             this.cancelButton.Text = "Cancel";
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
-            // ropeBox
-            // 
-            this.ropeBox.AutoSize = true;
-            this.ropeBox.Location = new System.Drawing.Point(39, 86);
-            this.ropeBox.Name = "ropeBox";
-            this.ropeBox.Size = new System.Drawing.Size(52, 17);
-            this.ropeBox.TabIndex = 2;
-            this.ropeBox.Text = "Rope";
-            // 
             // ladderBox
             // 
             this.ladderBox.AutoSize = true;
-            this.ladderBox.Location = new System.Drawing.Point(94, 86);
+            this.ladderBox.Location = new System.Drawing.Point(45, 86);
             this.ladderBox.Name = "ladderBox";
             this.ladderBox.Size = new System.Drawing.Size(59, 17);
             this.ladderBox.TabIndex = 3;
@@ -157,7 +147,6 @@
             this.ClientSize = new System.Drawing.Size(179, 167);
             this.Controls.Add(this.ufBox);
             this.Controls.Add(this.ladderBox);
-            this.Controls.Add(this.ropeBox);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.label2);
@@ -189,7 +178,6 @@
         private System.Windows.Forms.NumericUpDown yInput;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.CheckBox ropeBox;
         private System.Windows.Forms.CheckBox ladderBox;
         private System.Windows.Forms.CheckBox ufBox;
     }
