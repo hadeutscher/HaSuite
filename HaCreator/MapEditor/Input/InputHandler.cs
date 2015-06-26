@@ -415,7 +415,7 @@ namespace HaCreator.MapEditor.Input
                                 else if (item is Rope)
                                 {
                                     Rope r = (Rope)item;
-                                    int x = r.FirstAnchor.Y;
+                                    int x = r.FirstAnchor.X;
                                     int minY = Math.Min(r.FirstAnchor.Y, r.SecondAnchor.Y);
                                     int maxY = Math.Max(r.FirstAnchor.Y, r.SecondAnchor.Y);
                                     if (x < minPos.X)
