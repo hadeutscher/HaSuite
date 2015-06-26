@@ -229,10 +229,14 @@ namespace HaCreator.Wz
                 {
                     case "m":
                         MobInfo mobInfo = MobInfo.Get(id);
+                        if (mobInfo == null)
+                            continue;
                         mapBoard.BoardItems.Mobs.Add((MobInstance)mobInfo.CreateInstance(mapBoard, x, cy, x - rx0, rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
                         break;
                     case "n":
                         NpcInfo npcInfo = NpcInfo.Get(id);
+                        if (npcInfo == null)
+                            continue;
                         mapBoard.BoardItems.NPCs.Add((NpcInstance)npcInfo.CreateInstance(mapBoard, x, cy, x - rx0, rx1 - x, cy - y, limitedname, mobTime, flip, hide, info, team));
                         break;
                     default:
@@ -539,6 +543,8 @@ namespace HaCreator.Wz
                 bool ani = InfoTool.GetBool(bgProp["ani"]);
                 string no = InfoTool.GetInt(bgProp["no"]).ToString();
                 BackgroundInfo bgInfo = BackgroundInfo.Get(bS, ani, no);
+                if (bgInfo == null)
+                    continue;
                 IList list = front ? mapBoard.BoardItems.FrontBackgrounds : mapBoard.BoardItems.BackBackgrounds;
                 list.Add((BackgroundInstance)bgInfo.CreateInstance(mapBoard, x, y, i, rx, ry, cx, cy, type, a, front, flip));
             }

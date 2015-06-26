@@ -43,7 +43,8 @@ namespace HaCreator.GUI.EditorPanels
 
         private void bgSetListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (bgSetListBox.SelectedItem == null) return;
+            if (bgSetListBox.SelectedItem == null)
+                return;
             bgImageContainer.Controls.Clear();
 
             WzImageProperty parentProp = Program.InfoManager.BackgroundSets[(string)bgSetListBox.SelectedItem][aniBg.Checked ? "ani" : "back"];
@@ -52,6 +53,8 @@ namespace HaCreator.GUI.EditorPanels
             foreach (WzImageProperty prop in parentProp.WzProperties)
             {
                 BackgroundInfo bgInfo = BackgroundInfo.Get((string)bgSetListBox.SelectedItem, aniBg.Checked, prop.Name);
+                if (bgInfo == null)
+                    continue;
                 ImageViewer item = bgImageContainer.Add(bgInfo.Image, prop.Name, true);
                 item.Tag = bgInfo;
                 item.MouseDown += new MouseEventHandler(bgItem_Click);
@@ -63,10 +66,13 @@ namespace HaCreator.GUI.EditorPanels
 
         void bgItem_Click(object sender, MouseEventArgs e)
         {
-            hcsm.EnterEditMode(ItemTypes.Backgrounds);
-            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((BackgroundInfo)((ImageViewer)sender).Tag);
-            hcsm.MultiBoard.Focus();
-            ((ImageViewer)sender).IsActive = true;
+            lock (hcsm.MultiBoard)
+            {
+                hcsm.EnterEditMode(ItemTypes.Backgrounds);
+                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((BackgroundInfo)((ImageViewer)sender).Tag);
+                hcsm.MultiBoard.Focus();
+                ((ImageViewer)sender).IsActive = true;
+            }
         }
     }
 }

@@ -35,6 +35,8 @@ namespace HaCreator.MapEditor.Info
         public static BackgroundInfo Get(string bS, bool ani, string no)
         {
             WzImage bsImg = Program.InfoManager.BackgroundSets[bS];
+            if (bsImg == null)
+                return null;
             WzImageProperty bgInfoProp = bsImg[ani ? "ani" : "back"][no];
             if (bgInfoProp.HCTag == null)
                 bgInfoProp.HCTag = BackgroundInfo.Load(bgInfoProp, bS, ani, no);

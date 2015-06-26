@@ -27,6 +27,7 @@ namespace HaCreator
         public static WzInformationManager InfoManager;
         public static WzSettingsManager SettingsManager;
         public const string Version = "2.1";
+        public static bool AbortThreads = false;
         public static bool Restarting;
 
         public static string GetLocalSettingsFolder()

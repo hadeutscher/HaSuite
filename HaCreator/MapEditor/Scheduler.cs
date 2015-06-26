@@ -34,7 +34,7 @@ namespace HaCreator.MapEditor
             Stopwatch sw = new Stopwatch();
             sw.Start();
             Dictionary<Action, int> nextTimes = new Dictionary<Action,int>(clients);
-            while (true)
+            while (!Program.AbortThreads)
             {
                 // Get nearest action
                 Action nearestAction = null;
@@ -65,7 +65,10 @@ namespace HaCreator.MapEditor
         public void Dispose()
         {
             if (schedThread != null)
-                schedThread.Abort();
+            {
+                schedThread.Join();
+                schedThread = null;
+            }
         }
     }
 }

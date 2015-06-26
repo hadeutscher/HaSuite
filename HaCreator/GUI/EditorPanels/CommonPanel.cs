@@ -56,44 +56,47 @@ namespace HaCreator.GUI.EditorPanels
 
         void commonItem_Click(object sender, MouseEventArgs e)
         {
-            ImageViewer item = (ImageViewer)sender;
-            switch (item.Name)
+            lock (hcsm.MultiBoard)
             {
-                case "Foothold":
-                    if (!hcsm.MultiBoard.AssertLayerSelected())
-                    {
-                        return;
-                    }
-                    hcsm.EnterEditMode(ItemTypes.Footholds);
-                    hcsm.MultiBoard.SelectedBoard.Mouse.SetFootholdMode();
-                    hcsm.MultiBoard.Focus();
-                    break;
-                case "Rope":
-                    if (!hcsm.MultiBoard.AssertLayerSelected())
-                    {
-                        return;
-                    }
-                    hcsm.EnterEditMode(ItemTypes.Ropes);
-                    hcsm.MultiBoard.SelectedBoard.Mouse.SetRopeMode();
-                    hcsm.MultiBoard.Focus();
-                    break;
-                case "Chair":
-                    hcsm.EnterEditMode(ItemTypes.Chairs);
-                    hcsm.MultiBoard.SelectedBoard.Mouse.SetChairMode();
-                    hcsm.MultiBoard.Focus();
-                    break;
-                case "Tooltip":
-                    hcsm.EnterEditMode(ItemTypes.Footholds);
-                    hcsm.MultiBoard.SelectedBoard.Mouse.SetTooltipMode();
-                    hcsm.MultiBoard.Focus();
-                    break;
-                case "Clock":
-                    hcsm.EnterEditMode(ItemTypes.Misc);
-                    hcsm.MultiBoard.SelectedBoard.Mouse.SetClockMode();
-                    hcsm.MultiBoard.Focus();
-                    break;
+                ImageViewer item = (ImageViewer)sender;
+                switch (item.Name)
+                {
+                    case "Foothold":
+                        if (!hcsm.MultiBoard.AssertLayerSelected())
+                        {
+                            return;
+                        }
+                        hcsm.EnterEditMode(ItemTypes.Footholds);
+                        hcsm.MultiBoard.SelectedBoard.Mouse.SetFootholdMode();
+                        hcsm.MultiBoard.Focus();
+                        break;
+                    case "Rope":
+                        if (!hcsm.MultiBoard.AssertLayerSelected())
+                        {
+                            return;
+                        }
+                        hcsm.EnterEditMode(ItemTypes.Ropes);
+                        hcsm.MultiBoard.SelectedBoard.Mouse.SetRopeMode();
+                        hcsm.MultiBoard.Focus();
+                        break;
+                    case "Chair":
+                        hcsm.EnterEditMode(ItemTypes.Chairs);
+                        hcsm.MultiBoard.SelectedBoard.Mouse.SetChairMode();
+                        hcsm.MultiBoard.Focus();
+                        break;
+                    case "Tooltip":
+                        hcsm.EnterEditMode(ItemTypes.Footholds);
+                        hcsm.MultiBoard.SelectedBoard.Mouse.SetTooltipMode();
+                        hcsm.MultiBoard.Focus();
+                        break;
+                    case "Clock":
+                        hcsm.EnterEditMode(ItemTypes.Misc);
+                        hcsm.MultiBoard.SelectedBoard.Mouse.SetClockMode();
+                        hcsm.MultiBoard.Focus();
+                        break;
+                }
+                item.IsActive = true;
             }
-            item.IsActive = true;
         }
     }
 }

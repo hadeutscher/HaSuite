@@ -23,7 +23,7 @@ namespace HaCreator.MapEditor
         {
             resetThread = new Thread(new ThreadStart(delegate 
             {
-                while (true)
+                while (!Program.AbortThreads)
                 {
                     frames = Interlocked.Exchange(ref frames_next, 0);
                     Thread.Sleep(1000);
@@ -44,7 +44,11 @@ namespace HaCreator.MapEditor
 
         public void Dispose()
         {
-            resetThread.Abort();
+            if (resetThread != null)
+            {
+                resetThread.Join();
+                resetThread = null;
+            }
         }
     }
 }

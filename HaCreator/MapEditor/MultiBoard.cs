@@ -53,7 +53,7 @@ namespace HaCreator.MapEditor
             pixel = CreatePixel();
             deviceReady = true;
 
-            while (true)
+            while (!Program.AbortThreads)
             {
                 if (deviceReady && form.WindowState != FormWindowState.Minimized)
                 {
@@ -102,7 +102,8 @@ namespace HaCreator.MapEditor
         {
             if (renderer != null)
             {
-                renderer.Abort();
+                renderer.Join();
+                renderer = null;
             }
             if (scheduler != null)
             {
@@ -465,6 +466,24 @@ namespace HaCreator.MapEditor
                 ExportRequested.Invoke();
         }
 
+        public void OnLoadRequested()
+        {
+            if (LoadRequested != null)
+                LoadRequested.Invoke();
+        }
+
+        public void OnCloseTabRequested()
+        {
+            if (CloseTabRequested != null)
+                CloseTabRequested.Invoke();
+        }
+
+        public void OnSwitchTabRequested(bool reverse)
+        {
+            if (SwitchTabRequested != null)
+                SwitchTabRequested.Invoke(this, reverse);
+        }
+
         public delegate void LeftMouseDownDelegate(Board selectedBoard, BoardItem item, BoardItem selectedItem, Point realPosition, Point virtualPosition, bool selectedItemHigher);
         public event LeftMouseDownDelegate LeftMouseDown;
 
@@ -487,6 +506,9 @@ namespace HaCreator.MapEditor
         public event ImageDroppedDelegate ImageDropped;
 
         public event HaCreator.GUI.HaRibbon.EmptyEvent ExportRequested;
+        public event HaCreator.GUI.HaRibbon.EmptyEvent LoadRequested;
+        public event HaCreator.GUI.HaRibbon.EmptyEvent CloseTabRequested;
+        public event EventHandler<bool> SwitchTabRequested;
         public event HaCreator.GUI.HaRibbon.EmptyEvent BackupCheck;
 
         private void DxContainer_MouseClick(object sender, MouseEventArgs e)

@@ -80,33 +80,43 @@ namespace HaCreator.GUI.EditorPanels
 
         private void lifeListBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            lifePictureBox.Image = new Bitmap(1, 1);
-            if (lifeListBox.SelectedItem == null) return;
-            if (reactorRButton.Checked)
+            lock (hcsm.MultiBoard)
             {
-                ReactorInfo info = Program.InfoManager.Reactors[(string)lifeListBox.SelectedItem];
-                lifePictureBox.Image = info.Image;
-                hcsm.EnterEditMode(ItemTypes.Reactors);
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
-                hcsm.MultiBoard.Focus();
-            }
-            else if (npcRButton.Checked)
-            {
-                string id = ((string)lifeListBox.SelectedItem).Substring(0, ((string)lifeListBox.SelectedItem).IndexOf(" - "));
-                NpcInfo info = WzInfoTools.GetNpcInfoById(id);
-                lifePictureBox.Image = info.Image;
-                hcsm.EnterEditMode(ItemTypes.NPCs);
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
-                hcsm.MultiBoard.Focus();
-            }
-            else if (mobRButton.Checked)
-            {
-                string id = ((string)lifeListBox.SelectedItem).Substring(0, ((string)lifeListBox.SelectedItem).IndexOf(" - "));
-                MobInfo info = WzInfoTools.GetMobInfoById(id);
-                lifePictureBox.Image = info.Image;
-                hcsm.EnterEditMode(ItemTypes.Mobs);
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
-                hcsm.MultiBoard.Focus();
+                lifePictureBox.Image = new Bitmap(1, 1);
+                if (lifeListBox.SelectedItem == null) return;
+                if (reactorRButton.Checked)
+                {
+                    ReactorInfo info = Program.InfoManager.Reactors[(string)lifeListBox.SelectedItem];
+                    lifePictureBox.Image = new Bitmap(info.Image);
+                    hcsm.EnterEditMode(ItemTypes.Reactors);
+                    hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
+                }
+                else if (npcRButton.Checked)
+                {
+                    string id = ((string)lifeListBox.SelectedItem).Substring(0, ((string)lifeListBox.SelectedItem).IndexOf(" - "));
+                    NpcInfo info = WzInfoTools.GetNpcInfoById(id);
+                    if (info == null)
+                    {
+                        lifePictureBox.Image = null;
+                        return;
+                    }
+                    lifePictureBox.Image = new Bitmap(info.Image);
+                    hcsm.EnterEditMode(ItemTypes.NPCs);
+                    hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
+                }
+                else if (mobRButton.Checked)
+                {
+                    string id = ((string)lifeListBox.SelectedItem).Substring(0, ((string)lifeListBox.SelectedItem).IndexOf(" - "));
+                    MobInfo info = WzInfoTools.GetMobInfoById(id);
+                    if (info == null)
+                    {
+                        lifePictureBox.Image = null;
+                        return;
+                    }
+                    lifePictureBox.Image = new Bitmap(info.Image);
+                    hcsm.EnterEditMode(ItemTypes.Mobs);
+                    hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo(info);
+                }
             }
         }
     }

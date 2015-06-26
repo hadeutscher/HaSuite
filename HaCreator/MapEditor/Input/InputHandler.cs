@@ -155,12 +155,12 @@ namespace HaCreator.MapEditor.Input
 
                     if (currPhysicalPos.X - UserSettings.ScrollDistance < 0 && oldPos.X > newPos.X) //move to left
                         selectedBoard.hScroll = (int)Math.Max(0, selectedBoard.hScroll - Math.Pow(UserSettings.ScrollBase, (UserSettings.ScrollDistance - currPhysicalPos.X) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor);
-                    else if (currPhysicalPos.X + UserSettings.ScrollDistance > selectedBoard.ParentControl.Width && oldPos.X < newPos.X) //move to right
-                        selectedBoard.hScroll = (int)Math.Min(selectedBoard.hScroll + Math.Pow(UserSettings.ScrollBase, (currPhysicalPos.X - selectedBoard.ParentControl.Width + UserSettings.ScrollDistance) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor, selectedBoard.ParentControl.maxHScroll);
+                    else if (currPhysicalPos.X + UserSettings.ScrollDistance > parentBoard.Width && oldPos.X < newPos.X) //move to right
+                        selectedBoard.hScroll = (int)Math.Min(selectedBoard.hScroll + Math.Pow(UserSettings.ScrollBase, (currPhysicalPos.X - parentBoard.Width + UserSettings.ScrollDistance) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor, parentBoard.maxHScroll);
                     if (currPhysicalPos.Y - UserSettings.ScrollDistance < 0 && oldPos.Y > newPos.Y) //move to top
                         selectedBoard.vScroll = (int)Math.Max(0, selectedBoard.vScroll - Math.Pow(UserSettings.ScrollBase, (UserSettings.ScrollDistance - currPhysicalPos.Y) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor);
-                    else if (currPhysicalPos.Y + UserSettings.ScrollDistance > selectedBoard.ParentControl.Height && oldPos.Y < newPos.Y) //move to bottom
-                        selectedBoard.vScroll = (int)Math.Min(selectedBoard.vScroll + Math.Pow(UserSettings.ScrollBase, (currPhysicalPos.Y - selectedBoard.ParentControl.Height + UserSettings.ScrollDistance) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor, selectedBoard.ParentControl.maxVScroll);
+                    else if (currPhysicalPos.Y + UserSettings.ScrollDistance > parentBoard.Height && oldPos.Y < newPos.Y) //move to bottom
+                        selectedBoard.vScroll = (int)Math.Min(selectedBoard.vScroll + Math.Pow(UserSettings.ScrollBase, (currPhysicalPos.Y - parentBoard.Height + UserSettings.ScrollDistance) * UserSettings.ScrollExponentFactor) * UserSettings.ScrollFactor, parentBoard.maxVScroll);
                 }
             }
         }
@@ -220,7 +220,6 @@ namespace HaCreator.MapEditor.Input
                         switch (selectedBoard.Mouse.State)
                         {
                             case MouseState.Selection:
-                                int selectedItemIndex = 0;
                                 bool askedVr = false, askedMm = false;
                                 List<BoardItem> selectedItems = selectedBoard.SelectedItems.ToList(); // Dupe the selection list
                                 foreach (BoardItem item in selectedItems)
@@ -453,7 +452,12 @@ namespace HaCreator.MapEditor.Input
                         clearRedo = false;
                         break;
                     case Keys.S:
-                        selectedBoard.ParentControl.OnExportRequested();
+                        if (ctrl)
+                            parentBoard.OnExportRequested();
+                        break;
+                    case Keys.O:
+                        if (ctrl)
+                            parentBoard.OnLoadRequested();
                         break;
                     case Keys.Escape:
                         if (selectedBoard.Mouse.State == MouseState.Selection)
@@ -469,6 +473,14 @@ namespace HaCreator.MapEditor.Input
                         break;
                     default:
                         clearRedo = false;
+                        break;
+                    case Keys.W:
+                        if (ctrl)
+                            parentBoard.OnCloseTabRequested();
+                        break;
+                    case Keys.Tab:
+                        if (ctrl)
+                            parentBoard.OnSwitchTabRequested(shift);
                         break;
                 }
                 if (actions.Count > 0)
@@ -552,13 +564,13 @@ namespace HaCreator.MapEditor.Input
         
         private void HandleMinimapBrowse(Board selectedBoard, XNA.Point realPosition)
         {
-            int h = realPosition.X * selectedBoard.mag - selectedBoard.ParentControl.Width / 2;
-            int v = realPosition.Y * selectedBoard.mag - selectedBoard.ParentControl.Height / 2;
+            int h = realPosition.X * selectedBoard.mag - parentBoard.Width / 2;
+            int v = realPosition.Y * selectedBoard.mag - parentBoard.Height / 2;
             if (h < 0) selectedBoard.hScroll = 0;
-            else if (h > selectedBoard.ParentControl.maxHScroll) selectedBoard.hScroll = selectedBoard.ParentControl.maxHScroll;
+            else if (h > parentBoard.maxHScroll) selectedBoard.hScroll = parentBoard.maxHScroll;
             else selectedBoard.hScroll = h;
             if (v < 0) selectedBoard.vScroll = 0;
-            else if (v > selectedBoard.ParentControl.maxVScroll) selectedBoard.vScroll = selectedBoard.ParentControl.maxVScroll;
+            else if (v > parentBoard.maxVScroll) selectedBoard.vScroll = parentBoard.maxVScroll;
             else selectedBoard.vScroll = v;
         }
 

@@ -24,7 +24,6 @@ namespace HaCreator.GUI.InstanceEditor
         {
             InitializeComponent();
             this.searchBox.TextChanged += this.mapBrowserCtrl.searchBox_TextChanged;
-            mapBrowserCtrl.InitializeMaps(false);
         }
 
         public new static int? Show()
@@ -55,6 +54,11 @@ namespace HaCreator.GUI.InstanceEditor
         private void mapBrowserCtrl_SelectionChanged()
         {
             loadButton.Enabled = mapBrowserCtrl.LoadAvailable;
+        }
+
+        private void MapBrowser_Load(object sender, EventArgs e)
+        {
+            mapBrowserCtrl.InitializeMaps(false);
         }
     }
 }

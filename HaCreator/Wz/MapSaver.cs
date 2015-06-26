@@ -237,8 +237,8 @@ namespace HaCreator.Wz
                 WzSubProperty rope = new WzSubProperty();
 
                 rope["x"] = InfoTool.SetInt(ropeInst.FirstAnchor.X);
-                rope["y1"] = InfoTool.SetInt(ropeInst.FirstAnchor.Y);
-                rope["y2"] = InfoTool.SetInt(ropeInst.SecondAnchor.Y);
+                rope["y1"] = InfoTool.SetInt(Math.Min(ropeInst.FirstAnchor.Y, ropeInst.SecondAnchor.Y));
+                rope["y2"] = InfoTool.SetInt(Math.Max(ropeInst.FirstAnchor.Y, ropeInst.SecondAnchor.Y));
                 rope["uf"] = InfoTool.SetBool(ropeInst.uf);
                 rope["page"] = InfoTool.SetInt(ropeInst.LayerNumber);
                 rope["l"] = InfoTool.SetBool(ropeInst.ladder);
@@ -915,6 +915,8 @@ namespace HaCreator.Wz
                     FootholdAnchor.MergeAnchors(a, b); // Transfer lines from b to a
                     b.RemoveItem(null); // Remove b
                     i--; // Fix index after we removed b
+                    // Note: We are unlinking b from its parent. If b's parent is an edU tile, this will cause the edU to be irregular
+                    // and thus it will not get fixed in the next step. To counter this, FHAnchorSorter makes sure edU-children always come first.
                 }
             }
 

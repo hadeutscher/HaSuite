@@ -100,7 +100,7 @@ namespace HaCreator.MapEditor
                 {
                     foreach (MapleLine line in list)
                     {
-                        if (parent.IsItemInRange(line.FirstDot.X, line.FirstDot.Y, Math.Abs(line.FirstDot.X - line.SecondDot.X), Math.Abs(line.FirstDot.Y - line.SecondDot.Y), xShift, yShift))
+                        if (parent.IsItemInRange(Math.Min(line.FirstDot.X, line.SecondDot.X), Math.Min(line.FirstDot.Y, line.SecondDot.Y), Math.Abs(line.FirstDot.X - line.SecondDot.X), Math.Abs(line.FirstDot.Y - line.SecondDot.Y), xShift, yShift))
                             line.Draw(sprite, line.GetColor(sel), xShift, yShift);
                     }
                 }

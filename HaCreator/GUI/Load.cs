@@ -48,7 +48,6 @@ namespace HaCreator.GUI
             this.Tabs = Tabs;
             this.rightClickHandler = rightClickHandler;
             this.searchBox.TextChanged += this.mapBrowser.searchBox_TextChanged;
-            this.mapBrowser.InitializeMaps(true);
         }
 
         private void Load_Load(object sender, EventArgs e)
@@ -57,20 +56,24 @@ namespace HaCreator.GUI
             {
                 case 0:
                     HAMSelect.Checked = true;
+                    HAMBox.Text = ApplicationSettings.LastHamPath;
                     break;
                 case 1:
                     XMLSelect.Checked = true;
+                    XMLBox.Text = ApplicationSettings.LastXmlPath;
                     break;
                 case 2:
                     WZSelect.Checked = true;
                     break;
             }
+            this.mapBrowser.InitializeMaps(true);
         }
 
         private void selectionChanged(object sender, EventArgs e)
         {
             if (HAMSelect.Checked)
             {
+                ApplicationSettings.lastRadioIndex = 0;
                 HAMBox.Enabled = true;
                 XMLBox.Enabled = false;
                 searchBox.Enabled = false;
@@ -79,6 +82,7 @@ namespace HaCreator.GUI
             }
             else if (XMLSelect.Checked)
             {
+                ApplicationSettings.lastRadioIndex = 1;
                 HAMBox.Enabled = false;
                 XMLBox.Enabled = true;
                 searchBox.Enabled = false;
@@ -87,6 +91,7 @@ namespace HaCreator.GUI
             }
             else if (WZSelect.Checked)
             {
+                ApplicationSettings.lastRadioIndex = 2;
                 HAMBox.Enabled = false;
                 XMLBox.Enabled = false;
                 searchBox.Enabled = true;
@@ -123,21 +128,25 @@ namespace HaCreator.GUI
 
         private void loadButton_Click(object sender, EventArgs e)
         {
+            //Hide();
+            WaitWindow ww = new WaitWindow("Loading...");
+            ww.Show();
+            Application.DoEvents();
+
             MapLoader loader = new MapLoader();
             WzImage mapImage = null;
             string mapName = null, streetName = "", categoryName = "";
             WzSubProperty strMapProp = null;
             if (HAMSelect.Checked)
             {
-                ApplicationSettings.lastRadioIndex = 0;
                 loader.CreateMapFromHam(multiBoard, Tabs, File.ReadAllText(HAMBox.Text), rightClickHandler);
                 DialogResult = DialogResult.OK;
+                ww.EndWait();
                 Close();
                 return;
             }
             else if (XMLSelect.Checked)
             {
-                ApplicationSettings.lastRadioIndex = 1;
                 try
                 {
                     mapImage = (WzImage)new WzXmlDeserializer(false, null).ParseXML(XMLBox.Text)[0];
@@ -145,12 +154,13 @@ namespace HaCreator.GUI
                 catch
                 {
                     Warning.Error("Error while loading XML. Aborted.");
+                    ww.EndWait();
+                    Show();
                     return;
                 }
             }
             else if (WZSelect.Checked)
             {
-                ApplicationSettings.lastRadioIndex = 2;
                 if (mapBrowser.SelectedItem == "MapLogin")
                 {
                     mapImage = (WzImage)Program.WzManager["ui"]["MapLogin.img"];
@@ -179,6 +189,7 @@ namespace HaCreator.GUI
             }
             loader.CreateMapFromImage(mapImage, mapName, streetName, categoryName, strMapProp, Tabs, multiBoard, rightClickHandler);
             DialogResult = DialogResult.OK;
+            ww.EndWait();
             Close();
         }
 
@@ -197,6 +208,16 @@ namespace HaCreator.GUI
             {
                 loadButton_Click(null, null);
             }
+        }
+
+        private void HAMBox_TextChanged(object sender, EventArgs e)
+        {
+            ApplicationSettings.LastHamPath = HAMBox.Text;
+        }
+
+        private void XMLBox_TextChanged(object sender, EventArgs e)
+        {
+            ApplicationSettings.LastXmlPath = XMLBox.Text;
         }
     }
 }

@@ -24,6 +24,7 @@ namespace HaCreator.MapEditor
         private MultiBoard multiBoard;
         private HaCreatorStateManager hcsm;
         private HaCreator.ThirdParty.TabPages.PageCollection tabs;
+        private bool enabled = false;
 
         public BackupManager(MultiBoard multiBoard, InputHandler input, HaCreatorStateManager hcsm, HaCreator.ThirdParty.TabPages.PageCollection tabs)
         {
@@ -38,9 +39,17 @@ namespace HaCreator.MapEditor
             return Path.Combine(Program.GetLocalSettingsFolder(), "Backups");
         }
 
+        public void Start()
+        {
+            enabled = true;
+            // Initialize timers
+            input.OnBackup();
+            input.OnUserInteraction();
+        }
+
         public void BackupCheck()
         {
-            if (!UserSettings.BackupEnabled)
+            if (!enabled || !UserSettings.BackupEnabled)
                 return;
             if (input.IsUserIdleFor(UserSettings.BackupIdleTime) || input.IsBackupDelayedFor(UserSettings.BackupMaxTime))
             {

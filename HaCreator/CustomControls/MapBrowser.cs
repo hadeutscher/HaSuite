@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Collections;
 using MapleLib.WzLib;
 using MapleLib.WzLib.WzProperties;
+using System.Threading;
 
 namespace HaCreator.CustomControls
 {
@@ -59,25 +60,38 @@ namespace HaCreator.CustomControls
 
         public void InitializeMaps(bool special)
         {
-            mapLogin1 = Program.WzManager["ui"]["MapLogin1.img"] != null;
-            foreach (KeyValuePair<string, string> map in Program.InfoManager.Maps)
+            new Thread(new ThreadStart((Action)delegate { InitializeMapsThread(special); })).Start();
+        }
+
+        public void InitializeMapsThread(bool special)
+        {
+            lock (maps)
             {
-                maps.Add(map.Key + " - " + map.Value);
-            }
-            maps.Sort();
-            if (special)
-            {
-                maps.Insert(0, "CashShopPreview");
-                maps.Insert(0, "MapLogin");
-                if (mapLogin1)
+                mapLogin1 = Program.WzManager["ui"]["MapLogin1.img"] != null;
+                foreach (KeyValuePair<string, string> map in Program.InfoManager.Maps)
                 {
-                    maps.Insert(0, "MapLogin1");
+                    maps.Add(map.Key + " - " + map.Value);
+                }
+                maps.Sort();
+                if (special)
+                {
+                    maps.Insert(0, "CashShopPreview");
+                    maps.Insert(0, "MapLogin");
+                    if (mapLogin1)
+                    {
+                        maps.Insert(0, "MapLogin1");
+                    }
                 }
             }
-            foreach (string map in maps)
+            
+                foreach (string map in maps)
+                {
+                    Invoke((Action)delegate
             {
-                mapNamesBox.Items.Add(map);
-            }
+                    mapNamesBox.Items.Add(map);
+            });
+                }
+            
         }
 
         public void searchBox_TextChanged(object sender, EventArgs e)
@@ -85,17 +99,20 @@ namespace HaCreator.CustomControls
             TextBox searchBox = (TextBox)sender;
             string tosearch = searchBox.Text.ToLower();
             mapNamesBox.Items.Clear();
-            if (tosearch == "")
+            lock (maps)
             {
-                mapNamesBox.Items.AddRange(maps.Cast<object>().ToArray<object>());
-            }
-            else
-            {
-                foreach (string map in maps)
+                if (tosearch == "")
                 {
-                    if (map.ToLower().Contains(tosearch))
+                    mapNamesBox.Items.AddRange(maps.Cast<object>().ToArray<object>());
+                }
+                else
+                {
+                    foreach (string map in maps)
                     {
-                        mapNamesBox.Items.Add(map);
+                        if (map.ToLower().Contains(tosearch))
+                        {
+                            mapNamesBox.Items.Add(map);
+                        }
                     }
                 }
             }

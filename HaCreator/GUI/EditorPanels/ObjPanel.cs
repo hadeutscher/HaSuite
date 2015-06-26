@@ -66,18 +66,21 @@ namespace HaCreator.GUI.EditorPanels
 
         private void objL1ListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (objL1ListBox.SelectedItem == null) return;
-            objImagesContainer.Controls.Clear();
-            WzImageProperty l1Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem][(string)objL1ListBox.SelectedItem];
-            foreach (WzSubProperty l2Prop in l1Prop.WzProperties)
+            lock (hcsm.MultiBoard)
             {
-                ObjectInfo info = ObjectInfo.Get((string)objSetListBox.SelectedItem, (string)objL0ListBox.SelectedItem, (string)objL1ListBox.SelectedItem, l2Prop.Name);
-                ImageViewer item = objImagesContainer.Add(info.Image, l2Prop.Name, true);
-                item.Tag = info;
-                item.MouseDown += new MouseEventHandler(objItem_Click);
-                item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-                item.MaxHeight = UserSettings.ImageViewerHeight;
-                item.MaxWidth = UserSettings.ImageViewerWidth;
+                if (objL1ListBox.SelectedItem == null) return;
+                objImagesContainer.Controls.Clear();
+                WzImageProperty l1Prop = Program.InfoManager.ObjectSets[(string)objSetListBox.SelectedItem][(string)objL0ListBox.SelectedItem][(string)objL1ListBox.SelectedItem];
+                foreach (WzSubProperty l2Prop in l1Prop.WzProperties)
+                {
+                    ObjectInfo info = ObjectInfo.Get((string)objSetListBox.SelectedItem, (string)objL0ListBox.SelectedItem, (string)objL1ListBox.SelectedItem, l2Prop.Name);
+                    ImageViewer item = objImagesContainer.Add(info.Image, l2Prop.Name, true);
+                    item.Tag = info;
+                    item.MouseDown += new MouseEventHandler(objItem_Click);
+                    item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                    item.MaxHeight = UserSettings.ImageViewerHeight;
+                    item.MaxWidth = UserSettings.ImageViewerWidth;
+                }
             }
         }
 
@@ -89,14 +92,17 @@ namespace HaCreator.GUI.EditorPanels
 
         private void objItem_Click(object sender, MouseEventArgs e)
         {
-            if (!hcsm.MultiBoard.AssertLayerSelected())
+            lock (hcsm.MultiBoard)
             {
-                return;
+                if (!hcsm.MultiBoard.AssertLayerSelected())
+                {
+                    return;
+                }
+                hcsm.EnterEditMode(ItemTypes.Objects);
+                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((ObjectInfo)((ImageViewer)sender).Tag);
+                hcsm.MultiBoard.Focus();
+                ((ImageViewer)sender).IsActive = true;
             }
-            hcsm.EnterEditMode(ItemTypes.Objects);
-            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((ObjectInfo)((ImageViewer)sender).Tag);
-            hcsm.MultiBoard.Focus();
-            ((ImageViewer)sender).IsActive = true;
         }
     }
 }

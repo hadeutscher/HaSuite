@@ -53,7 +53,10 @@ namespace HaCreator.GUI.EditorPanels
 
         private void tileBrowse_Click(object sender, EventArgs e)
         {
-            new TileSetBrowser(tileSetList).ShowDialog();
+            lock (hcsm.MultiBoard)
+            {
+                new TileSetBrowser(tileSetList).ShowDialog();
+            }
         }
 
         private void tileSetList_SelectedIndexChanged(object sender, EventArgs e)
@@ -63,38 +66,41 @@ namespace HaCreator.GUI.EditorPanels
 
         public void LoadTileSetList()
         {
-            if (tileSetList.SelectedItem == null) return;
-            tileImagesContainer.Controls.Clear();
-            string selectedSetName = (string)tileSetList.SelectedItem;
-            if (!Program.InfoManager.TileSets.ContainsKey(selectedSetName))
-                return;
-            WzImage tileSetImage = Program.InfoManager.TileSets[selectedSetName];
-            int? mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"]);
-            foreach (WzSubProperty tCat in tileSetImage.WzProperties)
+            lock (hcsm.MultiBoard)
             {
-                if (tCat.Name == "info") continue;
-                if (ApplicationSettings.randomTiles)
+                if (tileSetList.SelectedItem == null) return;
+                tileImagesContainer.Controls.Clear();
+                string selectedSetName = (string)tileSetList.SelectedItem;
+                if (!Program.InfoManager.TileSets.ContainsKey(selectedSetName))
+                    return;
+                WzImage tileSetImage = Program.InfoManager.TileSets[selectedSetName];
+                int? mag = InfoTool.GetOptionalInt(tileSetImage["info"]["mag"]);
+                foreach (WzSubProperty tCat in tileSetImage.WzProperties)
                 {
-                    WzCanvasProperty canvasProp = (WzCanvasProperty)tCat["0"];
-                    if (canvasProp == null) continue;
-                    ImageViewer item = tileImagesContainer.Add(canvasProp.PngProperty.GetPNG(false), tCat.Name, true);
-                    TileInfo[] randomInfos = new TileInfo[tCat.WzProperties.Count];
-                    for (int i = 0; i < randomInfos.Length; i++)
+                    if (tCat.Name == "info") continue;
+                    if (ApplicationSettings.randomTiles)
                     {
-                        randomInfos[i] = TileInfo.Get((string)tileSetList.SelectedItem, tCat.Name, tCat.WzProperties[i].Name, mag);
-                    }
-                    item.Tag = randomInfos;
-                    item.MouseDown += new MouseEventHandler(tileItem_Click);
-                    item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
-                }
-                else
-                {
-                    foreach (WzCanvasProperty tile in tCat.WzProperties)
-                    {
-                        ImageViewer item = tileImagesContainer.Add(tile.PngProperty.GetPNG(false), tCat.Name + "/" + tile.Name, true);
-                        item.Tag = TileInfo.Get((string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
+                        WzCanvasProperty canvasProp = (WzCanvasProperty)tCat["0"];
+                        if (canvasProp == null) continue;
+                        ImageViewer item = tileImagesContainer.Add(canvasProp.PngProperty.GetPNG(false), tCat.Name, true);
+                        TileInfo[] randomInfos = new TileInfo[tCat.WzProperties.Count];
+                        for (int i = 0; i < randomInfos.Length; i++)
+                        {
+                            randomInfos[i] = TileInfo.Get((string)tileSetList.SelectedItem, tCat.Name, tCat.WzProperties[i].Name, mag);
+                        }
+                        item.Tag = randomInfos;
                         item.MouseDown += new MouseEventHandler(tileItem_Click);
                         item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                    }
+                    else
+                    {
+                        foreach (WzCanvasProperty tile in tCat.WzProperties)
+                        {
+                            ImageViewer item = tileImagesContainer.Add(tile.PngProperty.GetPNG(false), tCat.Name + "/" + tile.Name, true);
+                            item.Tag = TileInfo.Get((string)tileSetList.SelectedItem, tCat.Name, tile.Name, mag);
+                            item.MouseDown += new MouseEventHandler(tileItem_Click);
+                            item.MouseUp += new MouseEventHandler(ImageViewer.item_MouseUp);
+                        }
                     }
                 }
             }
@@ -102,36 +108,39 @@ namespace HaCreator.GUI.EditorPanels
 
         void tileItem_Click(object sender, MouseEventArgs e)
         {
-            ImageViewer item = (ImageViewer)sender;
-            if (!hcsm.MultiBoard.AssertLayerSelected())
+            lock (hcsm.MultiBoard)
             {
-                return;
-            }
-            Layer layer = hcsm.MultiBoard.SelectedBoard.SelectedLayer;
-            if (layer.tS != null)
-            {
-                TileInfo infoToAdd = null;
-                if (ApplicationSettings.randomTiles)
-                    infoToAdd = ((TileInfo[])item.Tag)[0];
-                else
-                    infoToAdd = (TileInfo)item.Tag;
-                if (infoToAdd.tS != layer.tS)
+                ImageViewer item = (ImageViewer)sender;
+                if (!hcsm.MultiBoard.AssertLayerSelected())
                 {
-                    if (MessageBox.Show("This action will change the layer's tS. Proceed?", "Layer tS Change", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
-                        return;
-                    List<UndoRedoAction> actions = new List<UndoRedoAction>();
-                    actions.Add(UndoRedoManager.LayerTSChanged(layer, layer.tS, infoToAdd.tS));
-                    layer.ReplaceTS(infoToAdd.tS);
-                    hcsm.MultiBoard.SelectedBoard.UndoRedoMan.AddUndoBatch(actions);
+                    return;
                 }
+                Layer layer = hcsm.MultiBoard.SelectedBoard.SelectedLayer;
+                if (layer.tS != null)
+                {
+                    TileInfo infoToAdd = null;
+                    if (ApplicationSettings.randomTiles)
+                        infoToAdd = ((TileInfo[])item.Tag)[0];
+                    else
+                        infoToAdd = (TileInfo)item.Tag;
+                    if (infoToAdd.tS != layer.tS)
+                    {
+                        if (MessageBox.Show("This action will change the layer's tS. Proceed?", "Layer tS Change", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != System.Windows.Forms.DialogResult.Yes)
+                            return;
+                        List<UndoRedoAction> actions = new List<UndoRedoAction>();
+                        actions.Add(UndoRedoManager.LayerTSChanged(layer, layer.tS, infoToAdd.tS));
+                        layer.ReplaceTS(infoToAdd.tS);
+                        hcsm.MultiBoard.SelectedBoard.UndoRedoMan.AddUndoBatch(actions);
+                    }
+                }
+                hcsm.EnterEditMode(ItemTypes.Tiles);
+                if (ApplicationSettings.randomTiles)
+                    hcsm.MultiBoard.SelectedBoard.Mouse.SetRandomTilesMode((TileInfo[])item.Tag);
+                else
+                    hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((TileInfo)item.Tag);
+                hcsm.MultiBoard.Focus();
+                item.IsActive = true;
             }
-            hcsm.EnterEditMode(ItemTypes.Tiles);
-            if (ApplicationSettings.randomTiles)
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetRandomTilesMode((TileInfo[])item.Tag);
-            else
-                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((TileInfo)item.Tag);
-            hcsm.MultiBoard.Focus();
-            item.IsActive = true;
         }
     }
 }

@@ -64,7 +64,10 @@ namespace HaCreator.MapEditor.Info
         public static MobInfo Get(string id)
         {
             WzImage mobImage = (WzImage)Program.WzManager["mob"][id + ".img"];
-            if (!mobImage.Parsed) mobImage.ParseImage();
+            if (mobImage == null)
+                return null;
+            if (!mobImage.Parsed)
+                mobImage.ParseImage();
             if (mobImage.HCTag == null)
                 mobImage.HCTag = MobInfo.Load(mobImage);
             MobInfo result = (MobInfo)mobImage.HCTag;

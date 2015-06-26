@@ -274,7 +274,8 @@ namespace HaCreator.MapEditor.Input
             lock (Board.ParentControl)
             {
                 Clear();
-                if (newInfo.Image == null) ((MapleExtractableInfo)newInfo).ParseImage();
+                if (newInfo.Image == null) 
+                    ((MapleExtractableInfo)newInfo).ParseImage();
                 currAddedInfo = newInfo;
                 currAddedObj = newInfo.CreateInstance(Board.SelectedLayer, Board, X + currAddedInfo.Origin.X - newInfo.Image.Width / 2, Y + currAddedInfo.Origin.Y - newInfo.Image.Height / 2, 50, false);
                 Board.BoardItems.Add(currAddedObj, false);

@@ -34,9 +34,7 @@
             this.XMLSelect = new System.Windows.Forms.RadioButton();
             this.XMLBox = new System.Windows.Forms.TextBox();
             this.searchBox = new System.Windows.Forms.TextBox();
-            this.browseXML = new System.Windows.Forms.Button();
             this.mapBrowser = new HaCreator.CustomControls.MapBrowser();
-            this.browseHAM = new System.Windows.Forms.Button();
             this.HAMBox = new System.Windows.Forms.TextBox();
             this.HAMSelect = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
@@ -81,26 +79,17 @@
             this.XMLBox.Enabled = false;
             this.XMLBox.Location = new System.Drawing.Point(64, 38);
             this.XMLBox.Name = "XMLBox";
-            this.XMLBox.Size = new System.Drawing.Size(158, 20);
+            this.XMLBox.Size = new System.Drawing.Size(200, 20);
             this.XMLBox.TabIndex = 4;
             this.XMLBox.Click += new System.EventHandler(this.browseXML_Click);
+            this.XMLBox.TextChanged += new System.EventHandler(this.XMLBox_TextChanged);
             // 
             // searchBox
             // 
             this.searchBox.Location = new System.Drawing.Point(64, 62);
             this.searchBox.Name = "searchBox";
-            this.searchBox.Size = new System.Drawing.Size(158, 20);
+            this.searchBox.Size = new System.Drawing.Size(200, 20);
             this.searchBox.TabIndex = 7;
-            // 
-            // browseXML
-            // 
-            this.browseXML.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.browseXML.Location = new System.Drawing.Point(228, 39);
-            this.browseXML.Name = "browseXML";
-            this.browseXML.Size = new System.Drawing.Size(36, 19);
-            this.browseXML.TabIndex = 5;
-            this.browseXML.Text = "...";
-            this.browseXML.Click += new System.EventHandler(this.browseXML_Click);
             // 
             // mapBrowser
             // 
@@ -110,24 +99,15 @@
             this.mapBrowser.TabIndex = 8;
             this.mapBrowser.SelectionChanged += new HaCreator.CustomControls.MapBrowser.MapSelectChangedDelegate(this.mapBrowser_SelectionChanged);
             // 
-            // browseHAM
-            // 
-            this.browseHAM.AccessibleRole = System.Windows.Forms.AccessibleRole.PushButton;
-            this.browseHAM.Location = new System.Drawing.Point(228, 13);
-            this.browseHAM.Name = "browseHAM";
-            this.browseHAM.Size = new System.Drawing.Size(36, 19);
-            this.browseHAM.TabIndex = 2;
-            this.browseHAM.Text = "...";
-            this.browseHAM.Click += new System.EventHandler(this.browseHAM_Click);
-            // 
             // HAMBox
             // 
             this.HAMBox.Enabled = false;
             this.HAMBox.Location = new System.Drawing.Point(64, 12);
             this.HAMBox.Name = "HAMBox";
-            this.HAMBox.Size = new System.Drawing.Size(158, 20);
+            this.HAMBox.Size = new System.Drawing.Size(200, 20);
             this.HAMBox.TabIndex = 1;
             this.HAMBox.Click += new System.EventHandler(this.browseHAM_Click);
+            this.HAMBox.TextChanged += new System.EventHandler(this.HAMBox_TextChanged);
             // 
             // HAMSelect
             // 
@@ -144,11 +124,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(559, 347);
-            this.Controls.Add(this.browseHAM);
             this.Controls.Add(this.HAMBox);
             this.Controls.Add(this.HAMSelect);
             this.Controls.Add(this.mapBrowser);
-            this.Controls.Add(this.browseXML);
             this.Controls.Add(this.searchBox);
             this.Controls.Add(this.XMLBox);
             this.Controls.Add(this.XMLSelect);
@@ -174,11 +152,9 @@
         private System.Windows.Forms.Button loadButton;
         private System.Windows.Forms.RadioButton WZSelect;
         private System.Windows.Forms.RadioButton XMLSelect;
-        private System.Windows.Forms.Button browseXML;
         private System.Windows.Forms.TextBox XMLBox;
         private System.Windows.Forms.TextBox searchBox;
         private CustomControls.MapBrowser mapBrowser;
-        private System.Windows.Forms.Button browseHAM;
         private System.Windows.Forms.TextBox HAMBox;
         private System.Windows.Forms.RadioButton HAMSelect;
     }

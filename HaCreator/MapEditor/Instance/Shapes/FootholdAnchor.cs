@@ -4,6 +4,7 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+using HaCreator.MapEditor.Info;
 using MapleLib.WzLib.WzStructure.Data;
 using System;
 using System.Collections.Generic;
@@ -82,7 +83,14 @@ namespace HaCreator.MapEditor.Instance.Shapes
                         else if (c.PlatformNumber < d.PlatformNumber)
                             return -1;
                         else
-                            return 0;
+                        {
+                            if (c.Parent != null && c.Parent is TileInstance && ((TileInfo)c.Parent.BaseInfo).u == "edU")
+                                return -1;
+                            else if (d.Parent != null && d.Parent is TileInstance && ((TileInfo)d.Parent.BaseInfo).u == "edU")
+                                return 1;
+                            else
+                                return 0;
+                        }
                     }
                 }
             }

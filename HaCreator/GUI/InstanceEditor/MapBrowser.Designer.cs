@@ -86,6 +86,7 @@
             this.Name = "MapBrowser";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Map Browser";
+            this.Load += new System.EventHandler(this.MapBrowser_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -64,7 +64,10 @@ namespace HaCreator.MapEditor.Info
         public static NpcInfo Get(string id)
         {
             WzImage npcImage = (WzImage)Program.WzManager["npc"][id + ".img"];
-            if (!npcImage.Parsed) npcImage.ParseImage();
+            if (npcImage == null)
+                return null;
+            if (!npcImage.Parsed)
+                npcImage.ParseImage();
             if (npcImage.HCTag == null)
                 npcImage.HCTag = NpcInfo.Load(npcImage);
             NpcInfo result = (NpcInfo)npcImage.HCTag;

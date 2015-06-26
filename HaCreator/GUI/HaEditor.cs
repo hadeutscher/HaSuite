@@ -109,6 +109,11 @@ namespace HaCreator.GUI
             {
                 e.Cancel = true;
             }
+            else
+            {
+                // Thread safe without locks since reference assignment is atomic
+                Program.AbortThreads = true;
+            }
         }
 
         private void HaEditor_FormClosed(object sender, FormClosedEventArgs e)

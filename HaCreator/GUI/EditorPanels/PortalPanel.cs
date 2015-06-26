@@ -42,10 +42,13 @@ namespace HaCreator.GUI.EditorPanels
 
         void portal_MouseDown(object sender, MouseEventArgs e)
         {
-            hcsm.EnterEditMode(ItemTypes.Portals);
-            hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((PortalInfo)((ImageViewer)sender).Tag);
-            hcsm.MultiBoard.Focus();
-            ((ImageViewer)sender).IsActive = true;
+            lock (hcsm.MultiBoard)
+            {
+                hcsm.EnterEditMode(ItemTypes.Portals);
+                hcsm.MultiBoard.SelectedBoard.Mouse.SetHeldInfo((PortalInfo)((ImageViewer)sender).Tag);
+                hcsm.MultiBoard.Focus();
+                ((ImageViewer)sender).IsActive = true;
+            }
         }
     }
 }

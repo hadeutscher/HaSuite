@@ -89,12 +89,31 @@ namespace HaCreator.MapEditor
             this.multiBoard.MouseMoved += multiBoard_MouseMoved;
             this.multiBoard.ImageDropped += multiBoard_ImageDropped;
             this.multiBoard.ExportRequested += ribbon_ExportClicked;
+            this.multiBoard.LoadRequested += ribbon_OpenClicked;
+            this.multiBoard.CloseTabRequested += multiBoard_CloseTabRequested;
+            this.multiBoard.SwitchTabRequested += multiBoard_SwitchTabRequested;
             this.multiBoard.BackupCheck += multiBoard_BackupCheck;
             this.multiBoard.BoardRemoved += multiBoard_BoardRemoved;
             this.multiBoard.MinimapStateChanged += multiBoard_MinimapStateChanged;
 
             multiBoard.Visible = false;
             ribbon.SetEnabled(false);
+        }
+
+        public static int PositiveMod(int x, int m)
+        {
+            int r = x % m;
+            return r < 0 ? r + m : r;
+        }
+
+        void multiBoard_SwitchTabRequested(object sender, bool reverse)
+        {
+            tabs.CurrentPage = tabs[PositiveMod(tabs.IndexOf(tabs.CurrentPage) + (reverse ? -1 : 1), tabs.Count)];
+        }
+
+        void multiBoard_CloseTabRequested()
+        {
+            tabs.CurrentPage.Close();
         }
 
         #region MultiBoard Events
@@ -594,10 +613,6 @@ namespace HaCreator.MapEditor
             {
                 Repack r = new Repack();
                 r.ShowDialog();
-                if (Program.Restarting)
-                {
-                    multiBoard.Stop();
-                }
             }
             if (Program.Restarting && CloseRequested != null)
             {
@@ -641,6 +656,7 @@ namespace HaCreator.MapEditor
                         if (FirstMapLoaded != null)
                             FirstMapLoaded.Invoke();
                         multiBoard.Start();
+                        backupMan.Start();
                     }
                     multiBoard.SelectedBoard.SelectedPlatform = multiBoard.SelectedBoard.SelectedLayerIndex == -1 ? -1 : multiBoard.SelectedBoard.Layers[multiBoard.SelectedBoard.SelectedLayerIndex].zMList.ElementAt(0);
                     ribbon.SetLayers(multiBoard.SelectedBoard.Layers);
