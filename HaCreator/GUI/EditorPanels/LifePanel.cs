@@ -56,23 +56,28 @@ namespace HaCreator.GUI.EditorPanels
             ReloadLifeList();
         }
 
+        public static bool ContainsIgnoreCase(string haystack, string needle)
+        {
+            return haystack.IndexOf(needle, StringComparison.OrdinalIgnoreCase) != -1;
+        }
+
         private void ReloadLifeList()
         {
-            string searchText = lifeSearchBox.Text.ToLower();
+            string searchText = lifeSearchBox.Text;
             bool getAll = searchText == "";
             lifeListBox.Items.Clear();
             List<string> items = new List<string>();
             if (reactorRButton.Checked)
             {
-                items.AddRange(getAll ? reactors : reactors.Where(x => x.Contains(searchText)));
+                items.AddRange(getAll ? reactors : reactors.Where(x => ContainsIgnoreCase(x, searchText)));
             }
             else if (npcRButton.Checked)
             {
-                items.AddRange(getAll ? npcs : npcs.Where(x => x.Contains(searchText)));
+                items.AddRange(getAll ? npcs : npcs.Where(x => ContainsIgnoreCase(x, searchText)));
             }
             else if (mobRButton.Checked)
             {
-                items.AddRange(getAll ? mobs : mobs.Where(x => x.Contains(searchText)));
+                items.AddRange(getAll ? mobs : mobs.Where(x => ContainsIgnoreCase(x, searchText)));
             }
             items.Sort();
             lifeListBox.Items.AddRange(items.Cast<object>().ToArray());
