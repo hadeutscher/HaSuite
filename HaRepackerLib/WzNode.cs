@@ -97,46 +97,23 @@ namespace HaRepackerLib
             {
                 if (!((WzImage)TaggedObject).Parsed) ((WzImage)TaggedObject).ParseImage();
                 if (obj is WzImageProperty)
+                {
                     ((WzImage)TaggedObject).AddProperty((WzImageProperty)obj);
+                    ((WzImage)TaggedObject).Changed = true;
+                }
                 else return;
             }
             else if (TaggedObject is IPropertyContainer)
             {
                 if (obj is WzImageProperty)
+                {
                     ((IPropertyContainer)TaggedObject).AddProperty((WzImageProperty)obj);
+                    if (TaggedObject is WzImageProperty)
+                        ((WzImageProperty)TaggedObject).ParentImage.Changed = true;
+                }
                 else return;
             }
             else return;
-        }
-
-        public bool MoveWzObjectInto(WzNode newParent)
-        {
-            if (CanNodeBeInserted(newParent, Text))
-            {
-                addObjInternal((WzObject)newParent.Tag);
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Cannot insert object \"" + Text + "\" because an object with the same name already exists. Skipping.", "Skipping Object", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
-        }
-
-        public bool MoveInto(WzNode newParent)
-        {
-            if (CanNodeBeInserted(newParent, Text))
-            {
-                addObjInternal((WzObject)newParent.Tag);
-                Parent.Nodes.Remove(this);
-                newParent.Nodes.Add(this);
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("Cannot insert object \"" + Text + "\" because an object with the same name already exists. Skipping.", "Skipping Object", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return false;
-            }
         }
 
         public bool AddNode(WzNode node)

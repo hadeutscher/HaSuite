@@ -55,7 +55,7 @@ namespace HaCreator.GUI
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error initializing " + testFile + " (" + ex.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
+                    HaRepackerLib.Warning.Error("Error initializing " + testFile + " (" + ex.Message + ").\r\nCheck that the directory is valid and the file is not in use.");
                     return;
                 }
             }
