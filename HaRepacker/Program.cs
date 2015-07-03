@@ -24,7 +24,7 @@ namespace HaRepacker
 {
     public static class Program
     {
-        public const string Version = "4.2.3";
+        public const string Version = "4.2.3.1";
         public static WzFileManager WzMan = new HaRepackerLib.WzFileManager();
         public static WzSettingsManager SettingsManager;
         public static NamedPipeServerStream pipe;
