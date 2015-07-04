@@ -52,21 +52,35 @@ namespace HaCreator.Wz
 
         private void InsertImage()
         {
-            string cat = "Map" + image.Name.Substring(0, 1);
-            WzDirectory mapDir = (WzDirectory)Program.WzManager["map"]["Map"];
-            WzDirectory catDir = (WzDirectory)mapDir[cat];
-            if (catDir == null)
+            if (board.MapInfo.mapType == MapType.RegularMap)
             {
-                catDir = new WzDirectory(cat);
-                mapDir.AddDirectory(catDir);
+                string cat = "Map" + image.Name.Substring(0, 1);
+                WzDirectory mapDir = (WzDirectory)Program.WzManager["map"]["Map"];
+                WzDirectory catDir = (WzDirectory)mapDir[cat];
+                if (catDir == null)
+                {
+                    catDir = new WzDirectory(cat);
+                    mapDir.AddDirectory(catDir);
+                }
+                WzImage mapImg = (WzImage)catDir[image.Name];
+                if (mapImg != null)
+                {
+                    mapImg.Remove();
+                }
+                catDir.AddImage(image);
+                Program.WzManager.SetUpdated("map", image);
             }
-            WzImage mapImg = (WzImage)catDir[image.Name];
-            if (mapImg != null)
+            else
             {
-                mapImg.Remove();
+                WzDirectory mapDir = (WzDirectory)Program.WzManager["ui"];
+                WzImage mapImg = (WzImage)mapDir[image.Name];
+                if (mapImg != null)
+                {
+                    mapImg.Remove();
+                }
+                mapDir.AddImage(image);
+                Program.WzManager.SetUpdated("ui", image);
             }
-            catDir.AddImage(image);
-            Program.WzManager.SetUpdated("map", image);
         }
 
         private void SaveMapInfo()
@@ -1063,8 +1077,11 @@ namespace HaCreator.Wz
             }*/
         }
 
-        public void ChangeMapID(int newId)
+        public void ChangeMapTypeAndID(int newId, MapType newType)
         {
+            board.MapInfo.mapType = newType;
+            if (newType != MapType.RegularMap)
+                return;
             int oldId = board.MapInfo.id;
             if (oldId == newId)
             {

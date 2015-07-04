@@ -28,7 +28,8 @@ namespace HaCreator.MapEditor.Input
         public void OnUserInteraction()
         {
             lastUserInteraction = Environment.TickCount;
-            parentBoard.SelectedBoard.Dirty = true;
+            if (parentBoard != null && parentBoard.SelectedBoard != null)
+                parentBoard.SelectedBoard.Dirty = true;
         }
 
         public void OnBackup()
@@ -177,6 +178,8 @@ namespace HaCreator.MapEditor.Input
         {
             lock (parentBoard)
             {
+                if (parentBoard == null || parentBoard.SelectedBoard == null)
+                    return;
                 OnUserInteraction();
                 List<UndoRedoAction> actions = new List<UndoRedoAction>();
                 if (key == Keys.ControlKey || key == Keys.ShiftKey || key == Keys.Menu /*ALT key*/)

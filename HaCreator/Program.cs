@@ -26,7 +26,7 @@ namespace HaCreator
         public static WzFileManager WzManager;
         public static WzInformationManager InfoManager;
         public static WzSettingsManager SettingsManager;
-        public const string Version = "2.1.0.1";
+        public const string Version = "2.1.0.2";
         public static bool AbortThreads = false;
         public static bool Restarting;
 

@@ -138,11 +138,13 @@
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "Initialization";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "HaCreator";
             this.Load += new System.EventHandler(this.Initialization_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Initialization_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

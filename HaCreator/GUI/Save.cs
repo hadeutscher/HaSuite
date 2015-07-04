@@ -27,8 +27,29 @@ namespace HaCreator.GUI
         {
             this.board = board;
             InitializeComponent();
-            idBox.Text = board.MapInfo.id == -1 ? "" : board.MapInfo.id.ToString();
+            switch (board.MapInfo.mapType)
+            { 
+                case MapType.CashShopPreview:
+                case MapType.MapLogin:
+                    idBox.Text = board.MapInfo.strMapName;
+                    break;
+                case MapType.RegularMap:
+                    idBox.Text = board.MapInfo.id == -1 ? "" : board.MapInfo.id.ToString();
+                    break;
+                default:
+                    throw new NotSupportedException("Unknown map type at Save::.ctor()");
+            }
             idBox_TextChanged(null, null);
+        }
+
+        private MapType GetIdBoxMapType()
+        {
+            if (idBox.Text.StartsWith("MapLogin"))
+                return MapType.MapLogin;
+            else if (idBox.Text == "CashShopPreview")
+                return MapType.CashShopPreview;
+            else
+                return MapType.RegularMap;
         }
 
         private void idBox_TextChanged(object sender, EventArgs e)
@@ -38,6 +59,11 @@ namespace HaCreator.GUI
             {
                 statusLabel.Text = "Please choose an ID";
                 saveButton.Enabled = false;
+            }
+            else if (GetIdBoxMapType() != MapType.RegularMap)
+            {
+                statusLabel.Text = "";
+                saveButton.Enabled = true;
             }
             else if (!int.TryParse(idBox.Text, out id))
             {
@@ -70,12 +96,24 @@ namespace HaCreator.GUI
                     return;
                 board.ParentControl.UserObjects.Flush();
             }
+            MapType type = GetIdBoxMapType();
             MapSaver saver = new MapSaver(board);
-            int newId = int.Parse(idBox.Text);
-            saver.ChangeMapID(newId);
-            saver.SaveMapImage();
-            saver.UpdateMapLists();
-            MessageBox.Show("Saved map with ID: " + newId.ToString());
+            if (type == MapType.RegularMap)
+            {
+                int newId = int.Parse(idBox.Text);
+                saver.ChangeMapTypeAndID(newId, MapType.RegularMap);
+                saver.SaveMapImage();
+                saver.UpdateMapLists();
+                MessageBox.Show("Saved map with ID: " + newId.ToString());
+            }
+            else
+            {
+                board.MapInfo.strMapName = idBox.Text;
+                board.TabPage.Text = board.MapInfo.strMapName;
+                saver.ChangeMapTypeAndID(-1, type);
+                saver.SaveMapImage();
+                MessageBox.Show("Saved map: " + board.MapInfo.strMapName);
+            }
             Close();
         }
 

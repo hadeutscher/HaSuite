@@ -32,6 +32,16 @@ namespace HaCreator.GUI
             }
         }
 
+        private bool IsPathCommon(string path)
+        {
+            foreach (string commonPath in commonMaplePaths)
+            {
+                if (commonPath == path)
+                    return true;
+            }
+            return false;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             ApplicationSettings.MapleVersionIndex = versionBox.SelectedIndex;
@@ -42,8 +52,10 @@ namespace HaCreator.GUI
                 MessageBox.Show("Please select the maple folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (!ApplicationSettings.MapleFolder.Contains(wzPath))
-                ApplicationSettings.MapleFolder = ApplicationSettings.MapleFolder + "," + wzPath;
+            if (!ApplicationSettings.MapleFolder.Contains(wzPath) && !IsPathCommon(wzPath))
+            {
+                ApplicationSettings.MapleFolder = ApplicationSettings.MapleFolder == "" ? wzPath : (ApplicationSettings.MapleFolder + "," + wzPath);
+            }
             WzMapleVersion fileVersion;
             short version = -1;
             if (versionBox.SelectedIndex == 3)
@@ -60,7 +72,9 @@ namespace HaCreator.GUI
                 }
             }
             else
+            {
                 fileVersion = (WzMapleVersion)versionBox.SelectedIndex;
+            }
 
             InitializeWzFiles(wzPath, fileVersion);
 
@@ -136,12 +150,18 @@ namespace HaCreator.GUI
             versionBox.SelectedIndex = 0;
             try
             {
-                string[] paths = ApplicationSettings.MapleFolder.Split(',');
+                string[] paths = ApplicationSettings.MapleFolder.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 foreach (string x in paths)
-                    if (x != string.Empty)
-                        pathBox.Items.Add(x);
-                if (paths.Length == 1) foreach (string path in commonMaplePaths) 
-                    if (Directory.Exists(path)) pathBox.Items.Add(path);
+                {
+                    pathBox.Items.Add(x);
+                }
+                foreach (string path in commonMaplePaths)
+                {
+                    if (Directory.Exists(path))
+                    {
+                        pathBox.Items.Add(path);
+                    }
+                }
                 if (pathBox.Items.Count == 0)
                     pathBox.Items.Add("Select Maple Folder");
             }
@@ -150,8 +170,13 @@ namespace HaCreator.GUI
             }
             versionBox.SelectedIndex = ApplicationSettings.MapleVersionIndex;
             if (pathBox.Items.Count < ApplicationSettings.MapleFolderIndex + 1)
-                pathBox.SelectedIndex = pathBox.SelectedIndex = pathBox.Items.Count - 1;
-            else pathBox.SelectedIndex = ApplicationSettings.MapleFolderIndex;
+            {
+                pathBox.SelectedIndex = pathBox.Items.Count - 1;
+            }
+            else
+            {
+                pathBox.SelectedIndex = ApplicationSettings.MapleFolderIndex;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -201,6 +226,18 @@ namespace HaCreator.GUI
                 mapImage.UnparseImage(); // To preserve memory, since this is a very memory intensive test
             }
             MessageBox.Show("Done");
+        }
+
+        private void Initialization_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                button1_Click(null, null);
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
         }
     }
 }

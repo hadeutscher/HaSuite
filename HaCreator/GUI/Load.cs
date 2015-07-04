@@ -164,17 +164,17 @@ namespace HaCreator.GUI
                 if (mapBrowser.SelectedItem == "MapLogin")
                 {
                     mapImage = (WzImage)Program.WzManager["ui"]["MapLogin.img"];
-                    mapName = "MapLogin";
+                    mapName = streetName = categoryName = "MapLogin";
                 }
                 else if (mapBrowser.SelectedItem == "MapLogin1")
                 {
                     mapImage = (WzImage)Program.WzManager["ui"]["MapLogin1.img"];
-                    mapName = "MapLogin1";
+                    mapName = streetName = categoryName = "MapLogin1";
                 }
                 else if (mapBrowser.SelectedItem == "CashShopPreview")
                 {
                     mapImage = (WzImage)Program.WzManager["ui"]["CashShopPreview.img"];
-                    mapName = "CashShopPreview";
+                    mapName = streetName = categoryName = "CashShopPreview";
                 }
                 else
                 {

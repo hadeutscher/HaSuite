@@ -67,55 +67,39 @@ namespace HaCreator.GUI
             xBox.Value = board.MapSize.X;
             yBox.Value = board.MapSize.Y;
 
-            if (info.mapType != MapType.CashShopPreview)
-            {
-                List<string> sortedBGMs = new List<string>();
-                foreach (KeyValuePair<string, WzSoundProperty> bgm in Program.InfoManager.BGMs)
-                    sortedBGMs.Add(bgm.Key);
-                sortedBGMs.Sort();
-                foreach (string bgm in sortedBGMs)
-                    bgmBox.Items.Add(bgm);
-                bgmBox.SelectedItem = info.bgm;
+            List<string> sortedBGMs = new List<string>();
+            foreach (KeyValuePair<string, WzSoundProperty> bgm in Program.InfoManager.BGMs)
+                sortedBGMs.Add(bgm.Key);
+            sortedBGMs.Sort();
+            foreach (string bgm in sortedBGMs)
+                bgmBox.Items.Add(bgm);
+            bgmBox.SelectedItem = info.bgm;
 
-                List<string> sortedMarks = new List<string>();
-                foreach (KeyValuePair<string, Bitmap> mark in Program.InfoManager.MapMarks)
-                    sortedMarks.Add(mark.Key);
-                sortedMarks.Sort();
-                foreach (string mark in sortedMarks)
-                    markBox.Items.Add(mark);
-                markBox.SelectedIndex = 0;
-            }
+            List<string> sortedMarks = new List<string>();
+            foreach (KeyValuePair<string, Bitmap> mark in Program.InfoManager.MapMarks)
+                sortedMarks.Add(mark.Key);
+            sortedMarks.Sort();
+            foreach (string mark in sortedMarks)
+                markBox.Items.Add(mark);
+            markBox.SelectedIndex = 0;
+
             switch (info.mapType)
             {
                 case MapType.CashShopPreview:
                     IDLabel.Text = "CashShopPreview";
-                    nameBox.Text = "CashShopPreview";
-                    streetBox.Text = "CashShopPreview";
-                    categoryBox.Text = "CashShopPreview";
-                    nameBox.Enabled = false;
-                    streetBox.Enabled = false;
-                    bgmBox.Enabled = false;
-                    soundPlayer.Enabled = false;
-                    markBox.Enabled = false;
-                    markImage.Image = new Bitmap(1, 1);
                     break;
                 case MapType.MapLogin:
                     IDLabel.Text = "MapLogin";
-                    nameBox.Text = "MapLogin";
-                    streetBox.Text = "MapLogin";
-                    categoryBox.Text = "MapLogin";
-                    nameBox.Enabled = false;
-                    streetBox.Enabled = false;
                     break;
                 case MapType.RegularMap:
                     if (info.id == -1) IDLabel.Text = "";
                     else IDLabel.Text = info.id.ToString();
-                    nameBox.Text = info.strMapName;
-                    streetBox.Text = info.strStreetName;
-                    categoryBox.Text = info.strCategoryName;
                     break;
             }
-            if (info.mapType != MapType.CashShopPreview) markBox.SelectedItem = info.mapMark;
+            nameBox.Text = info.strMapName;
+            streetBox.Text = info.strStreetName;
+            categoryBox.Text = info.strCategoryName;
+            markBox.SelectedItem = info.mapMark;
             if (info.returnMap == info.id) cannotReturnCBX.Checked = true;
             else returnBox.Text = info.returnMap.ToString();
             if (info.forcedReturn == 999999999) returnHereCBX.Checked = true;
@@ -309,38 +293,6 @@ namespace HaCreator.GUI
         {
             Close();
         }
-
-        /*public WzSubProperty GetMapStringProp(string id)
-        {
-            id = RemoveLeadingZeros(id);
-            WzImage mapNameParent = (WzImage)Program.WzManager.String.WzDirectory["Map.img"];
-            foreach (WzSubProperty mapNameCategory in mapNameParent.WzProperties)
-            {
-                WzSubProperty mapNameDirectory = (WzSubProperty)mapNameCategory[id];
-                if (mapNameDirectory != null)
-                    return mapNameDirectory;
-            }
-            return null;
-        }*/
-
-        /*private void ChangeID(string oldID, string newID)
-        {
-            string mapid = WzInfoTools.AddLeadingZeros(oldID, 9);
-            string mapcat = "Map" + mapid.Substring(0, 1);
-            WzImage mapImage = (WzImage)Program.WzManager["map"].GetObjectFromPath("Map.wz/Map/" + mapcat + "/" + mapid + ".img");
-            mapImage.Name = WzInfoTools.AddLeadingZeros(newID, 9) + ".img";*/
-        /*WzSubProperty mapStringParent = GetMapStringProp(mapid);
-        if (mapStringParent != null) ((IPropertyContainer)mapStringParent.Parent).RemoveProperty(mapStringParent.Name);
-        mapStringParent = new WzSubProperty(WzInfoTools.RemoveLeadingZeros(newID));
-        Program.WzManager.String["Map.img"]["etc"]*/
-        /*}*/
-
-        /*private void changeStringwz(int mapId, string name, string street)
-        {
-            WzStringProperty nameProp = GetMapNameProp(mapId);
-            WzStringProperty streetProp = GetMapNameProp(mapId);
-        }*/
-
 
         protected override void okButton_Click(object sender, EventArgs e)
         {
