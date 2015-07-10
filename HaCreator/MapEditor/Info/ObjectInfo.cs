@@ -26,11 +26,10 @@ namespace HaCreator.MapEditor.Info
         private string _l0;
         private string _l1;
         private string _l2;
-        private List<XNA.Point> footholdOffsets = null;
-        private List<XNA.Point> ropeOffsets = null;
+        private List<List<XNA.Point>> footholdOffsets = null;
+        private List<List<XNA.Point>> ropeOffsets = null;
+        private List<List<XNA.Point>> ladderOffsets = null;
         private List<XNA.Point> chairOffsets = null;
-        private List<List<XNA.Point>> footholdFullOffsets = null;
-        private bool fullFootholdInfo = false;
         private bool connect;
 
         public ObjectInfo(Bitmap image, System.Drawing.Point origin, string oS, string l0, string l1, string l2, WzObject parentObject)
@@ -51,6 +50,39 @@ namespace HaCreator.MapEditor.Info
             return (ObjectInfo)objInfoProp.HCTag;
         }
 
+        private static List<XNA.Point> ParsePropToOffsetList(WzImageProperty prop)
+        {
+            List<XNA.Point> result = new List<XNA.Point>();
+            foreach (WzVectorProperty point in prop.WzProperties)
+            {
+                result.Add(WzInfoTools.VectorToXNAPoint(point));
+            }
+            return result;
+        }
+
+        private static List<List<XNA.Point>> ParsePropToOffsetMap(WzImageProperty prop)
+        {
+            if (prop == null)
+                return null;
+            List<List<XNA.Point>> result = new List<List<XNA.Point>>();
+            if (prop is WzConvexProperty)
+            {
+                result.Add(ParsePropToOffsetList((WzConvexProperty)prop));
+            }
+            else if (prop is WzSubProperty)
+            {
+                foreach (WzConvexProperty offsetSet in prop.WzProperties)
+                {
+                    result.Add(ParsePropToOffsetList(offsetSet));
+                }
+            }
+            else
+            {
+                result = null;
+            }
+            return result;
+        }
+
         private static ObjectInfo Load(WzSubProperty parentObject, string oS, string l0, string l1, string l2)
         {
             WzCanvasProperty frame1 = (WzCanvasProperty)WzInfoTools.GetRealProperty(parentObject["0"]);
@@ -59,59 +91,11 @@ namespace HaCreator.MapEditor.Info
             WzImageProperty ropes = frame1["rope"];
             WzImageProperty ladders = frame1["ladder"];
             WzImageProperty footholds = frame1["foothold"];
-            if (footholds != null)
-            {
-                if (footholds is WzConvexProperty)
-                {
-                    result.fullFootholdInfo = false;
-                    result.footholdOffsets = new List<XNA.Point>();
-                    foreach (WzVectorProperty fhAnchor in footholds.WzProperties)
-                    {
-                        result.footholdOffsets.Add(WzInfoTools.VectorToXNAPoint(fhAnchor));
-                    }
-                }
-                else
-                {
-                    result.fullFootholdInfo = true;
-                    result.footholdFullOffsets = new List<List<XNA.Point>>();
-                    List<XNA.Point> fhAnchorList = new List<XNA.Point>();
-                    foreach (WzConvexProperty fh in footholds.WzProperties)
-                    {
-                        foreach (WzVectorProperty fhAnchor in fh.WzProperties)
-                        {
-                            fhAnchorList.Add(WzInfoTools.VectorToXNAPoint(fhAnchor));
-                        }
-                        result.footholdFullOffsets.Add(fhAnchorList);
-                        fhAnchorList = new List<XNA.Point>();
-                    }
-                }
-            }
+            result.footholdOffsets = ParsePropToOffsetMap(footholds);
+            result.ropeOffsets = ParsePropToOffsetMap(ropes);
+            result.ladderOffsets = ParsePropToOffsetMap(ladders);
             if (chairs != null)
-            {
-                result.chairOffsets = new List<XNA.Point>();
-                foreach (WzVectorProperty chair in chairs.WzProperties)
-                {
-                    result.chairOffsets.Add(WzInfoTools.VectorToXNAPoint(chair));
-                }
-            }
-            if (ropes != null || ladders != null)
-            {
-                result.ropeOffsets = new List<XNA.Point>();
-                if (ropes != null)
-                {
-                    foreach (WzVectorProperty rope in ropes.WzProperties)
-                    {
-                        result.ropeOffsets.Add(WzInfoTools.VectorToXNAPoint(rope));
-                    }
-                }
-                if (ladders != null)
-                {
-                    foreach (WzVectorProperty ladder in ladders.WzProperties)
-                    {
-                        result.ropeOffsets.Add(WzInfoTools.VectorToXNAPoint(ladder));
-                    }
-                }
-            }
+                result.chairOffsets = ParsePropToOffsetList(chairs);
             return result;
         }
 
@@ -126,13 +110,13 @@ namespace HaCreator.MapEditor.Info
 
         public void ParseOffsets(ObjectInstance instance, Board board, int x, int y)
         {
-            List<FootholdAnchor> anchors = new List<FootholdAnchor>();
             bool ladder = l0 == "ladder";
-            if (footholdOffsets != null || footholdFullOffsets != null)
+            if (footholdOffsets != null)
             {
-                if (!fullFootholdInfo)
+                foreach (List<XNA.Point> anchorList in footholdOffsets)
                 {
-                    foreach (XNA.Point foothold in footholdOffsets)
+                    List<FootholdAnchor> anchors = new List<FootholdAnchor>();
+                    foreach (XNA.Point foothold in anchorList)
                     {
                         FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, instance.LayerNumber, instance.PlatformNumber, true);
                         board.BoardItems.FHAnchors.Add(anchor);
@@ -141,34 +125,16 @@ namespace HaCreator.MapEditor.Info
                     }
                     CreateFootholdsFromAnchorList(board, anchors);
                 }
-                else
-                {
-                    foreach (List<XNA.Point> anchorList in footholdFullOffsets)
-                    {
-                        foreach (XNA.Point foothold in anchorList)
-                        {
-                            FootholdAnchor anchor = new FootholdAnchor(board, x + foothold.X, y + foothold.Y, instance.LayerNumber, instance.PlatformNumber, true);
-                            board.BoardItems.FHAnchors.Add(anchor);
-                            instance.BindItem(anchor, foothold);
-                            anchors.Add(anchor);
-                        }
-                        CreateFootholdsFromAnchorList(board, anchors);
-                        anchors.Clear();
-                    }
-                }
             }
-            if (chairOffsets != null) foreach (XNA.Point chairPos in chairOffsets)
+            if (chairOffsets != null)
+            {
+                foreach (XNA.Point chairPos in chairOffsets)
                 {
                     Chair chair = new Chair(board, x + chairPos.X, y + chairPos.Y);
                     board.BoardItems.Chairs.Add(chair);
                     instance.BindItem(chair, chairPos);
                 }
-            /*foreach (XNA.Point rope in ropeOffsets) //second thought: what the fuck is this even good for? rope origins aren't multilined anyway, why add them as board items?
-            {
-                RopeLadderAnchor ropeAnchor = new RopeLadderAnchor(board, x + rope.X, y + rope.Y, layer.LayerNumber, ladder, false);
-                board.BoardItems.RopeAnchors.Add(ropeAnchor);
-                instance.BindItem(ropeAnchor, rope);
-            }*/
+            }
         }
 
         public override BoardItem CreateInstance(Layer layer, Board board, int x, int y, int z, bool flip)
@@ -233,7 +199,7 @@ namespace HaCreator.MapEditor.Info
             }
         }
 
-        public List<XNA.Point> FootholdOffsets
+        public List<List<XNA.Point>> FootholdOffsets
         {
             get
             {
@@ -249,11 +215,19 @@ namespace HaCreator.MapEditor.Info
             }
         }
 
-        public List<XNA.Point> RopeOffsets
+        public List<List<XNA.Point>> RopeOffsets
         {
             get
             {
                 return ropeOffsets;
+            }
+        }
+
+        public List<List<XNA.Point>> LadderOffsets
+        {
+            get
+            {
+                return ladderOffsets;
             }
         }
 

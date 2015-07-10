@@ -23,6 +23,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
 
         private int _page; // aka layer
         private bool _ladder;
+        private bool _ladderSetByUser = false;
         private bool _uf; // Decides whether you can climb over the end of the rope (usually true)
                           // According to koolk it stands for "Upper Foothold"
 
@@ -64,9 +65,15 @@ namespace HaCreator.MapEditor.Instance.Shapes
             }
         }
 
+        public void OnUserTouchedLadder()
+        {
+            _ladderSetByUser = true;
+        }
+
         public int LayerNumber { get { return _page; } set { _page = value; } }
         public int PlatformNumber { get { return -1; } set { return; } }
         public bool ladder { get { return _ladder; } set { _ladder = value; } }
+        public bool ladderSetByUser { get { return _ladderSetByUser; } }
         public bool uf { get { return _uf; } set { _uf = value; } }
 
         public RopeAnchor FirstAnchor { get { return firstAnchor; } }
@@ -76,7 +83,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
         public class SerializationForm
         {
             public int page;
-            public bool ladder, uf;
+            public bool ladder, uf, ladderuser;
             public int x, y1, y2;
         }
 
@@ -100,6 +107,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
             result.page = _page;
             result.ladder = _ladder;
             result.uf = _uf;
+            result.ladderuser = _ladderSetByUser;
             result.x = firstAnchor.X;
             result.y1 = firstAnchor.Y;
             result.y2 = secondAnchor.Y;
@@ -117,6 +125,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
             _page = json.page;
             _ladder = json.ladder;
             _uf = json.uf;
+            _ladderSetByUser = json.ladderuser;
             firstAnchor = new RopeAnchor(board, json.x, json.y1, this);
             secondAnchor = new RopeAnchor(board, json.x, json.y2, this);
             line = new RopeLine(board, firstAnchor, secondAnchor);

@@ -14,6 +14,9 @@ namespace HaRepackerLib
 {
     public class WzNode : TreeNode
     {
+        public delegate ContextMenuStrip ContextMenuBuilderDelegate(WzNode node, WzObject obj);
+        public static ContextMenuBuilderDelegate ContextMenuBuilder = null;
+
         public WzNode(WzObject SourceObject)
             : base(SourceObject.Name)
         {
@@ -81,7 +84,7 @@ namespace HaRepackerLib
             else return false;
         }
 
-        private void addObjInternal(WzObject obj)
+        private bool addObjInternal(WzObject obj)
         {
             WzObject TaggedObject = (WzObject)Tag;
             if (TaggedObject is WzFile) TaggedObject = ((WzFile)TaggedObject).WzDirectory;
@@ -91,7 +94,7 @@ namespace HaRepackerLib
                     ((WzDirectory)TaggedObject).AddDirectory((WzDirectory)obj);
                 else if (obj is WzImage)
                     ((WzDirectory)TaggedObject).AddImage((WzImage)obj);
-                else return;
+                else return false;
             }
             else if (TaggedObject is WzImage)
             {
@@ -101,7 +104,7 @@ namespace HaRepackerLib
                     ((WzImage)TaggedObject).AddProperty((WzImageProperty)obj);
                     ((WzImage)TaggedObject).Changed = true;
                 }
-                else return;
+                else return false;
             }
             else if (TaggedObject is IPropertyContainer)
             {
@@ -111,9 +114,10 @@ namespace HaRepackerLib
                     if (TaggedObject is WzImageProperty)
                         ((WzImageProperty)TaggedObject).ParentImage.Changed = true;
                 }
-                else return;
+                else return false;
             }
-            else return;
+            else return false;
+            return true;
         }
 
         public bool AddNode(WzNode node)
@@ -146,13 +150,21 @@ namespace HaRepackerLib
             if (CanNodeBeInserted(this, obj.Name))
             {
                 TryParseImage();
-                addObjInternal(obj);
-                WzNode node = new WzNode(obj);
-                Nodes.Add(node);
-                if (node.Tag is WzImageProperty) ((WzImageProperty)node.Tag).ParentImage.Changed = true;
-                undoRedoMan.AddUndoBatch(new System.Collections.Generic.List<UndoRedoAction> { UndoRedoManager.ObjectAdded(this, node) });
-                node.EnsureVisible();
-                return true;
+                if (addObjInternal(obj))
+                {
+                    WzNode node = new WzNode(obj);
+                    Nodes.Add(node);
+                    if (node.Tag is WzImageProperty)
+                        ((WzImageProperty)node.Tag).ParentImage.Changed = true;
+                    undoRedoMan.AddUndoBatch(new System.Collections.Generic.List<UndoRedoAction> { UndoRedoManager.ObjectAdded(this, node) });
+                    node.EnsureVisible();
+                    return true;
+                }
+                else
+                {
+                    Warning.Error("Could not insert property, make sure all types are correct");
+                    return false;
+                }
             }
             else
             {
@@ -189,6 +201,18 @@ namespace HaRepackerLib
                     parent = (WzNode)parent.Parent;
                 }
                 return parent;
+            }
+        }
+
+        public override ContextMenuStrip ContextMenuStrip
+        {
+            get
+            {
+                return ContextMenuBuilder == null ? null : ContextMenuBuilder(this, (WzObject)Tag);
+            }
+            set
+            {
+                base.ContextMenuStrip = value;
             }
         }
     }

@@ -208,6 +208,12 @@ namespace HaCreator.MapEditor
             sprite.Draw(pixel, rectangle, color);
         }
 
+        public void DrawDot(SpriteBatch sprite, int x, int y, Color color, int dotSize)
+        {
+            int dotW = UserSettings.DotWidth * dotSize;
+            FillRectangle(sprite, new Rectangle(x - dotW, y - dotW, dotW * 2, dotW * 2), color);
+        }
+
         public void RenderFrame()
         {
             if (needsReset)

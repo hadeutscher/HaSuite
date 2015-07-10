@@ -58,7 +58,11 @@ namespace HaCreator.GUI.InstanceEditor
                 if (actions.Count > 0)
                     item.Board.UndoRedoMan.AddUndoBatch(actions);
                 item.ParentRope.uf = ufBox.Checked;
-                item.ParentRope.ladder = ladderBox.Checked;
+                if (item.ParentRope.ladder != ladderBox.Checked)
+                {
+                    item.ParentRope.OnUserTouchedLadder();
+                    item.ParentRope.ladder = ladderBox.Checked;
+                }
             }
             Close();
         }

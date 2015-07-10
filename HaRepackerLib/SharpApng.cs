@@ -198,12 +198,34 @@ namespace SharpApng
             ReleaseData(pathPtr);
         }
 
-        private const string apngdll = "apng.dll";
+        [DllImport("kernel32.dll", CharSet=CharSet.Auto, SetLastError=true)]
+        public static extern IntPtr LoadLibrary(string lpFileName);
 
-        [DllImport(apngdll)]
-        public static extern void CreateFrame(IntPtr pdata, int num, int den, int i, int len);
+        [DllImport("kernel32.dll", CharSet=CharSet.Ansi, ExactSpelling=true, SetLastError=true)]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
-        [DllImport(apngdll)]
-        public static extern void SaveAPNG(IntPtr path, int frameCount, int width, int height, int bytesPerPixel, byte firstFrameHidden);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void CreateFrameDelegate(IntPtr pdata, int num, int den, int i, int len);
+        public static readonly CreateFrameDelegate CreateFrame;
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SaveAPNGDelegate(IntPtr path, int frameCount, int width, int height, int bytesPerPixel, byte firstFrameHidden);
+        public static readonly SaveAPNGDelegate SaveAPNG;
+
+        static ApngBasicWrapper()
+        {
+            CreateFrame = null;
+            SaveAPNG = null;
+            IntPtr apnglib = LoadLibrary(Environment.Is64BitProcess ? "apng64.dll" : "apng32.dll");
+            if (apnglib != IntPtr.Zero)
+            {
+                IntPtr createFramePtr = GetProcAddress(apnglib, "CreateFrame");
+                if (createFramePtr != null)
+                    CreateFrame = (CreateFrameDelegate)Marshal.GetDelegateForFunctionPointer(createFramePtr, typeof(CreateFrameDelegate));
+                IntPtr saveApngPtr = GetProcAddress(apnglib, "SaveAPNG");
+                if (saveApngPtr != null)
+                    SaveAPNG = (SaveAPNGDelegate)Marshal.GetDelegateForFunctionPointer(saveApngPtr, typeof(SaveAPNGDelegate));
+            }
+        }
     }
 }

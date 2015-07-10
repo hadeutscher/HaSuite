@@ -71,6 +71,7 @@ namespace HaCreator.MapEditor.Instance.Shapes
 
         public override void DoSnap()
         {
+            // Lookup possible snap to foothold
             FootholdLine closestLine = null;
             double closestDistanceLine = double.MaxValue;
             foreach (FootholdLine fh in Board.BoardItems.FootholdLines)
@@ -88,20 +89,51 @@ namespace HaCreator.MapEditor.Instance.Shapes
                     }
                 }
             }
+
+            // Lookup possible snap to rope/ladder
             XNA.Point? closestRopeHint = null;
             double closestDistanceRope = double.MaxValue;
+            bool closestIsLadder = false;
             foreach (LayeredItem li in Board.BoardItems.TileObjs)
             {
                 if (!(li is ObjectInstance) || li.Selected)
                     continue;
                 ObjectInstance objInst = (ObjectInstance)li;
                 ObjectInfo objInfo = (ObjectInfo)objInst.BaseInfo;
-                if (objInfo.RopeOffsets == null)
-                    continue;
-                foreach (XNA.Point rope in objInfo.RopeOffsets)
+                if (objInfo.RopeOffsets != null)
                 {
-                    int dx = objInst.X + rope.X - X;
-                    int dy = objInst.Y + rope.Y - Y;
+                    LookupSnapInOffsetMap(objInst, objInfo.RopeOffsets, false, ref closestRopeHint, ref closestDistanceRope, ref closestIsLadder);
+                }
+                if (objInfo.LadderOffsets != null)
+                {
+                    LookupSnapInOffsetMap(objInst, objInfo.LadderOffsets, true, ref closestRopeHint, ref closestDistanceRope, ref closestIsLadder);
+                }
+            }
+
+            if (closestDistanceRope >= closestDistanceLine && closestLine != null)
+            {
+                // If foothold is closer, snap to it
+                SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) + 2));
+            }
+            else if (closestDistanceRope <= closestDistanceLine && closestRopeHint.HasValue)
+            {
+                // If rope/ladder is closer, snap to it and change our rope/ladder policy, unless it was hard-set by the user
+                SnapMoveAllMouseBoundItems(new XNA.Point(closestRopeHint.Value.X, closestRopeHint.Value.Y));
+                if (!this.parentRope.ladderSetByUser)
+                {
+                    this.parentRope.ladder = closestIsLadder;
+                }
+            }
+        }
+
+        private void LookupSnapInOffsetMap(ObjectInstance objInst, List<List<XNA.Point>> offsetMap, bool ladderList, ref XNA.Point? closestRopeHint, ref double closestDistanceRope, ref bool closestIsLadder)
+        {
+            foreach (List<XNA.Point> offsetList in offsetMap)
+            {
+                foreach (XNA.Point offset in offsetList)
+                {
+                    int dx = objInst.X + offset.X - X;
+                    int dy = objInst.Y + offset.Y - Y;
                     if (Math.Abs(dx) > UserSettings.SnapDistance || Math.Abs(dy) > UserSettings.SnapDistance)
                         continue;
                     double distance = InputHandler.Distance(dx, dy);
@@ -110,17 +142,10 @@ namespace HaCreator.MapEditor.Instance.Shapes
                     if (closestDistanceRope > distance)
                     {
                         closestDistanceRope = distance;
-                        closestRopeHint = new XNA.Point(objInst.X + rope.X, objInst.Y + rope.Y);
+                        closestRopeHint = new XNA.Point(objInst.X + offset.X, objInst.Y + offset.Y);
+                        closestIsLadder = ladderList;
                     }
                 }
-            }
-            if (closestDistanceRope >= closestDistanceLine && closestLine != null)
-            {
-                SnapMoveAllMouseBoundItems(new XNA.Point(Parent.X + Parent.BoundItems[this].X, (int)closestLine.CalculateY(X) + 2));
-            }
-            else if (closestDistanceRope <= closestDistanceLine && closestRopeHint.HasValue)
-            {
-                SnapMoveAllMouseBoundItems(new XNA.Point(closestRopeHint.Value.X, closestRopeHint.Value.Y));
             }
         }
 

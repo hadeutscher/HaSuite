@@ -92,10 +92,31 @@ namespace HaCreator.MapEditor.Instance
             }
         }
 
+        private void DrawOffsetMap(SpriteBatch sprite, List<List<XNA.Point>> offsetMap, int xBase, int yBase)
+        {
+            foreach (List<XNA.Point> offsetList in offsetMap)
+            {
+                foreach (XNA.Point offset in offsetList)
+                {
+                    Board.ParentControl.DrawDot(sprite, xBase + offset.X, yBase + offset.Y, MultiBoard.RopeInactiveColor, 1);
+                }
+            }
+        }
+
         public override void Draw(SpriteBatch sprite, XNA.Color color, int xShift, int yShift)
         {
             XNA.Rectangle destinationRectangle = new XNA.Rectangle((int)X + xShift - Origin.X, (int)Y + yShift - Origin.Y, Width, Height);
             sprite.Draw(baseInfo.GetTexture(sprite), destinationRectangle, null, color, 0f, new XNA.Vector2(0, 0), Flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0 /*Layer.LayerNumber / 10f + Z / 1000f*/);
+            if (ApplicationSettings.InfoMode)
+            {
+                int xBase = (int)X + xShift;
+                int yBase = (int)Y + yShift;
+                ObjectInfo oi = (ObjectInfo)baseInfo;
+                if (oi.RopeOffsets != null)
+                    DrawOffsetMap(sprite, oi.RopeOffsets, xBase, yBase);
+                if (oi.LadderOffsets != null)
+                    DrawOffsetMap(sprite, oi.LadderOffsets, xBase, yBase);
+            }
             base.Draw(sprite, color, xShift, yShift);
         }
 

@@ -78,6 +78,7 @@ namespace HaRepacker.GUI
                 encryptionBox.SelectedIndex = (int)encVersion;
                 LoadWzFileThreadSafe(wzToLoad, MainPanel, false);
             }
+            WzNode.ContextMenuBuilder = new WzNode.ContextMenuBuilderDelegate(new ContextMenuManager(MainPanel.UndoRedoMan).CreateMenu);
         }
 
         public void Interop_AddLoadedWzFileToManager(WzFile f)

@@ -180,7 +180,7 @@ namespace HaCreator.MapEditor
         {
             if (ApplicationSettings.InfoMode)
             {
-                Board.ParentControl.FillRectangle(sprite, new XNA.Rectangle(this.X - UserSettings.DotWidth + xShift, this.Y - UserSettings.DotWidth + yShift, UserSettings.DotWidth * 2, UserSettings.DotWidth * 2), UserSettings.OriginColor);
+                Board.ParentControl.DrawDot(sprite, this.X + xShift, this.Y + yShift, UserSettings.OriginColor, 1);
             }
         }
 
