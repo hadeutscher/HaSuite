@@ -375,28 +375,36 @@ namespace HaRepackerLib.Controls
             throw new Exception("cant get here anyway");
         }
 
+        public WzObject CloneWzObject(WzObject obj)
+        {
+            if (obj is WzDirectory)
+            {
+                Warning.Error(Properties.Resources.MainCopyDirError);
+                return null;
+            }
+            else if (obj is WzImage)
+            {
+                return ((WzImage)obj).DeepClone();
+            }
+            else if (obj is WzImageProperty)
+            {
+                return ((WzImageProperty)obj).DeepClone();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public void DoCopy()
         {
             if (!Warning.Warn(Properties.Resources.MainConfirmCopy)) return;
             clipboard.Clear();
             foreach (WzNode node in DataTree.SelectedNodes)
             {
-                WzObject clone = null;
-                if (node.Tag is WzDirectory)
-                {
-                    Warning.Error(Properties.Resources.MainCopyDirError);
-                    continue;
-                }
-                else if (node.Tag is WzImage)
-                {
-                    clone = ((WzImage)node.Tag).DeepClone();
-                }
-                else if (node.Tag is WzImageProperty)
-                {
-                    clone = ((WzImageProperty)node.Tag).DeepClone();
-                }
-                else continue;
-                clipboard.Add(clone);
+                WzObject clone = CloneWzObject((WzObject)node.Tag);
+                if (clone != null)
+                    clipboard.Add(clone);
             }
         }
 
@@ -413,7 +421,10 @@ namespace HaRepackerLib.Controls
             {
                 if (((obj is WzDirectory || obj is WzImage) && parentObj is WzDirectory) || (obj is WzImageProperty && parentObj is IPropertyContainer))
                 {
-                    WzNode node = new WzNode(obj);
+                    WzObject clone = CloneWzObject(obj);
+                    if (clone == null)
+                        continue;
+                    WzNode node = new WzNode(clone);
                     WzNode child = WzNode.GetChildNode(parent, node.Text);
                     if (child != null)
                     {
